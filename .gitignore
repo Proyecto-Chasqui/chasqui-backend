@@ -6,4 +6,4 @@ RemoteSystemsTempFiles/
 .classpath
 logs
 bin
-
+src/main/java/chasqui.properties

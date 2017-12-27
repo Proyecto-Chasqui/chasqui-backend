@@ -87,9 +87,9 @@ Observar que $TOMCAT_PATH y $BACKEND_ROOT_PATH estén correctos según tu file s
 ```
 #!/bin/bash
 ```
->BACKEND_ROOT_PATH="/home/huenu/Repos/chasqui-backend/chasqui"
+>BACKEND_ROOT_PATH="/directorio_de_repositorio/chasqui-backend"
 >
->TOMCAT_PATH="/home/huenu/Documentos/UNQ/mdalponte/CLcoop/eclipse/eclipse-mars/apache-tomcat-7.0.70"
+>TOMCAT_PATH="/directorio_de_tomcat/apache-tomcat-7.0.70"
 >
 >echo "### STOP TOMCAT  ###"
 >
