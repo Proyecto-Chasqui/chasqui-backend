@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk>
+<system-config>
+<!--     <label-location>/WEB-INF/i3-label.properties</label-location> -->
+
+<library-property>
+		<name>org.zkoss.util.label.web.charset</name>
+		<value>UTF-8</value>
+</library-property>
+<library-property>
+    <name>org.zkoss.zul.progressbox.position</name>
+    <value>center,center</value>
+</library-property>
+<client-config>
+		<processing-prompt-delay>1</processing-prompt-delay>
+</client-config>
+
+<library-property>
+		<name>org.zkoss.util.label.web.location</name>
+		<value>/WEB-INF/i3-label.properties</value>
+	</library-property>
+</system-config>
+
+    <language-config>
+        <addon-uri>/WEB-INF/ckez-bind-addon.xml</addon-uri>
+    </language-config>
+</zk>

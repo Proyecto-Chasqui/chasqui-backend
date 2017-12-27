@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+    <class name="chasqui.model.Variante" table="VARIANTE">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">VARIANTE_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <list name="imagenes" inverse="false" table="IMAGEN" lazy="false">
+            <key>
+                <column name="ID_VARIANTE" />
+            </key>
+            <list-index column="ORDEN"/>
+            <one-to-many class="chasqui.model.Imagen" />
+        </list>
+       <many-to-one name="producto" class="chasqui.model.Producto" fetch="select" column="ID_PRODUCTO"/>
+        
+        <property name="descripcion" type="java.lang.String">
+            <column name="DESCRIPCION" />
+        </property>
+        
+        <property name="stock" type="java.lang.Integer">
+            <column name="STOCK" />
+        </property>
+        
+        <property name="precio" type="java.lang.Double">
+            <column name="PRECIO" />
+        </property>
+        
+        <property name="nombre" type="java.lang.String">
+            <column name="NOMBRE" />
+        </property>
+        
+        <property name="destacado" type="java.lang.Boolean" column="DESTACADO"/>
+        
+        <property name="cantidadReservada" column="RESERVADOS" type="java.lang.Integer" not-null="true" />
+        
+        <property name="codigo" column="CODIGO" type="java.lang.String" />
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,93 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./zonaWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window id="zonaWindow" border="normal" title="Alta de Zonas" position="center,top"
+apply="chasqui.view.composer.ZonasComposer" width="60%"  closable="true">
+
+
+<tabbox>
+	<tabs>
+		<tab label="Zonas"/>
+		<tab label="Mapa"/>
+	</tabs>
+	<tabpanels>
+		<tabpanel>		
+			<listbox width="100%">
+				<listhead>
+					<listheader/>
+					<listheader/>
+				</listhead>
+				<listitem>
+					<listcell label="Zona:"/>
+					<listcell>
+						<textbox id="nombreZona"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="${c:l('zk.label.configuracion.fecha.cierre')}"/>
+					<listcell>
+						<datebox id="fechaCierrePedidos"  placeholder="dd/MM/yyyy" />
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="${c:l('zk.label.configuracion.mensaje.fecha')}"/>
+					<listcell >
+						<textbox rows="3" id="txtDescripcion" maxlength="250" width="100%"/>
+					</listcell>
+				</listitem>
+			</listbox>
+			<separator spacing="15px"/>
+			<div align="center">
+				<hbox>
+					<button label="Agregar" id="btnAgregar"/>
+					<space spacing="3px"/>
+					<button label="${c:l('zk.label.configuracion.limpiar.campos')}" id="btnLimpiar"/>
+				</hbox>
+			</div>
+			<separator spacing="15px"/>
+			<listbox checkmark="true" selectedItem="@{zonaWindow$composer.zonaSeleccionada}" model="@{zonaWindow$composer.zonas}" mold="paging"
+			rows="3" pageSize="3"> 
+				<listhead>
+					<listheader label="Nombre" />
+					<listheader label="Acciones"/>
+				</listhead>
+				<listitem self="@{each=zona}">
+					<listcell label="@{zona.getNombre}" style="font-weight:bold;"/>
+					<listcell>
+						<hbox align="center">
+							<image src="/imagenes/detach.png" forward="onClick=zonaWindow$composer.onEliminarZona"/>
+							<space spacing="15px"/>
+							<image src="/imagenes/editar.png" forward="onClick=zonaWindow$composer.onEditarZona"/>
+						</hbox>
+					</listcell>
+				</listitem>
+			</listbox>
+		</tabpanel>
+		<tabpanel>
+			<div>
+				<hbox>
+					<fileupload label="Subir Imagen" id="uploadImagen" upload="true,maxsize=-1"/>
+				</hbox>
+				<vlayout style="border:1px solid black;overflow:auto;" height="300px">
+					<div>
+						<hlayout style="border:1px solid black;overflow:auto;" width="100%">
+							<div>
+								<image id="imgMapa"/>
+							</div>
+						</hlayout>
+					</div>
+				</vlayout>
+			</div>		
+		</tabpanel>
+	</tabpanels>
+</tabbox>
+<div align="center">
+	<button label="Guardar" id="guardar" image="/imagenes/save.png"/>
+	<space spacing="10px"/>
+	<button label="Cancelar" id="cancelar" image="/imagenes/cancel.png"/>
+</div>
+</window>
+</zk>

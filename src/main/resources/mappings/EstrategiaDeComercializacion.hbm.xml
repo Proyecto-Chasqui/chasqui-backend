@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 03/04/2016 18:18:24 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="chasqui.model.EstrategiasDeComercializacion" table="ESTRATEGIA_DE_COMERCIALIZACION">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">ESTRATEGIA_DE_COMERCIALIZACION_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+
+        <property name="nodos" type="java.lang.Boolean" column="PERMITE_NODOS"/>
+        <property name="gcc" type="java.lang.Boolean" column="PERMITE_GCC"/>
+        <property name="compraIndividual" type="java.lang.Boolean" column="PERMITE_COMPRA_INDIVIDUAL"/>
+        <property name="puntoDeEntrega" type="java.lang.Boolean" column="PERMITE_PUNTO_DE_ENTREGA"/>
+        <property name="seleccionDeDireccionDelUsuario" type="java.lang.Boolean" column="PERMITE_ELEGIR_DIRECCION"/>
+        <property name="nodosEnApp" type="java.lang.Boolean" column="PERMITE_NODOS_APP"/>
+        <property name="gccEnApp" type="java.lang.Boolean" column="PERMITE_GCC_APP"/>
+        <property name="compraIndividualEnApp" type="java.lang.Boolean" column="PERMITE_COMPRA_INDIVIUDAL_APP"/>
+        <property name="puntoDeEntregaEnApp" type="java.lang.Boolean" column="PERMITE_PUNTO_DE_ENTREGA_APP"/>
+
+    </class>
+</hibernate-mapping>

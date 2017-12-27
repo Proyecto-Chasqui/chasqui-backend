@@ -1,0 +1,40 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./pedidoWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window title="Detalle Del Pedido" border="normal" id="solicitudNodoWindow" closable="true" 
+apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
+
+
+<listbox model="@{solicitudNodoWindow$composer.nodosSolicitados}" mold="paging" pageSize="10" >
+	<listhead>
+		<listheader label="Alias del Nodo" hflex="1" align="center"/>
+		<listheader label="Estado" hflex="1" align="center"/>
+		<listheader label="calle" hflex="1" align="center"/>
+		<listheader label="altura" hflex="1" align="center"/>
+		<listheader label="localidad" hflex="1" align="center"/>
+		<listheader label="Nombre del administrador" hflex="1" align="center"/>
+		<listheader label="Apellido del administrador" hflex="1" align="center"/>
+	</listhead>
+	<listitem self="@{each=solicitudNodo}" >
+		<listcell label="@{solicitudNodo.getAlias}"/>
+		<listcell label="@{solicitudNodo.getEstado}"/>
+		<listcell label="@{solicitudNodo.getDomicilioEntrega.getCalle}"/>
+		<listcell label="@{solicitudNodo.getDomicilioEntrega.getAltura}"/>
+		<listcell label="@{solicitudNodo.getDomicilioEntrega.getLocalidad}"/>
+		<listcell label="@{solicitudNodo.getAdministrador.getNombre}"/>
+		<listcell label="@{solicitudNodo.getAdministrador.getApellido}"/>
+	</listitem>
+	<listfoot>
+		<listfooter label="Total:" align="left" hflex="1"/>
+		<listfooter hflex="1"/>
+		<listfooter hflex="1"/>
+		<listfooter hflex="1"/>
+		<!-- <listfooter label="@{pedidoWindow$composer.total}" align="right" hflex="1"/>  -->		
+	</listfoot>
+</listbox>
+
+</window>
+</zk>

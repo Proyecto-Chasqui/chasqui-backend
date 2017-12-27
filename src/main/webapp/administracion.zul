@@ -1,0 +1,196 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./administracionWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<!-- <zscript><![CDATA[ -->
+<!--                   if(Executions.getCurrent().getSession().getAttribute("USERNAME") == null){ -->
+<!--                 	  Executions.sendRedirect("/login.zul"); -->
+<!--                   } -->
+                  
+<!--                   ]]> -->
+
+<!-- </zscript> -->
+<window id="administracionWindow"  border="normal" apply="chasqui.view.composer.AdministracionComposer"
+visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="overflow:auto;">
+<div style="background: #026290">
+	<grid  style="background: #026290">
+		<columns zclass="none">
+			<column width="25%" align="left" zclass="none" style="background: blue"/>
+			<column width="60%" align="center" zclass="none" style="background: blue"/>
+			<column width="25%" align="right" zclass="none" style="background: blue"/>
+		</columns>
+		<rows zclass="none">
+			<row zclass="none">
+				<hbox>
+					<space spacing="5px"/>
+					<image src="/imagenes/logo_ch.png" height="auto" width="auto"/>
+				</hbox>
+				<div>
+					<label value="${c:l('zk.label.administrador')}" style="font-size:30px;font-weight:bold; color:white"/>
+				</div>
+			<vbox>
+			<separator spacing="80px"/>
+			<hbox>
+				<space spacing="190px"/>
+				<vbox>
+					<separator spacing="5px"/>
+					<label value="@{administracionWindow$composer.usuarioLogueado.getUsername}" style="font-size:15px;font-weight:bold; color:white"/>
+				</vbox>
+				<toolbar style="background:#026290">
+					<toolbarbutton style="background: #026290" id="logout" tooltiptext="${c:l('zk.toolbar.disconnect')}" image="/imagenes/logout.png"/>
+				</toolbar>
+			</hbox>
+			</vbox>
+			</row>				
+		</rows>
+	</grid>
+</div>
+<separator spacing="5px"/>
+<hbox width="100%">
+	<space width="185px"/>
+	<toolbarbutton id="agregarButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
+		 forward="onClick=administracionWindow$composer.onCrearCategoria"/>
+	<toolbarbutton visible="false" id="agregarProductoButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
+		forward="onClick=administracionWindow$composer.onCrearProducto"/>
+	<toolbarbutton visible="false" id="agregarProductorButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
+		forward="onClick=administracionWindow$composer.onCrearProductor"/>	
+	<toolbarbutton visible="false" id="agregarNodoButton" image="/imagenes/plus.png" tooltiptext="Agregar nodo"
+		forward="onClick=administracionWindow$composer.onCrearNodo"/>	
+</hbox>
+<hbox height="100%">
+	<div width="28%" height="100%">
+	<radiogroup id="v1"/>
+		<vbox>
+			<listbox>
+				<listhead>
+					<listheader label="Opciones"/>
+				</listhead>
+				<listitem>
+					<listcell>
+						<radio label="${c:l('zk.radio.label.administracion.categorias')}" style="font-size:15px" id="radioCategorias"
+						radiogroup="v1"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell>
+						<radio label="${c:l('zk.radio.label.administracion.productos')}" style="font-size:15px" id="radioProductos"
+						radiogroup="v1"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell>
+						<radio label="${c:l('zk.radio.label.administracion.productores')}"  style="font-size:15px" id="radioProductores"
+						radiogroup="v1"/>			
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell>
+						<radio label="Caracteristicas" style="font-size:15px" id="radioCaracteristicas"	radiogroup="v1"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell>
+						<radio label="${c:l('zk.radio.label.administracion.configuracion')}" style="font-size:15px;" id="radioConfiguracion"
+						radiogroup="v1"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell>
+						<radio label="${c:l('zk.radio.label.administracion.altaUsuario')}"  style="font-size:15px" id="radioAltaUsuario"
+						radiogroup="v1"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell>
+						<radio label="Pedidos" style="font-size:15px" id="radioPedidos" radiogroup="v1"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell>
+						<radio label="Pedidos Colectivos" style="font-size:15px" id="radioPedidosColectivos" radiogroup="v1"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell>
+						<radio label="Nodos" style="font-size:15px" id="radioSolicitudesNodos" radiogroup="v1"/>
+					</listcell>
+				</listitem>
+			</listbox>
+		</vbox>
+	</div>
+	<hbox>
+		<div id="divCategoria" visible="false">
+			<vbox>
+				<listbox id="listboxCategorias" model="@{administracionWindow$composer.usuarioLogueado.categorias}"
+				selectedItem="${administracionWindow$composer.categoriaSeleccionada}" mold="paging" pageSize="10" rows="10">
+					<listhead>
+						<listheader label="${c:l('zk.listheader.label.administracion.nombre')}" sort="auto"/>
+						<listheader label="${c:l('zk.listheader.label.administracion.acciones')}" sort="auto"/>
+					</listhead>
+				</listbox>
+			</vbox>
+		</div>
+		<div visible="false" id="divProducto">
+			<vbox>
+			<hbox>	
+			</hbox>
+			<hbox>
+				<label value="Productor:"/>
+				<combobox id="productorComboBox" readonly="true" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}"/>
+				<button label="Buscar" id="buscarProducto"/>
+				<button label="Limpiar Campos" id="limpiarCamposbtn" visible="true"/>
+			</hbox>
+				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10"
+				selectedItem="${administracionWindow$composer.productoSeleccionado}" rows="10">
+					<listhead>
+						<listheader label="${c:l('zk.listheader.label.administracion.producto')}"/>
+						<listheader label="${c:l('zk.listheader.label.administracion.producto.fabricante')}"/>
+						<listheader label="${c:l('zk.listheader.label.administracion.producto.categoria')}"/>
+						<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+					</listhead>
+				</listbox>
+			</vbox>
+		</div>
+		<div visible="false" id="divCaracteristicas">
+			<include visible="false" id="caracInclude"/>
+		</div>
+		<div id="divPedidos" visible="false">
+			<include id="pedidosInclude" visible="false" src="/pedidos.zul"/>
+		</div>
+		
+		<div id="divPedidosColectivos" visible="false">
+			<include id="pedidosColectivosInclude" visible="false" src="/pedidosColectivos.zul"/>
+		</div>
+		<div id="divSolicitudesNodos" visible="false">
+			<include id="solicitudesNodosInclude" visible="false" src="/solicitudesNodos.zul"/>
+		</div>
+		<div id="divProductores" visible="false">
+			<listbox id="listboxProductores" model="@{administracionWindow$composer.usuarioLogueado.fabricantes}" mold="paging" pageSize="10" 
+			rows="10">
+				<listhead>
+					<listheader label="${c:l('zk.listheader.label.administracion.productor')}"/>
+					<listheader label="${c:l('zk.listheader.label.administracion.descripcioncorta')}"/>
+					<listheader label="${c:l('zk.listheader.label.administracion.caracteristica')}"/>
+					<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+				</listhead>
+			</listbox>
+		</div>
+		<div>
+			<vbox>
+				<include id="configuracionInclude" visible="false" src="/configuracion.zul"/>
+			</vbox>
+		</div>
+		<div>
+			<vbox width="100%">
+				<include id="altaUsuarioInclude" visible="false" src="/altaUsuario.zul"/>
+				<separator spacing="20px"/>
+				<include id="usuariosActualesInclude" visible="false" src="/usuariosActuales.zul"/>
+			</vbox>
+		</div>
+	</hbox>
+	
+</hbox>
+</window>
+</zk>

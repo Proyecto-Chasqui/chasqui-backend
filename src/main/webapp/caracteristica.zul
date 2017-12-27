@@ -1,0 +1,118 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./caracteristicaWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window id="caracteristicaWindow" title="Alta de Caracteristicas" border="normal"
+apply="chasqui.view.composer.CaracteristicaComposer">
+	<tabbox>
+	<tabs>
+		<tab label="Producto" id="tabProducto"/>
+		<tab label="Productor" id="tabProductor"/>
+	</tabs>
+	<tabpanels>
+	<tabpanel>
+	<listbox>
+		<listitem>
+		<listcell>
+			<label value="Caracteristica del Producto:"/>
+		</listcell>
+		<listcell>
+			<textbox id="txtbCaracteristica" maxlength="20"/>		
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell>
+			<image id="imgIcon" height="16px" width="16px"/>		
+		</listcell>
+		<listcell>
+			<div align="right">
+				<hbox>
+					<fileupload label="Subir Imagen" id="uploadImagen" upload="true,maxsize=-1"/>					
+				</hbox>
+			</div>
+		</listcell>
+	</listitem>	
+</listbox>
+<separator spacing="15px"/>
+<div>
+	<div align="center">
+		<label value="Descripción" style="font-weight:bold; color:black"/>
+	</div>
+<ckeditor width="100%" height="100px" id="ckEditor" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
+</div>
+<separator spacing="15px"/>
+<div align="center">
+	<button id="agregarCaracteristicaProducto" label="Agregar"/>
+</div>
+<separator spacing="15px"/>
+<listbox id="ltbCaracteristicas" model="@{caracteristicaWindow$composer.caracteristicas}" mold="paging" pageSize="5">
+	<listhead>
+		<listheader label="Caracteristica"/>
+		<listheader label="Imagen"/>
+		<listheader label="Acciones"/>
+	</listhead>		
+</listbox>
+<separator spacing="20px"/>
+<div align="center">
+	<button id="guardarCaracteristica" label="Guardar Caract. Producto "/>
+</div>
+<separator spacing="20px"/>
+</tabpanel>
+<tabpanel>
+<!-- <separator spacing="30px"/> -->
+
+<!-- PRODUCTOR -->
+<listbox>
+		<listitem>
+		<listcell>
+			<label value="Caracteristica del Productor:" />
+		</listcell>
+		<listcell>
+			<textbox id="txtbCaracteristicaProductor" maxlength="20"/>		
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell>
+			<image id="imgIconProductor" height="16px" width="16px"/>		
+		</listcell>
+		<listcell>
+			<div align="right">
+				<hbox>
+					<fileupload label="Subir Imagen" id="uploadImagenProductor" upload="true,maxsize=-1"/>										
+				</hbox>
+			</div>
+		</listcell>
+	</listitem>
+</listbox>
+<separator spacing="15px"/>
+<div>
+	<div align="center">
+		<label value="Descripción" style="font-weight:bold; color:black"/>
+	</div>
+<ckeditor width="100%" height="100px" id="ckEditorProductor" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
+</div>
+<separator spacing="15px"/>
+<div align="center">
+	<button id="agregarCaracteristicaProductor" label="Agregar"/>
+</div>
+<separator spacing="15px"/>
+<listbox id="ltbCaracteristicasProductor" model="@{caracteristicaWindow$composer.caracteristicasProductor}" mold="paging" pageSize="5">
+	<listhead>
+		<listheader label="Caracteristica"/>
+		<listheader label="Imagen"/>
+		<listheader label="Acciones"/>
+	</listhead>		
+</listbox>
+<separator spacing="20px"/>
+<div align="center">
+	<button id="guardarCaracteristicaProductor" label="Guardar Caract. Productor"/>
+</div>
+<separator spacing="20px"/>
+</tabpanel>
+</tabpanels>
+</tabbox>
+
+</window>
+</zk>

@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="all">
+    <joined-subclass name="chasqui.model.Vendedor" extends="chasqui.model.Usuario" table="VENDEDOR" lazy="false">
+        <key>
+            <column name="ID" />
+        </key>
+        <property name="montoMinimoPedido" type="java.lang.Integer">
+            <column name="MONTO_MINIMO_PEDIDO" />
+        </property>
+        <property name="nombre" type="java.lang.String" unique="true">
+        	<column name="NOMBRE_VENDEDOR"/>
+        </property>
+        <property name="msjCierrePedido" type="java.lang.String">
+            <column name="MSJ_CIERRE_PEDIDO" />
+        </property>
+        <property name="distanciaCompraColectiva" type="java.lang.Integer">
+            <column name="DISTANCIA_COMPRA_COLECTIVA" />
+        </property>
+        <property name="mapaZonas" type="java.lang.String" column="MAPA"/>
+        
+        <many-to-one name="estrategiasUtilizadas" class="chasqui.model.EstrategiasDeComercializacion" lazy="false" column="ESTRATEGIAS_UTILIZADAS"/>
+
+        <property name="url" type="java.lang.String">
+            <column name="URL" />
+        </property>
+        
+        <bag name="categorias" inverse="false" table="CATEGORIA" lazy="true" cascade="all">
+            <key>
+                <column name="ID_VENDEDOR" />
+            </key>
+            <one-to-many class="chasqui.model.Categoria" />
+        </bag>
+        <bag name="fabricantes" inverse="false" table="PRODUCTOR" lazy="true" cascade="all">
+            <key>
+                <column name="ID_VENDEDOR" />
+            </key>
+            <one-to-many class="chasqui.model.Fabricante" />
+        </bag>
+        
+        
+        <bag name="estrategiasPermitidas" inverse="false" table="ESTRATEGIAS_VENDEDOR" lazy="false" cascade="all">
+            <key>
+                <column name="ID_VENDEDOR" />
+            </key>
+            <one-to-many class="chasqui.model.IEstrategiaComercializacion" />
+        </bag>
+        
+                
+        
+        
+        <bag name="zonas" inverse="false" table="ZONA" lazy="true"  cascade="all">
+            <key>
+                <column name="ID_VENDEDOR" />
+            </key>
+            <one-to-many class="chasqui.model.Zona" />
+        </bag>
+        
+    </joined-subclass>
+</hibernate-mapping>

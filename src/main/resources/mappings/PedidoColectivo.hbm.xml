@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+  <class name="chasqui.model.PedidoColectivo" table="PEDIDO_COLECTIVO" lazy="false">
+         <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">PEDIDO_COLECTIVO_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        
+        
+      <map name="pedidosIndividuales" table="PEDIDO" lazy="false"   cascade="all" inverse="false" >
+         <key column="ID_PEDIDO_COLECTIVO"/>
+         <index column="USUARIO_CREADOR" type="string"/>
+         <one-to-many class="chasqui.model.Pedido"/>
+      </map>
+        
+        
+<!--          <bag name="pedidosIndividuales" inverse="false" table="PEDIDO" lazy="false"  cascade="all"> -->
+<!--             <key> -->
+<!--                 <column name="ID_PEDIDO_COLECTIVO" /> -->
+<!--             </key> -->
+<!--             <one-to-many class="chasqui.model.Pedido" /> -->
+<!--         </bag> -->
+        
+        
+        <property name="estado" type="java.lang.String" column="ESTADO"/>
+         
+       
+		<many-to-one name="zona" class="chasqui.model.Zona" fetch="join" not-found="ignore">
+			<column name="ID_ZONA" />
+		</many-to-one>
+		 
+		<many-to-one name="direccionEntrega" class="chasqui.model.Direccion"
+			fetch="join" not-null="false" not-found="ignore">
+			<column name="DIRECCION_ENTREGA" />
+		</many-to-one>
+
+		<property name="fechaCreacion"
+			type="org.joda.time.contrib.hibernate.PersistentDateTime">
+			<column name="FECHA_CREACION" />
+		</property>	 		
+		<property name="comentario" type="java.lang.String" column="COMENTARIO"/>
+		 
+    </class>
+</hibernate-mapping>

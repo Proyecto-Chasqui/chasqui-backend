@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+    <class name="chasqui.model.Direccion" table="DIRECCION">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">DIRECCION_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <property name="calle" type="java.lang.String">
+            <column name="CALLE" />
+        </property>
+        <property name="calleAdyacente1" type="java.lang.String">
+            <column name="CALLEADYACENTE1" />
+        </property>
+        <property name="calleAdyacente2" type="java.lang.String">
+            <column name="CALLEADYACENTE2" />
+        </property>
+        <property name="altura" type="java.lang.Integer">
+            <column name="ALTURA" />
+        </property>
+        <property name="localidad" type="java.lang.String">
+            <column name="LOCALIDAD" />
+        </property>
+        <property name="codigoPostal" type="java.lang.String">
+            <column name="CODIGO_POSTAL" />
+        </property>
+        <property name="latitud" type="java.lang.String">
+            <column name="LATITUD" />
+        </property>
+        <property name="longitud" type="java.lang.String">
+            <column name="LONGITUD" />
+        </property>
+        <property name="departamento" type="java.lang.String" column="DEPARTAMENTO"/>
+        <property name="alias" type="java.lang.String" column="ALIAS"/>
+        <property name="predeterminada" type="java.lang.Boolean" column="PREDETERMINADA"/>
+        <property name="geoUbicacion" type="org.hibernatespatial.GeometryUserType"  column="GEO_UBICACION"/>
+		<property name="comentario" type="java.lang.String">
+            <column name="COMENTARIO" />
+        </property>        
+    </class>
+</hibernate-mapping>

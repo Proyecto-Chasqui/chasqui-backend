@@ -1,0 +1,82 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./varianteWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window id="varianteWindow" border="normal" title="Alta de Variedad de Producto"
+apply="chasqui.view.composer.ABMVarianteComposer" height="auto" width="70%" closable="true">
+
+
+<listbox>
+	<listhead>
+		<listheader/>
+		<listheader/>
+	</listhead>
+	<listitem>
+		<listcell label="${c:l('zk.listcell.label.abmVariedad.codigo')}"/>
+		<listcell>
+			<textbox id="textboxCodigo" placeholder="Ingresar código del artículo"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="${c:l('zk.listheader.label.abmVariedad.nombre')}"/>
+		<listcell>
+			<textbox id="textboxNombre" placeholder="Ingresar el nombre de la variedad"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="${c:l('zk.listcell.label.abmVariedad.precio')}"/>	
+		<listcell>
+			<doublebox id="doubleboxPrecio" placeholder="I.E: 10.20"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="${c:l('zk.listcell.label.abmVariedad.stock')}"/>
+		<listcell>
+			<intbox id="intboxStock" placeholder="I.E: 4"/>
+		</listcell>
+	</listitem>
+</listbox>
+<hbox>
+<listbox id="listImagenes" width="95%" model="@{varianteWindow$composer.imagenes}"  rows="3">
+	<listhead>
+		<listheader label="${c:l('zk.listcell.label.abmVariedad.imagen') }"/>
+		<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+	</listhead>
+	<listitem self="@{each=imagen}">
+		<listcell label="@{imagen.getNombre}"/>
+		<listcell>
+			<hbox>
+				<image src="/imagenes/destacado_off.png"/>
+				<space spacing="10px"/>
+				<image src="/imagenes/trash.png"/>
+				<space spacing="10px"/>
+				<image src="/imagenes/download.png" />
+			</hbox>
+		</listcell>
+	</listitem>	
+</listbox>
+<div	align="center">
+	<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadImagen"  upload="true,maxsize=-1" />
+</div>
+</hbox>
+
+
+<div>
+	<div align="center">
+		<label value="Descripción" style="font-weight:bold; color:black"/>
+	</div>
+<ckeditor width="100%" height="100px" id="ckEditor" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
+</div>
+<separator spacing="30px"/>
+<div align="center">
+	<hbox>
+		<toolbarbutton id="botonGuardar" label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" image="/imagenes/save.png"/>
+		<toolbarbutton id="botonCancelar" label="${c:l('zk.button.label.cancelar')}" style="font-weight:bold; color:black" image="/imagenes/cancel.png"/>
+	</hbox>
+</div>
+
+
+</window>
+</zk>

@@ -1,0 +1,47 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./pedidosColectivosWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window id="pedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.PedidosColectivosComposer" sizable="true"
+style="overflow:auto">
+
+<div align="center">
+	<hbox>
+		<label value="Fecha Desde:" visible="false"/>
+		<datebox id="desde" visible="false"/>
+		<space spacing="10px" visible="false"/>
+		<label value="Fecha Hasta:" visible="false"/>
+		<datebox id="hasta" visible="false"/>	
+		<space spacing="10px" visible="false"/>
+		<label value="Estado:" visible="false"/>
+		<combobox visible="false" id="estadosListbox" readonly="true" model="@{pedidosColectivosWindow$composer.estados}" selectedItem="@{pedidosColectivosWindow$composer.estadoSeleccionado}"/>
+		<button label="Buscar" id="buscar" visible="false"/>
+		<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
+	</hbox>
+</div>
+<separator spacing="15px" visible="false"/>
+	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listBoxGruposCC"  model="@{pedidosColectivosWindow$composer.pedidos}" mold="paging" pageSize="10" rows="10">
+		<listhead>
+			<listheader label="ID Grupo" align="center" visible="false"/>
+			<listheader label="Nombre Grupo" align="center"/>
+			<listheader label="Administrador" align="center" />
+			<listheader label="Fecha Creación" align="center" visible="false" />
+			<listheader label="Zona" align="center" visible="false"/>
+			<listheader label="Monto Minimo" align="center" visible="false"/>
+			<listheader label="Monto del Pedido Vigente" align="center"/>
+			<listheader label="Estado" align="center" visible="false"/>
+			<listheader label="Direccion de Entrega Elegida" align="center" visible="false"/>
+			<listheader label="Acciones" align="center" hflex="4"/>
+		</listhead>		
+	</listbox>
+<separator spacing="10px" visible="false"/>
+<div align="center" visible="false">
+	<button label="Confirmar Entrega" id="confirmarEntregabtn" visible="false"/>
+	<button label="Exportar Pedidos" id="exportarTodosbtn" visible="false" />
+	<button label="Exportar Pedidos Seleccionados" id="exportarSeleccionados" visible="false"/>
+</div>
+<separator spacing="10px" visible="false"/>
+</window>
+</zk>

@@ -1,0 +1,46 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./editarPedidoColectivosWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window title="Editar zona de entrega" border="normal" id="editarPedidoColectivosWindow" closable="true" 
+apply="chasqui.view.composer.EditarPedidoColectivoComposer" width="50%">
+
+
+<listbox width="100%">
+				<listhead>
+					<listheader/>
+					<listheader/>
+				</listhead>
+				<listitem>
+					<listcell label="${c:l('zk.label.pedido.usuarioCreadorGCC')}"/>
+					<listcell label="@{editarPedidoColectivosWindow$composer.pedidoMostrado.username}"/>
+				</listitem>
+				<listitem>
+					<listcell label="${c:l('zk.label.pedido.domicilio')}"/>
+					<listcell label="@{editarPedidoColectivosWindow$composer.pedidoMostrado.domicilio}"/>
+				</listitem>
+				<listitem>
+					<listcell label="${c:l('zk.label.pedido.zona')}"/>
+					<listcell label="@{editarPedidoColectivosWindow$composer.zonaActualDelPedido}"/>
+				</listitem>
+				<listitem>
+					<listcell label="${c:l('zk.label.pedido.cambiarZona')}"/>
+					<listcell >
+						<combobox readonly="true" id="comboFabricantes" model="@{editarPedidoColectivosWindow$composer.zonas}" selectedItem="@{editarPedidoColectivosWindow$composer.zonaSeleccionada}"/>
+					</listcell>
+				</listitem>
+			</listbox>
+
+
+
+					
+<separator spacing="10px"/>
+<div align="center">
+	<button label="${c:l('zk.label.pedido.confirmar')}" id="confirmarEdicionbtn"/>
+	<button label="${c:l('zk.label.pedido.cancelar')}" id="cancelarEdicionbtn"/>
+</div>
+<separator spacing="10px"/>
+</window>
+</zk>

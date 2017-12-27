@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="all">
+    <class name="chasqui.model.Categoria" table="CATEGORIA">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">CATEGORIA_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <property name="nombre" type="java.lang.String">
+            <column name="NOMBRE" />
+        </property>
+        
+        <many-to-one name="vendedor" class="chasqui.model.Vendedor" fetch="join">
+            <column name="ID_VENDEDOR" />
+        </many-to-one>
+        
+        <bag name="productos" inverse="false" table="PRODUCTO" lazy="true" fetch="select" cascade="all">
+            <key>
+                <column name="ID_CATEGORIA" />
+            </key>
+            <one-to-many class="chasqui.model.Producto" />
+        </bag>
+    </class>
+</hibernate-mapping>

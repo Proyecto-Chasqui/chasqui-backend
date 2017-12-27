@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+    <class name="chasqui.model.Notificacion" table="NOTIFICACION">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">NOTIFICACION_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <property name="fecha" type="org.joda.time.contrib.hibernate.PersistentDateTime">
+            <column name="FECHA" />
+        </property>
+        <property name="usuarioOrigen" type="java.lang.String" column="USUARIO_ORIGEN"/>
+        <property name="usuarioDestino" type="java.lang.String" column="USUARIO_DESTINO"/>
+        <property name="mensaje" type="java.lang.String">
+            <column name="MENSAJE" />
+        </property>
+        <property name="estado" type="java.lang.String">
+            <column name="ESTADO" />
+        </property>
+    </class>
+</hibernate-mapping>

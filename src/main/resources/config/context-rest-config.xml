@@ -1,0 +1,80 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+  xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:cxf="http://cxf.apache.org/core"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">       
+      
+      
+    <bean id="jaxbProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider" />
+  <bean id='jacksonProvider' class='org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider' />
+   <bean id="cors-filter" class="com.thetransactioncompany.cors.CORSFilter"/> 
+<!--     <bean id="cors-filter" class="chasqui.service.rest.impl.CORSFilter"/> -->
+
+  <!-- =========================== -->
+  <!-- =========Servicios ========= -->
+  <!-- =========================== -->
+
+  <jaxrs:server  address="/client">
+    <jaxrs:serviceBeans>
+<!--        BEANS QUE VAN A MANEJAR LOS SERVICIOS -->
+       <ref bean="ssoListener"/>
+       <ref bean="productoListener"/>
+       <ref bean="vendedorListener"/>
+       <ref bean="catalogoListener"/>
+       <ref bean="categoriaListener"/>
+       <ref bean="productorListener"/>
+       <ref bean="caracteristicaListener"/>
+       <ref bean="nodoListener"/>   
+    </jaxrs:serviceBeans>
+    <jaxrs:extensionMappings>
+      <entry key="json" value="application/json" />
+    </jaxrs:extensionMappings>
+    <jaxrs:providers>
+      <ref bean="jaxbProvider" />
+      <ref bean="jacksonProvider" />
+      <ref bean="cors-filter" />
+    </jaxrs:providers>
+    <jaxrs:features>
+      <cxf:logging />
+    </jaxrs:features>
+  </jaxrs:server>
+
+
+
+	<jaxrs:server  address="/user">
+		<jaxrs:serviceBeans>
+ 			<ref bean="usuarioListener"/>
+ 			<ref bean="pedidoListener"/>
+ 			<ref bean="grupoListener"/>
+				
+ 		</jaxrs:serviceBeans>
+		<jaxrs:extensionMappings>
+			<entry key="json" value="application/json" />
+		</jaxrs:extensionMappings>
+		<jaxrs:providers>
+			<ref bean="jaxbProvider" />
+			<ref bean="jacksonProvider" />
+			<ref bean="cors-filter" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<cxf:logging />
+		</jaxrs:features>
+	</jaxrs:server>
+	
+	
+	<bean id="usuarioListener" class="chasqui.service.rest.impl.UsuarioListener"/>
+	<bean id="ssoListener" class="chasqui.service.rest.impl.SingInSingUpListener"/>
+	<bean id="productoListener" class="chasqui.service.rest.impl.ProductoListener"/>
+	<bean id="vendedorListener" class="chasqui.service.rest.impl.VendedorListener"/>
+	<bean id="catalogoListener" class="chasqui.service.rest.impl.CatalogoListener"/>
+	<bean id="categoriaListener" class="chasqui.service.rest.impl.CategoriaListener"/>
+	<bean id="productorListener" class="chasqui.service.rest.impl.ProductorListener"/>
+	<bean id="caracteristicaListener" class="chasqui.service.rest.impl.CaracteristicaListener"/>
+	<bean id="pedidoListener" class="chasqui.service.rest.impl.PedidoListener"/>
+	<bean id="nodoListener" class="chasqui.service.rest.impl.NodoListener"/>
+	<bean id="grupoListener" class="chasqui.service.rest.impl.GrupoListener"/>
+
+</beans>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+    <class name="chasqui.model.Historial" table="HISTORIAL">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">HISTORIAL_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <property name="usuario" type="java.lang.String">
+            <column name="USUARIO" />
+        </property>
+        <list name="pedidos" inverse="false" table="PEDIDO" lazy="false">
+            <key>
+                <column name="ID_HISTORIAL" />
+            </key>
+            <list-index column="ORDEN_HISTORIAL"/>
+            <one-to-many class="chasqui.model.Pedido" />
+        </list>
+    </class>
+</hibernate-mapping>

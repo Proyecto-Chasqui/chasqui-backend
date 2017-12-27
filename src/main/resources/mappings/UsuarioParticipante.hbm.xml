@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/03/2016 18:32:35 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="chasqui.model.UsuarioParticipante" table="USUARIO_PARTICIPANTE">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">USUARIO_PARTICIPANTE_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <property name="userName" type="java.lang.String">
+            <column name="USERNAME" />
+        </property>
+<!--         <list name="productosEnPedido" inverse="false" table="PRODUCTO_PEDIDO" lazy="false">
+            <key>
+                <column name="ID" />
+            </key>
+            <list-index column="ORDEN"/>
+            <one-to-many class="chasqui.model.ProductoPedido" />
+        </list> -->
+    </class>
+</hibernate-mapping>

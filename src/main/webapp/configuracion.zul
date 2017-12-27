@@ -1,0 +1,96 @@
+<zk>
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<window id="configuracionWindow" border="normal" title="${c:l('zk.label.configuracion')}" 
+apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
+
+<vbox>
+	<hbox>	
+		<listbox>
+			<listhead>
+				<listheader/>
+				<listheader/>
+			</listhead>
+			<listitem>
+				<listcell label="${c:l('zk.label.configuracion.nueva.clave')}"/>
+				<listcell>
+					<hbox>
+						<textbox id="textboxNuevaClave" type="password" maxlength="15" />
+						<image src="/imagenes/warning.png" tooltiptext="La contraseña debe ser alfa numerica y tener una cantidad mayor a 8 caracteres"/>
+					</hbox>
+				</listcell>
+			</listitem>
+			<listitem>
+				<listcell label="${c:l('zk.label.configuracion.nueva.clave.repita')}"/>
+				<listcell>
+					<hbox>
+						<textbox id="textboxNuevaClaveRepita" type="password" maxlength="15"/>
+						<image src="/imagenes/warning.png" tooltiptext="La contraseña debe ser alfa numerica y tener una cantidad mayor a 8 caracteres"/>
+					</hbox>
+				</listcell>
+			</listitem>
+			<listitem>
+				<listcell label="${c:l('zk.label.configuracion.clave.actual')}"/>
+				<listcell>
+					<textbox id="textboxClaveActual" type="password" maxlength="15"/>
+				</listcell>
+			</listitem>
+		</listbox>
+	</hbox>
+	<hbox>
+		<listbox>
+			<listhead>
+				<listheader/>
+				<listheader/>
+			</listhead>
+			<listitem>
+				<listcell label="${c:l('zk.label.configuracion.monto.minimo')}"/>
+				<listcell>
+					<intbox id="intboxMontoMinimo"/>
+				</listcell>
+			</listitem>
+<!--			<listitem>
+				<listcell label="${c:l('zk.label.configuracion.fecha.entrega')}"/>
+				<listcell>
+					<hbox>
+						<datebox id="dateProximaEntrega" placeholder="dd/MM/yyyy"/>
+					</hbox>
+				</listcell>
+			</listitem>-->
+			<listitem>
+				<listcell label="${c:l('zk.label.configuracion.compra.colectiva')}"/>
+				<listcell>
+					<hbox>
+						<combobox readonly="true" id="comboCantidadDeKilometros" selectedItem="@{configuracionWindow$composer.kilometroSeleccionado}" 
+						model="@{configuracionWindow$composer.kilometros}"/>
+						<label value="${c:l('zk.label.configuracion.kilometros')}" style="font-weight:bold; color:black"/>
+					</hbox>
+				</listcell>
+			</listitem>
+			<listitem>
+				<listcell label="${c:l('zk.label.configuracion.zonas')}"/>
+				<listcell>
+					<button label="${c:l('zk.label.configuracion.button.zonas')}" id="zonaButton"/>
+				</listcell>
+			</listitem>
+			<listitem>
+				<listcell>
+						<image style="height:50px; width:50px" src="@{configuracionWindow$composer.imagen.getPath}"/>					
+				</listcell>
+				<listcell>
+						<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadImagen" upload="true,maxsize=-1"/>
+				</listcell>
+			</listitem>
+		</listbox>
+	</hbox>
+	<div align="center">
+		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
+	</div>
+</vbox>
+
+
+</window>
+</zk>

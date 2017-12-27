@@ -1,0 +1,124 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./pedidoWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window title="Detalle Del Pedido" border="normal" id="pedidoWindow" closable="true" sizable="true"
+apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
+
+
+
+<label id="informacion" visible="@{pedidoWindow$composer.pedidoMostrado.sinConfirmar}" value="Información: Este pedido aún no se encuentra confirmado, solo se muestra un pedido potencial. Cuando el usuario confirme
+la compra, se visualizarán los datos de entrega."  style="font-weight:bold; color:red"/>
+
+<separator spacing="20px"/>
+
+<listbox width="100%">
+	<listhead>
+		<listheader/>
+		<listheader/>
+	</listhead>
+	<listitem>
+		<listcell label="${c:l('zk.label.pedido.usuarioCreadorGCC')}"/>
+		<listcell label="@{pedidoWindow$composer.pedidoMostrado.getEmailCliente}"/>
+	</listitem>
+	<listitem>
+		<listcell label="${c:l('zk.label.pedido.username')}"/>
+		<listcell label="@{pedidoWindow$composer.pedidoMostrado.username}"/>
+	</listitem>
+	<listitem  visible="@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+		<listcell label="${c:l('zk.label.pedido.domicilio')}"/>
+		<listcell label="@{pedidoWindow$composer.pedidoMostrado.domicilio.toString}"/>
+	</listitem>
+	<listitem  visible= "@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+		<listcell label="${c:l('zk.label.pedido.zona')}"/>
+		<listcell label="@{pedidoWindow$composer.pedidoMostrado.zona.toString}"/>
+	</listitem>
+</listbox>
+
+<separator spacing="30px"/>
+
+<listbox model="@{pedidoWindow$composer.pedidoMostrado.getPrimero.getVariantes}" mold="paging" pageSize="10" >
+	<listhead>
+		<listheader label="Producto" hflex="1" align="center"/>
+		<listheader label="Cantidad" hflex="1" align="center"/>
+		<listheader label="Precio por unidad" hflex="1" align="center"/>
+		<listheader label="Subtotal" hflex="1" align="center"/>
+	</listhead>
+	<listitem self="@{each=variante}" >
+		<listcell label="@{variante.getNombreProducto}"/>
+		<listcell label="@{variante.getCantidad}"/>
+		<listcell label="@{variante.getPrecio}"/>
+		<listcell label="@{variante.getSubTotal}"/>
+	</listitem>
+	<listfoot>
+		<listfooter hflex="1"/>
+		<listfooter hflex="1"/>
+		<listfooter label="Total: " align="center" hflex="1"/>
+		<listfooter label = "@{pedidoWindow$composer.pedidoMostrado.getMontoTotal}" hflex="1"/>	
+	</listfoot>
+</listbox>
+
+<separator spacing="30px"/>
+<grid width="100%" id="gridDireccion" visible="false">
+ <auxhead>
+  <auxheader label="Detalles de la dirección de entrega"  align="center" colspan="2"/>
+ </auxhead>
+ <columns>
+  <column width="20%" zclass="none"/>
+  <column width="80%" zclass="none"/>
+ </columns>
+ <rows>
+  <row>
+   <cell>
+    <label value="Calle:"/>
+   </cell>
+   <cell>
+    <label id="callelbl"/>
+   </cell>
+  </row>
+  <row>
+   <cell>
+    <label value="Altura:"/>
+   </cell>
+   <cell>
+    <label id="alturalbl"/>
+   </cell>
+  </row>
+  <row>
+   <cell>
+    <label value="Codigo Postal:"/>
+   </cell>
+   <cell>
+    <label id="postallbl"/>
+   </cell>
+  </row>
+  <row>
+   <cell>
+    <label value="Departamento:"/>
+   </cell>
+   <cell>
+    <label id="departamentolbl"/>
+   </cell>
+  </row>
+  <row>
+   <cell>
+    <label value="Localidad:"/>
+   </cell>
+   <cell>
+    <label id="localidadlbl"/>
+   </cell>
+  </row>
+ </rows>
+</grid>
+
+</window>
+</zk>
+
+
+
+
+
+
+

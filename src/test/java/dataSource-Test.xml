@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/tx
+          http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                 http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+	<context:annotation-config/>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${dataSource.driverClassName}" />
+		<property name="url" value="${dataSource.url}" />
+		<property name="username" value="${dataSource.username}" />
+		<property name="password" value="${dataSource.password}" />
+	</bean>
+
+
+			<!--   A TENER EN CUENTA SI SE QUIERE HACER INTEGRACION CONTINUA SOBRE EL PROYECTO 
+			
+				  NO SE PUEDE CAMBIAR LA CONFIG. DE HIBERNATE A HSQL, YA QUE SI SE DESEA HACERLO HABRIA QUE DUPLICAR LOS ARCHIBOS *.hbm.xml,
+				  PORQUE HSQL NO CUENTA CON SECUENCIADORES (TAL Y COMO ESTA DEFINIDO EN LOS ARCHIVOS DE MAPEO).
+				  LA CONFIGURACION ACTUAL DE LOS TEST, CORREN EN UNA DB DE TEST DE MYSQL.
+			
+			
+			
+			PARA EJECUTAR ESTOS TEST ES NECESARIO CREAR UN SCHEMA LLAMADO 'CHASQUI_TEST' (DEFINIDO EN EL ARCHIVO CHASQUI.PROPERTIES EN LA CARPETA DE TEST)
+			-->
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<!-- Configuration generic properties. They are loaded from file hibernate.properties -->
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>
+<!-- 				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop> -->
+				<prop key="hibernate.dialect">org.hibernatespatial.mysql.MySQLSpatialDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">create-drop</prop> <!-- create-drop -->
+				<prop key="javax.persistence.validation.mode">none</prop>
+				<prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+				<prop key="hibernate.connection.autocommit">true</prop>
+				<prop key="hibernate.query.factory_class">org.hibernate.hql.ast.ASTQueryTranslatorFactory</prop>
+				<prop key="hibernate.transaction.auto_close_session">false</prop>
+				<prop key="hibernate.connection.release_mode">after_transaction</prop>
+				<prop key="hibernate.connection.isolation">8</prop>
+			</props>
+		</property>
+		<property name="mappingLocations">
+			<list>
+				<value>classpath*:mappings/ProductoPedido.hbm.xml</value>
+ 				<value>classpath*:mappings/Historial.hbm.xml</value>
+				<value>classpath*:mappings/Notificacion.hbm.xml</value>
+				<value>classpath*:mappings/Vendedor.hbm.xml</value>
+				<value>classpath*:mappings/Pedido.hbm.xml</value>
+				<value>classpath*:mappings/Cliente.hbm.xml</value>
+				<value>classpath*:mappings/Usuario.hbm.xml</value>
+				<value>classpath*:mappings/Imagen.hbm.xml</value>
+				<value>classpath*:mappings/Categoria.hbm.xml</value>
+				<value>classpath*:mappings/Variante.hbm.xml</value>
+				<value>classpath*:mappings/Zona.hbm.xml</value>
+				<value>classpath*:mappings/Direccion.hbm.xml</value>
+				<value>classpath*:mappings/CaracteristicaProductor.hbm.xml</value>
+				<value>classpath*:mappings/Caracteristica.hbm.xml</value>
+				<value>classpath*:mappings/Fabricante.hbm.xml</value>
+				<value>classpath*:mappings/Producto.hbm.xml</value>
+				<value>classpath*:mappings/GrupoCC.hbm.xml</value>
+				<value>classpath*:mappings/Estrategias.hbm.xml</value>
+				<value>classpath*:mappings/PedidoColectivo.hbm.xml</value>
+				<value>classpath*:mappings/MiembroDeGCC.hbm.xml</value>
+				<value>classpath*:mappings/Nodo.hbm.xml</value>
+				<value>classpath*:mappings/InvitacionAGCC.hbm.xml</value>
+				<value>classpath*:mappings/HistorialGCC.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- Transaction management -->
+    <tx:annotation-driven/> 
+	   <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+             <property name="sessionFactory" ref="sessionFactory" />
+       </bean>
+
+</beans>

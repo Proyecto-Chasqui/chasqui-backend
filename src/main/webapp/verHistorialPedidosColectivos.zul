@@ -1,0 +1,49 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./historialPedidosColectivosWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window width="65%" title="Historial De Pedidos Colectivos" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="true"
+style="overflow:auto">
+
+<div align="center">
+	<hbox>
+		<label value="Fecha Desde:" />
+		<datebox id="desde"/>
+		<space spacing="10px"/>
+		<label value="Fecha Hasta:"/>
+		<datebox id="hasta"/>	
+		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
+	</hbox>
+	<hbox>
+		<label value="Estado:"/>
+		<combobox id="estadosListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.estados}" selectedItem="@{historialPedidosColectivosWindow$composer.estadoSeleccionado}"/>
+		<label value="Zona:"/>
+		<combobox id="zonasListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.zonas.nombre}" selectedItem="@{historialPedidosColectivosWindow$composer.zonaSeleccionada}"/>
+		<button label="Buscar" id="buscar"/>
+	</hbox>
+</div>
+<separator spacing="15px"/>
+	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{historialPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
+		<listhead>
+			<listheader label="ID Pedido" align="center" visible="False"/>
+			<listheader label="Cliente Creador" align="center" visible="false" />
+			<listheader label="Fecha Creación" align="center"/>
+			<listheader label="Zona" align="center"/>
+			<listheader label="Monto Minimo" align="center" visible="false"/>
+			<listheader label="Monto Final" align="center"/>
+			<listheader label="Estado" align="center"/>
+			<listheader label="Direccion de Entrega" align="center"/>
+			<listheader label="Acciones" align="center" hflex="4"/>
+		</listhead>		
+	</listbox>
+<separator spacing="10px"/>
+<div align="center">
+	<button label="Confirmar Entrega" id="confirmarEntregabtn" visible="false"/>
+	<button label="Exportar Pedidos" id="exportarTodosbtn" visible="false"/>
+	<button label="Exportar Pedidos Seleccionados" id="exportarSeleccionados" visible="false"/>
+</div>
+<separator spacing="10px"/>
+</window>
+</zk>

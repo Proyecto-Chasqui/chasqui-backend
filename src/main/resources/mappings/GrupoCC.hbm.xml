@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+  <class name="chasqui.model.GrupoCC" table="GRUPOCC" lazy="false">
+         <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">GRUPOCC_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        
+        <many-to-one name="administrador" class="chasqui.model.Cliente" column="ID_ADMINISTRADOR" fetch="join" lazy="false"/>
+        
+        <property name="alias" type="java.lang.String" column="ALIAS"/>
+        
+        <property name="descripcion" type="java.lang.String" column="DESCRIPCION"/>
+        
+        <bag name="cache" inverse="false" table="MIEMBRO_DE_GCC" lazy="false" cascade="all" >
+            <key>
+                <column name="ID_GRUPO"/>
+            </key>            
+            <one-to-many entity-name="chasqui.model.MiembroDeGCC"/>
+        </bag>        
+        
+        <property name="pedidosHabilitados" type="java.lang.Boolean" column="PEDIDOS_HABILITADOS"/>        
+        
+        <many-to-one name="pedidoActual" class="chasqui.model.PedidoColectivo" lazy="false" column="ID_PEDIDO_COLECTIVO" cascade="all" unique="true"/>
+        
+        <many-to-one name="vendedor" class="chasqui.model.Vendedor" column="ID_VENDEDOR" lazy="false"/>
+        
+        <many-to-one name="historial" class="chasqui.model.HistorialGCC" column="HISTORIAL_GCC" cascade="all" unique="true" lazy="false"/>
+        
+        
+    </class>
+</hibernate-mapping>

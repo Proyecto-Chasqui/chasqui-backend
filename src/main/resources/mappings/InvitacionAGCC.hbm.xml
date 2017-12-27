@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+    <joined-subclass name="chasqui.model.InvitacionAGCC"  extends="chasqui.model.Notificacion" table="INVITACION_GRUPOCC">
+        <key>
+            <column name="ID" />
+        </key>
+        
+        <property name="idGrupo" type="java.lang.Integer" column="ID_GRUPO"/> 
+    </joined-subclass>
+</hibernate-mapping>

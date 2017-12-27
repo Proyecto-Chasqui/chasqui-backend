@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+    <class name="chasqui.model.HistorialGCC" table="HISTORIAL_GCC">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">HISTORIALGCC_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <list name="pedidosGrupales" inverse="false" table="PEDIDO_COLECTIVO" lazy="false" cascade="all">
+            <key>
+                <column name="ID_HISTORIAL_GCC" />
+            </key>
+            <list-index column="ORDEN_HISTORIAL_GCC"/>
+            <one-to-many class="chasqui.model.PedidoColectivo" />
+        </list>
+        <property name="idGCC" type="java.lang.Integer" column="ID_GCC"/>
+        
+        
+    </class>
+</hibernate-mapping>

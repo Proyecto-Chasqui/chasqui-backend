@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="all">
+    <joined-subclass name="chasqui.model.Cliente" extends="chasqui.model.Usuario" table="CLIENTE" lazy="false">
+        <key>
+            <column name="ID" />
+        </key>
+        
+        <property name="nombre" type="java.lang.String">
+            <column name="NOMBRE" />
+        </property>
+        
+        <property name="apellido" type="java.lang.String">
+            <column name="APELLIDO" />
+        </property>
+        
+        <property name="telefonoFijo" type="java.lang.String">
+            <column name="TELEFONO_FIJO" />
+        </property>
+        
+        <property name="telefonoMovil" type="java.lang.String">
+            <column name="TELEFONO_MOVIL" />
+        </property>
+        
+        <property name="idDispositivo" type="java.lang.String" column="DISPOSITIVO"/> 
+        
+        <property name="rol" type="java.lang.String" column="ROL"/>
+        
+        <property name="token" type="java.lang.String" column="TOKEN"/>
+        
+        <list name="direccionesAlternativas" inverse="false" table="DIRECCION" lazy="true"  cascade="all">
+            <key>
+                <column name="ID_CLIENTE" />
+            </key>
+            <list-index column="ORDEN"/>
+            <one-to-many class="chasqui.model.Direccion" />
+        </list>
+        
+        <list name="notificaciones" inverse="false" table="NOTIFICACION" lazy="true">
+            <key>
+                <column name="ID_CLIENTE" />
+            </key>
+            <list-index column="ORDEN"/>
+            <one-to-many class="chasqui.model.Notificacion" />
+        </list>
+        
+        <many-to-one name="historialPedidos" class="chasqui.model.Historial" fetch="join">
+            <column name="HISTORIAL_PEDIDOS" />
+        </many-to-one>
+        
+        <list name="pedidos" inverse="false" table="PEDIDO" lazy="true" cascade="all">
+            <key>
+                <column name="CLIENTE" />
+            </key>
+            <list-index column="ORDEN"/>
+            <one-to-many class="chasqui.model.Pedido" />
+        </list>
+        
+        <property name="estado" type="java.lang.String" column="ESTADO"/>
+    </joined-subclass>
+</hibernate-mapping>

@@ -1,0 +1,62 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./direccionWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window id="direccionWindow" border="normal" title="Crear dirección" binder="@init(queueName='direccionQueue')"
+apply="chasqui.view.composer.NuevaDireccionComposer" height="auto" width="25%" closable="true">
+
+
+<listbox>
+	<listhead>
+		<listheader/>
+		<listheader/>
+	</listhead>
+	<listitem>
+		<listcell label="Alias"/>
+		<listcell>
+			<textbox width="150px" id="txtAliasDireccion" />
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="Calle"/>
+		<listcell>
+			<textbox width="150px" id="txtCalle" />
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="Localidad"/>
+		<listcell>
+			<textbox width="150px" id="txtLocalidad"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="Altura"/>	
+		<listcell>
+			<intbox width="150px" id="txtAltura"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="Departamento"/>	
+		<listcell>
+			<textbox width="150px" id="txtDepartamento"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="CodigoPostal"/>
+		<listcell>
+			<intbox width="150px" id="txtCodigoPostal"/>
+		</listcell>
+	</listitem>
+</listbox>
+
+<separator spacing="15px"/>
+<div align="center">
+	<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="Guardar" image="/imagenes/save.png"/>
+	<space spacing="10px"/>
+	<toolbarbutton label="Cancelar" id="Cancelar" style="font-weight:bold; color:black" image="/imagenes/cancel.png"/>
+</div>
+
+</window>
+</zk>

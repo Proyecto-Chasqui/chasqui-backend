@@ -1,0 +1,100 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./productorWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window title="Alta/Edición de Productores" id="productorWindow" position="center,top"
+apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  sizable="true" closable="true">
+
+<listbox>
+	<listhead>
+		<listheader/>
+		<listheader/>
+	</listhead>
+	<listitem>
+		<listcell>
+			<label value="${c:l('zk.listheader.label.abmCategoria.nombre')}*"/>
+		</listcell>
+		<listcell>
+			<textbox maxlength="100" id="textboxNombreProductor"/>	
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell>
+			<label value="País:"/>
+		</listcell>
+		<listcell>
+			<textbox id="txtPais" maxlength="30"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell>
+			<label value="Provincia:"/>
+		</listcell>
+		<listcell>
+			<textbox id="txtProvincia" maxlength="30"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell>
+			<label value="Localidad:"/>
+		</listcell>
+		<listcell>
+			<textbox id="txtLocalidad" maxlength="30"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell>
+			<label value="Calle:"/>
+		</listcell>
+		<listcell>
+			<textbox id="txtDireccion" maxlength="30"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="Altura:"/>
+		<listcell>
+			<intbox id="altura" maxlength="4"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="Descripción breve:*"/>
+		<listcell>
+			<textbox id="descCorta" maxlength="200" rows="3" width="90%"/>
+		</listcell>
+	</listitem>
+	<listitem height="30%">
+		<listcell label="Descripción Larga:"/>
+		<listcell>
+			<ckeditor id="descLarga" height="100px" width="95%" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell>
+			<image width="20px" height="20px" id="imagenProductor"/>
+		</listcell>
+		<listcell>
+			<fileupload label="Subir Imagen" id="uploadImagen" upload="true,maxsize=-1" />
+		</listcell>
+	</listitem>
+	<listitem>
+		<listcell label="Caracteristica:"/>
+		<listcell>
+			<hbox>
+			<combobox readonly="true" id="comboCaracteristica" model="@{productorWindow$composer.caracteristicas}"
+			itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"
+			selectedItem="@{productorWindow$composer.caracteristicaSeleccionada}"/>
+<!-- 			<toolbarbutton image="/imagenes/plus.png" id="agregarCaracteristicaButton"/> -->
+			</hbox>
+		</listcell>
+	</listitem>
+</listbox>
+<separator spacing="15px"/>
+<div align="center">
+	<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
+	<space spacing="10px"/>
+	<toolbarbutton id="botonCancelar" label="${c:l('zk.button.label.cancelar')}" style="font-weight:bold; color:black" image="/imagenes/cancel.png"/>
+</div>
+</window>
+</zk>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="chasqui.model.Fabricante" table="PRODUCTOR">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">PRODUCTOR_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <property name="nombre" type="java.lang.String">
+            <column name="NOMBRE" />
+        </property>
+        <property name="calle" type="java.lang.String" column="CALLE"/>
+        <property name="pais" type="java.lang.String" column="PAIS"/>
+        <property name="provincia" type="java.lang.String" column="PROVINCIA"/>
+        <property name="localidad" type="java.lang.String" column="LOCALIDAD"/>
+        <property name="altura" type="java.lang.Integer" column="ALTURA"/>
+        <property name="pathImagen" type="java.lang.String" column="IMAGEN"/>
+        <property name="descripcionCorta" type="java.lang.String" column="DESCRIPCION_CORTA"/>
+        <property name="descripcionLarga" type="text" column="DESCRIPCION_LARGA"/>
+        <property name="idVendedor" type="java.lang.Integer" column="ID_VENDEDOR" insert="false" update="false"/>
+        <bag name="productos" inverse="false" table="PRODUCTO" lazy="true" cascade="all">
+            <key>
+                <column name="ID_PRODUCTOR" />
+            </key>
+<!--             <list-index column="ORDEN"/> -->
+            <one-to-many class="chasqui.model.Producto" />
+        </bag>
+        <many-to-one name="caracteristica" class="chasqui.model.CaracteristicaProductor" 
+        column="ID_CARACTERISTICA" lazy="false"/>
+    </class>
+</hibernate-mapping>

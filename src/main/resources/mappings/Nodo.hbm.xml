@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+   <joined-subclass  name="chasqui.model.Nodo" extends="chasqui.model.GrupoCC"  table="NODO" lazy="false">
+        <key>
+            <column name="ID" />
+        </key>
+        
+        <property name="estado" type="java.lang.String" column="ESTADO"/>
+        
+        
+        <property name="tipo" type="java.lang.String" column="TIPO"/>
+        
+        <property name="emailAdministradorNodo" type="java.lang.String" column="EMAILADMIN"/>
+    
+        <many-to-one name="direccionEntrega" class="chasqui.model.Direccion" lazy="false" column="ID_DIRECCION"/>        
+        
+    </joined-subclass>
+</hibernate-mapping>

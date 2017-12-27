@@ -1,0 +1,58 @@
+<zk>
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./altaUsuarioWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<window id="altaUsuarioWindow" title="${c:l('zk.window.altaUsuario.title')}" border="normal"
+apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
+
+<div>
+	<listbox>
+		<listhead>
+			<listheader/>
+			<listheader/>
+		</listhead>
+		<listitem>
+			<listcell label="${c:l('zk.label.altaUsuario.usuario')}"/>
+			<listcell>
+				<textbox id="textboxUsername" maxlength="10"/>
+			</listcell>
+		</listitem>
+		<listitem>
+			<listcell label="Nombre: "/>
+			<listcell>
+				<textbox id="textboxNombre" maxlength="40"/>
+			</listcell>
+		</listitem>
+		<listitem>
+			<listcell label="${c:l('zk.label.configuracion.nueva.clave')}"/>
+			<listcell>
+				<textbox id="textboxContraseña" type="password" maxlength="15"/>
+			</listcell>
+		</listitem>
+		<listitem>
+			<listcell label="${c:l('zk.label.configuracion.nueva.clave.repita')}"/>
+			<listcell>
+				<textbox id="textboxContraseñaRepita" type="password" maxlength="15"/>
+			</listcell>
+		</listitem>
+		<listitem>
+			<listcell label="${c:l('zk.label.altaUsuario.email')}"/>
+			<listcell>
+				<textbox id="textboxEmail"/>
+			</listcell>
+		</listitem>
+		<listitem>
+			<listcell label="${c:l('zk.label.altaUsuario.urlBase')}"/>
+			<listcell>
+				<textbox id="textboxUrlBase"/>
+			</listcell>
+		</listitem>
+	</listbox>
+	<div align="center">
+		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
+	</div>
+</div>
+</window>
+</zk>
