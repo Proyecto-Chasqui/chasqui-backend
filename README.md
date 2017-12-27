@@ -50,6 +50,7 @@ Por consola, conectarse a mysql para crear base de datos CHASQUI:
 
 ###Configurar eclipse
 
+* Copiar el archivo chasqui.properties ubicado en la carpeta "src" a "/src/test/java" y completar las propiedades
 * Definir un nuevo server (tomcat 7) con el path de la carpeta donde se descomprimió el tomcat
 * Incluir webapp en dicho server: con botón derecho sobre el server, elegir add and remove y luego elegir la aplicación chasqui
 
