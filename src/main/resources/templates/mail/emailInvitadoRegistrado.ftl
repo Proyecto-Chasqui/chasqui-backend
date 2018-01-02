@@ -23,7 +23,7 @@
                        Gracias! Usted ha sido invitado a participar de un grupo de compras colectivas por el usuario: <b>${usuarioOrigen}</b> (${mailOrigen}).
                         Para poder aceptar la invitación, <a href="${urlRegistracion}"> ingresá a Chasqui </a> y así empezar a comprar con ${usuarioOrigen}.                        
 
-                        Recordá que también podés descargate la app para navegar el catálogo de ${vendedor}</span>
+                        <!--Recordá que también podés descargate la app para navegar el catálogo de ${vendedor}--></span>
                        <br>
                 </div><!-- fin del cuerpo -->
 
