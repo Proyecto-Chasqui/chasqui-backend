@@ -21,7 +21,7 @@
         </list>
        <many-to-one name="producto" class="chasqui.model.Producto" fetch="select" column="ID_PRODUCTO"/>
         
-        <property name="descripcion" type="java.lang.String">
+        <property name="descripcion" type="text">
             <column name="DESCRIPCION" />
         </property>
         
