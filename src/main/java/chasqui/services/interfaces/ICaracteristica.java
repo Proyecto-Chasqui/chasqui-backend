@@ -13,4 +13,10 @@ public interface ICaracteristica {
 	public Boolean getEliminada();
 
 	public void setEliminada(Boolean eliminada);
+	
+	public void setNombre(String nombre);
+	
+	public void setDescripcion(String descripcion);
+	
+	public void setPathImagen(String path);
 }
