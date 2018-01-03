@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import freemarker.template.TemplateException;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
@@ -38,10 +36,8 @@ import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
-import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
-import chasqui.model.Vendedor;
 import chasqui.service.rest.request.AceptarRequest;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
 import chasqui.service.rest.request.CederAdministracionRequest;
@@ -56,7 +52,7 @@ import chasqui.service.rest.response.GrupoResponse;
 import chasqui.service.rest.response.PedidoResponse;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.PedidoService;
-import chasqui.services.interfaces.UsuarioService;
+import freemarker.template.TemplateException;
 
 @Service
 @Path("/gcc")
@@ -261,9 +257,11 @@ public class GrupoListener {
 
 		NuevoPedidoIndividualRequest request;
 		String email = obtenerEmailDeContextoDeSeguridad();
+		Pedido nuevoPedido = null;
 		try {
 			request = this.tonuevoPedidoIndividualRequest(nuevoPedidoIndividualRequest);
 			grupoService.nuevoPedidoIndividualPara(request.getIdGrupo(), email, request.getIdVendedor());
+			nuevoPedido = grupoService.obtenerPedidoIndividualEnGrupo(request.getIdGrupo(), email);
 		} catch (JsonParseException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (JsonMappingException e) {
@@ -288,7 +286,7 @@ public class GrupoListener {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		}
 
-		return Response.ok().build();
+		return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
 	}
 
 	@POST
@@ -484,6 +482,10 @@ public class GrupoListener {
 		return pedidosResponse;
 	}
 
+	private PedidoResponse toResponse(Pedido nuevoPedido){
+		return new PedidoResponse(nuevoPedido);
+	}
+	
 	private String obtenerEmailDeContextoDeSeguridad() {
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 
