@@ -7,3 +7,4 @@ RemoteSystemsTempFiles/
 logs
 bin
 src/test/java/chasqui.properties
+src/main/resources/chasqui.properties
