@@ -61,15 +61,18 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		String estado = pedido.getEstado();
 
 		if (estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
-			celdaEstado.setStyle("color:blue;");
+			celdaEstado.setStyle("color:blue; font-family:Arial Black;");
+		}
+		if (estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO)) {
+			celdaEstado.setStyle("color:Magenta; font-family:Arial Black;");
 		}
 		if (estado.equals(Constantes.ESTADO_PEDIDO_CANCELADO)) {
-			celdaEstado.setStyle("color:red;");
+			celdaEstado.setStyle("color:red; font-family:Arial Black;");
 		}
 		if (estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO)) {
-			celdaEstado.setStyle("color:green");
+			celdaEstado.setStyle("color:green; font-family:Arial Black;");
 		}
-
+	
 		String direccion = "";
 		if (pedido.getDireccionEntrega() != null) {
 			direccion = pedido.getDireccionEntrega().getCalle() + " " + pedido.getDireccionEntrega().getAltura();
@@ -138,24 +141,38 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		}
 		
 		//----------------------------Botón para Entregar
-		Toolbarbutton botonEntregar = new Toolbarbutton("Confirmar Entrega");
-		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)&& pedido.getZona() != null){
+		
+		Toolbarbutton botonEntregar = new Toolbarbutton("Preparar el pedido");
+		
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)&&pedido.getZona() != null){
+			HashMap<String, Object> paramsEntrega = new HashMap<String, Object>();
+			botonEntregar.setTooltiptext("Prepara el pedido");
+			paramsEntrega.put(PedidosColectivosComposer.PEDIDO_KEY, pedido);
+			paramsEntrega.put(PedidosColectivosComposer.ACCION_KEY, PedidosComposer.ACCION_PREPARAR);
+			botonEntregar.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsEntrega);
+		}
+		
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO)&& pedido.getZona() != null){
+			botonEntregar.setLabel("Confirmar Entrega");
 			HashMap<String, Object> paramsEntrega = new HashMap<String, Object>();
 			botonEntregar.setTooltiptext("Confirma la entrega");
 			paramsEntrega.put(PedidosColectivosComposer.PEDIDO_KEY, pedido);
 			paramsEntrega.put(PedidosColectivosComposer.ACCION_KEY, PedidosComposer.ACCION_ENTREGAR);
 			botonEntregar.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsEntrega);
 		}
+		
 		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)){
+			botonEntregar.setLabel("Entregado");
 			botonEntregar.setTooltiptext("El pedido esta entregado");
 			botonEntregar.setDisabled(true);
 			botonEntregar.setStyle("color:gray");
 		}
+		
 		if(pedido.getZona() == null){
-				botonEntregar = new Toolbarbutton("Confirmar Entrega");
-				botonEntregar.setTooltiptext("El pedido no esta confirmado y/o no posee una zona asignada");
-				botonEntregar.setDisabled(true);
-				botonEntregar.setStyle("color:gray");
+			botonEntregar = new Toolbarbutton("Confirmar Entrega");
+			botonEntregar.setTooltiptext("El pedido no esta confirmado y/o no posee una zona asignada");
+			botonEntregar.setDisabled(true);
+			botonEntregar.setStyle("color:gray");
 		}
 		
 				

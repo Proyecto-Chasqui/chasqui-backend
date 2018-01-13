@@ -22,4 +22,6 @@ public interface IPedido {
 	
 	public Direccion getDireccionEntrega();
 
+	void preparado() throws EstadoPedidoIncorrectoException;
+
 }

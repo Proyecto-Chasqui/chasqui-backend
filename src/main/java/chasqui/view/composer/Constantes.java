@@ -13,6 +13,7 @@ public class Constantes {
 	public final static String ESTADO_PEDIDO_CANCELADO="CANCELADO";
 	public final static String ESTADO_PEDIDO_CONFIRMADO="CONFIRMADO";
 	public final static String ESTADO_PEDIDO_ENTREGADO="ENTREGADO";
+	public final static String ESTADO_PEDIDO_PREPARADO="PREPARADO";
 	
 	public final static String VENTANA_PRODUCTOR = "VENTANA_PRODUCTOR";
 	public final static String VENTANA_PRODUCTO = "VENTANA_PRODUCTO";

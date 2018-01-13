@@ -147,10 +147,21 @@ public class Pedido implements IPedido {
 	public void setFechaDeVencimiento(DateTime fechaDeVencimiento) {
 		this.fechaDeVencimiento = fechaDeVencimiento;
 	}
+	
+	@Override
+	public void preparado() throws EstadoPedidoIncorrectoException {
+		if (this.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+			this.estado = Constantes.ESTADO_PEDIDO_PREPARADO;
+			this.alterable = false;
+		} else {
+			throw new EstadoPedidoIncorrectoException("El pedido no puede ser preparado pues su estado es: "+ this.getEstado());
+		}
+
+	}
 
 	@Override
 	public void entregarte() throws EstadoPedidoIncorrectoException {
-		if (this.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) /*&& alterable*/) {
+		if (this.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO) /*&& alterable*/) {
 			this.estado = Constantes.ESTADO_PEDIDO_ENTREGADO;
 			this.alterable = false; //TODO: Este campo se usa para algo?
 		} else {

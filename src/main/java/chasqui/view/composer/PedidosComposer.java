@@ -62,6 +62,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	public static final String ACCION_KEY = "accion";
 	public static final String PEDIDO_KEY = "pedido";
 	public static final Object ACCION_ENTREGAR = "entregar";
+	public static final String ACCION_PREPARAR = "preparado";
 	
 	private Datebox desde;
 	private Datebox hasta;
@@ -97,7 +98,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
 			zonaService = (ZonaService)SpringUtil.getBean("zonaService");
 			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
-			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO);
+			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO);
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 			binder = new AnnotateDataBinder(component);
 			listboxPedidos.setItemRenderer(new PedidoRenderer((Window) component));
@@ -183,6 +184,24 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		this.binder.loadAll();
 	}
 	
+	//onPreguntarPreparacionDeEntrega
+	
+	public void onPreguntarPreparacionDeEntrega(final Pedido p){
+		EventListener evt = new EventListener() {
+			public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
+				if(evt.getName().equals("onOK")){
+					onPrepararEntrega(p);
+				}
+			}
+		};
+		Messagebox.show("¿Esta seguro que desea marcar este pedido a preparado?",
+				"Confirmar", 
+				Messagebox.OK|Messagebox.CANCEL,
+				Messagebox.QUESTION,
+				evt
+				);
+	}
+	
 	public void onPreguntarConfirmacionEntrega(final Pedido p){
 		EventListener evt = new EventListener() {
 			public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
@@ -198,6 +217,14 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 				evt
 				);
 	}
+	
+	
+	public void onPrepararEntrega(Pedido p) throws EstadoPedidoIncorrectoException {
+		p.preparado();
+		pedidoService.guardar(p);
+		this.binder.loadAll();
+	}
+	
 	
 	public void onConfirmarEntrega(Pedido p) throws EstadoPedidoIncorrectoException {
 		p.entregarte();
@@ -300,6 +327,12 @@ class PedidoEventListener implements EventListener<Event>{
 			composer.onEditarZona(p);
 				
 		}
+		
+		if(accion.equals(PedidosComposer.ACCION_PREPARAR)){
+			composer.onPreguntarPreparacionDeEntrega(p);
+				
+		}
+		
 		if(accion.equals(PedidosComposer.ACCION_ENTREGAR)){
 			composer.onPreguntarConfirmacionEntrega(p);
 				

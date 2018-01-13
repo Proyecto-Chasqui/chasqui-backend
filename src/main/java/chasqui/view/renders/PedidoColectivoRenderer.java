@@ -65,13 +65,16 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		String estado = pedidoColectivo.getEstado();
 
 		if (estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
-			celdaEstado.setStyle("color:blue;");
+			celdaEstado.setStyle("color:blue; font-family:Arial Black;");
+		}
+		if (estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO)) {
+			celdaEstado.setStyle("color:Magenta; font-family:Arial Black;");
 		}
 		if (estado.equals(Constantes.ESTADO_PEDIDO_CANCELADO)) {
-			celdaEstado.setStyle("color:red;");
+			celdaEstado.setStyle("color:red; font-family:Arial Black;");
 		}
 		if (estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO)) {
-			celdaEstado.setStyle("color:green");
+			celdaEstado.setStyle("color:green; font-family:Arial Black;");
 		}
 		
 		//TODO: HACKASO no deberia ser el grupo si no el pedido colectivo quien tenga el domicilio.
@@ -146,15 +149,25 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		}
 		
 		//----------------------------Botón para Entregar
-		Toolbarbutton botonEntregar = new Toolbarbutton("Confirmar Entrega");
+		Toolbarbutton botonEntregar = new Toolbarbutton("Preparar el pedido");
 		if(pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)&& pedidoColectivo.getZona() != null){
+			HashMap<String, Object> paramsEntrega = new HashMap<String, Object>();
+			botonEntregar.setTooltiptext("Prepara el pedido");
+			paramsEntrega.put(PedidosColectivosComposer.PEDIDO_KEY, pedidoColectivo);
+			paramsEntrega.put(PedidosColectivosComposer.ACCION_KEY, PedidosColectivosComposer.ACCION_PREPARAR);
+			botonEntregar.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsEntrega);
+		}
+		
+		if(pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO)&& pedidoColectivo.getZona() != null){
+			botonEntregar = new Toolbarbutton("Confirmar pedido");
 			HashMap<String, Object> paramsEntrega = new HashMap<String, Object>();
 			botonEntregar.setTooltiptext("Confirma la entrega");
 			paramsEntrega.put(PedidosColectivosComposer.PEDIDO_KEY, pedidoColectivo);
-			paramsEntrega.put(PedidosColectivosComposer.ACCION_KEY, PedidosComposer.ACCION_ENTREGAR);
+			paramsEntrega.put(PedidosColectivosComposer.ACCION_KEY, PedidosColectivosComposer.ACCION_ENTREGAR);
 			botonEntregar.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsEntrega);
 		}
 		if(pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)){
+			botonEntregar = new Toolbarbutton("Entregado");
 			botonEntregar.setTooltiptext("El pedido esta entregado");
 			botonEntregar.setDisabled(true);
 			botonEntregar.setStyle("color:gray");

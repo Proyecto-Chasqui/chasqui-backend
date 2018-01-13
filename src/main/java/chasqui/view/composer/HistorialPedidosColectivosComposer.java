@@ -54,6 +54,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	public static final String ACCION_KEY = "accion";
 	public static final String PEDIDO_KEY = "pedido";
 	public static final Object ACCION_ENTREGAR = "entregar";
+	public static final String ACCION_PREPARAR= "preparado";
 	
 	private Datebox desde;
 	private Datebox hasta;
@@ -182,6 +183,12 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		this.binder.loadAll();
 	}
 	
+	public void prepararPedidoColectivo(PedidoColectivo p) throws EstadoPedidoIncorrectoException{
+		p.preparado();
+		pedidoColectivoService.guardarPedidoColectivo(p);
+		this.binder.loadAll();
+	}
+	
 	public void onPreguntarConfirmacionEntrega(final PedidoColectivo p){
 		EventListener evt = new EventListener() {
 			public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
@@ -191,6 +198,23 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			}
 		};
 		Messagebox.show("¿Esta seguro que desea confirmar la entrega para este pedido colectivo?",
+				"Confirmar", 
+				Messagebox.OK|Messagebox.CANCEL,
+				Messagebox.QUESTION,
+				evt
+				);
+	}
+	
+	
+	public void onPreguntarPerpararEntrega(final PedidoColectivo p){
+		EventListener evt = new EventListener() {
+			public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
+				if(evt.getName().equals("onOK")){
+					prepararPedidoColectivo(p);
+				}
+			}
+		};
+		Messagebox.show("¿Esta seguro que desea preparar la entrega para este pedido colectivo?",
 				"Confirmar", 
 				Messagebox.OK|Messagebox.CANCEL,
 				Messagebox.QUESTION,
@@ -284,6 +308,10 @@ class HitorialPedidosColectivosEventListener implements EventListener<Event>{
 			
 		}
 		
+		if(accion.equals(PedidosComposer.ACCION_PREPARAR)){
+			composer.onPreguntarPerpararEntrega(p);				
+		}
+
 		if(accion.equals(PedidosComposer.ACCION_EDITAR)){
 			composer.onEditarZona(p, grupo);
 				

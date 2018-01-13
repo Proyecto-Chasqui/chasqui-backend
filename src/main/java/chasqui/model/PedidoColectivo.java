@@ -117,7 +117,7 @@ public class PedidoColectivo implements IPedido{
 
 	@Override
 	public void entregarte() throws EstadoPedidoIncorrectoException {
-		if (this.estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+		if (this.estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO)) {
 			this.estado = Constantes.ESTADO_PEDIDO_ENTREGADO;			
 		}
 		else{
@@ -184,6 +184,16 @@ public class PedidoColectivo implements IPedido{
 
 	public void setComentario(String comentario) {
 		this.comentario = comentario;
+	}
+
+	@Override
+	public void preparado() throws EstadoPedidoIncorrectoException {
+		if (this.estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+			this.estado = Constantes.ESTADO_PEDIDO_PREPARADO;			
+		}
+		else{
+			throw new EstadoPedidoIncorrectoException("El pedido no estaba confirmado");
+		}
 	}
 
 }

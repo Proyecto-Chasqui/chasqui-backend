@@ -67,6 +67,7 @@ public class PedidosColectivosComposer  extends GenericForwardComposer<Component
 	public static final String PEDIDO_KEY = "pedido";
 	public static final String GRUPO_KEY = "grupo";
 	public static final String ACCION_ENTREGAR = "entregar";
+	public static final String ACCION_PREPARAR = "preparado";
 	public static final Object ACCION_VER_HISTORIAL = "verHistorial";
 	public static final String PEDIDO_KEY_HISTORIAL = "pedidoHistorial";
 	
@@ -239,7 +240,7 @@ class PedidoColectivoEventListener implements EventListener<Event>{
 		if(accion.equals(PedidosColectivosComposer.ACCION_EDITAR)){
 			composer.onEditarZona(p,grupo);
 		}
-			
+		
 	}
 	
 }
