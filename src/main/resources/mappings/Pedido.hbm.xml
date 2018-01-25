@@ -28,6 +28,9 @@
 			<column name="FECHA_CREACION" />
 		</property>
 		
+		<property name="fechaModificacion"
+			type="org.joda.time.contrib.hibernate.PersistentDateTime" column="FECHA_MODIFICACION" />
+		
 		<property name="fechaDeVencimiento"
 			type="org.joda.time.contrib.hibernate.PersistentDateTime" column="FECHA_VENCIMIENTO" />
 		

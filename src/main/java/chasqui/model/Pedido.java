@@ -2,6 +2,10 @@ package chasqui.model;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.joda.time.DateTime;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -15,8 +19,12 @@ public class Pedido implements IPedido {
 	private String nombreVendedor;
 	private Cliente cliente;
 	private Boolean alterable;
+	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime fechaCreacion;
+	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime fechaDeVencimiento;
+	@Temporal(TemporalType.TIMESTAMP)
+	private DateTime fechaModificacion;
 	private Direccion direccionEntrega;
 	private Double montoMinimo;
 	private Double montoActual;
@@ -303,6 +311,14 @@ public class Pedido implements IPedido {
 
 	public void setTipoDeAjuste(String tipoDeAjuste) {
 		this.tipoDeAjuste = tipoDeAjuste;
+	}
+
+	public DateTime getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(DateTime fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
 	}
 
 }

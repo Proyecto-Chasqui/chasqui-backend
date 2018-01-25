@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.aspect.Auditada;
+import chasqui.aspect.Dateable;
 import chasqui.dao.PedidoDAO;
 import chasqui.dao.ZonaDAO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
@@ -183,6 +184,7 @@ public class PedidoServiceImpl implements PedidoService {
 
 
 	@Override
+	@Dateable
 	public synchronized void agregarProductosAPedido(AgregarQuitarProductoAPedidoRequest request, String email)
 			throws UsuarioInexistenteException, ProductoInexistenteException, PedidoVigenteException,
 			RequestIncorrectoException, EstadoPedidoIncorrectoException {
@@ -204,6 +206,7 @@ public class PedidoServiceImpl implements PedidoService {
 
 	
 	@Override
+	@Dateable
 	public synchronized void vencerPedido(Pedido pedido) throws EstadoPedidoIncorrectoException, UsuarioInexistenteException, VendedorInexistenteException{
 		pedido.vencerte();
 		productoService.eliminarReservasDe(pedido);
@@ -216,6 +219,7 @@ public class PedidoServiceImpl implements PedidoService {
 	}
 	
 	@Override
+	@Dateable
 	public synchronized void cancelarPedido(Pedido pedido) throws EstadoPedidoIncorrectoException{
 		pedido.cancelar();
 		productoService.eliminarReservasDe(pedido);
@@ -223,6 +227,7 @@ public class PedidoServiceImpl implements PedidoService {
 	}
 	
 	@Override
+	@Dateable
 	public synchronized void cancelarPedidoPara(String email, Integer idPedido)
 			throws PedidoVigenteException, RequestIncorrectoException, UsuarioInexistenteException, EstadoPedidoIncorrectoException {
 		validarRequest(idPedido);
@@ -253,6 +258,7 @@ public class PedidoServiceImpl implements PedidoService {
 //	}
 
 	@Override
+	@Dateable
 	public synchronized void eliminarProductoDePedido(AgregarQuitarProductoAPedidoRequest request, String email)
 			throws ProductoInexistenteException, RequestIncorrectoException, PedidoVigenteException, UsuarioInexistenteException {
 
@@ -278,6 +284,7 @@ public class PedidoServiceImpl implements PedidoService {
 
 
 	@Override
+	@Dateable
 	public synchronized void confirmarPedido(String email, ConfirmarPedidoRequest request)
 			throws  RequestIncorrectoException, DomicilioInexistenteException, EstadoPedidoIncorrectoException, UsuarioInexistenteException, VendedorInexistenteException, PedidoInexistenteException {
 
