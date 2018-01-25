@@ -40,7 +40,7 @@ apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
 		<listitem>
 			<listcell label="${c:l('zk.label.altaUsuario.email')}"/>
 			<listcell>
-				<textbox id="textboxEmail"/>
+				<textbox id="textboxEmail"  maxlength="45"/>
 			</listcell>
 		</listitem>
 		<listitem>

@@ -119,10 +119,6 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		String nuevaClave = textboxContraseña.getValue();
 		String nuevaClaveRepita = textboxContraseñaRepita.getText();	
 		
-		if(StringUtils.isEmpty(nuevaClave) && StringUtils.isEmpty(nuevaClaveRepita)){
-			return;
-		}	
-		
 		if(StringUtils.isEmpty(nuevaClave)){
 			throw new WrongValueException(textboxContraseña,"La contraseña no debe ser vacia!");
 		}
