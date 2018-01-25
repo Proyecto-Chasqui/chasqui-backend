@@ -34,6 +34,7 @@ public class Vendedor extends Usuario{
 		this.setPassword(pwd);
 		this.setIsRoot(false);
 		this.setUrl(urlBase);
+		this.setMontoMinimoPedido(0);
 	}
 
 	public String getNombre() {
