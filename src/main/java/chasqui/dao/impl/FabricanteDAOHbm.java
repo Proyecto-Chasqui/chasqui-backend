@@ -22,7 +22,7 @@ public class FabricanteDAOHbm extends HibernateDaoSupport implements FabricanteD
 
 			@Override
 			public List<Fabricante> doInHibernate(Session session) throws HibernateException, SQLException {
-				String sql = "SELECT * FROM PRODUCTOR WHERE ID_VENDEDOR = :vendedor";
+				String sql = "SELECT * FROM PRODUCTOR WHERE ID_VENDEDOR = :vendedor ORDER BY nombre";
 				Query hql = session.createSQLQuery(sql)
 								   .addEntity(Fabricante.class)
 								   .setInteger("vendedor", idVendedor);

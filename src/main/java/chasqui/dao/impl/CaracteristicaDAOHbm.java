@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -33,6 +34,7 @@ public class CaracteristicaDAOHbm extends HibernateDaoSupport implements Caracte
 	public List<Caracteristica> buscarCaracteristicasProducto() {
 		DetachedCriteria criteria = DetachedCriteria.forClass(Caracteristica.class);
 		criteria.add(Restrictions.eq("eliminada",false));
+		criteria.addOrder(Order.asc("nombre"));
 		List<Caracteristica> resultado = this.getHibernateTemplate().findByCriteria(criteria);
 		if(resultado == null){
 			resultado = new ArrayList<Caracteristica>();
@@ -45,6 +47,7 @@ public class CaracteristicaDAOHbm extends HibernateDaoSupport implements Caracte
 	public List<CaracteristicaProductor> buscarCaracteristicasProductor() {
 		DetachedCriteria criteria = DetachedCriteria.forClass(CaracteristicaProductor.class);
 		criteria.add(Restrictions.eq("eliminada",false));
+		criteria.addOrder(Order.asc("nombre"));
 		List<CaracteristicaProductor> resultado = this.getHibernateTemplate().findByCriteria(criteria);
 		if(resultado == null){
 			resultado = new ArrayList<CaracteristicaProductor>();
