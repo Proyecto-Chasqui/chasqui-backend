@@ -25,5 +25,7 @@ public interface CaracteristicaService {
 	public void actualizarCaracteristica(ICaracteristica c);
 	@Transactional
 	void actualizarCaracteristicaProductor(ICaracteristica c);
+	public boolean existeCaracteristicaProductorConNombre(String nombre);
+	public boolean existeCaracteristicaProductoConNombre(String nombre);
 	
 }

@@ -17,5 +17,7 @@ public interface CaracteristicaDAO {
 	public void eliminarCaracteristicaProductor(CaracteristicaProductor c);
 	public void actualizarCaracteristicaProductor(ICaracteristica c);
 	public void actualizar(ICaracteristica c);
+	public boolean existeCaracteristicaProductorConNombre(String nombre);
+	public boolean existeCaracteristicaProductoConNombre(String nombre);
 	
 }
