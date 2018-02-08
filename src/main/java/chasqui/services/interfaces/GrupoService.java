@@ -21,6 +21,7 @@ import chasqui.exceptions.PedidoSinProductosException;
 import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.MiembroDeGCC;
@@ -67,7 +68,7 @@ public interface GrupoService {
 			PedidoVigenteException, PedidoInexistenteException, VendedorInexistenteException,
 			GrupoCCInexistenteException;
 
-	public void cederAdministracion(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException;
+	public void cederAdministracion(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras;
 
 	/**
 	 * Confirma el pedido colectivo vigente en el grupo. Chequea que el

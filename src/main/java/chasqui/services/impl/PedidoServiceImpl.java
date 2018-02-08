@@ -32,6 +32,7 @@ import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.view.composer.Constantes;
 
 @Auditada
 public class PedidoServiceImpl implements PedidoService {
@@ -447,13 +448,13 @@ public class PedidoServiceImpl implements PedidoService {
 
 
 	private void validarEstadosPedido(List<String> estados) throws RequestIncorrectoException {
-		if(estados.size() > 6){
+		if(estados.size() > Constantes.CANTIDAD_ESTADOS){
 			//Cantidad maxima de estados, hay repetidos o invalidos
 			throw new RequestIncorrectoException("Estados repetidos o incorrectos: " + estados.toString());
 		}
 		
 		if(estados.size() == 0){
-			//Cantidad maxima de estados, hay repetidos o invalidos
+			//No se solicito ningun estado.
 			throw new RequestIncorrectoException("No se ha solicitado ningun estado: " + estados.toString());
 		}
 

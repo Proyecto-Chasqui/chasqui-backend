@@ -308,4 +308,12 @@ public class GrupoCC {
 		return this.findMiembro(emailInvitado)!=null;
 	}
 
+	public void cederAdministracion(Cliente cliente) {
+		this.setAdministrador(cliente);
+	}
+
+	public boolean pertenece(String emailCliente) {
+		return (null != this.findMiembro(emailCliente));
+	}
+
 }

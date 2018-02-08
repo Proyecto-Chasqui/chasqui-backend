@@ -25,6 +25,7 @@ import chasqui.exceptions.PedidoSinProductosException;
 import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
@@ -41,6 +42,7 @@ import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.view.composer.Constantes;
 import freemarker.template.TemplateException;
 
 public class GrupoServiceImpl implements GrupoService {
@@ -216,11 +218,24 @@ public class GrupoServiceImpl implements GrupoService {
 	}
 
 	@Override
-	public void cederAdministracion(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException {
+	public void cederAdministracion(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
-		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
-		grupo.setAdministrador(cliente);
-		grupoDao.guardarGrupo(grupo);
+		Cliente administradorAnterior = grupo.getAdministrador(); //Es necesario guardar la referencia para notificarlo luego que cedio la administracion.
+		Cliente nuevoAdministrador = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
+		
+		if(grupo.pertenece(nuevoAdministrador.getEmail()))
+		{
+			grupo.cederAdministracion(nuevoAdministrador);
+			//Notificarlos
+			// administradorAnterior
+			// nuevoAdministrador
+			
+			grupoDao.guardarGrupo(grupo);
+		}else{
+			throw new UsuarioNoPerteneceAlGrupoDeCompras(Constantes.ERROR_CREDENCIALES_INVALIDAS);
+		}
+		
+
 	}
 
 	@Override

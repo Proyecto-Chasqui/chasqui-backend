@@ -7,6 +7,9 @@ public class Constantes {
 	//public final static String EMAIL_REGEX_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$;";
 	public final static Integer VENTANA_MODO_EDICION = 1;
 	public final static Integer VENTANA_MODO_LECTURA = 2;
+	
+	//Cantidad de estados de pedido posibles.
+	public final static Integer CANTIDAD_ESTADOS= 7;
 	public final static String ESTADO_PEDIDO_INEXISTENTE="INEXISTENTE";
 	public final static String ESTADO_PEDIDO_ABIERTO="ABIERTO";
 	public final static String ESTADO_PEDIDO_VENCIDO="VENCIDO";
@@ -78,5 +81,6 @@ public class Constantes {
 	public static final String ERROR_USUARIO_MAIL_SIN_CONFIRMAR = "Para acceder debe validar la cuenta via e-mail";
 	public static final String ERROR_CREDENCIALES_INVALIDAS = "Usuario o Password incorrectos!";
 	public static final String PASSWORD_CORTO = "El password debe tener entre 10 y 26 caracteres";
+	public static final String ERROR_USUARIO_NO_ES_MIEMBRO = "El usuario no es miembro del grupo de compras";
 	
 }
