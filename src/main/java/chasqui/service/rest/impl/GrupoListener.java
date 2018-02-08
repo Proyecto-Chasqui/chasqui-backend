@@ -35,6 +35,7 @@ import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
@@ -184,6 +185,8 @@ public class GrupoListener {
 		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioInexistenteException e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (UsuarioNoPerteneceAlGrupoDeCompras e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}

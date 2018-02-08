@@ -81,5 +81,6 @@ public class Constantes {
 	public static final String ERROR_USUARIO_MAIL_SIN_CONFIRMAR = "Para acceder debe validar la cuenta via e-mail";
 	public static final String ERROR_CREDENCIALES_INVALIDAS = "Usuario o Password incorrectos!";
 	public static final String PASSWORD_CORTO = "El password debe tener entre 10 y 26 caracteres";
+	public static final String ERROR_USUARIO_NO_ES_MIEMBRO = "El usuario no es miembro del grupo de compras";
 	
 }
