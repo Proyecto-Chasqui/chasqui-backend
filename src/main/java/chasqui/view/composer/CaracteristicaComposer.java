@@ -31,6 +31,7 @@ import chasqui.model.Caracteristica;
 import chasqui.model.CaracteristicaProductor;
 import chasqui.model.Imagen;
 import chasqui.model.Vendedor;
+import chasqui.services.impl.CaracteristicaServiceImpl;
 import chasqui.services.impl.FileSaver;
 import chasqui.services.interfaces.CaracteristicaService;
 import chasqui.services.interfaces.ICaracteristica;
@@ -109,7 +110,8 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 	public void onClick$agregarCaracteristicaProducto() {
 		String nombreCarac = txtbCaracteristica.getValue();
 		String descripcion = ckEditor.getValue();
-		validarCaracteristica(nombreCarac, descripcion, imagen);
+		validarNombreDeCaracteristicaProducto(nombreCarac);
+		validarCaracteristica();
 		if (caracteristicaAEditar != null) {
 			caracteristicaAEditar.setDescripcion(descripcion);
 			caracteristicaAEditar.setNombre(nombreCarac);
@@ -130,12 +132,23 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 		this.binder.loadAll();
 	}
 
+	private void validarNombreDeCaracteristicaProducto(String nombre) {
+		if(this.existeUnaCaracteristicaProductoConElMismoNombre(nombre)){
+			throw new WrongValueException(txtbCaracteristica, "Ya existe una caracteristica con el nombre ingresado");
+		}		
+	}
+
+	private boolean existeUnaCaracteristicaProductoConElMismoNombre(String nombre) {
+		return service.existeCaracteristicaProductoConNombre(nombre);
+	}
+
 	/*
 	 * Evento disparado por el boton Agregar (Productor)
 	 */
 	public void onClick$agregarCaracteristicaProductor() {
 		String nombreCarac = txtbCaracteristicaProductor.getValue();
 		String descripcion = ckEditorProductor.getValue();
+		validarNombreDeCaracteristicaProductor(nombreCarac);
 		validarCaracteristica(nombreCarac, descripcion, imagenProductor);
 		if (caracteristicaAEditar != null) {
 			caracteristicaAEditar.setDescripcion(descripcion);
@@ -175,6 +188,16 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 		if (descripcion.length() > 4096) {
 			throw new WrongValueException(ckEditorProductor, "La Descripción es demasiado larga");
 		}
+	}
+	
+	private void validarNombreDeCaracteristicaProductor(String nombre){
+		if(this.existeUnaCaracteristicaProductorConElMismoNombre(nombre)){
+			throw new WrongValueException(txtbCaracteristicaProductor, "Ya existe una caracteristica con el nombre ingresado");
+		}
+	}
+
+	private boolean existeUnaCaracteristicaProductorConElMismoNombre(String nombre) {
+		return service.existeCaracteristicaProductorConNombre(nombre);
 	}
 
 	/*

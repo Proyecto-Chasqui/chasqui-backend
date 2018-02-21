@@ -81,6 +81,30 @@ public class CaracteristicaDAOHbm extends HibernateDaoSupport implements Caracte
 		
 	}
 
+	@Override
+	public boolean existeCaracteristicaProductorConNombre(String nombre) {
+		DetachedCriteria criteria = DetachedCriteria.forClass(CaracteristicaProductor.class);
+		criteria.add(Restrictions.eq("eliminada",false));
+		criteria.add(Restrictions.eq("nombre",nombre));
+		List<CaracteristicaProductor> resultado = this.getHibernateTemplate().findByCriteria(criteria);
+		if(resultado == null){
+			resultado = new ArrayList<CaracteristicaProductor>();
+		}
+		return resultado.size() >= 1;
+	}
+
+	@Override
+	public boolean existeCaracteristicaProductoConNombre(String nombre) {
+		DetachedCriteria criteria = DetachedCriteria.forClass(Caracteristica.class);
+		criteria.add(Restrictions.eq("eliminada",false));
+		criteria.add(Restrictions.eq("nombre",nombre));
+		List<Caracteristica> resultado = this.getHibernateTemplate().findByCriteria(criteria);
+		if(resultado == null){
+			resultado = new ArrayList<Caracteristica>();
+		}
+		return resultado.size() >= 1;
+	}
+
 	   
 	
 }

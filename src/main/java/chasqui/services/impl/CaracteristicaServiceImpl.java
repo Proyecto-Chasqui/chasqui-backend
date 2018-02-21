@@ -68,6 +68,17 @@ public class CaracteristicaServiceImpl implements CaracteristicaService{
 		
 	}
 
+	@Override
+	public boolean existeCaracteristicaProductorConNombre(String nombre) {
+		return caracteristicaDAO.existeCaracteristicaProductorConNombre(nombre);
+		
+	}
+
+	@Override
+	public boolean existeCaracteristicaProductoConNombre(String nombre) {
+		return caracteristicaDAO.existeCaracteristicaProductoConNombre(nombre);
+	}
+
 	
 	
 	
