@@ -10,6 +10,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
@@ -34,15 +35,24 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 	private Vendedor usuarioLogueado;
 	private VendedorService vendedorService;
 	private UsuarioService usuarioService;
+	private Window estrategiasWindow;
+	private ConfiguracionEstrategiasComposer composerEstrategias;
+	private Component vcomp;
+	private AdministracionComposer admComposer;
 	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
+		this.vcomp = comp;
+		Executions.getCurrent().getSession().setAttribute("usuariosActualesComposer",this);
+		Executions.getCurrent().getSession().setAttribute("usuariosActualesComponent",comp);
+		admComposer = (AdministracionComposer) Executions.getCurrent().getSession().getAttribute("administracionComposer");
 		binder = new AnnotateDataBinder(comp);
 		administracionWindow = (Window) findAdministracionWindow(comp);
 		listboxUsuarios.setItemRenderer(new UsuarioRenderer((Window) this.self));
 		conectarVentanas(administracionWindow);
 		Events.sendEvent(Events.ON_USER,altaUsuarioWindow,this.self);
+		composerEstrategias = (ConfiguracionEstrategiasComposer) Executions.getCurrent().getSession().getAttribute("configuracionEstrategiasComposer");
 		comp.addEventListener(Events.ON_NOTIFY, new AccionEventListener(this));
 		vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
@@ -64,6 +74,11 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		for(Component child : c.getChildren()){
 			if(child instanceof Window && child.getId().equals("altaUsuarioWindow")){
 				altaUsuarioWindow = (Window) child;
+			}else{
+				conectarVentanas(child);
+			}
+			if(child instanceof Window && child.getId().equals("configuracionEstrategiasComercializacionWindow")){
+				estrategiasWindow = (Window) child;
 			}else{
 				conectarVentanas(child);
 			}
@@ -136,6 +151,20 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		this.usuarioSeleccionado = usuarioSeleccionado;
 	}
 
+	public void editarEstrategias(Vendedor u) {
+		this.composerEstrategias.editar(u);
+	}
+
+
+	public Window getAltaUsuarioWindow() {
+		return altaUsuarioWindow;
+	}
+
+
+	public void setAltaUsuarioWindow(Window altaUsuarioWindow) {
+		this.altaUsuarioWindow = altaUsuarioWindow;
+	}
+
 }
 
 class AccionEventListener implements EventListener<Event>{
@@ -150,11 +179,16 @@ class AccionEventListener implements EventListener<Event>{
 			Map<String,Object>param = (Map<String,Object>)event.getData();
 			if(param.get("accion").equals("editar")){
 				composer.editar((Vendedor)param.get("usuario"));
+				composer.agregar((Vendedor) param.get("usuario"));
 			}
 			if(param.get("accion").equals("eliminar")){
 				composer.eliminar((Vendedor) param.get("usuario"));
+				composer.agregar((Vendedor) param.get("usuario"));
 			}
-			composer.agregar((Vendedor) param.get("usuario"));
+			if(param.get("accion").equals("editarEstrategias")){
+				composer.editarEstrategias((Vendedor)param.get("usuario"));
+			}
+			
 		}
 		
 	}

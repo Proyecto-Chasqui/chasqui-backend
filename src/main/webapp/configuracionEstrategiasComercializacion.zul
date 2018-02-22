@@ -1,0 +1,19 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionEstrategiasComercializacionWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window id="configuracionEstrategiasComercializacionWindow" title="Configuracion de estrategias(Solo al Editar)" width="100%" border="nomal"
+apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
+
+         <checkbox  id="individual" label="Compra Individual"/>
+         <checkbox id="colectiva" label="Compra Colectiva"/>
+         <checkbox id="nodos" label="Compra Por Nodos"/>
+         <checkbox id="puntoDeEntrega" label="Punto De Entrega"/>
+    
+	<div align="center">
+		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
+	</div>
+</window>
+</zk>

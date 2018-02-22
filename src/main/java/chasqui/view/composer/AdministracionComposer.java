@@ -63,6 +63,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Listbox listboxCategorias;
 	private Include configuracionInclude;
 	private Include altaUsuarioInclude;
+	private Include estrategiasInclude;
 	private Include usuariosActualesInclude;
 	private Include pedidosInclude;
 	private Include pedidosColectivosInclude;
@@ -88,12 +89,13 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 //	private List<Producto>productos;
 	
 	public void doAfterCompose(Component comp) throws Exception{
-		
+		Executions.getCurrent().getSession().setAttribute("administracionComposer",this);
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		if(usuarioLogueado == null){
 			Executions.sendRedirect("/");
 			return;
 		}
+		
 		binder = new AnnotateDataBinder(comp);
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		productoService = (ProductoService) SpringUtil.getBean("productoService");
@@ -190,6 +192,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		caracInclude.setVisible(true);
 		pedidosColectivosInclude.setVisible(false);
 		divPedidosColectivos.setVisible(false);
+		estrategiasInclude.setVisible(false);
 		binder.loadAll();
 	}
 
@@ -259,6 +262,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divPedidosColectivos.setVisible(false);
 		altaUsuarioInclude.setVisible(true);
 		usuariosActualesInclude.setVisible(true);
+		estrategiasInclude.setVisible(true);
 		
 		binder.loadAll();
 	}
@@ -579,6 +583,22 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void setProductosFiltrados(List<Producto> productosFiltrados) {
 		this.productosFiltrados = productosFiltrados;
 	}
+
+	public Include getEstrategiasInclude() {
+		return estrategiasInclude;
+	}
+
+	public void setEstrategiasInclude(Include estrategiasInclude) {
+		this.estrategiasInclude = estrategiasInclude;
+	}
+	
+//	public void setVisibleEstrategiasConfig(Boolean b){
+//		estrategiasInclude.setVisible(b);
+//	}
+//	
+//	public void setVisiblealtaUsuarioInclude(Boolean b){
+//		altaUsuarioInclude.setVisible(b);
+//	}
 
 //	public List<Producto> getProductos() {
 //		return productos;
