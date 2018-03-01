@@ -63,6 +63,9 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		if (estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
 			celdaEstado.setStyle("color:blue; font-family:Arial Black;");
 		}
+		if (estado.equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+			celdaEstado.setStyle("color:DarkKhaki; font-family:Arial Black;");
+		}
 		if (estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO)) {
 			celdaEstado.setStyle("color:Magenta; font-family:Arial Black;");
 		}
