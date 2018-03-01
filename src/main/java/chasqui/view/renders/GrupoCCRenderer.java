@@ -60,13 +60,16 @@ public class GrupoCCRenderer implements ListitemRenderer<GrupoCC> {
 		String estado = grupo.getPedidoActual().getEstado();
 
 		if (estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
-			celdaEstado.setStyle("color:blue;");
+			celdaEstado.setStyle("color:blue; font-family:Arial Black;");
 		}
 		if (estado.equals(Constantes.ESTADO_PEDIDO_CANCELADO)) {
-			celdaEstado.setStyle("color:red;");
+			celdaEstado.setStyle("color:red; font-family:Arial Black;");
 		}
 		if (estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO)) {
-			celdaEstado.setStyle("color:green");
+			celdaEstado.setStyle("color:green; font-family:Arial Black;");
+		}
+		if (estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO)) {
+			celdaEstado.setStyle("color:Magenta; font-family:Arial Black;");
 		}
 
 		String direccion = "";

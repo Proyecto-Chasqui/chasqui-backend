@@ -72,6 +72,9 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		if (estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO)) {
 			celdaEstado.setStyle("color:green; font-family:Arial Black;");
 		}
+		if (estado.equals(Constantes.ESTADO_PEDIDO_VENCIDO)) {
+			celdaEstado.setStyle("color:LightSalmon; font-family:Arial Black;");
+		}
 	
 		String direccion = "";
 		if (pedido.getDireccionEntrega() != null) {
