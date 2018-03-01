@@ -57,7 +57,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			celdaMontoActual.setStyle("color:red;");
 		}
 
-		celdaEstado = new Listcell(pedido.getEstado());
+		celdaEstado = crearCeldaSegunEstado(pedido);
 		String estado = pedido.getEstado();
 
 		if (estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
@@ -95,6 +95,16 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		celdaDireccion.setParent(item);
 		celdaBotones.setParent(item);
 
+	}
+	
+	private Listcell crearCeldaSegunEstado(Pedido pedido) {
+		Listcell ret;
+		if(pedido.getPerteneceAPedidoGrupal() && pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
+			ret = new Listcell("CONFIRMADO: ESPERA CONFIRMACION GRUPAL");
+		}else{
+			ret = new Listcell(pedido.getEstado());
+		}
+		return ret;
 	}
 
 	private void configurarAcciones(final Pedido pedido) {
@@ -172,7 +182,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		}
 		
 		if(pedido.getZona() == null){
-			botonEntregar = new Toolbarbutton("Confirmar Entrega");
+			botonEntregar = new Toolbarbutton("Preparar el pedido");
 			botonEntregar.setTooltiptext("El pedido no esta confirmado y/o no posee una zona asignada");
 			botonEntregar.setDisabled(true);
 			botonEntregar.setStyle("color:gray");

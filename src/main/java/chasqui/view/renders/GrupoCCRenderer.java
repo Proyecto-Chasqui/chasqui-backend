@@ -94,6 +94,8 @@ public class GrupoCCRenderer implements ListitemRenderer<GrupoCC> {
 
 	}
 
+
+
 	private void configurarAcciones(final GrupoCC grupo) {
 		Space espacio = new Space();
 		espacio.setSpacing("10px");
