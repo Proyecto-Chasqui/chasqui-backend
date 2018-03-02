@@ -62,6 +62,8 @@ public class Constantes {
 	public static final String SUBJECT_INVITACION_REGISTRADO = "Te han invitado a un grupo de compras colectivas";
 	public static final String SUBJECT_CONOCES_CHASQUI = "¿Conocés Chasqui?";
 	public static final String SUBJECT_INVITACION_GCC_ACEPTADA = "<usuario> acepto tu invitacion";
+	public static final String NUEVO_ADMINISTRADOR_SUBJECT = "Usted es el nuevo Administrador";
+	
 	public static final String AVISO_DE_RECUPERO_DE_CONTRASEÑA = "Aviso de Recupero de contraseña";
 	public static final String CONFIRMACION_COMPRA_TEMPLATE_URL = "emailConfirmacionPedido.ftl";
 	public static final String CONFIRMACIÓN_DE_COMPRA_SUBJECT = "Confirmación de Compra";
@@ -72,9 +74,13 @@ public class Constantes {
 	public static final String NUEVO_PEDIDO_NOTIFICACION_OTROMIEMBRO =  "El usuario <usuario> ha iniciado su pedido en el grupo <grupo> del catálogo de <vendedor> ¡No te pierdas esta compra!";
 	public static final String CONFIRMACION_PEDIDO_COLECTIVO = "El administrador del grupo <grupo> en el catálogo del vendedor <vendedor> ha confirmado el pedido colectivo";
 	public static final String VENCIMIENTO_PEDIDO_TEMPLATE = "emailVencimientoAutomatico.ftl";
-
+	public static final String TEMPLATE_NUEVO_ADMINISTRADOR = "emailNuevoAdministrador.ftl";
+	
+	
 	public static final String TXT_INVITACION_GCC = "El usuario <usuario> te ha invitado al grupo de compras colectivas <alias> para el catálogo de <vendedor>";
 	public static final String TXT_INVITACION_GCC_ACEPTADA = "El usuario <usuario> ha aceptado tu invitacion al grupo de compras colectivas <alias> para el catálogo de <vendedor>.";
+	public static final String TXT_NUEVO_ADMINISTRADOR = "El usuario <administradorAnterior> le ha cedido la administracion del grupo de compras colectivas <alias>.";
+	public static final String TXT_ANTERIOR_ADMINISTRADOR = "Se ha realizado el traspaso de la administracion del grupo de compras colectivas <alias> al usuario <nuevoAdministrador>.";
 	public static final String PEDIDO_VENCIDO_NOTIFICACION = "Tu pedido abierto el dia <timestamp> del catálogo del vendedor <vendedor> ha expirado por falta de actividad.";
 	
 	//Mensajes de error

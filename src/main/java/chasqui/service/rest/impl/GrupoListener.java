@@ -156,14 +156,13 @@ public class GrupoListener {
 	public Response quitarMiembroDelGrupo(
 			@Multipart(value = "quitarMiembroRequest", type = "application/json") final String quitarMiembroRequest) {
 		QuitarMiembroRequest request;
-
+		
 		try {
 			request = this.toQuitarMiembroRequest(quitarMiembroRequest);
 			grupoService.quitarMiembroDelGrupo(request.getIdGrupo(), request.getEmailCliente());
 
 			return Response.ok().build();
 		} catch (IOException e) {
-			// TODO Completar con exepcion/error necesario
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioInexistenteException e) {
 

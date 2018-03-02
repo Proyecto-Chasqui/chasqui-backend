@@ -214,6 +214,17 @@ public class MailService {
 		
 	}
 	
+	public void enviarEmailNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("nuevoAdmin", nuevoAdministrador.getUsername());
+		params.put("viejoAdmin",administradorAnterior.getUsername());
+		params.put("nombreGrupo", grupo.getAlias());
+		params.put("vendedor", grupo.getVendedor().getNombre());
+		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
+		
+		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NUEVO_ADMINISTRADOR, nuevoAdministrador.getEmail(), Constantes.NUEVO_ADMINISTRADOR_SUBJECT, params);
+	}
+	
 /*
  * ***********************************************
  * METODOS PRIVADOS 
@@ -321,5 +332,7 @@ public class MailService {
 	private String armarFooter(Double total){
 		return "<tr><td colspan="+"2"+">Total:</td><td>"+total+"</td></tr></table>";
 	}
+
+
 
 }
