@@ -148,6 +148,7 @@ public class GrupoServiceImpl implements GrupoService {
 		List<GrupoCC> grupos = grupoDao.obtenerGruposDelClienteParaVendedor(email, idVendedor);
 		return grupos;
 	}
+	
 
 	
 	/**
@@ -490,6 +491,7 @@ public class GrupoServiceImpl implements GrupoService {
 		grupoDao.guardarGrupo(grupo);
 		
 	}
+
 
 
 }

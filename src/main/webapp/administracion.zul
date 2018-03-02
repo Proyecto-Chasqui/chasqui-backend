@@ -103,17 +103,17 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell>
+					<listcell id="cellRadioPedidos">
 						<radio label="Pedidos" style="font-size:15px" id="radioPedidos" radiogroup="v1"/>
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell>
+					<listcell id="cellRadioPedidosColectivos">
 						<radio label="Pedidos Colectivos" style="font-size:15px" id="radioPedidosColectivos" radiogroup="v1"/>
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell visible="false">
+					<listcell id="cellRadioSolicitudesNodos" >
 						<radio label="Nodos" style="font-size:15px" id="radioSolicitudesNodos" radiogroup="v1"/>
 					</listcell>
 				</listitem>
@@ -185,6 +185,8 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		<div>
 			<vbox width="100%">
 				<include id="altaUsuarioInclude" visible="false" src="/altaUsuario.zul"/>
+				<separator spacing="20px"/>
+				<include id="estrategiasInclude" visible="false" src="/configuracionEstrategiasComercializacion.zul"/>
 				<separator spacing="20px"/>
 				<include id="usuariosActualesInclude" visible="false" src="/usuariosActuales.zul"/>
 			</vbox>

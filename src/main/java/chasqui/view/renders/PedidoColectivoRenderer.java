@@ -77,7 +77,6 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			celdaEstado.setStyle("color:green; font-family:Arial Black;");
 		}
 		
-		//TODO: HACKASO no deberia ser el grupo si no el pedido colectivo quien tenga el domicilio.
 		String direccion = "";
 		if (pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega().getCalle() + " " + pedidoColectivo.getDireccionEntrega().getAltura();
@@ -173,7 +172,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			botonEntregar.setStyle("color:gray");
 		}
 		if(pedidoColectivo.getZona() == null){
-				botonEntregar = new Toolbarbutton("Confirmar Entrega");
+				botonEntregar = new Toolbarbutton("Preparar el pedido");
 				botonEntregar.setTooltiptext("El pedido no esta confirmado y/o no posee una zona asignada");
 				botonEntregar.setDisabled(true);
 				botonEntregar.setStyle("color:gray");

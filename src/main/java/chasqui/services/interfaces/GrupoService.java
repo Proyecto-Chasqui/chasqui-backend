@@ -116,5 +116,4 @@ public interface GrupoService {
 			throws VendedorInexistenteException;
 
 	public void guardarGrupo(GrupoCC grupo);
-
 }

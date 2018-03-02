@@ -17,6 +17,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Toolbarbutton;
@@ -24,6 +25,7 @@ import org.zkoss.zul.Window;
 
 import chasqui.dao.ProductoDAO;
 import chasqui.model.Categoria;
+import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.Fabricante;
 import chasqui.model.Producto;
 import chasqui.model.Variante;
@@ -50,6 +52,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Radio radioPedidosColectivos;
 	private Radio radioCaracteristicas;
 	private Radio radioSolicitudesNodos;
+	private Listcell cellRadioSolicitudesNodos;
+	private Listcell cellRadioPedidosColectivos;
+	private Listcell cellRadioPedidos;
 	private Categoria categoriaSeleccionada;
 	private Toolbarbutton agregarButton;
 	private Toolbarbutton agregarProductoButton;
@@ -63,6 +68,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Listbox listboxCategorias;
 	private Include configuracionInclude;
 	private Include altaUsuarioInclude;
+	private Include estrategiasInclude;
 	private Include usuariosActualesInclude;
 	private Include pedidosInclude;
 	private Include pedidosColectivosInclude;
@@ -88,12 +94,13 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 //	private List<Producto>productos;
 	
 	public void doAfterCompose(Component comp) throws Exception{
-		
+		Executions.getCurrent().getSession().setAttribute("administracionComposer",this);
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		if(usuarioLogueado == null){
 			Executions.sendRedirect("/");
 			return;
 		}
+		
 		binder = new AnnotateDataBinder(comp);
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		productoService = (ProductoService) SpringUtil.getBean("productoService");
@@ -136,16 +143,45 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void inicializacionUsuarioAdministrador(){
+		
 		listboxProductos.setItemRenderer(new ProductoRenderer(this.self));
 		listboxCategorias.setItemRenderer(new CategoriaRenderer(this.self));
 		listboxProductores.setItemRenderer(new ProductorRenderer(this.self));
 		administracionWindow.setVisible(true);
+		mostrarSegunEstrategiasDeComercializacion();
 		radioCategorias.setChecked(true);
 		radioAltaUsuario.setVisible(false);
 		radioAltaUsuario.getParent().getParent().setVisible(false);
 		radioCaracteristicas.getParent().getParent().setVisible(false);
 		refresh();
 		onClick$radioCategorias();			
+	}
+	//TODO:
+	private void mostrarSegunEstrategiasDeComercializacion(){
+		mostrarTodosLosRadioButtons(false);
+		EstrategiasDeComercializacion estrategias = usuarioLogueado.getEstrategiasUtilizadas();
+		if(estrategias.isCompraIndividual()){
+			cellRadioPedidos.setVisible(true);
+			radioPedidos.setVisible(true);
+		}
+		if(estrategias.isGcc()){
+			cellRadioPedidosColectivos.setVisible(true);
+			radioPedidosColectivos.setVisible(true);
+		}
+		if(estrategias.isNodos()){
+			cellRadioSolicitudesNodos.setVisible(true);
+			radioSolicitudesNodos.setVisible(true);
+		}
+	}
+	
+	private void mostrarTodosLosRadioButtons(Boolean b){
+		radioPedidos.setVisible(b);
+		radioPedidosColectivos.setVisible(b);
+		radioSolicitudesNodos.setVisible(b);
+		cellRadioPedidos.setVisible(b);
+		cellRadioPedidosColectivos.setVisible(b);
+		cellRadioSolicitudesNodos.setVisible(b);
+
 	}
 	
 	public void onClick$radioCategorias(){
@@ -190,6 +226,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		caracInclude.setVisible(true);
 		pedidosColectivosInclude.setVisible(false);
 		divPedidosColectivos.setVisible(false);
+		estrategiasInclude.setVisible(false);
 		binder.loadAll();
 	}
 
@@ -259,6 +296,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divPedidosColectivos.setVisible(false);
 		altaUsuarioInclude.setVisible(true);
 		usuariosActualesInclude.setVisible(true);
+		estrategiasInclude.setVisible(true);
 		
 		binder.loadAll();
 	}
@@ -579,6 +617,46 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void setProductosFiltrados(List<Producto> productosFiltrados) {
 		this.productosFiltrados = productosFiltrados;
 	}
+
+	public Listcell getCellRadioSolicitudesNodos() {
+		return cellRadioSolicitudesNodos;
+	}
+
+	public void setCellRadioSolicitudesNodos(Listcell cellRadioSolicitudesNodos) {
+		this.cellRadioSolicitudesNodos = cellRadioSolicitudesNodos;
+	}
+
+	public Listcell getCellRadioPedidosColectivos() {
+		return cellRadioPedidosColectivos;
+	}
+
+	public void setCellRadioPedidosColectivos(Listcell cellRadioPedidosColectivos) {
+		this.cellRadioPedidosColectivos = cellRadioPedidosColectivos;
+	}
+
+	public Listcell getCellRadioPedidos() {
+		return cellRadioPedidos;
+	}
+
+	public void setCellRadioPedidos(Listcell cellRadioPedidos) {
+		this.cellRadioPedidos = cellRadioPedidos;
+	}
+
+	public Include getEstrategiasInclude() {
+		return estrategiasInclude;
+	}
+
+	public void setEstrategiasInclude(Include estrategiasInclude) {
+		this.estrategiasInclude = estrategiasInclude;
+	}
+	
+//	public void setVisibleEstrategiasConfig(Boolean b){
+//		estrategiasInclude.setVisible(b);
+//	}
+//	
+//	public void setVisiblealtaUsuarioInclude(Boolean b){
+//		altaUsuarioInclude.setVisible(b);
+//	}
 
 //	public List<Producto> getProductos() {
 //		return productos;

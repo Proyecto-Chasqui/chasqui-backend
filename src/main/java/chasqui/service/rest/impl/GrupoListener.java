@@ -249,6 +249,22 @@ public class GrupoListener {
 		}
 
 	}
+	//TODO: trabajando
+	@GET
+	@Path("/grupo/{idGrupo : \\d+ }")
+	@Produces("application/json")
+	public Response obtenerGrupoDeCliente(@PathParam("idGrupo") final Integer idGrupo) throws JsonParseException, JsonMappingException, IOException, GrupoCCInexistenteException{
+		String email = obtenerEmailDeContextoDeSeguridad();
+		try {
+			return Response.ok(toResponse(grupoService.obtenerGrupo(idGrupo), email),
+					MediaType.APPLICATION_JSON).build();
+		} catch (ClienteNoPerteneceAGCCException e) {
+			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage()))
+					.build();
+		}
+	}
+
+
 
 	@POST
 	@Path("/individual")
@@ -461,6 +477,10 @@ public class GrupoListener {
 			listaResponses.add(new GrupoResponse(grupo, email));
 		}
 		return listaResponses;
+	}
+	
+	private GrupoResponse toResponse(GrupoCC grupo, String email) throws ClienteNoPerteneceAGCCException{
+		return new GrupoResponse(grupo, email);
 	}
 
 	private List<PedidoResponse> toResponse(Map<Integer, Pedido> pedidos, Pedido pedidoIndividual)
