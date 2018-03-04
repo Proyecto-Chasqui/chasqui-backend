@@ -35,6 +35,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	private Button buttonGuardar;
 	private Textbox textboxEmail;
 	private Textbox textboxNombre;
+	private Textbox textboxNombreCorto;
 	private Textbox textboxContraseñaRepita;
 	private Textbox textboxContraseña;
 	private Textbox textboxUsername;
@@ -75,6 +76,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		String username = textboxUsername.getValue();
 		String email = textboxEmail.getValue();
 		String nombre = textboxNombre.getValue();
+		String nombreCorto = textboxNombreCorto.getValue();
 		String urlBase = textboxUrlBase.getValue();
 		if(StringUtils.isEmpty(username)){
 			throw new WrongValueException(textboxUsername,"El usuario no deber ser vacio!");
@@ -82,6 +84,10 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		
 		if(StringUtils.isEmpty(nombre)){
 			throw new WrongValueException(textboxNombre,"El nombre no deber ser vacio!");
+		}
+		
+		if(StringUtils.isEmpty(nombreCorto)){
+			throw new WrongValueException(textboxNombre,"El nombre corto no deber ser vacio!");
 		}
 		
 		if(StringUtils.isEmpty(urlBase)){
@@ -137,11 +143,12 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		}
 	}
 	
-	private Vendedor actualizarVendedor(String nombre,String username,String email,String pwd, String urlBase) throws Exception{
+	private Vendedor actualizarVendedor(String nombre,String nombreCorto, String username,String email,String pwd, String urlBase) throws Exception{
 		if(model != null){
 			model.setUsername(username);
 			model.setEmail(email);
 			model.setNombre(nombre);
+			model.setNombreCorto(nombreCorto);
 			model.setPassword(encrypter.encrypt(pwd));
 			model.setUrl(urlBase);
 			if(model.getImagenPerfil() == null){
@@ -149,7 +156,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 			}
 			return model;
 		}
-		return new Vendedor(nombre,username,email,encrypter.encrypt(pwd),urlBase);
+		return new Vendedor(nombre, nombreCorto, username, email, encrypter.encrypt(pwd), urlBase);
 	}
 	
 	
@@ -178,10 +185,11 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		String username = textboxUsername.getValue();
 		String email = textboxEmail.getValue();
 		String nombre = textboxNombre.getValue();
+		String nombreCorto = textboxNombreCorto.getValue();
 		String nuevaClave = textboxContraseña.getValue();
 		String nuevaClaveRepita = textboxContraseñaRepita.getText();	
 		
-		if(StringUtils.isEmpty(username) && StringUtils.isEmpty(nombre) && StringUtils.isEmpty(email) && StringUtils.isEmpty(nuevaClave) && StringUtils.isEmpty(nuevaClaveRepita)){
+		if(StringUtils.isEmpty(username) && StringUtils.isEmpty(nombre) && StringUtils.isEmpty(nombreCorto) && StringUtils.isEmpty(email) && StringUtils.isEmpty(nuevaClave) && StringUtils.isEmpty(nuevaClaveRepita)){
 			model = null;
 		}
 		this.binder.loadAll();
@@ -194,13 +202,14 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 			String email = textboxEmail.getValue();
 			String pwd = textboxContraseña.getValue();
 			String nombre = textboxNombre.getValue();
+			String nombreCorto = textboxNombreCorto.getValue();
 			String urlBase = textboxUrlBase.getValue();
 			if(!textboxContraseña.getValue().equals("")){
 				pwd = textboxContraseña.getValue();
 			}else{
 				pwd = encrypter.decrypt(passwordInicial);
 			}
-			Vendedor v = actualizarVendedor(nombre,username,email,pwd,urlBase);
+			Vendedor v = actualizarVendedor(nombre,nombreCorto, username,email,pwd,urlBase);
 			if(v.getId() == null){
 				mailService.enviarEmailBienvenidaVendedor(email, username, pwd);
 			}
@@ -222,6 +231,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	public void limpiarCampos(){
 		textboxEmail.setValue(null);
 		textboxNombre.setValue(null);
+		textboxNombreCorto.setValue(null);
 		textboxContraseñaRepita.setValue(null);
 		textboxContraseña.setValue(null);
 		textboxUsername.setValue(null);
