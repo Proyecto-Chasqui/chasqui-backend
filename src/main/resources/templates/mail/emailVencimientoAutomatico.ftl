@@ -22,7 +22,7 @@
                 <!-- header del cuerpo -->
                 <!-- principio del cuerpo -->
                 <div style="padding: 25px;"> 
-                    <p>Su pedido para el vendedor ${vendedor} realizado el ${fechaCreacionPedido} ha expirado automáticamente porque no tuvo cambios por mas de ${cantidadDeMinutosParaExpiracion} minutos.</p>
+                    <p>Su pedido para ${vendedor} realizado el ${fechaCreacionPedido} ha expirado automáticamente porque no tuvo cambios por mas de ${cantidadDeMinutosParaExpiracion} minutos.</p>
                 </div>
                 <!-- fin del cuerpo -->
 
