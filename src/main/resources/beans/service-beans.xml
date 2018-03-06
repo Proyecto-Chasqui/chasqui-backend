@@ -51,7 +51,8 @@
 	   <bean id="invitacionService" name="invitacionService" class="chasqui.services.impl.InvitacionServiceImpl"/>
 	   
 	   <bean id="pedidoColectivoService" name="pedidoColectivoService" class="chasqui.services.impl.PedidoColectivoServiceImpl"/>
-	   	   
+	   
+	   <bean id="puntoDeRetiroService" name="puntoDeRetiroService" class="chasqui.services.impl.PuntoDeRetiroServiceImpl"/>   
 	   <!--  DAOS -->
 	   <bean name="usuarioDAO" id="usuarioDAO" class="chasqui.dao.impl.UsuarioDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>
@@ -102,6 +103,10 @@
 	   </bean>
 	   
 	   	<bean id="pedidoColectivoDAO" name="pedidoColectivoDAO" class="chasqui.dao.impl.PedidoColectivoDAOHbm">
+	   		<property name="sessionFactory" ref="sessionFactory"/>
+	   </bean>
+	   
+	   <bean id="puntoDeRetiroDAO" name="puntoDeRetiroDAO" class="chasqui.dao.impl.PuntoDeRetiroDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>
 	   </bean>
 	   

@@ -11,6 +11,7 @@ public class ConfirmarPedidoRequest implements Serializable{
 	
 	private Integer idPedido;
 	private Integer idDireccion;
+	private Integer idPuntoDeRetiro;
 	private String comentario;
 	
 	public Integer getIdPedido() {
@@ -33,6 +34,12 @@ public class ConfirmarPedidoRequest implements Serializable{
 	}
 	public void setComentario(String comentario) {
 		this.comentario = comentario;
+	}
+	public Integer getIdPuntoDeRetiro() {
+		return idPuntoDeRetiro;
+	}
+	public void setIdPuntoDeRetiro(Integer idPuntoDeRetiro) {
+		this.idPuntoDeRetiro = idPuntoDeRetiro;
 	}
 	
 	

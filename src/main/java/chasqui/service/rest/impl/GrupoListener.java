@@ -33,6 +33,7 @@ import chasqui.exceptions.GrupoCCInexistenteException;
 import chasqui.exceptions.NoAlcanzaMontoMinimoException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoVigenteException;
+import chasqui.exceptions.PuntoDeRetiroInexistenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
@@ -250,7 +251,7 @@ public class GrupoListener {
 		}
 
 	}
-	//TODO: trabajando
+
 	@GET
 	@Path("/grupo/{idGrupo : \\d+ }")
 	@Produces("application/json")
@@ -312,14 +313,14 @@ public class GrupoListener {
 	@Path("/confirmar")
 	@Produces("application/json")
 	public Response confirmar(
-			@Multipart(value = "confirmarPedidoColectivoRequest", type = "application/json") final String confirmarPedidoColectivoRequest) {
+			@Multipart(value = "confirmarPedidoColectivoRequest", type = "application/json") final String confirmarPedidoColectivoRequest) throws PuntoDeRetiroInexistenteException {
 
 		String email = obtenerEmailDeContextoDeSeguridad();
 		ConfirmarPedidoColectivoRequest request;
 		try {
 			request = this.toConfirmarPedidoColectivoRequest(confirmarPedidoColectivoRequest);
 
-			grupoService.confirmarPedidoColectivo(request.getIdGrupo(), email,request.getIdDireccion(), request.getComentario());
+			grupoService.confirmarPedidoColectivo(request.getIdGrupo(), email,request.getIdDireccion(), request.getIdPuntoDeRetiro(), request.getComentario());
 
 		} catch (JsonParseException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();

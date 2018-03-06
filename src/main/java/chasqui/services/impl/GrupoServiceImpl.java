@@ -12,6 +12,7 @@ import javax.mail.MessagingException;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 import chasqui.dao.GrupoDAO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
@@ -23,6 +24,7 @@ import chasqui.exceptions.NoAlcanzaMontoMinimoException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoSinProductosException;
 import chasqui.exceptions.PedidoVigenteException;
+import chasqui.exceptions.PuntoDeRetiroInexistenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
@@ -33,6 +35,7 @@ import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Pedido;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
@@ -41,6 +44,7 @@ import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
+import chasqui.services.interfaces.PuntoDeRetiroService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.composer.Constantes;
 import freemarker.template.TemplateException;
@@ -55,6 +59,8 @@ public class GrupoServiceImpl implements GrupoService {
 	@Autowired
 	UsuarioService usuarioService;
 
+	@Autowired
+	PuntoDeRetiroService puntoDeRetiroService;
 	
 	@Autowired
 	private InvitacionService invitacionService;
@@ -293,18 +299,24 @@ public class GrupoServiceImpl implements GrupoService {
 	@Override
 	 * @see chasqui.services.interfaces.GrupoService#confirmarPedidoColectivo(java.lang.Integer)
 	 */
-	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, String comentario) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
+	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
 		
 		//Confirmar que el idDomicilio le pertenezca al solicitante
 		Cliente solicitante = (Cliente) usuarioService.obtenerClientePorEmail(emailSolicitante);
 		Direccion direccion = solicitante.obtenerDireccionConId(idDomicilio);
-		if(direccion== null)
-			throw new DireccionesInexistentes("El cliente con email:" + emailSolicitante + "no tiene un domicilio con id:"+ idDomicilio); 
+		PuntoDeRetiro puntoderetiro;
+		puntoderetiro = puntoDeRetiroService.obtenerProductoresDe(idPuntoDeRetiro);
+
+		if(direccion == null){
+			if(puntoderetiro == null){
+				throw new DireccionesInexistentes("El cliente con email:" + emailSolicitante + "no tiene un domicilio con id:"+ idDomicilio); 
+			}
+		}
 		
 		
 		if (grupo.getAdministrador().getEmail().equals(emailSolicitante)) {
-			grupo.confirmarPedidoColectivo(direccion, comentario);
+			grupo.confirmarPedidoColectivo(puntoderetiro, direccion, comentario);
 			List<MiembroDeGCC> miembros = grupo.getCache();
 			for (MiembroDeGCC miembroDeGCC : miembros) {
 				notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());

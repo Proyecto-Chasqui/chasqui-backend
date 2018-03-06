@@ -9,7 +9,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import chasqui.exceptions.ErrorDeParseoDeCoordenadasException;
 import chasqui.service.rest.request.DireccionRequest;
 
-public class Direccion {
+public class Direccion{
 
 	//private Zona zona;
 	private Integer id;

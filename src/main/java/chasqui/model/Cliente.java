@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.joda.time.DateTime;
+import org.zkoss.zkplus.spring.SpringUtil;
 
+import chasqui.dao.PuntoDeRetiroDAO;
 import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.PedidoInexistenteException;
@@ -14,6 +16,7 @@ import chasqui.service.rest.request.DireccionRequest;
 import chasqui.service.rest.request.EditarPerfilRequest;
 import chasqui.service.rest.request.SingUpRequest;
 import chasqui.services.impl.UsuarioServiceImpl;
+import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.composer.Constantes;
 
 public class Cliente extends Usuario {
@@ -345,11 +348,15 @@ public class Cliente extends Usuario {
 		return p;
 	}
 
-	public void confirmarPedido(Integer idPedido, Integer idDireccion) throws EstadoPedidoIncorrectoException {
+	public void confirmarPedido(Integer idPedido, Integer idDireccion, Integer idPuntoDeRetiro) throws EstadoPedidoIncorrectoException {
 		Pedido p = encontrarPedidoConId(idPedido);
 		p.confirmarte();
 		if (idDireccion != null) {
 			p.setDireccionEntrega(this.obtenerDireccionConId(idDireccion));
+		}
+		if (idPuntoDeRetiro != null) {
+			PuntoDeRetiroDAO PuntoDeRetiroDAO = (PuntoDeRetiroDAO) SpringUtil.getBean("puntoDeRetiroDAO");
+			p.setPuntoDeRetiro(PuntoDeRetiroDAO.obtenerPuntoDeRetiro(idPuntoDeRetiro));
 		}
 		//TODO; ver cuando corresponde remover de la colección
 //		pedidos.remove(p);

@@ -18,7 +18,9 @@ public class Vendedor extends Usuario{
 	private List<Zona> zonas;
 	private List<Fabricante> fabricantes;
 	private EstrategiasDeComercializacion estrategiasUtilizadas;
+	@Deprecated
 	private List<IEstrategiaComercializacion> estrategiasPermitidas;
+	private List<PuntoDeRetiro> puntosDeRetiro;
 	private String url;
 	
 	
@@ -225,6 +227,14 @@ public class Vendedor extends Usuario{
 
 	public void setEstrategiasUtilizadas(EstrategiasDeComercializacion estrategias) {
 		this.estrategiasUtilizadas = estrategias;
+	}
+
+	public List<PuntoDeRetiro> getPuntosDeRetiro() {
+		return puntosDeRetiro;
+	}
+
+	public void setPuntosDeRetiro(List<PuntoDeRetiro> puntosDeRetiro) {
+		this.puntosDeRetiro = puntosDeRetiro;
 	}
 
 

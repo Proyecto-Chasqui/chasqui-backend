@@ -48,6 +48,15 @@
             <one-to-many class="chasqui.model.IEstrategiaComercializacion" />
         </bag>
         
+		<list name="puntosDeRetiro"  cascade="all" inverse="false" lazy="false"  >
+	        <key>
+            	 <column name="ID_PUNTO_DE_RETIRO"  />
+         	</key>
+         	<list-index>
+            	 <column name="INDICE"/>
+        	 </list-index>
+    	     <one-to-many class="chasqui.model.PuntoDeRetiro" />
+	     </list>
                 
         
         
