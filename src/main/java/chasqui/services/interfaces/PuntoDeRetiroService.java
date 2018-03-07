@@ -8,6 +8,6 @@ import chasqui.model.PuntoDeRetiro;
 public interface PuntoDeRetiroService {
 	
 	@Transactional
-	public PuntoDeRetiro obtenerProductoresDe(Integer idPuntoDeRetiro);
+	public PuntoDeRetiro obtenerPuntoDeRetiroConId(Integer idPuntoDeRetiro);
 	
 }

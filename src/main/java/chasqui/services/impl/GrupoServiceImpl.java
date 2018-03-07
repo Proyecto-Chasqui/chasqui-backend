@@ -306,7 +306,7 @@ public class GrupoServiceImpl implements GrupoService {
 		Cliente solicitante = (Cliente) usuarioService.obtenerClientePorEmail(emailSolicitante);
 		Direccion direccion = solicitante.obtenerDireccionConId(idDomicilio);
 		PuntoDeRetiro puntoderetiro;
-		puntoderetiro = puntoDeRetiroService.obtenerProductoresDe(idPuntoDeRetiro);
+		puntoderetiro = puntoDeRetiroService.obtenerPuntoDeRetiroConId(idPuntoDeRetiro);
 
 		if(direccion == null){
 			if(puntoderetiro == null){

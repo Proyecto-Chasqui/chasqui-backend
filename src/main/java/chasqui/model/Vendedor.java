@@ -236,6 +236,11 @@ public class Vendedor extends Usuario{
 	public void setPuntosDeRetiro(List<PuntoDeRetiro> puntosDeRetiro) {
 		this.puntosDeRetiro = puntosDeRetiro;
 	}
+	
+	public void agregarPuntoDeRetiro(PuntoDeRetiro puntoderetiro) {
+		//escanear que no haya repetidos
+		this.puntosDeRetiro.add(puntoderetiro);
+	}
 
 
 }

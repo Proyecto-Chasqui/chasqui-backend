@@ -15,7 +15,7 @@ public class PuntoDeRetiroServiceImpl implements PuntoDeRetiroService {
 	PuntoDeRetiroDAO puntoDeRetiroDAO;
 	
 	@Override
-	public PuntoDeRetiro obtenerProductoresDe(Integer idPuntoDeRetiro){
+	public PuntoDeRetiro obtenerPuntoDeRetiroConId(Integer idPuntoDeRetiro){
 		PuntoDeRetiro pr = puntoDeRetiroDAO.obtenerPuntoDeRetiro(idPuntoDeRetiro);
 		return pr;
 
