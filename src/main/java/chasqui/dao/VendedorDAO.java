@@ -12,4 +12,6 @@ public interface VendedorDAO {
 
 	public Vendedor obtenerVendedorPorURL(String url);
 
+	Vendedor obtenerVendedorPorNombreCorto(String nombreCorto);
+
 }

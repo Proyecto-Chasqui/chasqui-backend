@@ -15,4 +15,6 @@ public interface VendedorService {
 	
 	@Transactional
 	public Vendedor obtenerVendedor(String nombreVendedor) throws VendedorInexistenteException;
+
+	Vendedor obtenerVendedorPorNombreCorto(String nombreCorto) throws VendedorInexistenteException;
 }

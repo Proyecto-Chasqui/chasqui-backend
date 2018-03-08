@@ -87,7 +87,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		}
 		
 		if(StringUtils.isEmpty(nombreCorto)){
-			throw new WrongValueException(textboxNombre,"El nombre corto no deber ser vacio!");
+			throw new WrongValueException(textboxNombreCorto,"El nombre corto no deber ser vacio!");
 		}
 		
 		if(StringUtils.isEmpty(urlBase)){
@@ -114,7 +114,17 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 				throw new WrongValueException(textboxEmail,"Ya existe el usuario con el mail ingresado");
 			}
 		} catch (UsuarioInexistenteException e) {
+			//No existe un vendedor con ese email.
+		}
+		try{
+			Vendedor vendedorConNombreCorto =vendedorService.obtenerVendedorPorNombreCorto(nombreCorto);
+			//existe un vendedor con ese nombre corto, el mismo porque se esta editando, u otro.
+			if((vendedorConNombreCorto != null && vendedorConNombreCorto.getEmail() != model.getEmail())){
+				throw new WrongValueException(textboxNombreCorto,"Ya existe un usuario con el nombre corto ingresado");
+			}
 			
+		} catch (VendedorInexistenteException e){
+			//No existe un vendedor con ese nombre corto.
 		}
 		
 		validarPassword();
@@ -257,6 +267,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		if(user.getNombre() != null){
 			textboxNombre.setValue(user.getNombre());			
 		}
+		textboxNombreCorto.setValue(user.getNombreCorto());
 		passwordInicial = user.getPassword();
 		model = user;
 	}
