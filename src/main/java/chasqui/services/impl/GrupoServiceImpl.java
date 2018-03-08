@@ -308,10 +308,8 @@ public class GrupoServiceImpl implements GrupoService {
 		PuntoDeRetiro puntoderetiro;
 		puntoderetiro = puntoDeRetiroService.obtenerPuntoDeRetiroConId(idPuntoDeRetiro);
 
-		if(direccion == null){
-			if(puntoderetiro == null){
-				throw new DireccionesInexistentes("El cliente con email:" + emailSolicitante + "no tiene un domicilio con id:"+ idDomicilio); 
-			}
+		if(!(direccion == null ^ puntoderetiro == null)){
+			throw new DireccionesInexistentes("El cliente con email:" + emailSolicitante + "no tiene un domicilio con id:"+ idDomicilio); 
 		}
 		
 		

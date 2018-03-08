@@ -42,7 +42,7 @@ public class PuntoDeRetiroServiceTest extends GenericSetUp {
 	public void testGuardarObtenerPuntoDeRetiro() throws VendedorInexistenteException{
 		Direccion dir = setUpDirConParams(DIRECCION_ALIAS,DIRECCION_CALLE, DIRECCION_ALTURA, DIRECCION_CODIGO_POSTAL, DIRECCION_DEPARTAMENTO, DIRECCION_LOCALIDAD);
 		PuntoDeRetiro pr = new PuntoDeRetiro(dir);	
-		pr.setAlias("prtest");
+		pr.setNombre("prtest");
 		pr.setDescripcion("test");
 		pr.setDisponible(true);
 		pr.setIdExterno("id externo");
@@ -50,7 +50,58 @@ public class PuntoDeRetiroServiceTest extends GenericSetUp {
 		v.agregarPuntoDeRetiro(pr);
 		usuarioService.guardarUsuario(v);
 		PuntoDeRetiro prenbd = puntoDeRetiroService.obtenerPuntoDeRetiroConId(pr.getId());
-		assertEquals(prenbd.getAlias(),"prtest");
+		assertEquals(prenbd.getNombre(),"prtest");
+	}
+	
+	@Test
+	public void testEditarPuntoDeRetiro() throws VendedorInexistenteException{
+		Direccion dir = setUpDirConParams(DIRECCION_ALIAS,DIRECCION_CALLE, DIRECCION_ALTURA, DIRECCION_CODIGO_POSTAL, DIRECCION_DEPARTAMENTO, DIRECCION_LOCALIDAD);
+		PuntoDeRetiro pr = new PuntoDeRetiro(dir);	
+		pr.setNombre("prtest");
+		pr.setDescripcion("test");
+		pr.setDisponible(true);
+		pr.setIdExterno("id externo");
+		Vendedor v = vendedorService.obtenerVendedor("MatLock");
+		v.agregarPuntoDeRetiro(pr);
+		usuarioService.guardarUsuario(v);
+		PuntoDeRetiro prenbd = puntoDeRetiroService.obtenerPuntoDeRetiroConId(pr.getId());
+		prenbd.setNombre("prTestEdit");
+		prenbd.setDescripcion("testEdit");
+		prenbd.setIdExterno("IdExternoEdit");
+		prenbd.setDisponible(false);
+		puntoDeRetiroService.guardarPuntoDeRetiro(prenbd);
+		PuntoDeRetiro prenbdeeditado = puntoDeRetiroService.obtenerPuntoDeRetiroConId(prenbd.getId());		
+		assertEquals(prenbdeeditado.getNombre(),"prTestEdit");
+		assertEquals(prenbdeeditado.getDescripcion(),"testEdit");
+		assertEquals(prenbdeeditado.getIdExterno(),"IdExternoEdit");
+		assertEquals(prenbdeeditado.getDisponible(),false);
+	}
+	
+	
+	@Test
+	public void testEditarDireccion() throws VendedorInexistenteException{
+		Direccion dir = setUpDirConParams(DIRECCION_ALIAS,DIRECCION_CALLE, DIRECCION_ALTURA, DIRECCION_CODIGO_POSTAL, DIRECCION_DEPARTAMENTO, DIRECCION_LOCALIDAD);
+		PuntoDeRetiro pr = new PuntoDeRetiro(dir);	
+		pr.setNombre("prtest");
+		pr.setDescripcion("test");
+		pr.setDisponible(true);
+		pr.setIdExterno("id externo");
+		Vendedor v = vendedorService.obtenerVendedor("MatLock");
+		v.agregarPuntoDeRetiro(pr);
+		usuarioService.guardarUsuario(v);
+		PuntoDeRetiro prenbd = puntoDeRetiroService.obtenerPuntoDeRetiroConId(pr.getId());
+		prenbd.setAltura(DIRECCION2_ALTURA);
+		prenbd.setCalle(DIRECCION2_CALLE);
+		prenbd.setCodigoPostal(DIRECCION2_CODIGO_POSTAL);
+		prenbd.setDepartamento(DIRECCION2_DEPARTAMENTO);
+		prenbd.setLocalidad(DIRECCION2_LOCALIDAD);
+		puntoDeRetiroService.guardarPuntoDeRetiro(prenbd);
+		PuntoDeRetiro prenbddiredit = puntoDeRetiroService.obtenerPuntoDeRetiroConId(prenbd.getId());
+		assertEquals(prenbddiredit.getAltura(),DIRECCION2_ALTURA);
+		assertEquals(prenbddiredit.getCalle(),DIRECCION2_CALLE);
+		assertEquals(prenbddiredit.getCodigoPostal(),DIRECCION2_CODIGO_POSTAL);
+		assertEquals(prenbddiredit.getDepartamento(),DIRECCION2_DEPARTAMENTO);
+		assertEquals(prenbddiredit.getLocalidad(), DIRECCION2_LOCALIDAD);
 	}
 	
 }

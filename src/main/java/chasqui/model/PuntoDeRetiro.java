@@ -111,14 +111,6 @@ public class PuntoDeRetiro{
 	public void setCodigoPostal(String codigoPostal){
 		this.direccion.setCodigoPostal(codigoPostal);
 	}
-	
-	public String getAlias() {
-		return this.direccion.getAlias();
-	}
-	
-	public void setAlias(String alias){
-		this.direccion.setAlias(alias);
-	}
 
 	public String getDepartamento() {
 		return this.direccion.getDepartamento();
