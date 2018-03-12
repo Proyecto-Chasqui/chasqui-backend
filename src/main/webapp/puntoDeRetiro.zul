@@ -1,0 +1,94 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./puntosDeRetiroWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<zk>
+<window id="puntosDeRetiroWindow" border="normal" title="Alta de Puntos de retiro" position="center,top"
+apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true">
+
+	<tabbox>
+	<tabs>
+		<tab label="Puntos de retiro"/>
+		<!--  <tab label="Mapa"/> -->
+	</tabs>
+	<tabpanels>
+		<tabpanel>		
+			<listbox width="100%">
+				<listhead>
+					<listheader/>
+					<listheader/>
+				</listhead>
+				<listitem>
+					<listcell label="Nombre" style="text-align: center"/>
+					<listcell>
+						<textbox id="textNombrePuntoDeRetiro"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Calle" style="text-align: center"/>
+					<listcell>
+						<textbox id="textCalle"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Altura" style="text-align: center"/>
+					<listcell>
+						<textbox id="textAltura"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Localidad" style="text-align: center"/>
+					<listcell>
+						<textbox id="textLocalidad"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Código Postal" style="text-align: center"/>
+					<listcell>
+						<textbox id="textCodigoPostal"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Departamento" style="text-align: center"/>
+					<listcell>
+						<textbox id="textDepartamento"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Mensaje" style="text-align: center"/>
+					<listcell >
+						<textbox placeholder="ie. fecha de entrega 3/2/2017" rows="3" id="txtMensaje" maxlength="250" width="100%"/>
+					</listcell>
+				</listitem>
+			</listbox>
+			<separator spacing="15px"/>
+			<div align="center">
+				<hbox>
+					<button label="Agregar" id="btnAgregar" image="/imagenes/save.png" />
+					<space spacing="3px"/>
+					<button label="${c:l('zk.label.configuracion.limpiar.campos')}" id="btnLimpiar"/>
+				</hbox>
+			</div>
+			<separator spacing="15px"/>
+			<listbox checkmark="true" selectedItem="@{puntosDeRetiroWindow$composer.puntoDeRetiroSeleccionado}" model="@{puntosDeRetiroWindow$composer.puntosDeRetiro}" mold="paging"
+			rows="3" pageSize="3"> 
+				<listhead>
+					<listheader label="Nombre" />
+					<listheader label="Acciones"/>
+				</listhead>
+				<listitem self="@{each=puntoDeRetiro}">
+					<listcell label="@{puntoDeRetiro.getNombre}" style="font-weight:bold;"/>
+					<listcell>
+						<hbox align="center">
+							<image src="/imagenes/editar.png" forward="onClick=puntosDeRetiroWindow$composer.onEditarPuntoDeRetiro"/>
+						</hbox>
+					</listcell>
+				</listitem>
+			</listbox>
+		</tabpanel>
+	</tabpanels>
+</tabbox>
+
+</window>
+</zk>

@@ -241,6 +241,15 @@ public class Vendedor extends Usuario{
 		//escanear que no haya repetidos
 		this.puntosDeRetiro.add(puntoderetiro);
 	}
-
+	
+	public boolean existePuntoDeRetiro(PuntoDeRetiro puntoderetiro){
+		boolean ret = false;
+		for(PuntoDeRetiro pr: puntosDeRetiro){
+			if(!ret){
+				ret = pr.getId() == puntoderetiro.getId(); 
+			}
+		}
+		return ret;
+	}
 
 }

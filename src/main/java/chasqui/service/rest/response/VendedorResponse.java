@@ -42,7 +42,6 @@ public class VendedorResponse implements Serializable{
 	  List<PuntoDeRetiro> puntosDeRetiro = v.getPuntosDeRetiro();
 	  for(PuntoDeRetiro p : puntosDeRetiro){
 		  PuntoDeRetiroDTO prdto = new PuntoDeRetiroDTO();
-		  prdto.setDescripcion(p.getDescripcion());
 		  prdto.setDisponible(p.getDisponible());
 		  prdto.setId(p.getId());
 		  prdto.setNombre(p.getNombre());
