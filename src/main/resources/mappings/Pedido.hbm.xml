@@ -84,6 +84,10 @@
 			<column name="TIPO_AJUSTE" />
 		</property>
 		
+		<many-to-one name="puntoDeRetiro" class="chasqui.model.PuntoDeRetiro" fetch="join" not-found="ignore">
+			<column name="ID_PUNTO_DE_RETIRO" />
+		</many-to-one> 
+		
 		
 	</class>
 </hibernate-mapping>

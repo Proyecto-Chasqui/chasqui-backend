@@ -19,7 +19,9 @@ public class Vendedor extends Usuario{
 	private List<Zona> zonas;
 	private List<Fabricante> fabricantes;
 	private EstrategiasDeComercializacion estrategiasUtilizadas;
+	@Deprecated
 	private List<IEstrategiaComercializacion> estrategiasPermitidas;
+	private List<PuntoDeRetiro> puntosDeRetiro;
 	private String url;
 	
 	
@@ -237,5 +239,37 @@ public class Vendedor extends Usuario{
 		this.estrategiasUtilizadas = estrategias;
 	}
 
+	public List<PuntoDeRetiro> getPuntosDeRetiro() {
+		return puntosDeRetiro;
+	}
+
+	public void setPuntosDeRetiro(List<PuntoDeRetiro> puntosDeRetiro) {
+		this.puntosDeRetiro = puntosDeRetiro;
+	}
+	
+	public void agregarPuntoDeRetiro(PuntoDeRetiro puntoderetiro) {
+		//escanear que no haya repetidos
+		this.puntosDeRetiro.add(puntoderetiro);
+	}
+	
+	public boolean existePuntoDeRetiro(PuntoDeRetiro puntoderetiro){
+		boolean ret = false;
+		for(PuntoDeRetiro pr: puntosDeRetiro){
+			if(!ret){
+				ret = pr.getId() == puntoderetiro.getId(); 
+			}
+		}
+		return ret;
+	}
+
+	public void eliminarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiroSeleccionado) {
+		for(int i=0; i<puntosDeRetiro.size() ;i++){
+			PuntoDeRetiro pr = puntosDeRetiro.get(i);
+			if (pr.getId() == puntoDeRetiroSeleccionado.getId()){
+				puntosDeRetiro.remove(i);
+				i=puntosDeRetiro.size();
+			}
+		}
+	}
 
 }

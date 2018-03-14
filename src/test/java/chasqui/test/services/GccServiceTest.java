@@ -248,7 +248,7 @@ public class GccServiceTest extends GenericSetUp {
 
 		
 		// ---------------------------------- CONFIRMAR PEDIDO COLECTIVO
-		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),"");
+		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),null,"");
 
 		// -----------------------------------Verificar notificaciones
 

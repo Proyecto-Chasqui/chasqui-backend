@@ -1,9 +1,13 @@
 package chasqui.service.rest.response;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import chasqui.dtos.PuntoDeRetiroDTO;
 import chasqui.model.EstrategiaDeComercializacionGenerica;
 import chasqui.model.EstrategiasDeComercializacion;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 
 public class VendedorResponse implements Serializable{
@@ -18,6 +22,7 @@ public class VendedorResponse implements Serializable{
 	private String imagen;
 	private EstrategiaDeComercializacionGenerica few;
 	private EstrategiaDeComercializacionGenerica app;
+	private List<PuntoDeRetiroDTO> puntosDeRetiro; 
 	
 	
 	public VendedorResponse(){}
@@ -30,10 +35,21 @@ public class VendedorResponse implements Serializable{
 		EstrategiasDeComercializacion estrategias = v.getEstrategiasUtilizadas();
 		this.setFew(new EstrategiaDeComercializacionGenerica());
 		this.setApp(new EstrategiaDeComercializacionGenerica());
+		this.inicializarPuntosDeRetiro(v);
 		this.inicializarEstrategias(estrategias);
 	}
 	
-	
+	private void inicializarPuntosDeRetiro(Vendedor v){
+	  this.puntosDeRetiro = new ArrayList<PuntoDeRetiroDTO>();
+	  List<PuntoDeRetiro> puntosDeRetiro = v.getPuntosDeRetiro();
+	  for(PuntoDeRetiro p : puntosDeRetiro){
+		  PuntoDeRetiroDTO prdto = new PuntoDeRetiroDTO();
+		  prdto.setDisponible(p.getDisponible());
+		  prdto.setId(p.getId());
+		  prdto.setNombre(p.getNombre());
+		  this.puntosDeRetiro.add(prdto);
+	  }
+	}
 	
 	
 	private void inicializarEstrategias(EstrategiasDeComercializacion estrategia) {
@@ -96,6 +112,14 @@ public class VendedorResponse implements Serializable{
 	}
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
+	}
+
+	public List<PuntoDeRetiroDTO> getPuntosDeRetiro() {
+		return puntosDeRetiro;
+	}
+
+	public void setPuntosDeRetiro(List<PuntoDeRetiroDTO> puntosDeRetiro) {
+		this.puntosDeRetiro = puntosDeRetiro;
 	}
 	
 }

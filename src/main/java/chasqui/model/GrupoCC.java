@@ -249,7 +249,7 @@ public class GrupoCC {
 		this.pedidoActual.agregarPedidoIndividual(nuevoPedido);
 	}
 
-	public void confirmarPedidoColectivo(Direccion direccion, String comentario) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException {
+	public void confirmarPedidoColectivo(PuntoDeRetiro puntoDeRetiro, Direccion direccion, String comentario) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException {
 
 		if (!pedidoActual.tienePedidos()) {
 			throw new EstadoPedidoIncorrectoException(
@@ -265,9 +265,9 @@ public class GrupoCC {
 			throw new EstadoPedidoIncorrectoException(
 					"Alguno de los pedidos del grupo " + alias + " no está confirmado");
 		}
-
+		//validar que hacer segun PR o direccion
 		if (this.pedidoActual.getMontoTotal() >= this.vendedor.getMontoMinimoPedido()) {
-			this.pedidoActual.setDireccionEntrega(new Direccion(direccion));
+			this.setearDireccionEnPedido(puntoDeRetiro,direccion);
 			this.pedidoActual.setComentario(comentario);
 			this.pedidoActual.confirmarte();
 			this.historial.agregarAHistorial(this.pedidoActual);
@@ -277,6 +277,14 @@ public class GrupoCC {
 			throw new NoAlcanzaMontoMinimoException();
 		}
 
+	}
+	
+	private void setearDireccionEnPedido(PuntoDeRetiro puntoDeRetiro, Direccion direccion){
+		if(direccion != null){
+			this.pedidoActual.setDireccionEntrega(new Direccion(direccion));
+		}else{
+			this.pedidoActual.setPuntoDeRetiro(puntoDeRetiro);
+		}
 	}
 
 	/*
