@@ -20,7 +20,7 @@ public interface VendedorService {
 	@Transactional
 	public List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor(Integer idVendedor);
 
-
+	@Transactional
 	Vendedor obtenerVendedorPorNombreCorto(String nombreCorto) throws VendedorInexistenteException;
 
 }
