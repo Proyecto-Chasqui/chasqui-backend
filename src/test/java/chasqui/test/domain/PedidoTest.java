@@ -41,7 +41,7 @@ public class PedidoTest {
 	
 	@Before
 	public void setUp() {
-		vendedor = new Vendedor("Vendedor","vendedoruserrname","vendedor@mail.com","contraseña","demo.chasqui.com");
+		vendedor = new Vendedor("Vendedor", "vendedorNombreCorto", "vendedoruserrname","vendedor@mail.com","contraseña","demo.chasqui.com");
 		vendedor.setMontoMinimoPedido(1);
 		vendedor.setId(1);
 

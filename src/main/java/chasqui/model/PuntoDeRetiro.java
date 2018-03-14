@@ -111,14 +111,6 @@ public class PuntoDeRetiro{
 	public void setCodigoPostal(String codigoPostal){
 		this.direccion.setCodigoPostal(codigoPostal);
 	}
-	
-	public String getAlias() {
-		return this.direccion.getAlias();
-	}
-	
-	public void setAlias(String alias){
-		this.direccion.setAlias(alias);
-	}
 
 	public String getDepartamento() {
 		return this.direccion.getDepartamento();
@@ -158,6 +150,15 @@ public class PuntoDeRetiro{
 	
 	public void setGeoUbicacion(Point geoUbicacion){
 		this.direccion.setGeoUbicacion(geoUbicacion);
+	}
+	
+	//solo para ZK
+	public boolean noDisponible(){
+		boolean ret = false;
+		if(! disponible){
+			ret = true;
+		}
+		return ret;
 	}
 	
 }

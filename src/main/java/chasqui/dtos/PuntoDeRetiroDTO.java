@@ -28,6 +28,7 @@ public class PuntoDeRetiroDTO {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+	
 	public String getMensaje() {
 		return mensaje;
 	}

@@ -233,9 +233,7 @@ public class GrupoServiceImpl implements GrupoService {
 		if(grupo.pertenece(nuevoAdministrador.getEmail()))
 		{
 			grupo.cederAdministracion(nuevoAdministrador);
-			//Notificarlos
-			// administradorAnterior
-			// nuevoAdministrador
+			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, grupo);
 			
 			grupoDao.guardarGrupo(grupo);
 		}else{
@@ -306,12 +304,10 @@ public class GrupoServiceImpl implements GrupoService {
 		Cliente solicitante = (Cliente) usuarioService.obtenerClientePorEmail(emailSolicitante);
 		Direccion direccion = solicitante.obtenerDireccionConId(idDomicilio);
 		PuntoDeRetiro puntoderetiro;
-		puntoderetiro = puntoDeRetiroService.obtenerProductoresDe(idPuntoDeRetiro);
+		puntoderetiro = puntoDeRetiroService.obtenerPuntoDeRetiroConId(idPuntoDeRetiro);
 
-		if(direccion == null){
-			if(puntoderetiro == null){
-				throw new DireccionesInexistentes("El cliente con email:" + emailSolicitante + "no tiene un domicilio con id:"+ idDomicilio); 
-			}
+		if(!(direccion == null ^ puntoderetiro == null)){
+			throw new DireccionesInexistentes("El cliente con email:" + emailSolicitante + "no tiene un domicilio con id:"+ idDomicilio); 
 		}
 		
 		

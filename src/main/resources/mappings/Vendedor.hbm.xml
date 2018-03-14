@@ -13,6 +13,9 @@
         <property name="nombre" type="java.lang.String" unique="true">
         	<column name="NOMBRE_VENDEDOR"/>
         </property>
+		<property name="nombreCorto" type="java.lang.String" unique="true">
+        	<column name="NOMBRE_CORTO_VENDEDOR"/>
+        </property>
         <property name="msjCierrePedido" type="java.lang.String">
             <column name="MSJ_CIERRE_PEDIDO" />
         </property>

@@ -12,6 +12,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.VendedorDAO;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 
 @SuppressWarnings("unchecked")
@@ -43,6 +44,22 @@ public class VendedorDAOHbm  extends HibernateDaoSupport implements VendedorDAO{
 			}
 		});
 	}
+	
+	@Override
+	public Vendedor obtenerVendedorPorNombreCorto(final String nombreCorto) {
+		return (Vendedor) this.getHibernateTemplate().execute(new HibernateCallback<Vendedor>() {
+
+			@Override
+			public Vendedor doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Vendedor.class);
+				criteria.add(Restrictions.eq("isRoot", false))
+				.add(Restrictions.eq("nombreCorto", nombreCorto));
+				criteria.add(Restrictions.isNotNull("montoMinimoPedido"));
+				return (Vendedor) criteria.uniqueResult();
+			}
+		});
+	}
 
 	@Override
 	public Vendedor obtenerVendedorPorURL(final String url) {
@@ -55,6 +72,22 @@ public class VendedorDAOHbm  extends HibernateDaoSupport implements VendedorDAO{
 				criteria.add(Restrictions.eq("isRoot", false))
 				.add(Restrictions.eq("url", url));
 				return (Vendedor) criteria.uniqueResult();
+			}
+		});
+	}
+
+	@Override
+	public List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor(final Integer idVendedor) {
+		return (List<PuntoDeRetiro>) this.getHibernateTemplate().execute(new HibernateCallback<List<PuntoDeRetiro>>() {
+
+			@Override
+			public List<PuntoDeRetiro> doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Vendedor.class)
+				.add(Restrictions.eq("isRoot", false))
+				.add(Restrictions.eq("id", idVendedor));
+				Vendedor v = (Vendedor) criteria.uniqueResult();
+				return v.getPuntosDeRetiro();
 			}
 		});
 	}

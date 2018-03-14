@@ -208,6 +208,31 @@ public class NotificacionServiceImpl implements NotificacionService{
 		this.notificar(invitado.getEmail(), grupo.getAdministrador().getEmail(), mensaje, null);
 		mailService.enviarEmailDeInvitacionAGCCAceptada(grupo, invitado);
 	}
+	
+	@Override
+	public void notificarNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo) {
+		
+	//TODO:
+	/**
+	 * Los notificar de este metodo no envian notificaciones.
+	 * Por eso se decidion enviar un email.
+	 * Si es posible arreglarlos.
+	 */
+	/**
+		String mensajeNuevoAdministrador = Constantes.TXT_NUEVO_ADMINISTRADOR;
+		mensajeNuevoAdministrador = mensajeNuevoAdministrador.replaceAll("<administradorAnterior>", administradorAnterior.getUsername());
+		mensajeNuevoAdministrador = mensajeNuevoAdministrador.replaceAll("<alias>", grupo.getAlias());
+		 
+		this.notificar(administradorAnterior.getEmail(), nuevoAdministrador.getEmail(), mensajeNuevoAdministrador, null);
+
+		String mensajeAnteriorAdministrador = Constantes.TXT_ANTERIOR_ADMINISTRADOR;
+		mensajeAnteriorAdministrador = mensajeAnteriorAdministrador.replaceAll("<alias>", grupo.getAlias());
+		mensajeAnteriorAdministrador = mensajeAnteriorAdministrador.replaceAll("<nuevoAdministrador>", nuevoAdministrador.getUsername());
+		
+		this.notificar(nuevoAdministrador.getEmail(), administradorAnterior.getEmail(), mensajeAnteriorAdministrador, null);
+	**/
+		mailService.enviarEmailNuevoAdministrador(administradorAnterior, nuevoAdministrador, grupo);
+	}
 
 	@Override
 	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, String emailVendedor, String nombreVendedor) {
@@ -249,4 +274,5 @@ public class NotificacionServiceImpl implements NotificacionService{
 		
 		return fechaResultante;
 	}
+
 }

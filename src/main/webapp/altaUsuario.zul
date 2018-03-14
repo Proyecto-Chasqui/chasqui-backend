@@ -26,6 +26,12 @@ apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
 			</listcell>
 		</listitem>
 		<listitem>
+			<listcell label="Nombre corto: "/>
+			<listcell>
+				<textbox id="textboxNombreCorto" maxlength="40"/>
+			</listcell>
+		</listitem>
+		<listitem>
 			<listcell label="${c:l('zk.label.configuracion.nueva.clave')}"/>
 			<listcell>
 				<textbox id="textboxContraseña" type="password" maxlength="15"/>

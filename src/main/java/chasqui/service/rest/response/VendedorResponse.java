@@ -18,6 +18,7 @@ public class VendedorResponse implements Serializable{
 	private static final long serialVersionUID = -4642765076419773900L;
 	private Integer id;
 	private String nombre;
+	private String nombreCorto;
 	private String imagen;
 	private EstrategiaDeComercializacionGenerica few;
 	private EstrategiaDeComercializacionGenerica app;
@@ -28,13 +29,13 @@ public class VendedorResponse implements Serializable{
 	public VendedorResponse(Vendedor v){
 		id = v.getId();
 		nombre = v.getNombre();
+		nombreCorto = v.getNombreCorto();
 		imagen = v.getImagenPerfil();
 		EstrategiasDeComercializacion estrategias = v.getEstrategiasUtilizadas();
 		this.setFew(new EstrategiaDeComercializacionGenerica());
 		this.setApp(new EstrategiaDeComercializacionGenerica());
 		this.inicializarEstrategias(estrategias);
 	}
-	
 	
 	private void inicializarEstrategias(EstrategiasDeComercializacion estrategia) {
 		this.getFew().setCompraIndividual(estrategia.isCompraIndividual());
@@ -79,6 +80,15 @@ public class VendedorResponse implements Serializable{
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+	
+	public String getNombreCorto() {
+		return nombreCorto;
+	}
+
+	public void setNombreCorto(String nombreCorto) {
+		this.nombreCorto = nombreCorto;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

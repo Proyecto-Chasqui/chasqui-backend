@@ -13,19 +13,21 @@ import chasqui.dao.PuntoDeRetiroDAO;
 import chasqui.model.PuntoDeRetiro;
 
 public class PuntoDeRetiroDAOHbm extends HibernateDaoSupport implements PuntoDeRetiroDAO{
+	
 	@Override
-	public PuntoDeRetiro obtenerPuntoDeRetiro(final Integer Id) {
-		return (PuntoDeRetiro) this.getHibernateTemplate().executeFind(new HibernateCallback<PuntoDeRetiro>() {
+	public PuntoDeRetiro obtenerPuntoDeRetiro(final Integer id) {
+		PuntoDeRetiro pr = this.getHibernateTemplate().execute(new HibernateCallback<PuntoDeRetiro>() {
 
-			@Override
 			public PuntoDeRetiro doInHibernate(Session session) throws HibernateException, SQLException {
-				Criteria c = session.createCriteria(PuntoDeRetiro.class);
-				c.createAlias("puntoDeRetiro", "pr")
-				 .add(Restrictions.eq("pr.id", Id));
-				return (PuntoDeRetiro) c.uniqueResult();
+				Criteria criteria = session.createCriteria(PuntoDeRetiro.class);
+				criteria.add(Restrictions.eq("id", id));
+				return (PuntoDeRetiro) criteria.uniqueResult();
 			}
+
 		});
-	}	
+		return pr;
+	}
+	
 	@Override
 	public void guardar(PuntoDeRetiro pr) {
 		this.getHibernateTemplate().saveOrUpdate(pr);

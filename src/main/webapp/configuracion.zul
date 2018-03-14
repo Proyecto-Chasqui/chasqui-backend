@@ -77,6 +77,12 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
 				</listcell>
 			</listitem>
 			<listitem>
+				<listcell id="puntoderetiro" label="Punto de Retiro"/>
+				<listcell id="puntoderetiroOptions">
+					<button label="Ver Puntos de Retiro" id="puntoDeRetiroButton"/>
+				</listcell>
+			</listitem>
+			<listitem>
 				<listcell>
 						<image style="height:50px; width:50px" src="@{configuracionWindow$composer.imagen.getPath}"/>					
 				</listcell>

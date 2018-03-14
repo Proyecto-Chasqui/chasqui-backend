@@ -351,6 +351,10 @@ public class Cliente extends Usuario {
 	public void confirmarPedido(Integer idPedido, Integer idDireccion, Integer idPuntoDeRetiro) throws EstadoPedidoIncorrectoException {
 		Pedido p = encontrarPedidoConId(idPedido);
 		p.confirmarte();
+		if(idDireccion ==null ^ idPuntoDeRetiro ==null){
+			throw new EstadoPedidoIncorrectoException("El pedido no puede poseer un id de punto de retiro y id direccion, o faltante de los 2");
+		}
+		
 		if (idDireccion != null) {
 			p.setDireccionEntrega(this.obtenerDireccionConId(idDireccion));
 		}

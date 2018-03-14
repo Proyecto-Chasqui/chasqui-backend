@@ -11,6 +11,7 @@ public class Vendedor extends Usuario{
 	
 	private Integer montoMinimoPedido;
 	private String nombre;
+	private String nombreCorto;
 	private String msjCierrePedido;
 	private Integer distanciaCompraColectiva;
 	private String mapaZonas;
@@ -28,11 +29,12 @@ public class Vendedor extends Usuario{
 	
 	//Por el momento las estrategias utilizadas estan siendo creadas con un modo default
 	//hasta que sea configurable desde el panel de administracion.
-	public Vendedor(String nombre,String username, String email, String pwd, String urlBase) {
+	public Vendedor(String nombre,String nombreCorto, String username, String email, String pwd, String urlBase) {
 		this.setEstrategiasUtilizadas(new EstrategiasDeComercializacion());
 		this.setUsername(username);
 		this.setEmail(email);
 		this.setNombre(nombre);
+		this.setNombreCorto(nombreCorto);
 		this.setPassword(pwd);
 		this.setIsRoot(false);
 		this.setUrl(urlBase);
@@ -45,6 +47,14 @@ public class Vendedor extends Usuario{
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getNombreCorto() {
+		return nombreCorto;
+	}
+
+	public void setNombreCorto(String nombreCorto) {
+		this.nombreCorto = nombreCorto;
 	}
 
 	public Vendedor() {
@@ -236,6 +246,30 @@ public class Vendedor extends Usuario{
 	public void setPuntosDeRetiro(List<PuntoDeRetiro> puntosDeRetiro) {
 		this.puntosDeRetiro = puntosDeRetiro;
 	}
+	
+	public void agregarPuntoDeRetiro(PuntoDeRetiro puntoderetiro) {
+		//escanear que no haya repetidos
+		this.puntosDeRetiro.add(puntoderetiro);
+	}
+	
+	public boolean existePuntoDeRetiro(PuntoDeRetiro puntoderetiro){
+		boolean ret = false;
+		for(PuntoDeRetiro pr: puntosDeRetiro){
+			if(!ret){
+				ret = pr.getId() == puntoderetiro.getId(); 
+			}
+		}
+		return ret;
+	}
 
+	public void eliminarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiroSeleccionado) {
+		for(int i=0; i<puntosDeRetiro.size() ;i++){
+			PuntoDeRetiro pr = puntosDeRetiro.get(i);
+			if (pr.getId() == puntoDeRetiroSeleccionado.getId()){
+				puntosDeRetiro.remove(i);
+				i=puntosDeRetiro.size();
+			}
+		}
+	}
 
 }
