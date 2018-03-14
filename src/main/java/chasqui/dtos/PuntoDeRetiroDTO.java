@@ -1,10 +1,20 @@
 package chasqui.dtos;
 
+import chasqui.model.Direccion;
+import chasqui.model.PuntoDeRetiro;
+
 public class PuntoDeRetiroDTO {
 	Integer id;
 	String nombre;
-	String descripcion;
-	Boolean disponible;
+	String mensaje;
+	Direccion direccion;
+	
+	public PuntoDeRetiroDTO(PuntoDeRetiro pr){
+		id = pr.getId();
+		nombre = pr.getNombre();
+		mensaje = pr.getDescripcion();
+		direccion = pr.getDireccion();
+	}
 	
 	public Integer getId() {
 		return id;
@@ -18,16 +28,18 @@ public class PuntoDeRetiroDTO {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public String getDescripcion() {
-		return descripcion;
+	public String getMensaje() {
+		return mensaje;
 	}
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setMensaje(String descripcion) {
+		this.mensaje = descripcion;
 	}
-	public Boolean getDisponible() {
-		return disponible;
+
+	public Direccion getDireccion() {
+		return direccion;
 	}
-	public void setDisponible(Boolean disponible) {
-		this.disponible = disponible;
+
+	public void setDireccion(Direccion direccion) {
+		this.direccion = direccion;
 	}
 }
