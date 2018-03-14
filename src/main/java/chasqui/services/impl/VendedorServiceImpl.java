@@ -38,6 +38,15 @@ public class VendedorServiceImpl implements VendedorService{
 		return vendedorDAO.obtenerPuntosDeRetiroDeVendedor(idVendedor);
 	}
 	
+	@Override
+	public Vendedor obtenerVendedorPorNombreCorto(String nombreCorto) throws VendedorInexistenteException {
+		Vendedor v = vendedorDAO.obtenerVendedorPorNombreCorto(nombreCorto);
+		if(v == null){
+			throw new VendedorInexistenteException("No existe el vendedor con el nombre corto: "+ nombreCorto );
+		}
+		return v;
+	}
+	
 	
 	public VendedorDAO getVendedorDAO() {
 		return vendedorDAO;

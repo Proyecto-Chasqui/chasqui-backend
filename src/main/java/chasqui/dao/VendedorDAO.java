@@ -15,4 +15,6 @@ public interface VendedorDAO {
 
 	public List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor(Integer idVendedor);
 
+	Vendedor obtenerVendedorPorNombreCorto(String nombreCorto);
+
 }

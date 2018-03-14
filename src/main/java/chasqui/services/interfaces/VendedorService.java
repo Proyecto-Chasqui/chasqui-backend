@@ -19,4 +19,8 @@ public interface VendedorService {
 	
 	@Transactional
 	public List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor(Integer idVendedor);
+
+
+	Vendedor obtenerVendedorPorNombreCorto(String nombreCorto) throws VendedorInexistenteException;
+
 }

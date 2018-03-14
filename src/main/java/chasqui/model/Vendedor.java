@@ -11,6 +11,7 @@ public class Vendedor extends Usuario{
 	
 	private Integer montoMinimoPedido;
 	private String nombre;
+	private String nombreCorto;
 	private String msjCierrePedido;
 	private Integer distanciaCompraColectiva;
 	private String mapaZonas;
@@ -28,11 +29,12 @@ public class Vendedor extends Usuario{
 	
 	//Por el momento las estrategias utilizadas estan siendo creadas con un modo default
 	//hasta que sea configurable desde el panel de administracion.
-	public Vendedor(String nombre,String username, String email, String pwd, String urlBase) {
+	public Vendedor(String nombre,String nombreCorto, String username, String email, String pwd, String urlBase) {
 		this.setEstrategiasUtilizadas(new EstrategiasDeComercializacion());
 		this.setUsername(username);
 		this.setEmail(email);
 		this.setNombre(nombre);
+		this.setNombreCorto(nombreCorto);
 		this.setPassword(pwd);
 		this.setIsRoot(false);
 		this.setUrl(urlBase);
@@ -45,6 +47,14 @@ public class Vendedor extends Usuario{
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getNombreCorto() {
+		return nombreCorto;
+	}
+
+	public void setNombreCorto(String nombreCorto) {
+		this.nombreCorto = nombreCorto;
 	}
 
 	public Vendedor() {

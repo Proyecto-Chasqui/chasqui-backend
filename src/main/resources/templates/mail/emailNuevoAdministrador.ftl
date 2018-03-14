@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Expiración automática</title>
+    <title>Bienvenido a Chasqui</title>
     
 </head>
 <body  style=" font-family: arial, sans-serif;">
@@ -17,14 +17,15 @@
     <table width="80%" cellspacing="0" cellpadding="0" border="0"  align="center" height="200" style="margin: 25px auto;">
     
             <td width="100" align-center></td>
-            <td width="600" bgColor="#EEF0F1" style="padding: 25px;" align="none">
-                <p><span>Estimado usuario: <span style="font-weight: bold;">${nombreUsuario}</span>,</span></p> 
-                <!-- header del cuerpo -->
-                <!-- principio del cuerpo -->
-                <div style="padding: 25px;"> 
-                    <p>Su pedido para ${vendedor} realizado el ${fechaCreacionPedido} ha expirado automáticamente porque no tuvo cambios por mas de ${cantidadDeMinutosParaExpiracion} minutos.</p>
-                </div>
-                <!-- fin del cuerpo -->
+            <td width="600" bgColor="#EEF0F1" style="padding: 25px;" aligne="none">
+                <p><span>Estimado usuario: <span style="font-weight: bold;">${nuevoAdmin}</span>,</span></p> <!-- header del cuerpo -->
+                <div style="padding: 25px;"> <!-- principio del cuerpo -->
+              
+                    <div style="padding: 25px;">
+                      <span>El usuario <span style="font-weight: bold;">${viejoAdmin}</span> le ha cedido la administración del grupo de compras colectivas <span style="font-weight: bold;">${nombreGrupo}</span> para el vendedor <span style="font-weight: bold;">${vendedor}</span>.</span>
+                      </span>
+                      <br>
+                </div><!-- fin del cuerpo -->
 
                 <div style="padding: 25px;"> <!-- footer del cuerpo -->
 					<br><small> 
