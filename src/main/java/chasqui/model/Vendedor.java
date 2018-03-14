@@ -252,4 +252,14 @@ public class Vendedor extends Usuario{
 		return ret;
 	}
 
+	public void eliminarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiroSeleccionado) {
+		for(int i=0; i<puntosDeRetiro.size() ;i++){
+			PuntoDeRetiro pr = puntosDeRetiro.get(i);
+			if (pr.getId() == puntoDeRetiroSeleccionado.getId()){
+				puntosDeRetiro.remove(i);
+				i=puntosDeRetiro.size();
+			}
+		}
+	}
+
 }

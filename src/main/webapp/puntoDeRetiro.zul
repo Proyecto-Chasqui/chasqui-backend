@@ -82,6 +82,11 @@ apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true
 					<listcell>
 						<hbox align="center">
 							<image src="/imagenes/editar.png" forward="onClick=puntosDeRetiroWindow$composer.onEditarPuntoDeRetiro"/>
+							<space spacing="15px"/>
+							<image src="/imagenes/destacado_off.png" visible="@{puntoDeRetiro.noDisponible}" forward="onClick=puntosDeRetiroWindow$composer.onHabilitarPuntoDeRetiro"/>
+							<image src="/imagenes/destacado_on.png" visible="@{puntoDeRetiro.getDisponible}" forward="onClick=puntosDeRetiroWindow$composer.onHabilitarPuntoDeRetiro"/>
+							<space spacing="15px"/>
+							<image src="/imagenes/detach.png" forward="onClick=zonaWindow$composer.onEliminarPuntoDeRetiro"/>
 						</hbox>
 					</listcell>
 				</listitem>

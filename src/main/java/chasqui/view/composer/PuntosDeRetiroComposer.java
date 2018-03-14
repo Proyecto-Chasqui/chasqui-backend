@@ -1,5 +1,6 @@
 package chasqui.view.composer;
 
+import java.awt.font.TextMeasurer;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
@@ -57,7 +59,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	private Button btnAgregar;
 	private Datebox fechaCierrePedidos;
 	private Textbox txtDescripcion;
-	
+	private Button btnHabilitar;
 	private PuntoDeRetiro puntoDeRetiroSeleccionado;	
 	private List<PuntoDeRetiro> puntosDeRetiro;
 	private Vendedor usuario;
@@ -78,16 +80,19 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	}
 
 	public void onEliminarPuntoDeRetiro(){
-		Messagebox.show("¿Está seguro que desea eliminar el punto de retiro?","Pregunta",Messagebox.YES,Messagebox.QUESTION,
+		Messagebox.show("¿Está seguro que desea eliminar el punto de retiro " +puntoDeRetiroSeleccionado.getNombre()+" ?","Pregunta",Messagebox.YES|Messagebox.NO,Messagebox.QUESTION,
 				new EventListener<Event>(){
 
 			public void onEvent(Event event) throws Exception {
 				switch (((Integer) event.getData()).intValue()){
 				case Messagebox.YES:
 					puntosDeRetiro.remove(puntoDeRetiroSeleccionado);
+					usuario.eliminarPuntoDeRetiro(puntoDeRetiroSeleccionado);
 					puntoDeRetiroSeleccionado = null;
+					usuarioService.guardarUsuario(usuario);
 					binder.loadAll();
-				}
+				case Messagebox.NO:
+				}				
 			}
 
 			});
@@ -113,19 +118,41 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 
 	public void onClick$btnAgregar() throws VendedorInexistenteException{		
 		validarPuntoDeRetiro();
-		btnAgregar.setLabel("Agregar");
-		if(puntoDeRetiroSeleccionado == null){
-			agregarPuntoDeRetiro(new PuntoDeRetiro(new Direccion()));
-		}else{
-			agregarPuntoDeRetiro(puntoDeRetiroSeleccionado);
-		}		
-		limpiarCampos();
-		puntoDeRetiroSeleccionado = null;
-		this.binder.loadAll();
-		
+		Messagebox.show(fraseDeContexto(),"Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
+				new EventListener<Event>(){
+
+			public void onEvent(Event event) throws Exception {
+				switch (((Integer) event.getData()).intValue()){
+				case Messagebox.YES:
+					btnAgregar.setLabel("Agregar");
+					if(puntoDeRetiroSeleccionado == null){
+						agregarPuntoDeRetiro(new PuntoDeRetiro(new Direccion()));
+					}else{
+						agregarPuntoDeRetiro(puntoDeRetiroSeleccionado);
+					}		
+					limpiarCampos();
+					puntoDeRetiroSeleccionado = null;
+					binder.loadAll();
+				case Messagebox.NO:
+					break;
+				}
+				
+			}
+
+			});		
 	}
 	
-	public void agregarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiro) throws VendedorInexistenteException{		
+	private String fraseDeContexto(){
+		String mensaje = "¿Está seguro que desea agregar un nuevo punto de retiro ?";
+		String s = "";
+		if(btnAgregar.getLabel().equals("Guardar Cambios")){
+			mensaje =  "¿Está seguro que desea guardar los cambios para el punto de retiro "+ textNombrePuntoDeRetiro.getValue() +" ?";
+		}
+		return mensaje;
+	}
+	
+	public void agregarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiro) throws VendedorInexistenteException{
+		btnLimpiar.setVisible(true);
 		puntoDeRetiro.setNombre(textNombrePuntoDeRetiro.getValue());
 		puntoDeRetiro.setCalle(textCalle.getValue());
 		puntoDeRetiro.setAltura(Integer.parseInt(textAltura.getValue()));
@@ -136,14 +163,46 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 			puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiro);
 			usuario = vendedorService.obtenerVendedor(usuario.getNombre());
 		}else{
+			puntoDeRetiro.setDisponible(true);
 		    usuario.agregarPuntoDeRetiro(puntoDeRetiro);
 		    puntosDeRetiro.add(puntoDeRetiro);
-		}
-		usuarioService.guardarUsuario(usuario);
+		    usuarioService.guardarUsuario(usuario);
+		}	
 	}	
+	
+	public void onHabilitarPuntoDeRetiro() throws VendedorInexistenteException{
+		Messagebox.show("¿Seguro que desea "+palabraDeContexto()+" el punto de retiro " + puntoDeRetiroSeleccionado.getNombre() +" ?","Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
+				new EventListener<Event>(){
+
+			public void onEvent(Event event) throws Exception {
+				switch (((Integer) event.getData()).intValue()){
+				case Messagebox.YES:
+					puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
+					puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
+					usuario = vendedorService.obtenerVendedor(usuario.getNombre());
+					binder.loadAll();
+				case Messagebox.NO:
+					break;
+				}
+				
+			}
+
+			});	
+	}
+	
+	private String palabraDeContexto(){
+		String s= "";
+		if(puntoDeRetiroSeleccionado.getDisponible()){
+			s = "deshabilitar";
+		}else{
+			s = "habilitar";
+		}
+		return s;
+	}
 	
 	public void onEditarPuntoDeRetiro(){
 		btnAgregar.setLabel("Guardar Cambios");
+		btnLimpiar.setVisible(false);
 		Integer paltura = puntoDeRetiroSeleccionado.getAltura();
 		textNombrePuntoDeRetiro.setValue(puntoDeRetiroSeleccionado.getNombre());
 		textCalle.setValue(puntoDeRetiroSeleccionado.getCalle());
@@ -195,20 +254,6 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	
 	private boolean estaEditando(Integer id){
 		return puntoDeRetiroSeleccionado != null && puntoDeRetiroSeleccionado.getId() == id;
-	}
-	
-	public void onClick$guardar(){
-		for(PuntoDeRetiro z :puntosDeRetiro){
-			//modificar el punto de retiro
-			//puntoDeRetiroSeleccionado;
-		}
-		usuarioService.guardarUsuario(usuario);
-		alert("Se ha guardado correctamente");
-		this.self.detach();
-	}
-	
-	public void onClick$cancelar(){
-		this.self.detach();
 	}
 
 	public PuntoDeRetiro getPuntoDeRetiroSeleccionado() {

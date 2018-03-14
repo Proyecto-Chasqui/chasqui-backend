@@ -152,4 +152,13 @@ public class PuntoDeRetiro{
 		this.direccion.setGeoUbicacion(geoUbicacion);
 	}
 	
+	//solo para ZK
+	public boolean noDisponible(){
+		boolean ret = false;
+		if(! disponible){
+			ret = true;
+		}
+		return ret;
+	}
+	
 }
