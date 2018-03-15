@@ -30,18 +30,6 @@ public class ProductoResponse implements Serializable {
 			productos.add(new VariedadResponse(v,v.getProducto()));				
 			
 		}
-		
-		Collections.sort(productos, new Comparator<VariedadResponse>(){
-
-			@Override
-			public int compare(VariedadResponse o1, VariedadResponse o2) {
-				if(precio.equals("Up")){
-					return o2.getPrecio().compareTo(o1.getPrecio());
-				}
-				return o1.getPrecio().compareTo(o2.getPrecio());
-			}
-			
-		});
 	}
 	
 
