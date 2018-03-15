@@ -64,7 +64,8 @@ public class PedidoListener {
 	public Response confirmarPedido(@Multipart(value="crearRequest", type="application/json") final String  request){
 		try{
 			String email = obtenerEmailDeContextoDeSeguridad();
-			pedidoService.confirmarPedido(email,toConfirmarPedidoRequest(request));
+			ConfirmarPedidoRequest c = toConfirmarPedidoRequest(request);
+			pedidoService.confirmarPedido(email,c);
 			return Response.ok().build();
 		}catch(DomicilioInexistenteException e){
 			return Response.status(406).entity(new ChasquiError("Parametros Incorrectos")).build();
