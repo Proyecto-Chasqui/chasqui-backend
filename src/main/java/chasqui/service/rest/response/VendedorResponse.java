@@ -1,9 +1,13 @@
 package chasqui.service.rest.response;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import chasqui.dtos.PuntoDeRetiroDTO;
 import chasqui.model.EstrategiaDeComercializacionGenerica;
 import chasqui.model.EstrategiasDeComercializacion;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 
 public class VendedorResponse implements Serializable{
@@ -32,9 +36,6 @@ public class VendedorResponse implements Serializable{
 		this.setApp(new EstrategiaDeComercializacionGenerica());
 		this.inicializarEstrategias(estrategias);
 	}
-	
-	
-	
 	
 	private void inicializarEstrategias(EstrategiasDeComercializacion estrategia) {
 		this.getFew().setCompraIndividual(estrategia.isCompraIndividual());
@@ -97,5 +98,6 @@ public class VendedorResponse implements Serializable{
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
 	}
+
 	
 }

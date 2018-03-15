@@ -21,6 +21,7 @@ public class PedidoColectivo implements IPedido{
 	private String estado;
 	private Zona zona;
 	private Direccion domicilioEntrega;
+	private PuntoDeRetiro puntoDeRetiro;
 	private DateTime fechaCreacion;
 	private String comentario;
 	
@@ -194,6 +195,14 @@ public class PedidoColectivo implements IPedido{
 		else{
 			throw new EstadoPedidoIncorrectoException("El pedido no estaba confirmado");
 		}
+	}
+
+	public PuntoDeRetiro getPuntoDeRetiro() {
+		return puntoDeRetiro;
+	}
+
+	public void setPuntoDeRetiro(PuntoDeRetiro puntoDeRetiro) {
+		this.puntoDeRetiro = puntoDeRetiro;
 	}
 
 }

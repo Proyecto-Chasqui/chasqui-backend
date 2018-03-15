@@ -30,6 +30,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
@@ -52,6 +53,9 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	private Combobox comboCantidadDeKilometros;
 	private Checkbox checkUtilizarMismaFecha;
 	private Button zonaButton;
+	private Button puntoDeRetiroButton;
+	private Listcell puntoderetiro;
+	private Listcell puntoderetiroOptions;
 	private Encrypter encrypter ;
 //	private Datebox dateProximaEntrega;
 	private Textbox textboxClaveActual;
@@ -79,6 +83,10 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			encrypter = (Encrypter) SpringUtil.getBean("encrypter");
 			binder = new AnnotateDataBinder(comp);
 			kilometroSeleccionado = vendedorLogueado.getDistanciaCompraColectiva();
+			if(!vendedorLogueado.getEstrategiasUtilizadas().isPuntoDeEntrega()){
+				puntoderetiro.setVisible(false);
+				puntoderetiroOptions.setVisible(false);
+			}
 //			DateTime d = new DateTime(vendedorLogueado.getFechaCierrePedido());
 //			DateTime hoy = new DateTime();
 //			if(hoy.isBefore(d)){
@@ -170,6 +178,11 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	
 	public void onClick$zonaButton(){
 		Window w = (Window) Executions.createComponents("/zona.zul", this.self, null);
+		w.doModal();
+	}
+	
+	public void onClick$puntoDeRetiroButton(){
+		Window w = (Window) Executions.createComponents("/puntoDeRetiro.zul", this.self, null);
 		w.doModal();
 	}
 	

@@ -272,7 +272,7 @@ public class ClienteTest {
 	
 	@Test
 	public void testConfirmarPedido() throws EstadoPedidoIncorrectoException{
-		cliente.confirmarPedido(confirmarRequest.getIdPedido(),confirmarRequest.getIdDireccion());
+		cliente.confirmarPedido(confirmarRequest.getIdPedido(),confirmarRequest.getIdDireccion(), confirmarRequest.getIdPuntoDeRetiro());
 		assertEquals(2,cliente.getPedidos().size()); 
 		// 2017-06-30 Los pedidos confirmados no se remueven de la colección
 		//assertTrue(cliente.getHistorialPedidos() != null);

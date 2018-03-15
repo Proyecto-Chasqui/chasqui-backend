@@ -11,6 +11,7 @@ public class ConfirmarPedidoColectivoRequest implements Serializable{
 	
 	Integer idGrupo;
 	Integer idDireccion;
+	Integer idPuntoDeRetiro;
 	String comentario;
 	
 	public String getComentario() {
@@ -39,6 +40,14 @@ public class ConfirmarPedidoColectivoRequest implements Serializable{
 
 	public void setIdGrupo(Integer idGrupo) {
 		this.idGrupo = idGrupo;
+	}
+
+	public Integer getIdPuntoDeRetiro() {
+		return idPuntoDeRetiro;
+	}
+
+	public void setIdPuntoDeRetiro(Integer idPuntoDeRetiro) {
+		this.idPuntoDeRetiro = idPuntoDeRetiro;
 	}
 	
 

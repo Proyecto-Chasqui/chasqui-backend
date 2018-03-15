@@ -19,6 +19,7 @@ import chasqui.exceptions.NoAlcanzaMontoMinimoException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoSinProductosException;
 import chasqui.exceptions.PedidoVigenteException;
+import chasqui.exceptions.PuntoDeRetiroInexistenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
@@ -79,6 +80,7 @@ public interface GrupoService {
 	 * @param idGrupo
 	 * @param emailSolicitante
 	 * @param idDomicilio
+	 * @param idPuntoDeRetiro 
 	 * @throws EstadoPedidoIncorrectoException
 	 * @throws NoAlcanzaMontoMinimoException
 	 * @throws RequestIncorrectoException
@@ -87,7 +89,7 @@ public interface GrupoService {
 	 *             indicado
 	 * @throws UsuarioInexistenteException
 	 */
-	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, String comentario)
+	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario)
 			throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException,
 			DireccionesInexistentes, UsuarioInexistenteException;
 

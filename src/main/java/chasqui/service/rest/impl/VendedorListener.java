@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Vendedor;
 import chasqui.service.rest.response.ChasquiError;
+import chasqui.service.rest.response.PuntosDeRetiroResponse;
 import chasqui.service.rest.response.VendedorResponse;
 import chasqui.services.interfaces.VendedorService;
 
@@ -48,6 +49,19 @@ public class VendedorListener {
 	public Response obtenerVendedorPor(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
 			return Response.ok(new VendedorResponse(vendedorService.obtenerVendedor(nombreVendedor))).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch(Exception e){			
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	@GET
+	@Path("/puntosDeRetiro/{nombreVendedor}")
+	@Produces("application/json")
+	public Response obtenerPuntosDeRetiroDeVendedor(@PathParam("nombreVendedor")String nombreVendedor){
+		try{
+			return Response.ok(new PuntosDeRetiroResponse(vendedorService.obtenerVendedor(nombreVendedor).getPuntosDeRetiro())).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			

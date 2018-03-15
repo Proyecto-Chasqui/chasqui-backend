@@ -26,6 +26,7 @@ public class Pedido implements IPedido {
 	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime fechaModificacion;
 	private Direccion direccionEntrega;
+	private PuntoDeRetiro puntoDeRetiro;
 	private Double montoMinimo;
 	private Double montoActual;
 	private Boolean perteneceAPedidoGrupal;
@@ -319,6 +320,14 @@ public class Pedido implements IPedido {
 
 	public void setFechaModificacion(DateTime fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
+	}
+
+	public PuntoDeRetiro getPuntoDeRetiro() {
+		return puntoDeRetiro;
+	}
+
+	public void setPuntoDeRetiro(PuntoDeRetiro puntoDeRetiro) {
+		this.puntoDeRetiro = puntoDeRetiro;
 	}
 
 }

@@ -80,6 +80,8 @@
 				<value>classpath*:mappings/Nodo.hbm.xml</value>
 				<value>classpath*:mappings/InvitacionAGCC.hbm.xml</value>
 				<value>classpath*:mappings/HistorialGCC.hbm.xml</value>
+				<value>classpath*:mappings/EstrategiaDeComercializacion.hbm.xml</value>
+				<value>classpath*:mappings/PuntoDeRetiro.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
