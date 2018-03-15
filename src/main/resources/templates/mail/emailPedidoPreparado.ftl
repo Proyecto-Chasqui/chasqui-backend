@@ -22,7 +22,7 @@
                 <div style="padding: 25px;"> <!-- principio del cuerpo -->
                          <div style="padding: 25px;">
                              <span>
-                              <p>${cuerpo}</p>
+                              <p>su pedido esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:</p>
                           </span>
                           ${tablaContenidoPedido}	
                          </div>

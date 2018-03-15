@@ -214,6 +214,20 @@ public class MailService {
 		
 	}
 	
+	public void enviarEmailPreparacionDePedido(Pedido pedido) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		
+		String tablaContenidoPedido = armarTablaContenidoDePedido(pedido);
+		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedido.getDireccionEntrega());
+		
+		params.put("tablaContenidoPedido", tablaContenidoPedido);
+		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
+		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
+		
+		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), Constantes.PEDIDO_PREPARADO_SUBJECT, params);
+		
+	}
+	
 	public void enviarEmailNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("nuevoAdmin", nuevoAdministrador.getUsername());
@@ -332,7 +346,5 @@ public class MailService {
 	private String armarFooter(Double total){
 		return "<tr><td colspan="+"2"+">Total:</td><td>"+total+"</td></tr></table>";
 	}
-
-
 
 }

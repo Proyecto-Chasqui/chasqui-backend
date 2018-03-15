@@ -48,6 +48,7 @@ import chasqui.model.Producto;
 import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.services.impl.MailService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.ZonaService;
@@ -85,6 +86,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	private List<Integer> idsSeleccionados;
 	private ZonaService zonaService;
 	private XlsExporter export  = new XlsExporter();
+	private MailService mailService;
 //	private Integer maximaPaginaVisitada = 1;
 	
 	public void doAfterCompose(Component component) throws Exception{
@@ -96,6 +98,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			component.addEventListener(Events.ON_USER, new PedidoEventListener(this));
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
+			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonaService = (ZonaService)SpringUtil.getBean("zonaService");
 			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
 			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO);
@@ -194,7 +197,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 				}
 			}
 		};
-		Messagebox.show("¿Esta seguro que desea marcar este pedido a preparado?",
+		Messagebox.show("¿Esta seguro que desea marcar este pedido a preparado? (Recuerde que se enviara un email al consumidor)",
 				"Confirmar", 
 				Messagebox.OK|Messagebox.CANCEL,
 				Messagebox.QUESTION,
@@ -219,9 +222,13 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	}
 	
 	
-	public void onPrepararEntrega(Pedido p) throws EstadoPedidoIncorrectoException {
-		p.preparado();
-		pedidoService.guardar(p);
+	public void onPrepararEntrega(Pedido pedido) throws EstadoPedidoIncorrectoException {
+		pedido.preparado();
+		pedidoService.guardar(pedido);
+		////////////////////
+		//Notificar por mail que el pedido ha sido preparado
+		mailService.enviarEmailPreparacionDePedido(pedido);
+		///////////////////
 		this.binder.loadAll();
 	}
 	

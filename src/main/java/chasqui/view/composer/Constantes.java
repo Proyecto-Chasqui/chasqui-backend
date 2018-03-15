@@ -63,6 +63,7 @@ public class Constantes {
 	public static final String SUBJECT_CONOCES_CHASQUI = "¿Conocés Chasqui?";
 	public static final String SUBJECT_INVITACION_GCC_ACEPTADA = "<usuario> acepto tu invitacion";
 	public static final String NUEVO_ADMINISTRADOR_SUBJECT = "Usted es el nuevo Administrador";
+	public static final String PEDIDO_PREPARADO_SUBJECT = "Su pedido ha sido preparado";
 	
 	public static final String AVISO_DE_RECUPERO_DE_CONTRASEÑA = "Aviso de Recupero de contraseña";
 	public static final String CONFIRMACION_COMPRA_TEMPLATE_URL = "emailConfirmacionPedido.ftl";
@@ -75,6 +76,7 @@ public class Constantes {
 	public static final String CONFIRMACION_PEDIDO_COLECTIVO = "El administrador del grupo <grupo> en el catálogo del vendedor <vendedor> ha confirmado el pedido colectivo";
 	public static final String VENCIMIENTO_PEDIDO_TEMPLATE = "emailVencimientoAutomatico.ftl";
 	public static final String TEMPLATE_NUEVO_ADMINISTRADOR = "emailNuevoAdministrador.ftl";
+	public static final String PEDIDO_PREPARADO_TEMPLATE = "emailPedidoPreparado.ftl";
 	
 	
 	public static final String TXT_INVITACION_GCC = "El usuario <usuario> te ha invitado al grupo de compras colectivas <alias> para el catálogo de <vendedor>";
