@@ -303,11 +303,10 @@ public class GrupoServiceImpl implements GrupoService {
 		//Confirmar que el idDomicilio le pertenezca al solicitante
 		Cliente solicitante = (Cliente) usuarioService.obtenerClientePorEmail(emailSolicitante);
 		Direccion direccion = solicitante.obtenerDireccionConId(idDomicilio);
-		PuntoDeRetiro puntoderetiro;
-		puntoderetiro = puntoDeRetiroService.obtenerPuntoDeRetiroConId(idPuntoDeRetiro);
+		PuntoDeRetiro puntoderetiro = buscarpuntoderetiro(grupo.getVendedor(), idPuntoDeRetiro);
 
 		if(!(direccion == null ^ puntoderetiro == null)){
-			throw new DireccionesInexistentes("El cliente con email:" + emailSolicitante + "no tiene un domicilio con id:"+ idDomicilio); 
+			throw new DireccionesInexistentes("El punto de retiro o direccion seleccionada no existe"); 
 		}
 		
 		
@@ -326,6 +325,16 @@ public class GrupoServiceImpl implements GrupoService {
 		
 	}
 	
+	private PuntoDeRetiro buscarpuntoderetiro(Vendedor vendedor, Integer idPr) {
+		PuntoDeRetiro ret = null;
+		for(PuntoDeRetiro pr: vendedor.getPuntosDeRetiro()) {
+			if(pr.getId()==idPr) {
+				ret = pr;
+			}
+		}
+		return ret;
+	}
+
 	@Override
 	public void editarGrupo(Integer idGrupo, String emailAdministrador, String alias, String descripcion) throws RequestIncorrectoException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
