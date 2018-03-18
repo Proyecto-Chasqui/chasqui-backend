@@ -95,10 +95,10 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	
 	public void llenarCampos(){
 		textboxNombreProductor.setValue(model.getNombre());
-		txtPais.setValue(model.getCalle());
-		txtProvincia.setValue(model.getPais());
-		txtLocalidad.setValue(model.getProvincia());
-		txtDireccion.setValue(model.getLocalidad());
+		txtPais.setValue(model.getPais());
+		txtProvincia.setValue(model.getProvincia());
+		txtLocalidad.setValue(model.getLocalidad());
+		txtDireccion.setValue(model.getCalle());
 		altura.setValue(model.getAltura());
 		descCorta.setValue(model.getDescripcionCorta());
 		descLarga.setValue(model.getDescripcionLarga());
