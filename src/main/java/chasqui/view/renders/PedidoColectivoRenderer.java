@@ -85,6 +85,9 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			direccion = "Punto de Retiro: " + pedidoColectivo.getPuntoDeRetiro().getNombre();
 		}
 		celdaDireccion = new Listcell(direccion);
+		if(pedidoColectivo.getPuntoDeRetiro() != null){
+			celdaDireccion.setStyle("color:blue; font-family:Courier Black;");
+		}
 		celdaBotones = new Listcell();
 
 		this.configurarAcciones(pedidoColectivo);

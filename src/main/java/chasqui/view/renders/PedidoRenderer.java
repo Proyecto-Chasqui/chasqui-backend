@@ -87,6 +87,9 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			direccion = "Punto de Retiro: " + pedido.getPuntoDeRetiro().getNombre();
 		}
 		celdaDireccion = new Listcell(direccion);
+		if(pedido.getPuntoDeRetiro() != null){
+			celdaDireccion.setStyle("color:blue; font-family:Courier Black;");
+		}
 		celdaBotones = new Listcell();
 
 		this.configurarAcciones(pedido);
