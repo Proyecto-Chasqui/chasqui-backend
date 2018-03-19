@@ -22,7 +22,7 @@ import chasqui.services.interfaces.CatalogoService;
 public class CatalogoListener {
 	@Autowired
 	CatalogoService service;
-	
+	@Deprecated
 	@GET
 	@Produces("application/json")
 	public Response obtenerCatalogoPorURL(){
