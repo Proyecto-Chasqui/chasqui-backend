@@ -220,6 +220,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		List<Pedido>pedidoGrupalCompleto = new ArrayList<Pedido>();
 		Pedido pedidogeneralgrupal = new Pedido(usuarioLogueado,grupo.getAdministrador(),false, new DateTime());
 		pedidogeneralgrupal.setDireccionEntrega(pedidoColectivo.getDireccionEntrega());
+		pedidogeneralgrupal.setPuntoDeRetiro(pedidoColectivo.getPuntoDeRetiro());
 		pedidogeneralgrupal.setComentario(pedidoColectivo.getComentario());
 		pedidogeneralgrupal.setZona(pedidoColectivo.getZona());
 		
