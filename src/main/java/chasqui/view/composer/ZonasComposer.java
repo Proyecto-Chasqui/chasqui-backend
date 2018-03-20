@@ -29,6 +29,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 
 import chasqui.model.Imagen;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.services.impl.FileSaver;
@@ -42,6 +43,7 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 	private Image imgMapa;
 	private AnnotateDataBinder binder;
 	private Textbox nombreZona;
+	private Button btnAgregar;
 	private Button btnGuardar;
 	private Button btnLimpiar;
 	private Button guardar;
@@ -49,6 +51,7 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 	private Fileupload uploadImagen;
 	private Datebox fechaCierrePedidos;
 	private Textbox txtDescripcion;
+	private Zona zonacreada;
 	
 	private Zona zonaSeleccionada;
 	private List<Zona> zonas;
@@ -76,16 +79,18 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 	}
 
 	public void onEliminarZona(){
-		Messagebox.show("Está seguro que desea eliminar la zona seleccionada?","Pregunta",Messagebox.YES,Messagebox.QUESTION,
+		Messagebox.show("Está seguro que desea eliminar la zona seleccionada?","Pregunta",Messagebox.YES|Messagebox.NO,Messagebox.QUESTION,
 				new EventListener<Event>(){
 
 			public void onEvent(Event event) throws Exception {
 				switch (((Integer) event.getData()).intValue()){
 				case Messagebox.YES:
 					zonas.remove(zonaSeleccionada);
-					zonaService.borrar(zonaSeleccionada);
+					usuario.eliminarZona(zonaSeleccionada);
 					zonaSeleccionada = null;
+					usuarioService.guardarUsuario(usuario);
 					binder.loadAll();
+				case Messagebox.NO:
 				}
 			}
 
@@ -110,17 +115,35 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 		String zona = nombreZona.getValue();
 		Date fechaCierre = fechaCierrePedidos.getValue();
 		String msg = txtDescripcion.getValue();
+		validarZona(zona,fechaCierre,msg);
+		crearZona();
 		if(zonaSeleccionada == null){
-			validarZona(zona,fechaCierre,msg);
-			DateTime fecha = new DateTime();
-			Zona z = new Zona(zona,fecha,msg);
-			z.setNombre(zona);
-			z.setIdVendedor(usuario.getId());
-			z.setFechaCierrePedidos(fecha);
-			z.setDescripcion(msg);		
-			zonas.add(z);			
+			Messagebox.show("¿Está seguro que desea agregar la zona " +zona+" ?","Pregunta",Messagebox.YES|Messagebox.NO,Messagebox.QUESTION,
+					new EventListener<Event>(){
+
+				public void onEvent(Event event) throws Exception {
+					switch (((Integer) event.getData()).intValue()){
+					case Messagebox.YES:						
+						//zonaService.guardar(zonacreada);						
+						usuario.agregarZona(zonacreada);
+						usuarioService.guardarUsuario(usuario);
+						zonacreada = null;
+						zonas = zonaService.buscarZonasBy(usuario.getId());
+						binder.loadAll();
+					case Messagebox.NO:
+					}				
+				}
+
+				});
+			
+			
+
 		}else{
 			zonaSeleccionada.editar(msg,fechaCierre,zona);
+			zonaService.guardar(zonaSeleccionada);
+			btnAgregar.setLabel("Agregar");
+			btnLimpiar.setVisible(true);
+			alert("Se ha editado correctamente la zona");
 		}
 		limpiarCampos();
 		zonaSeleccionada = null;
@@ -128,8 +151,23 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 		
 	}
 	
+	public void crearZona(){
+		String zona = nombreZona.getValue();
+		Date fechaCierre = fechaCierrePedidos.getValue();
+		String msg = txtDescripcion.getValue();
+		DateTime fecha = new DateTime(fechaCierre);
+		zonacreada = new Zona(zona,fecha,msg);
+		zonacreada.setNombre(zona);
+		zonacreada.setIdVendedor(usuario.getId());
+		zonacreada.setFechaCierrePedidos(fecha);
+		zonacreada.setDescripcion(msg);
+
+	}
+	
 	
 	public void onEditarZona(){
+		btnAgregar.setLabel("Guardar Cambios");
+		btnLimpiar.setVisible(false);
 		txtDescripcion.setValue(zonaSeleccionada.getDescripcion());
 		fechaCierrePedidos.setValue(zonaSeleccionada.getFechaCierrePedidos().toDate());
 		nombreZona.setValue(zonaSeleccionada.getNombre());
@@ -186,29 +224,19 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 			throw new WrongValueException(txtDescripcion,"El mensaje no debe ser vacío");
 		}
 	}
+
 	
+	private boolean estaEditando(Integer id){
+		return zonaSeleccionada != null && zonaSeleccionada.getId() == id;
+	}
 	
 	private boolean estaEnLista(String zona){
 		for(Zona z : zonas){
-			if(z.getNombre().equalsIgnoreCase(zona)){
+			if(z.getNombre().equalsIgnoreCase(zona) && ! estaEditando(z.getId())){
 				return true;
 			}
 		}
 		return false;
-	}
-	
-	
-	public void onClick$guardar(){
-		for(Zona z :zonas){
-			zonaService.guardar(z);
-		}
-		usuarioService.guardarUsuario(usuario);
-		alert("Se ha guardado correctamente");
-		this.self.detach();
-	}
-	
-	public void onClick$cancelar(){
-		this.self.detach();
 	}
 	
 	

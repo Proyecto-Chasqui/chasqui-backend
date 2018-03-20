@@ -84,10 +84,5 @@ apply="chasqui.view.composer.ZonasComposer" width="60%"  closable="true">
 		</tabpanel>
 	</tabpanels>
 </tabbox>
-<div align="center">
-	<button label="Guardar" id="guardar" image="/imagenes/save.png"/>
-	<space spacing="10px"/>
-	<button label="Cancelar" id="cancelar" image="/imagenes/cancel.png"/>
-</div>
 </window>
 </zk>
