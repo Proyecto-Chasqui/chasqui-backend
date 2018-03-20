@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -35,6 +36,7 @@ public class ZonaDAOHbm extends HibernateDaoSupport implements ZonaDAO{
 			public List<Zona> doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria c = session.createCriteria(Zona.class);
 				c.add(Restrictions.eq("idVendedor", idVendedor));
+				c.addOrder(Order.asc("nombre"));
 				return (List<Zona>) c.list();
 			}
 		});

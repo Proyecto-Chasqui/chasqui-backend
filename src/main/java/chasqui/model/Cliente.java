@@ -6,9 +6,12 @@ import java.util.List;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.joda.time.DateTime;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.zkoss.zkplus.spring.SpringUtil;
 
 import chasqui.dao.PuntoDeRetiroDAO;
+import chasqui.dao.VendedorDAO;
 import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.PedidoInexistenteException;
@@ -35,6 +38,7 @@ public class Cliente extends Usuario {
 	// Atributos necesarios para la integracion con spring security
 	private String rol = "ROLE_USER";
 	private String token;
+	private ApplicationContextProvider appContext = new ApplicationContextProvider();
 
 	// GETs & SETs
 
@@ -350,8 +354,7 @@ public class Cliente extends Usuario {
 
 	public void confirmarPedido(Integer idPedido, Integer idDireccion, Integer idPuntoDeRetiro) throws EstadoPedidoIncorrectoException {
 		Pedido p = encontrarPedidoConId(idPedido);
-		p.confirmarte();
-		if(idDireccion ==null ^ idPuntoDeRetiro ==null){
+		if(!(idDireccion !=null ^ idPuntoDeRetiro !=null)){
 			throw new EstadoPedidoIncorrectoException("El pedido no puede poseer un id de punto de retiro y id direccion, o faltante de los 2");
 		}
 		
@@ -359,9 +362,14 @@ public class Cliente extends Usuario {
 			p.setDireccionEntrega(this.obtenerDireccionConId(idDireccion));
 		}
 		if (idPuntoDeRetiro != null) {
-			PuntoDeRetiroDAO PuntoDeRetiroDAO = (PuntoDeRetiroDAO) SpringUtil.getBean("puntoDeRetiroDAO");
-			p.setPuntoDeRetiro(PuntoDeRetiroDAO.obtenerPuntoDeRetiro(idPuntoDeRetiro));
+			if(puntoderetiroEnVendedor(idPuntoDeRetiro, p.getIdVendedor())){
+				PuntoDeRetiroDAO PuntoDeRetiroDAO = (PuntoDeRetiroDAO) appContext.getApplicationContext().getBean("puntoDeRetiroDAO");
+				p.setPuntoDeRetiro(PuntoDeRetiroDAO.obtenerPuntoDeRetiro(idPuntoDeRetiro));
+			}else{
+				throw new EstadoPedidoIncorrectoException(" El id del punto de retiro no pertence al vendedor");
+			}
 		}
+		p.confirmarte();
 		//TODO; ver cuando corresponde remover de la colección
 //		pedidos.remove(p);
 //		if (historialPedidos == null) {
@@ -370,6 +378,18 @@ public class Cliente extends Usuario {
 //		historialPedidos.agregarAHistorial(p);
 	}
 	
+	private boolean puntoderetiroEnVendedor(Integer idPuntoDeRetiro, Integer idVendedor) {
+		VendedorDAO vendedorDao = (VendedorDAO) appContext.getApplicationContext().getBean("vendedorDAO");
+		List<PuntoDeRetiro> prs= vendedorDao.obtenerPuntosDeRetiroDeVendedor(idVendedor);
+		boolean ret = false;
+		for(PuntoDeRetiro p : prs){
+			if(p.getId() == idPuntoDeRetiro){
+				ret= true;
+			}
+		}
+		return ret;
+	}
+
 	public void confirmarPedidoSinDireccion(Integer idPedido) throws EstadoPedidoIncorrectoException {
 		Pedido p = encontrarPedidoConId(idPedido);
 		p.confirmarte();

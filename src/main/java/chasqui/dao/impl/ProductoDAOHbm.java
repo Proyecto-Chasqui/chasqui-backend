@@ -38,7 +38,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("producto.fabricante", "fabricante");
 				c.add(Restrictions.eq("fabricante.idVendedor",idVendedor));
 				if(query!=null){
-					c.add(Restrictions.like("producto.nombre", query+"%"));
+					c.add(Restrictions.like("producto.nombre", "%"+query+"%"));
 				}
 				 if(idCategoria != null){
 					 c.createAlias("producto.categoria", "categoria")

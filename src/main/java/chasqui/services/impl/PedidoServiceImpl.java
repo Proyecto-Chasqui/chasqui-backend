@@ -329,18 +329,29 @@ public class PedidoServiceImpl implements PedidoService {
 
 	
 	private void validarConfirmacionDePedidoPara(Cliente c, ConfirmarPedidoRequest request)
-			throws DomicilioInexistenteException, PedidoInexistenteException {
+			throws DomicilioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException {
 		if (!c.contienePedido(request.getIdPedido())) {
 			throw new PedidoInexistenteException(
 					"El usuario: " + c.getUsername() + " no posee un pedido vigente con el ID otorgado");
 		}
-
-		if (!c.contieneDireccion(request.getIdDireccion())) {
-			throw new DomicilioInexistenteException(
-					"El usuario: " + c.getUsername() + " no posee una direccion con el ID otorgado");
+		
+		if(!(request.getIdDireccion() ==null ^ request.getIdPuntoDeRetiro() ==null)){
+			throw new EstadoPedidoIncorrectoException("El pedido le falta id de punto de retiro o id direccion");
+		}
+		
+		if(!(request.getIdDireccion() !=null ^ request.getIdPuntoDeRetiro() !=null)){
+			throw new EstadoPedidoIncorrectoException("El pedido no puede poseer un id de punto de retiro y id direccion");
+		}
+		
+		if(request.getIdDireccion()!=null){
+			if (!c.contieneDireccion(request.getIdDireccion())) {
+				throw new DomicilioInexistenteException(
+						"El usuario: " + c.getUsername() + " no posee una direccion con el ID otorgado");
+			}
 		}
 	}
-	
+
+
 	private void validarPedidoExistentePara(Cliente c, Integer idPedido) throws PedidoVigenteException {
 		if (!c.contienePedido(idPedido)) {
 			throw new PedidoVigenteException(
@@ -372,7 +383,7 @@ public class PedidoServiceImpl implements PedidoService {
 
 	private void validarRequest(ConfirmarPedidoRequest request) throws RequestIncorrectoException {
 		validarRequest(request.getIdPedido());
-		validarRequest(request.getIdDireccion());
+		//validarRequest(request.getIdDireccion());
 
 	}
 

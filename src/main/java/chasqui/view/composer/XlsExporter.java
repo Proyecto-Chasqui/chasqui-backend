@@ -49,6 +49,7 @@ public class XlsExporter {
 	private static final String[] checkers = { "Baja", "Armado", "Revisado", "Carga", "Entrega" };
 	private static final String[] contactinfo = { "Nombre", "Apellido","E-mail", "Telefono", "2do Telefono" };
 	private static final String[] contactaddress = { "Calle","Altura","Localidad","Codigo Postal", "Departamento", "Zona", "Comentario" };
+	private static final String[] campospuntoderetiro = {"Nombre","Calle","Altura","Localidad","Codigo Postal","Departamento"};
 	
 	public void fullexport(List<Pedido> pedidos) throws Exception {
 		for (Pedido p : pedidos) {
@@ -120,6 +121,21 @@ public class XlsExporter {
 			}
 			row = sheet.getRow(setPointer++);
 			row.getCell(columnindex).setCellValue(p.getComentario());
+		}
+		if(p.getPuntoDeRetiro()!=null){
+			setPointer ++;
+			row = sheet.getRow(setPointer++);
+			row.getCell(columnindex).setCellValue(p.getPuntoDeRetiro().getNombre());
+			row = sheet.getRow(setPointer++);
+			row.getCell(columnindex).setCellValue(p.getPuntoDeRetiro().getCalle());
+			row = sheet.getRow(setPointer++);
+			row.getCell(columnindex).setCellValue(p.getPuntoDeRetiro().getAltura());
+			row = sheet.getRow(setPointer++);
+			row.getCell(columnindex).setCellValue(p.getPuntoDeRetiro().getLocalidad());
+			row = sheet.getRow(setPointer++);
+			row.getCell(columnindex).setCellValue(p.getPuntoDeRetiro().getCodigoPostal());
+			row = sheet.getRow(setPointer++);
+			row.getCell(columnindex).setCellValue(p.getPuntoDeRetiro().getDepartamento());
 		}
 	}
 
@@ -273,6 +289,20 @@ public class XlsExporter {
 				aRow = sheet.getRow(startRow);
 				datacell = aRow.createCell(5);
 				datacell.setCellValue(contactaddress[i]);
+				datacell.setCellStyle(styles.get("cell"));
+				datacell = aRow.createCell(6);
+				datacell.setCellStyle(styles.get("cell"));
+				startRow++;
+			}
+		}
+		if(p.getPuntoDeRetiro() != null){
+			startRow = 8;
+			aRow = sheet.getRow(startRow -1);
+			buildTitle(aRow,"Punto de Retiro",5,6,"$F$8:$G$8");
+			for(int i=0; i<campospuntoderetiro.length;i++){
+				aRow = sheet.getRow(startRow);
+				datacell = aRow.createCell(5);
+				datacell.setCellValue(campospuntoderetiro[i]);
 				datacell.setCellStyle(styles.get("cell"));
 				datacell = aRow.createCell(6);
 				datacell.setCellStyle(styles.get("cell"));

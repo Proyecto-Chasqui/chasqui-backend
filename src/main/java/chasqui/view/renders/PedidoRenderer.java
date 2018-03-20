@@ -83,7 +83,13 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		if (pedido.getDireccionEntrega() != null) {
 			direccion = pedido.getDireccionEntrega().getCalle() + " " + pedido.getDireccionEntrega().getAltura();
 		}
+		if(pedido.getPuntoDeRetiro() != null){
+			direccion = "Punto de Retiro: " + pedido.getPuntoDeRetiro().getNombre();
+		}
 		celdaDireccion = new Listcell(direccion);
+		if(pedido.getPuntoDeRetiro() != null){
+			celdaDireccion.setStyle("color:blue; font-family:Courier Black;");
+		}
 		celdaBotones = new Listcell();
 
 		this.configurarAcciones(pedido);
@@ -159,43 +165,60 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		//----------------------------Botón para Entregar
 		
 		Toolbarbutton botonEntregar = new Toolbarbutton("Preparar el pedido");
-		
-		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)&&pedido.getZona() != null){
+		String msj = "Prepara el pedido";
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) && (pedido.getZona() != null || pedido.getPuntoDeRetiro() != null)){
 			HashMap<String, Object> paramsEntrega = new HashMap<String, Object>();
-			botonEntregar.setTooltiptext("Prepara el pedido");
+			msj = "Prepara el pedido";
+			botonEntregar.setTooltiptext(msj);
 			paramsEntrega.put(PedidosColectivosComposer.PEDIDO_KEY, pedido);
 			paramsEntrega.put(PedidosColectivosComposer.ACCION_KEY, PedidosComposer.ACCION_PREPARAR);
 			botonEntregar.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsEntrega);
 		}
 		
-		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO)&& pedido.getZona() != null){
-			botonEntregar.setLabel("Confirmar Entrega");
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO)){
+			msj = "Confirmar Entrega";
+			botonEntregar.setLabel(msj);
 			HashMap<String, Object> paramsEntrega = new HashMap<String, Object>();
-			botonEntregar.setTooltiptext("Confirma la entrega");
+			botonEntregar.setTooltiptext(msj);
 			paramsEntrega.put(PedidosColectivosComposer.PEDIDO_KEY, pedido);
 			paramsEntrega.put(PedidosColectivosComposer.ACCION_KEY, PedidosComposer.ACCION_ENTREGAR);
 			botonEntregar.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsEntrega);
 		}
 		
 		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)){
-			botonEntregar.setLabel("Entregado");
+			msj = "Entregado";
+			botonEntregar.setLabel(msj);
 			botonEntregar.setTooltiptext("El pedido esta entregado");
 			botonEntregar.setDisabled(true);
 			botonEntregar.setStyle("color:gray");
 		}
 		
 		if(pedido.getZona() == null){
-			botonEntregar = new Toolbarbutton("Preparar el pedido");
+			botonEntregar.setLabel(msj);
 			botonEntregar.setTooltiptext("El pedido no esta confirmado y/o no posee una zona asignada");
 			botonEntregar.setDisabled(true);
 			botonEntregar.setStyle("color:gray");
 		}
 		
-				
+		if(pedido.getPuntoDeRetiro() != null){
+			botonEntregar.setLabel(msj);
+			if(! pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)){
+				botonEntregar.setDisabled(false);
+				botonEntregar.setStyle("color:black");
+				botonEntregar.setTooltiptext("Prepara el pedido");
+			}else{
+				botonEntregar.setDisabled(true);
+				botonEntregar.setStyle("color:gray");
+				botonEntregar.setTooltiptext("Pedido entregado");
+			}
+		}
+						
 		Hlayout hbox = new Hlayout();
 		botonVerPedido.setParent(hbox);
 		if(!pedido.getPerteneceAPedidoGrupal()){
-			botonEditarZona.setParent(hbox);
+			if(pedido.getPuntoDeRetiro() == null){
+				botonEditarZona.setParent(hbox);
+			}
 			botonEntregar.setParent(hbox);
 		}
 		espacio.setParent(hbox);

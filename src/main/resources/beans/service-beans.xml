@@ -109,6 +109,7 @@
 	   <bean id="puntoDeRetiroDAO" name="puntoDeRetiroDAO" class="chasqui.dao.impl.PuntoDeRetiroDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>
 	   </bean>
+	   <bean id="applicationContextProvider" name="applicationContextProvider" class="chasqui.model.ApplicationContextProvider"/>
 	   
 	   <!-- SERVICIO EMAIL -->
 	   

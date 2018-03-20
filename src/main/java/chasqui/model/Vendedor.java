@@ -272,4 +272,18 @@ public class Vendedor extends Usuario{
 		}
 	}
 
+	public void eliminarZona(Zona zonaSeleccionada) {
+		for(int i = 0; i<zonas.size() ;i++){
+			if(zonas.get(i).getId().equals(zonaSeleccionada.getId())){
+				this.zonas.remove(i);
+				i = zonas.size();
+			}
+		}
+		
+	}
+	
+	public void agregarZona(Zona zona){
+		this.zonas.add(zona);
+	}
+
 }
