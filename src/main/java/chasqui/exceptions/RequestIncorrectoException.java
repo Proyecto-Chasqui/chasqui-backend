@@ -2,7 +2,8 @@ package chasqui.exceptions;
 
 public class RequestIncorrectoException extends Exception{
 
-	
+	private static final long serialVersionUID = 1L;
+
 	public RequestIncorrectoException(Exception e){
 		super(e);
 	}

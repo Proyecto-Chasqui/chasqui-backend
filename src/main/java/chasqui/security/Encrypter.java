@@ -1,8 +1,14 @@
 package chasqui.security;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 import sun.misc.BASE64Decoder;
@@ -25,7 +31,7 @@ public class Encrypter {
 	}
 	    
 
-	public  String decrypt(String value) throws Exception{
+	public  String decrypt(String value) throws NoSuchAlgorithmException, NoSuchPaddingException, IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 	        Key key = generateKey();
 	        Cipher cipher = Cipher.getInstance(this.ALGORITHM);
 	        cipher.init(Cipher.DECRYPT_MODE, key);
@@ -58,7 +64,7 @@ public class Encrypter {
                 
     }
 	
-	 private Key generateKey() throws Exception{
+	 private Key generateKey(){
 	     Key key = new SecretKeySpec(this.KEY.getBytes(),this.ALGORITHM);
 	     return key;
 	 }

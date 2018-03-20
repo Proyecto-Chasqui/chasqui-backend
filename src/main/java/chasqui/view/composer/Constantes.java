@@ -88,7 +88,10 @@ public class Constantes {
 	//Mensajes de error
 	public static final String ERROR_USUARIO_MAIL_SIN_CONFIRMAR = "Para acceder debe validar la cuenta via e-mail";
 	public static final String ERROR_CREDENCIALES_INVALIDAS = "Usuario o Password incorrectos!";
+	public static final String ERROR_CREDENCIALES_INVALIDAS_EN_MODIFICACION = "La password anterior debe ser correcta para realizar el cambio";
+	public static final String ERROR_DE_DESCENCRIPTACION = "El proceso de desencriptacion ha sido interrumpido";
 	public static final String PASSWORD_CORTO = "El password debe tener entre 10 y 26 caracteres";
+	public static final String PASSWORD_ANTERIOR_INCORRECTO = "El password anterior no coincide";
 	public static final String ERROR_USUARIO_NO_ES_MIEMBRO = "El usuario no es miembro del grupo de compras";
 	public static final String ERROR_PUNTO_DE_RETIRO_INEXISTENTE = "El punto de retiro solicitado no existe";
 	

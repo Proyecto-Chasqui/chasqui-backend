@@ -7,10 +7,15 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.validator.routines.EmailValidator;
@@ -22,6 +27,8 @@ import chasqui.aspect.Auditada;
 import chasqui.dao.MiembroDeGCCDAO;
 import chasqui.dao.UsuarioDAO;
 import chasqui.exceptions.DireccionesInexistentes;
+import chasqui.exceptions.EncrypteException;
+import chasqui.exceptions.PasswordIncorrectoException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
@@ -240,19 +247,30 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Override
 	public void modificarPassowrd(EditarPasswordRequest request, String email) throws Exception {
-		Cliente c = (Cliente) usuarioDAO.obtenerUsuarioPorEmail(email);
-		if (c == null) {
+		Cliente cliente = (Cliente) usuarioDAO.obtenerUsuarioPorEmail(email);
+		if (cliente == null) {
 			throw new UsuarioExistenteException("No existe el usuario");
 		}
 		if (!StringUtil.isEmpty(request.getPassword())) {
-			validarPassword(request);
+			validarPasswordRequest(request , cliente);
 			request.setPassword(encrypter.encrypt(request.getPassword()));
 		}
-		c.setPassword(request.getPassword());
-		usuarioDAO.guardarUsuario(c);
+		cliente.setPassword(request.getPassword());
+		usuarioDAO.guardarUsuario(cliente);
 	}
 	
-	public void validarPassword(EditarPasswordRequest request) throws RequestIncorrectoException{
+	private void validarPasswordRequest(EditarPasswordRequest request, Cliente cliente) throws RequestIncorrectoException, EncrypteException, PasswordIncorrectoException {
+
+		try{
+			if(!request.getOldPassword().equals(encrypter.decrypt(cliente.getPassword()))){
+				//La password anterior no coincide con la que dice asi que no se le permite cambiarla
+				throw new PasswordIncorrectoException(Constantes.ERROR_CREDENCIALES_INVALIDAS_EN_MODIFICACION);
+			}
+		}catch (PasswordIncorrectoException e){
+			throw e;
+		}catch (Exception e) {
+			throw new EncrypteException(Constantes.ERROR_DE_DESCENCRIPTACION);
+		}				
 		if(request.getPassword().length() < 10 || request.getPassword().length() > 26){
 			throw new RequestIncorrectoException(Constantes.PASSWORD_CORTO);
 		}
