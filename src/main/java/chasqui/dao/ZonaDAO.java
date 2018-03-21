@@ -10,4 +10,6 @@ public interface ZonaDAO {
 	public void eliminar(Zona z);
 	public List<Zona> buscarZonasBy(Integer idUsuario);
 	public Zona ObtenerZonaPorID(final Integer idUsuario, final Integer idZona);
+	public List<Zona> obtenerZonas(Integer idVendedor);
+	public Zona buscarZonaProxima(Integer idVendedor);
 }
