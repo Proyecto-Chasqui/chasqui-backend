@@ -34,6 +34,15 @@ public class VendedorServiceImpl implements VendedorService{
 	}
 	
 	@Override
+	public Vendedor obtenerVendedorPorId(Integer idVendedor) throws VendedorInexistenteException {
+		Vendedor v = vendedorDAO.obtenerVendedorPorId(idVendedor);
+		if(v == null){
+			throw new VendedorInexistenteException("No existe el vendedor" );
+		}
+		return v;
+	}
+	
+	@Override
 	public List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor(Integer idVendedor){
 		return vendedorDAO.obtenerPuntosDeRetiroDeVendedor(idVendedor);
 	}

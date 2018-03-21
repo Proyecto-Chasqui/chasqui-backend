@@ -17,4 +17,6 @@ public interface VendedorDAO {
 
 	Vendedor obtenerVendedorPorNombreCorto(String nombreCorto);
 
+	public Vendedor obtenerVendedorPorId(Integer idVendedor);
+
 }
