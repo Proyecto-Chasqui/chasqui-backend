@@ -29,7 +29,7 @@
                           	
                         <div style="padding: 25px;">
                           <p>Los datos de la dirección de entrega son los siguientes:</p>
-                          ${tablaDireccionEntrega}		
+                          ${tablaDireccionDeEntrega}		
                         </div>
                         <span>
                             <p style="font-weight: bold;">${agradecimiento}</p>

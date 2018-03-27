@@ -177,14 +177,14 @@ public class MailService {
 
 
 		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
-		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(p.getDireccionEntrega());
+		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p.getDireccionEntrega());
 		String cuerpoCliente = armarCuerpoCliente();
 		String cuerpoVendedor = armarCuerpoVendedor(emailCliente);
 		
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("cuerpo", cuerpoCliente);
 		params.put("tablaContenidoPedido",tablaContenidoPedido);
-		params.put("tablaDireccionDeEntrega", tablaDireccionEntrega);
+		params.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
 		params.put("agradecimiento",Constantes.AGRADECIMIENTO);
 
 		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailCliente, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, params);
@@ -192,7 +192,7 @@ public class MailService {
 		Map<String,Object> paramsVendedor = new HashMap<String,Object>();
 		paramsVendedor.put("cuerpo", cuerpoVendedor);
 		paramsVendedor.put("tablaContenidoPedido",tablaContenidoPedido);
-		paramsVendedor.put("tablaDireccionDeEntrega", tablaDireccionEntrega);
+		paramsVendedor.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
 		paramsVendedor.put("agradecimiento",Constantes.AGRADECIMIENTO);
 
 		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailVendedor, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, paramsVendedor);
