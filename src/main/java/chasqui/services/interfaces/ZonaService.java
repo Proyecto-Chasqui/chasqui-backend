@@ -14,5 +14,9 @@ public interface ZonaService {
 	public List<Zona>buscarZonasBy(Integer idUsuario);
 	@Transactional
 	public void borrar(Zona z);
+	@Transactional
+	public List<Zona> obtenerZonas(Integer IdVendedor);
+	@Transactional
+	public Zona buscarZonaProxima(Integer idVendedor);
 
 }

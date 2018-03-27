@@ -43,6 +43,16 @@ public class ZonaServiceImpl implements ZonaService{
 		this.zonaDAO = zonaDAO;
 	}
 
+	@Override
+	public List<Zona> obtenerZonas(Integer idVendedor) {
+		return zonaDAO.obtenerZonas(idVendedor);
+	}
+
+	@Override
+	public Zona buscarZonaProxima(Integer idVendedor) {
+		return zonaDAO.buscarZonaProxima(idVendedor);
+	}
+
 	
 	
 	

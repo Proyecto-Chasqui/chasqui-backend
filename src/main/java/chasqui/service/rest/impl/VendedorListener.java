@@ -15,10 +15,13 @@ import org.springframework.stereotype.Service;
 
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Vendedor;
+import chasqui.model.Zona;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.PuntosDeRetiroResponse;
 import chasqui.service.rest.response.VendedorResponse;
+import chasqui.service.rest.response.ZonaResponse;
 import chasqui.services.interfaces.VendedorService;
+import chasqui.services.interfaces.ZonaService;
 
 @Service
 @Path("/vendedor")
@@ -28,7 +31,8 @@ public class VendedorListener {
 	@Autowired
 	VendedorService vendedorService;
 	
-	
+	@Autowired
+	ZonaService zonaService;
 	
 	
 	@GET
@@ -40,6 +44,36 @@ public class VendedorListener {
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
 		}
+	}
+	
+	@GET
+	@Path("/zonas/{idVendedor}")
+	@Produces("application/json")
+	public Response obtenerVendedores(@PathParam("idVendedor") Integer idVendedor){
+		try{
+			return Response.ok(toResponseZona(zonaService.obtenerZonas(idVendedor)),MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
+		}
+	}
+	
+	@GET
+	@Path("/zonas/proxima/{idVendedor}")
+	@Produces("application/json")
+	public Response obtenerProximaZonaDeEntrega(@PathParam("idVendedor") Integer idVendedor){
+		return Response.ok(toResponseZona(zonaService.buscarZonaProxima(idVendedor)),MediaType.APPLICATION_JSON).build();
+	}
+	
+	private ZonaResponse toResponseZona(Zona z) {
+		return new ZonaResponse(z);
+	}
+	
+	private List<ZonaResponse> toResponseZona(List<Zona> obtenerZonas) {
+		List<ZonaResponse> response = new ArrayList<ZonaResponse>();
+		for(Zona z : obtenerZonas){
+			response.add(new ZonaResponse(z));
+		}
+		return response;
 	}
 	
 	

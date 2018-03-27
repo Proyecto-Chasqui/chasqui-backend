@@ -123,8 +123,7 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 
 				public void onEvent(Event event) throws Exception {
 					switch (((Integer) event.getData()).intValue()){
-					case Messagebox.YES:						
-						//zonaService.guardar(zonacreada);						
+					case Messagebox.YES:									
 						usuario.agregarZona(zonacreada);
 						usuarioService.guardarUsuario(usuario);
 						zonacreada = null;

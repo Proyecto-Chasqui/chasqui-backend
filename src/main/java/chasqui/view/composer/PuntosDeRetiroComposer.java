@@ -179,7 +179,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 				case Messagebox.YES:
 					puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
 					puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
-					usuario = vendedorService.obtenerVendedor(usuario.getNombre());
+					usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
 					binder.loadAll();
 				case Messagebox.NO:
 					break;
