@@ -37,6 +37,7 @@ import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.services.impl.MailService;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.PedidoService;
@@ -81,6 +82,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private GrupoService grupoService;
 	private PedidoColectivoService pedidoColectivoService;
 	private ZonaService zonaService;
+	private MailService mailService;
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -96,6 +98,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			grupoService = (GrupoService) SpringUtil.getBean("grupoService");
 			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
 			zonaService = (ZonaService) SpringUtil.getBean("zonaService");
+			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO);
 			pedidosColectivos = (List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo");			
@@ -183,9 +186,11 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		this.binder.loadAll();
 	}
 	
-	public void prepararPedidoColectivo(PedidoColectivo p) throws EstadoPedidoIncorrectoException{
-		p.preparado();
-		pedidoColectivoService.guardarPedidoColectivo(p);
+	public void prepararPedidoColectivo(PedidoColectivo pedidoColectivo) throws EstadoPedidoIncorrectoException{
+		pedidoColectivo.preparado();
+		pedidoColectivoService.guardarPedidoColectivo(pedidoColectivo);
+		//Notificar por mail que el pedido ha sido preparado
+		mailService.enviarEmailPreparacionDePedidoColectivo(pedidoColectivo);
 		this.binder.loadAll();
 	}
 	

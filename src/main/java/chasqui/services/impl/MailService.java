@@ -2,8 +2,12 @@ package chasqui.services.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -21,6 +25,7 @@ import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
 import chasqui.security.Encrypter;
 import chasqui.security.PasswordGenerator;
@@ -228,6 +233,55 @@ public class MailService {
 		
 	}
 	
+	public void enviarEmailPreparacionDePedidoColectivo(PedidoColectivo pedidoColectivo) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		//Genero tabla de contenido de pedido de cada persona
+		String tablaContenidoDePedidoColectivo = this.armarTablaContenidoDePedidoColectivo(pedidoColectivo);
+		//La direccion del grupo
+		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedidoColectivo.getDireccionEntrega());
+		
+		List<String> emailsClientesDestino = obtenerEmails(pedidoColectivo);
+		
+		params.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivo);
+		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
+		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
+		
+		
+		//se envia todo a todos los integrantes del grupo
+		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
+		
+	}
+	
+	private List<String> obtenerEmails(PedidoColectivo pedidoColectivo) {
+		List<String> emails = new ArrayList<>(pedidoColectivo.getPedidosIndividuales().keySet());
+		
+		return emails;
+	}
+
+	private String armarTablaContenidoDePedidoColectivo(PedidoColectivo pedidoColectivo) {
+		
+		String tablaContenidoDePedidoColectivo ="";
+		
+		Iterator<Entry<String, Pedido>> it = pedidoColectivo.getPedidosIndividuales().entrySet().iterator();
+		while (it.hasNext()) {
+		    Entry<String, Pedido> pair = it.next();
+		    Pedido pedido = pair.getValue();
+		    tablaContenidoDePedidoColectivo += armarInformacionDelCliente(pedido.getCliente());
+		    tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido);
+		}
+		
+		return tablaContenidoDePedidoColectivo;
+		
+	}
+
+	private String armarInformacionDelCliente(Cliente cliente) {
+		String informacionDelCliente = "";
+		informacionDelCliente += cliente.getNombre() + cliente.getApellido();
+		
+		
+		return informacionDelCliente;
+	}
+
 	public void enviarEmailNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("nuevoAdmin", nuevoAdministrador.getUsername());
@@ -244,6 +298,12 @@ public class MailService {
  * METODOS PRIVADOS 
  * ***********************************************
  */
+	
+	private void enviarMailsEnThreadAparte(String pedidosPreparadosTemplate, List<String> emailsClientesDestino, String subject, Map<String, Object> params) {
+		for(String emailDestino : emailsClientesDestino){
+			enviarMailEnThreadAparte(pedidosPreparadosTemplate, emailDestino, subject, params);
+		}
+	}
 	
 	private void enviarMailEnThreadAparte(final String template,final String emailClienteDestino, final String subject, final Map<String,Object> params ){
 		new Thread(){
@@ -329,7 +389,7 @@ public class MailService {
 		for(ProductoPedido pp : p.getProductosEnPedido()){
 			tabla += armarFilaDetalleProducto(pp);
 		}		
-		tabla += footer;
+		tabla += footer + "<br>";
 		return tabla;
 	}
 

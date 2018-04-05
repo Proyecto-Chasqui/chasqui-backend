@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
 import chasqui.services.impl.MailService;
 import chasqui.services.interfaces.GrupoService;
@@ -41,6 +42,7 @@ public class MailServiceTest extends GenericSetUp {
 	 * correo electrico en la que se desea recibir todos los templates.
 	 */
 	public String destinatario = "destinatario@dominio.com";
+	public String destinatarioSecundario = "destinatarioSecundario@dominio.com";
 	public String nombreDeUsuario = "User93";
 	public String passwordFalsa = "passw0rd1234";
 	
@@ -152,6 +154,37 @@ public class MailServiceTest extends GenericSetUp {
 		
 		
 		mailService.enviarEmailPreparacionDePedido(pedido);;
+		assertEquals(true , true);
+	}
+	
+	@Test
+	public void testEnviarEmailDePreparacionDePedidoColectivo() throws IOException, MessagingException, TemplateException, EstadoPedidoIncorrectoException {
+		//Se envia el email del template emailPedidosPreparados.ftl 
+		
+		this.vendedor.setEmail(this.destinatario);
+		this.clienteFulano.setEmail(this.destinatario);
+		this.clienteJuanPerez.setEmail(this.destinatarioSecundario);
+		PedidoColectivo pedidoColectivo = new PedidoColectivo();
+		
+		DateTime fechaVencimiento = new DateTime().plusHours(24);
+		Pedido pedidoFulano = new Pedido(this.vendedor, this.clienteFulano, true, fechaVencimiento);
+		Pedido pedidoPerez = new Pedido(this.vendedor, this.clienteJuanPerez, true, fechaVencimiento);
+		
+		ProductoPedido prodPedidoCincoUnidades = new ProductoPedido(variante, 5);
+		ProductoPedido prodPedidoVeintiCuatroUnidades = new ProductoPedido(variante, 24);
+
+		pedidoFulano.agregarProductoPedido(prodPedidoCincoUnidades, fechaVencimiento.plusHours(48));
+		pedidoFulano.sumarAlMontoActual(prodPedidoCincoUnidades.getPrecio(), prodPedidoCincoUnidades.getCantidad());
+		
+		pedidoPerez.agregarProductoPedido(prodPedidoVeintiCuatroUnidades, fechaVencimiento.plusHours(48));
+		pedidoPerez.sumarAlMontoActual(prodPedidoVeintiCuatroUnidades.getPrecio(), prodPedidoVeintiCuatroUnidades.getCantidad());
+		
+		pedidoColectivo.setDireccionEntrega(direccionCasa);
+		
+		pedidoColectivo.agregarPedidoIndividual(pedidoFulano);
+		pedidoColectivo.agregarPedidoIndividual(pedidoPerez);
+		
+		mailService.enviarEmailPreparacionDePedidoColectivo(pedidoColectivo);
 		assertEquals(true , true);
 	}
 	
