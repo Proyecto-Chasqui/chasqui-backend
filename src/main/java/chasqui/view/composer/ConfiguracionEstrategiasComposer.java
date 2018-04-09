@@ -47,6 +47,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	private Checkbox colectiva; 
 	private Checkbox nodos; 
 	private Checkbox puntoDeEntrega; 
+	private Checkbox entregaADomicilio;
 	private UsuariosActualesComposer usuariosActualesComposer;
 	private AdministracionComposer admComposer;
 	private Component usuariosActualesComponent;
@@ -105,6 +106,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	 	nodos.setChecked(estrategias.isNodos());
 	 	colectiva.setChecked(estrategias.isGcc());
 	 	puntoDeEntrega.setChecked(estrategias.isPuntoDeEntrega());
+	 	entregaADomicilio.setChecked(estrategias.isSeleccionDeDireccionDelUsuario());
 	}
 	
 	private void liberarChecks(){
@@ -112,6 +114,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		nodos.setChecked(false);
 		colectiva.setChecked(false);
 		puntoDeEntrega.setChecked(false);
+		entregaADomicilio.setChecked(false);
 	}
 	
 	public Window getConfwindow() {
@@ -129,6 +132,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 	estrategias.setNodos(nodos.isChecked());
 		 	estrategias.setGcc(colectiva.isChecked());
 		 	estrategias.setPuntoDeEntrega(puntoDeEntrega.isChecked());
+		 	estrategias.setSeleccionDeDireccionDelUsuario(entregaADomicilio.isChecked());
 		 	usuarioService.guardarUsuario(usuarioSeleccionado);
 		 	liberarChecks();
 			EventListener evt = new EventListener() {
@@ -218,6 +222,14 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 
 	public void setButtonGuardar(Button buttonGuardar) {
 		this.buttonGuardar = buttonGuardar;
+	}
+
+	public Checkbox getEntregaADomicilio() {
+		return entregaADomicilio;
+	}
+
+	public void setEntregaADomicilio(Checkbox entregaADomicilio) {
+		this.entregaADomicilio = entregaADomicilio;
 	}
 }
 
