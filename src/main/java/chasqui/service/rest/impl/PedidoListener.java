@@ -140,7 +140,7 @@ public class PedidoListener {
 			AgregarQuitarProductoAPedidoRequest request = toAgregarPedidoRequest(agregarRequest);
 			String email = obtenerEmailDeContextoDeSeguridad();
 			pedidoService.agregarProductosAPedido(request,email);
-			return Response.ok().build();
+			return Response.ok(toVencimientoEstimadoResponse(pedidoService.obtenerPedidosporId(request.getIdPedido())),MediaType.APPLICATION_JSON).build();
 		}catch(IOException | RequestIncorrectoException e ){
 			return Response.status(406).entity(new ChasquiError("Parametros Incorrectos")).build();
 		}catch(PedidoVigenteException | ProductoInexistenteException e){
@@ -151,6 +151,8 @@ public class PedidoListener {
 	}
 	
 	
+
+
 	@PUT
 	@Produces("application/json")
 	@Path("/individual/eliminar-producto")
@@ -211,6 +213,9 @@ public class PedidoListener {
 		return 	SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 	
+	private VencimientoEstimadoResponse toVencimientoEstimadoResponse(Pedido pedido) {
+		return new VencimientoEstimadoResponse(pedido);
+	}
 	
 	private List<PedidoResponse> toListResponse(List<Pedido> obtenerPedidosVigentesDe) {
 		List<PedidoResponse> resultado = new ArrayList<PedidoResponse>();
