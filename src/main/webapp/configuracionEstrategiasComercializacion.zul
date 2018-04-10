@@ -11,6 +11,7 @@ apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
          <checkbox id="colectiva" label="Compra Colectiva"/>
          <checkbox id="nodos" label="Compra Por Nodos"/>
          <checkbox id="puntoDeEntrega" label="Punto De Entrega"/>
+         <checkbox id="entregaADomicilio" label="Entrega a domicilio"/>
     
 	<div align="center">
 		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
