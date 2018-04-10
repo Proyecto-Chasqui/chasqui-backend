@@ -1,5 +1,7 @@
 package chasqui.service.rest.impl;
 
+import org.joda.time.DateTime;
+
 import chasqui.model.Pedido;
 
 public class VencimientoEstimadoResponse {
@@ -8,12 +10,13 @@ public class VencimientoEstimadoResponse {
 	
 	public VencimientoEstimadoResponse(Pedido pedido){
 	
-		if(pedido.getPerteneceAPedidoGrupal() || pedido.getFechaModificacion() ==  null){
+		if(pedido.getPerteneceAPedidoGrupal()){
 			Integer max = Integer.MAX_VALUE;
 			vencimientoEstimado = max.toString();
 		}else{
 			Long vencimientoEnMillis = pedido.getFechaDeVencimiento().getMillis();
-			Long modificacionEnMillis = pedido.getFechaModificacion().getMillis();	
+			Long modificacionEnMillis = DateTime.now().getMillis();
+			//Long modificacionEnMillis = pedido.getFechaModificacion().getMillis();	
 			Long millis = vencimientoEnMillis - modificacionEnMillis;
 			Long minutes = ((millis / (1000*60)) % 60);
 			vencimientoEstimado = minutes.toString();
