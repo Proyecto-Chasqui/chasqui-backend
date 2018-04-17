@@ -295,8 +295,9 @@ public class GrupoListener {
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (PedidoVigenteException e) {
+
 			//Si esto no se informa como un error entonces este método es idempotente
-			//return Response.status(RestConstants.PEDIDO_EXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+			return Response.status(RestConstants.PEDIDO_EXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (PedidoInexistenteException e) {
 			return Response.status(RestConstants.PEDIDO_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (VendedorInexistenteException e) {
@@ -305,7 +306,8 @@ public class GrupoListener {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		}
 
-		return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
+			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
+		
 	}
 
 	@POST

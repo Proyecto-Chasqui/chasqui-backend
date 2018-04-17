@@ -82,7 +82,7 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerVendedorPor(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
-			return Response.ok(new VendedorResponse(vendedorService.obtenerVendedor(nombreVendedor))).build();
+			return Response.ok(new VendedorResponse(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor))).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			
@@ -95,7 +95,7 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerPuntosDeRetiroDeVendedor(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
-			return Response.ok(new PuntosDeRetiroResponse(vendedorService.obtenerVendedor(nombreVendedor).getPuntosDeRetiro())).build();
+			return Response.ok(new PuntosDeRetiroResponse(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPuntosDeRetiro())).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			
