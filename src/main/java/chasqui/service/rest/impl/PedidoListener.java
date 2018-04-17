@@ -24,11 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.ProductoInexistenteException;
 import chasqui.exceptions.RequestIncorrectoException;
+import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Pedido;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
@@ -86,7 +89,50 @@ public class PedidoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
+///////////////WORK IN PROGRESS////////////////////	
+///////////////WORK IN PROGRESS////////////////////	
+///////////////WORK IN PROGRESS////////////////////	
+///////////////WORK IN PROGRESS////////////////////	
 
+	@POST
+	@Produces("application/json")
+	@Path("/obtenerIndividual")
+	public Response obtenerOCrearPedidoIndividualParaUsuario(@Multipart(value="crearRequest", type="application/json") final String crearRequest){
+		String mail = obtenerEmailDeContextoDeSeguridad();
+		Integer idVendedor = null;
+
+		try{
+			CrearPedidoRequest request = toCrearPedidoRequest(crearRequest);
+			idVendedor = request.getIdVendedor();
+			return Response.ok(toResponse(pedidoService.obtenerPedidoActualDe(mail,idVendedor)),MediaType.APPLICATION_JSON).build();
+		}catch(PedidoInexistenteException e){
+			try {
+				pedidoService.crearPedidoIndividualPara(mail,idVendedor);
+				return Response.ok(toResponse(pedidoService.obtenerPedidoActualDe(mail,idVendedor)),MediaType.APPLICATION_JSON).build();
+			} catch (PedidoInexistenteException e1) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (ConfiguracionDeVendedorException e1) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (PedidoVigenteException e1) {
+				return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+			} catch (UsuarioInexistenteException e1) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (VendedorInexistenteException e1) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			}
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+
+	@Deprecated
+	/**
+	 * El metodo obtenerOCrearPedidoIndividualParaUsuario reemplazara los metodos
+	 * crearPedidoIndividualParaUsuario
+	 * obtenerPedidoActual
+	 * obteniendo el pedido actual del usuario para el vendedor solicitado y si este no existiera
+	 * lo generara y retornara. Por eso se encuentra deprecado 12/04/2018
+	 */
 	@POST
 	@Produces("application/json")
 	@Path("/individual")
@@ -103,6 +149,14 @@ public class PedidoListener {
 		}
 	}
 	
+	@Deprecated
+	/**
+	 * El metodo obtenerOCrearPedidoIndividualParaUsuario reemplazara los metodos
+	 * crearPedidoIndividualParaUsuario
+	 * obtenerPedidoActual
+	 * obteniendo el pedido actual del usuario para el vendedor solicitado y si este no existiera
+	 * lo generara y retornara. Por eso se encuentra deprecado 12/04/2018
+	 */
 	@GET
 	@Produces("application/json")
 	@Path("/individual/{idVendedor : \\d+}")
@@ -117,7 +171,10 @@ public class PedidoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}	
-	
+///////////////WORK IN PROGRESS////////////////////	
+///////////////WORK IN PROGRESS////////////////////	
+///////////////WORK IN PROGRESS////////////////////	
+///////////////WORK IN PROGRESS////////////////////	
 	
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -140,7 +197,7 @@ public class PedidoListener {
 			AgregarQuitarProductoAPedidoRequest request = toAgregarPedidoRequest(agregarRequest);
 			String email = obtenerEmailDeContextoDeSeguridad();
 			pedidoService.agregarProductosAPedido(request,email);
-			return Response.ok().build();
+			return Response.ok(toVencimientoEstimadoResponse(pedidoService.obtenerPedidosporId(request.getIdPedido())),MediaType.APPLICATION_JSON).build();
 		}catch(IOException | RequestIncorrectoException e ){
 			return Response.status(406).entity(new ChasquiError("Parametros Incorrectos")).build();
 		}catch(PedidoVigenteException | ProductoInexistenteException e){
@@ -151,6 +208,8 @@ public class PedidoListener {
 	}
 	
 	
+
+
 	@PUT
 	@Produces("application/json")
 	@Path("/individual/eliminar-producto")
@@ -211,6 +270,9 @@ public class PedidoListener {
 		return 	SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 	
+	private VencimientoEstimadoResponse toVencimientoEstimadoResponse(Pedido pedido) {
+		return new VencimientoEstimadoResponse(pedido);
+	}
 	
 	private List<PedidoResponse> toListResponse(List<Pedido> obtenerPedidosVigentesDe) {
 		List<PedidoResponse> resultado = new ArrayList<PedidoResponse>();
