@@ -321,8 +321,10 @@ public class PedidoServiceImpl implements PedidoService {
 
 	private Map<String, String> buildMap(List<OpcionSeleccionadaRequest> opcionesSeleccionadas) {
 		Map<String,String> map = new HashMap<String,String>();
-		for(OpcionSeleccionadaRequest o : opcionesSeleccionadas){
-			map.put(o.getNombre(), o.getOpcionSeleccionada());
+		if(opcionesSeleccionadas != null){
+			for(OpcionSeleccionadaRequest o : opcionesSeleccionadas){
+				map.put(o.getNombre(), o.getOpcionSeleccionada());
+			}
 		}
 		return map;
 	}

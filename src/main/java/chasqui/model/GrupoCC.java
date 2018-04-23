@@ -285,8 +285,10 @@ public class GrupoCC {
 	
 	private void setearOpcionesSeleccionadas(List<OpcionSeleccionadaRequest> opcionesSeleccionadas) {
 		Map<String,String> opciones = new HashMap<String,String>();
-		for(OpcionSeleccionadaRequest o : opcionesSeleccionadas){
-			opciones.put(o.getNombre(), o.getOpcionSeleccionada());
+		if(opcionesSeleccionadas!=null){
+			for(OpcionSeleccionadaRequest o : opcionesSeleccionadas){
+				opciones.put(o.getNombre(), o.getOpcionSeleccionada());
+			}
 		}
 		this.pedidoActual.setRespuestasAPreguntas(opciones);
 	}
