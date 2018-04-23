@@ -41,6 +41,8 @@ import chasqui.model.MiembroDeGCC;
 import chasqui.model.Nodo;
 import chasqui.model.Notificacion;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
+import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
@@ -248,7 +250,7 @@ public class GccServiceTest extends GenericSetUp {
 
 		
 		// ---------------------------------- CONFIRMAR PEDIDO COLECTIVO
-		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),null,"");
+		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),null,"",null);
 
 		// -----------------------------------Verificar notificaciones
 
@@ -340,5 +342,67 @@ public class GccServiceTest extends GenericSetUp {
 		assertEquals(Constantes.ESTADO_NOTIFICACION_NO_LEIDA, miembroInvitado.getEstadoInvitacion());
 		assertEquals(Constantes.ESTADO_PEDIDO_INEXISTENTE, miembroInvitado.getEstadoPedido());
 
+	}
+	
+	@Test
+	public void confirmarPedidoColectivoConDomicilioConCuestionario() throws Exception {
+
+		// Invitacion fulano <-- juan perez
+		
+		this.invitarYAceptar(idGrupo,clienteJuanPerez.getEmail(), clienteFulano.getEmail());
+
+		// ---------------------------------- Nuevo pedido para juan en el grupo
+		this.pedirYConfirmarEnGrupoPara(idGrupo,clienteJuanPerez.getEmail(),vendedor.getId());
+		
+		
+		List<Notificacion> notificacionesJuanPerez = notificacionService
+				.obtenerNotificacionesPendientesPara(clienteJuanPerez.getEmail());
+		assertEquals(2, notificacionesJuanPerez.size());
+
+		List<Notificacion> notificacionesFulano = notificacionService
+				.obtenerNotificacionesPendientesPara(clienteFulano.getEmail());
+		assertEquals(1, notificacionesFulano.size());	
+		
+		// --------------- Nuevo pedido para FULANO en el grupo
+
+		
+		grupoService.nuevoPedidoIndividualPara(idGrupo, clienteFulano.getEmail(), vendedor.getId());
+
+		notificacionesJuanPerez = notificacionService.obtenerNotificacionesPendientesPara(clienteJuanPerez.getEmail());
+		assertEquals(2, notificacionesJuanPerez.size());
+		
+		Pedido pedido2 = grupoService.obtenerPedidoIndividualEnGrupo(idGrupo, clienteFulano.getEmail());
+
+		AgregarQuitarProductoAPedidoRequest reqProd2 = new AgregarQuitarProductoAPedidoRequest();
+		reqProd2.setCantidad(15);
+		reqProd2.setIdPedido(pedido2.getId());
+		reqProd2.setIdVariante(variante.getId());
+		pedidoService.agregarProductosAPedido(reqProd2, clienteFulano.getEmail());
+
+		ConfirmarPedidoSinDireccionRequest reqConfirmarFulano = new ConfirmarPedidoSinDireccionRequest();
+		reqConfirmarFulano.setIdPedido(pedido2.getId());
+
+
+		grupoService.confirmarPedidoIndividualEnGCC(clienteFulano.getEmail(), reqConfirmarFulano);
+		
+
+		List<Notificacion> notificacionesfulano = notificacionService.obtenerNotificacionesPendientesPara(clienteFulano.getEmail());
+		assertEquals(2, notificacionesfulano.size());
+
+		
+		// ---------------------------------- CONFIRMAR PEDIDO COLECTIVO
+		List<OpcionSeleccionadaRequest> opcionesSeleccionadas = new ArrayList<OpcionSeleccionadaRequest>();
+		OpcionSeleccionadaRequest opr = new OpcionSeleccionadaRequest();
+		opr.setNombre("Cargo");
+		opr.setOpcionSeleccionada("Docente");
+		opcionesSeleccionadas.add(opr);
+		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),null,"",opcionesSeleccionadas);
+
+		// -----------------------------------Verificar notificaciones
+
+		GrupoCC g= grupoService.obtenerGrupo(idGrupo);
+		
+		PedidoColectivo p = g.getHistorial().getPedidosGrupales().get(0);
+		assertTrue(p.getRespuestasAPreguntas().size()==1);
 	}
 }

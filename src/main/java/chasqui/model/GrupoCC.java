@@ -1,7 +1,9 @@
 package chasqui.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -9,6 +11,7 @@ import chasqui.exceptions.InvitacionExistenteException;
 import chasqui.exceptions.InvitacionInexistenteException;
 import chasqui.exceptions.NoAlcanzaMontoMinimoException;
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.view.composer.Constantes;
 
 /*
@@ -249,7 +252,7 @@ public class GrupoCC {
 		this.pedidoActual.agregarPedidoIndividual(nuevoPedido);
 	}
 
-	public void confirmarPedidoColectivo(PuntoDeRetiro puntoDeRetiro, Direccion direccion, String comentario) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException {
+	public void confirmarPedidoColectivo(PuntoDeRetiro puntoDeRetiro, Direccion direccion, String comentario,List<OpcionSeleccionadaRequest> opcionesSeleccionadas) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException {
 
 		if (!pedidoActual.tienePedidos()) {
 			throw new EstadoPedidoIncorrectoException(
@@ -268,6 +271,7 @@ public class GrupoCC {
 		//validar que hacer segun PR o direccion
 		if (this.pedidoActual.getMontoTotal() >= this.vendedor.getMontoMinimoPedido()) {
 			this.setearDireccionEnPedido(puntoDeRetiro,direccion);
+			this.setearOpcionesSeleccionadas(opcionesSeleccionadas);
 			this.pedidoActual.setComentario(comentario);
 			this.pedidoActual.confirmarte();
 			this.historial.agregarAHistorial(this.pedidoActual);
@@ -279,6 +283,14 @@ public class GrupoCC {
 
 	}
 	
+	private void setearOpcionesSeleccionadas(List<OpcionSeleccionadaRequest> opcionesSeleccionadas) {
+		Map<String,String> opciones = new HashMap<String,String>();
+		for(OpcionSeleccionadaRequest o : opcionesSeleccionadas){
+			opciones.put(o.getNombre(), o.getOpcionSeleccionada());
+		}
+		this.pedidoActual.setRespuestasAPreguntas(opciones);
+	}
+
 	private void setearDireccionEnPedido(PuntoDeRetiro puntoDeRetiro, Direccion direccion){
 		if(direccion != null){
 			this.pedidoActual.setDireccionEntrega(new Direccion(direccion));

@@ -24,6 +24,7 @@ public class PedidoColectivo implements IPedido{
 	private PuntoDeRetiro puntoDeRetiro;
 	private DateTime fechaCreacion;
 	private String comentario;
+	private Map<String,String> respuestasAPreguntas;
 	
 	public PedidoColectivo() {
 		pedidosIndividuales = new HashMap<String,Pedido>();
@@ -203,6 +204,14 @@ public class PedidoColectivo implements IPedido{
 
 	public void setPuntoDeRetiro(PuntoDeRetiro puntoDeRetiro) {
 		this.puntoDeRetiro = puntoDeRetiro;
+	}
+
+	public Map<String,String> getRespuestasAPreguntas() {
+		return respuestasAPreguntas;
+	}
+
+	public void setRespuestasAPreguntas(Map<String,String> respuestasAPreguntas) {
+		this.respuestasAPreguntas = respuestasAPreguntas;
 	}
 
 }

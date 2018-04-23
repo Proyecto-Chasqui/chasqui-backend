@@ -27,6 +27,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Pedido;
+import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.service.rest.request.DireccionRequest;
 import freemarker.template.TemplateException;
@@ -89,7 +90,7 @@ public interface GrupoService {
 	 *             indicado
 	 * @throws UsuarioInexistenteException
 	 */
-	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario)
+	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest> opcionesSeleccionadas)
 			throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException,
 			DireccionesInexistentes, UsuarioInexistenteException;
 
