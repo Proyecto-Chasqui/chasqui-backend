@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 
@@ -24,5 +25,9 @@ public interface VendedorService {
 	Vendedor obtenerVendedorPorNombreCorto(String nombreCorto) throws VendedorInexistenteException;
 	@Transactional
 	Vendedor obtenerVendedorPorId(Integer idVendedor) throws VendedorInexistenteException;
+	@Transactional
+	List<PreguntaDeConsumo> obtenerPreguntasColectivas(Integer idVendedor);
+	@Transactional
+	List<PreguntaDeConsumo> obtenerPreguntasIndividuales(Integer idVendedor);
 
 }

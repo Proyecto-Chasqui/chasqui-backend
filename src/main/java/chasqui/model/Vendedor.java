@@ -23,6 +23,8 @@ public class Vendedor extends Usuario{
 	private List<IEstrategiaComercializacion> estrategiasPermitidas;
 	private List<PuntoDeRetiro> puntosDeRetiro;
 	private String url;
+	private List<PreguntaDeConsumo> preguntasDePedidosIndividuales;
+	private List<PreguntaDeConsumo> preguntasDePedidosColectivos;
 	
 	
 	//GETs & SETs	
@@ -284,6 +286,22 @@ public class Vendedor extends Usuario{
 	
 	public void agregarZona(Zona zona){
 		this.zonas.add(zona);
+	}
+
+	public List<PreguntaDeConsumo> getPreguntasDePedidosIndividuales() {
+		return preguntasDePedidosIndividuales;
+	}
+
+	public void setPreguntasDePedidosIndividuales(List<PreguntaDeConsumo> preguntasDePedidosIndividuales) {
+		this.preguntasDePedidosIndividuales = preguntasDePedidosIndividuales;
+	}
+
+	public List<PreguntaDeConsumo> getPreguntasDePedidosColectivos() {
+		return preguntasDePedidosColectivos;
+	}
+
+	public void setPreguntasDePedidosColectivos(List<PreguntaDeConsumo> preguntasDePedidosColectivos) {
+		this.preguntasDePedidosColectivos = preguntasDePedidosColectivos;
 	}
 
 }

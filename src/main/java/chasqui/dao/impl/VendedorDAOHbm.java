@@ -12,6 +12,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.VendedorDAO;
+import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 
@@ -106,5 +107,16 @@ public class VendedorDAOHbm  extends HibernateDaoSupport implements VendedorDAO{
 				return (Vendedor) criteria.uniqueResult();
 			}
 		});
+	}
+
+	@Override
+	public List<PreguntaDeConsumo> obtenerPreguntasDeConsumoIndividuales(Integer idVendedor) {
+		Vendedor v= obtenerVendedorPorId(idVendedor);
+		return v.getPreguntasDePedidosIndividuales();
+	}
+
+	@Override
+	public List<PreguntaDeConsumo> obtenerPreguntasDeConsumoColectivas(Integer idVendedor) {
+		return obtenerVendedorPorId(idVendedor).getPreguntasDePedidosColectivos();
 	}
 }

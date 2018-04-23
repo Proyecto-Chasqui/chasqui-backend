@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.service.rest.response.ChasquiError;
+import chasqui.service.rest.response.PreguntaDeConsumoResponse;
 import chasqui.service.rest.response.PuntosDeRetiroResponse;
 import chasqui.service.rest.response.VendedorResponse;
 import chasqui.service.rest.response.ZonaResponse;
@@ -102,9 +104,40 @@ public class VendedorListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-
-
-
+	
+	@GET
+	@Path("/preguntasDeConsumoIndividual/{nombreVendedor}")
+	@Produces("application/json")
+	public Response obtenerPreguntasDeConsumoIndividual(@PathParam("nombreVendedor")String nombreVendedor){
+		try{
+			return Response.ok(this.toResponsePreguntaConsumo(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPreguntasDePedidosIndividuales())).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch(Exception e){			
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	@GET
+	@Path("/preguntasDeConsumoColectivo(/{nombreVendedor}")
+	@Produces("application/json")
+	public Response obtenerPreguntasDeConsumoColectivo(@PathParam("nombreVendedor")String nombreVendedor){
+		try{
+			return Response.ok(this.toResponsePreguntaConsumo(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPreguntasDePedidosColectivos())).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch(Exception e){			
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	private List<PreguntaDeConsumoResponse> toResponsePreguntaConsumo(List<PreguntaDeConsumo> lista){
+		List<PreguntaDeConsumoResponse> pr = new ArrayList<PreguntaDeConsumoResponse>();
+		for(PreguntaDeConsumo p : lista){
+			pr.add(new PreguntaDeConsumoResponse(p.getNombre(), p.getHabilitada(), p.getOpciones()));
+		}
+		return pr;
+	}
 
 	private List<VendedorResponse> toResponse(List<Vendedor> vendedores) {
 		List<VendedorResponse> response = new ArrayList<VendedorResponse>();

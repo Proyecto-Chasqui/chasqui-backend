@@ -1,6 +1,7 @@
 package chasqui.model;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Temporal;
@@ -35,6 +36,7 @@ public class Pedido implements IPedido {
 	private PedidoColectivo pedidoColectivo;// puede ser null
 	private String comentario;
 	private String tipoDeAjuste;
+	private Map<String,String> respuestasAPreguntas;
 
 	public Pedido(Vendedor v, Cliente c, Boolean esPedidoGrupal, DateTime vencimiento) {
 		idVendedor = v.getId();
@@ -328,6 +330,14 @@ public class Pedido implements IPedido {
 
 	public void setPuntoDeRetiro(PuntoDeRetiro puntoDeRetiro) {
 		this.puntoDeRetiro = puntoDeRetiro;
+	}
+
+	public Map<String,String> getRespuestasAPreguntas() {
+		return respuestasAPreguntas;
+	}
+
+	public void setRespuestasAPreguntas(Map<String,String> respuestasAPreguntas) {
+		this.respuestasAPreguntas = respuestasAPreguntas;
 	}
 
 }

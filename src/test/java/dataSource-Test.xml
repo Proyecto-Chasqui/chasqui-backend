@@ -82,6 +82,7 @@
 				<value>classpath*:mappings/HistorialGCC.hbm.xml</value>
 				<value>classpath*:mappings/EstrategiaDeComercializacion.hbm.xml</value>
 				<value>classpath*:mappings/PuntoDeRetiro.hbm.xml</value>
+				<value>classpath*:mappings/PreguntaDeConsumo.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

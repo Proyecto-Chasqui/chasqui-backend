@@ -2,7 +2,9 @@ package chasqui.services.impl;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import chasqui.model.Pedido;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.services.interfaces.NotificacionService;
@@ -300,6 +303,7 @@ public class PedidoServiceImpl implements PedidoService {
 		
 		Pedido pedido = cliente.encontrarPedidoConId(request.getIdPedido());
 		pedido.setComentario(request.getComentario());
+		pedido.setRespuestasAPreguntas(buildMap(request.getOpcionesSeleccionadas()));
 		Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(pedido.getIdVendedor());
 		usuarioService.inicializarListasDe(vendedor);
 		
@@ -314,6 +318,15 @@ public class PedidoServiceImpl implements PedidoService {
 
 	
 	//----------------------Utils
+
+	private Map<String, String> buildMap(List<OpcionSeleccionadaRequest> opcionesSeleccionadas) {
+		Map<String,String> map = new HashMap<String,String>();
+		for(OpcionSeleccionadaRequest o : opcionesSeleccionadas){
+			map.put(o.getNombre(), o.getOpcionSeleccionada());
+		}
+		return map;
+	}
+
 
 	private void validarRequest(AgregarQuitarProductoAPedidoRequest request) throws RequestIncorrectoException {
 		if (request.getIdPedido() == null) {

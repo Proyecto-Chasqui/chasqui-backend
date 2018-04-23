@@ -70,5 +70,17 @@
             <one-to-many class="chasqui.model.Zona" />
         </bag>
         
+		<list name="preguntasDePedidosIndividuales" table="PREGUNTA_INDIVIDUAL" lazy="false">
+			<key column="PREGUNTA_ID"></key>
+			<index column="SEQUENCE"></index>
+			<one-to-many class="chasqui.model.PreguntaDeConsumo"/>
+		</list>
+   		
+   		<list name="preguntasDePedidosColectivos" table="PREGUNTA_COLECTIVA" lazy="false">
+			<key column="PREGUNTA_COLECTIVA_ID"></key>
+			<index column="SEQUENCE"></index>
+			<one-to-many class="chasqui.model.PreguntaDeConsumo"/>
+		</list>
+        
     </joined-subclass>
 </hibernate-mapping>

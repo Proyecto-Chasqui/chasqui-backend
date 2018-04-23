@@ -3,6 +3,8 @@ package chasqui.test.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.VendedorService;
+import chasqui.model.PreguntaDeConsumo;
 
 @ContextConfiguration(locations = {
 "file:src/test/java/dataSource-Test.xml",
@@ -52,6 +55,20 @@ public class VendedorServiceTest extends GenericSetUp{
 	@Test(expected=VendedorInexistenteException.class)
 	public void testObtenerVendedorInexistente() throws VendedorInexistenteException{
 		vendedorService.obtenerVendedor("Inexistente");
+	}
+	
+	@Test
+	public void testObtenerPreguntasIndividuales() throws VendedorInexistenteException{
+		Vendedor v = vendedorService.obtenerVendedor("MatLock");
+		List<PreguntaDeConsumo> preguntas = vendedorService.obtenerPreguntasIndividuales(v.getId());
+		assertTrue(preguntas.size() == 1);
+	}
+	
+	@Test
+	public void testObtenerPreguntasGrupales() throws VendedorInexistenteException{
+		Vendedor v = vendedorService.obtenerVendedor("MatLock");
+		List<PreguntaDeConsumo> preguntas = vendedorService.obtenerPreguntasColectivas(v.getId());
+		assertTrue(preguntas.size() == 1);
 	}
 	
 }

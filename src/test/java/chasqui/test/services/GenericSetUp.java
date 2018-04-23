@@ -14,6 +14,7 @@ import chasqui.model.Direccion;
 import chasqui.model.Fabricante;
 import chasqui.model.Imagen;
 import chasqui.model.Nodo;
+import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
@@ -225,11 +226,21 @@ public class GenericSetUp {
 		vendedor.setIsRoot(false);
 		vendedor.setMontoMinimoPedido(213);
 		vendedor.setUrl("vendedor.proyectochasqui.com");
+		List<String> opciones = new ArrayList<String>();
+		opciones.add("si");
+		opciones.add("no");
+		vendedor.setPreguntasDePedidosIndividuales(generarPreguntas(opciones, "Tiene Factura"));
+		vendedor.setPreguntasDePedidosColectivos(generarPreguntas(opciones, "Tiene Factura"));
 		//vendedor.setFechaCierrePedido(cierre);
 		
 		
 	}
 	
+	private List<PreguntaDeConsumo> generarPreguntas(List<String> opciones, String nombre){
+		List<PreguntaDeConsumo> lista = new ArrayList<PreguntaDeConsumo>();
+		lista.add(new PreguntaDeConsumo("Tiene Factura",true,opciones));
+		return lista;
+	}
 
 
 	protected Cliente setupClienteConParams(String mail, String nick, Direccion dir) throws Exception{

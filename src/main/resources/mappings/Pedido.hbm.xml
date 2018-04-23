@@ -87,7 +87,13 @@
 		<many-to-one name="puntoDeRetiro" class="chasqui.model.PuntoDeRetiro" fetch="join" not-found="ignore">
 			<column name="ID_PUNTO_DE_RETIRO" />
 		</many-to-one> 
-		
+    	
+     	 <map name="respuestasAPreguntas" table="RESPUESTA_A_PREGUNTA"
+           	 order-by="nombre" lazy="false" access="field">
+         	<key column="id"/>
+         	<map-key column="nombre" type="string"/>
+         	<element column="opcionSeleccionada" type="string"/>
+      	</map>
 		
 	</class>
 </hibernate-mapping>

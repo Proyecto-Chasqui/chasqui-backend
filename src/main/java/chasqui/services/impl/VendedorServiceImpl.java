@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import chasqui.aspect.Auditada;
 import chasqui.dao.VendedorDAO;
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.VendedorService;
@@ -63,7 +64,14 @@ public class VendedorServiceImpl implements VendedorService{
 	public void setVendedorDAO(VendedorDAO vendedorDAO) {
 		this.vendedorDAO = vendedorDAO;
 	}	
+	@Override
+	public List<PreguntaDeConsumo> obtenerPreguntasIndividuales(Integer idVendedor){
+		return this.vendedorDAO.obtenerPreguntasDeConsumoIndividuales(idVendedor);
+	}
 	
-	
+	@Override
+	public List<PreguntaDeConsumo> obtenerPreguntasColectivas(Integer idVendedor){
+		return this.vendedorDAO.obtenerPreguntasDeConsumoColectivas(idVendedor);
+	}
 
 }
