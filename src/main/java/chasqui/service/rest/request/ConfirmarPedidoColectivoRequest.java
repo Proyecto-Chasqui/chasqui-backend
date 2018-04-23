@@ -1,6 +1,9 @@
 package chasqui.service.rest.request;
 
 import java.io.Serializable;
+import java.util.List;
+
+import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 
 public class ConfirmarPedidoColectivoRequest implements Serializable{
 	
@@ -9,10 +12,11 @@ public class ConfirmarPedidoColectivoRequest implements Serializable{
 	 */
 	private static final long serialVersionUID = -5077516709705680L;
 	
-	Integer idGrupo;
-	Integer idDireccion;
-	Integer idPuntoDeRetiro;
-	String comentario;
+	private Integer idGrupo;
+	private Integer idDireccion;
+	private Integer idPuntoDeRetiro;
+	private List<OpcionSeleccionadaRequest> opcionesSeleccionadas;
+	private String comentario;
 	
 	public String getComentario() {
 		return comentario;
@@ -48,6 +52,14 @@ public class ConfirmarPedidoColectivoRequest implements Serializable{
 
 	public void setIdPuntoDeRetiro(Integer idPuntoDeRetiro) {
 		this.idPuntoDeRetiro = idPuntoDeRetiro;
+	}
+
+	public List<OpcionSeleccionadaRequest> getOpcionesSeleccionadas() {
+		return opcionesSeleccionadas;
+	}
+
+	public void setOpcionesSeleccionadas(List<OpcionSeleccionadaRequest> opcionesSeleccionadas) {
+		this.opcionesSeleccionadas = opcionesSeleccionadas;
 	}
 	
 
