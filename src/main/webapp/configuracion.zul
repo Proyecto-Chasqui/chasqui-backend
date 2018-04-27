@@ -83,6 +83,12 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
 				</listcell>
 			</listitem>
 			<listitem>
+				<listcell id="cuestionario" label="Preguntas de consumo"/>
+				<listcell>
+					<button label="Ver preguntas de consumo" id="cuestionarioButton"/>
+				</listcell>
+			</listitem>
+			<listitem>
 				<listcell>
 						<image style="height:50px; width:50px" src="@{configuracionWindow$composer.imagen.getPath}"/>					
 				</listcell>

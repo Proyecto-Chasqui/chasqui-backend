@@ -34,6 +34,16 @@ public class PreguntaDeConsumo {
 	public void setNombre(String pnombre) {
 		nombre = pnombre;
 	}
+	
+	public boolean noHabilitada(){
+		boolean ret = false;
+		if(! habilitada){
+			ret = true;
+		}
+		return ret;
+	}
+	
+	
 
 	public Boolean getHabilitada() {
 		return habilitada;
