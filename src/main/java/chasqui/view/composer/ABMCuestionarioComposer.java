@@ -79,14 +79,14 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	}
 	
 	public void onEditarPreguntaIndividual(){
-		this.indice = this.preguntasIndividualesDeConsumo.indexOf(preguntaIndividualSeleccionada);
-		this.preguntaAEditar = preguntaIndividualSeleccionada;
-		this.textNombrePregunta.setValue(this.preguntaIndividualSeleccionada.getNombre());
-		this.respuestasDeConsumo = this.preguntaIndividualSeleccionada.getOpciones();
-		this.isPreguntaIndividual = true;
-		this.cambiarContextoAEditar();
+			this.indice = this.preguntasIndividualesDeConsumo.indexOf(preguntaIndividualSeleccionada);
+			this.preguntaAEditar = preguntaIndividualSeleccionada;
+			this.textNombrePregunta.setValue(this.preguntaIndividualSeleccionada.getNombre());
+			this.respuestasDeConsumo = this.preguntaIndividualSeleccionada.getOpciones();
+			this.isPreguntaIndividual = true;
+			this.cambiarContextoAEditar();
 	}
-	
+
 	public void onEditarPreguntaColectiva(){
 		this.indice = this.preguntasColectivasDeConsumo.indexOf(preguntaColectivaSeleccionada);
 		this.preguntaAEditar = preguntaColectivaSeleccionada;
@@ -94,6 +94,20 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 		this.respuestasDeConsumo = this.preguntaColectivaSeleccionada.getOpciones();
 		this.isPreguntaIndividual = false;
 		this.cambiarContextoAEditar();
+	}
+	
+	private void showError(String string) {
+		Messagebox.show(string,"Advertencia" ,Messagebox.OK,Messagebox.INFORMATION,
+				new EventListener<Event>(){
+
+			public void onEvent(Event event) throws Exception {
+				switch (((Integer) event.getData()).intValue()){
+				case Messagebox.OK:
+					
+				}				
+			}
+
+			});		
 	}
 	
 	//Area de metodos para la edición/creación de preguntas
@@ -104,26 +118,38 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	}
 	
 	public void onClick$btnAgregarPreguntaIndividual(){
-		this.cambiarContextoAEditar();
-		this.indice = -1;
-		this.isPreguntaIndividual = true;
-		this.limpiarCampos();
-		this.respuestasDeConsumo = new ArrayList<String>();
+		if(preguntasIndividualesDeConsumo.size() <=4){
+			this.cambiarContextoAEditar();
+			this.indice = -1;
+			this.isPreguntaIndividual = true;
+			this.limpiarCampos();
+			this.respuestasDeConsumo = new ArrayList<String>();
+		}else{
+			showError("No se puede tener mas de 5 preguntas de consumo individual");
+		}
 	}
 	
 	public void onClick$btnAgregarPreguntaColectiva(){
-		this.cambiarContextoAEditar();
-		this.indice = -1;
-		this.isPreguntaIndividual = false;
-		this.limpiarCampos();
-		this.respuestasDeConsumo = new ArrayList<String>();
+		if(preguntasColectivasDeConsumo.size() <=4){
+			this.cambiarContextoAEditar();
+			this.indice = -1;
+			this.isPreguntaIndividual = false;
+			this.limpiarCampos();
+			this.respuestasDeConsumo = new ArrayList<String>();
+		}else{
+			showError("No se puede tener mas de 5 preguntas de consumo colectivo");
+		}
 	}
 	
 	public void onClick$btnGuardarRespuesta(){
 		if(!textNombreRespuesta.getValue().equals("")){
-			this.respuestasDeConsumo.add(textNombreRespuesta.getValue());
-			textNombreRespuesta.setValue("");
-			binder.loadAll();
+			if(respuestasDeConsumo.size()<15){
+				this.respuestasDeConsumo.add(textNombreRespuesta.getValue());
+				textNombreRespuesta.setValue("");
+				binder.loadAll();
+			}else{
+				showError("No se puede tener mas de 15 respuestas por preguntas");
+			}
 		}else{
 			Messagebox.show("La respuesta no debe ser vacia","Pregunta",Messagebox.OK,Messagebox.INFORMATION,
 					new EventListener<Event>(){
@@ -241,7 +267,6 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	}
 	
 	
-	
 	private void guardarPreguntaIndividual() {		
 		if(indice.equals(-1)){
 			PreguntaDeConsumo pc = new PreguntaDeConsumo(this.textNombrePregunta.getValue(),true,this.respuestasDeConsumo);
@@ -259,7 +284,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	//getters setters
 
 	
-	public void onClick$btnNuevaPregunta() throws VendedorInexistenteException{		
+	public void onClick$btnNuevaPregunta() throws VendedorInexistenteException{
 		Window w = (Window) Executions.createComponents("/ABMPregunta.zul", this.self, null);
 		w.doModal();	
 	}

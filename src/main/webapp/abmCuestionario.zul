@@ -17,7 +17,7 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="tru
 			<tabpanels>
 				<tabpanel>
   				<listbox checkmark="true" selectedItem="@{cuestionarioWindow$composer.preguntaIndividualSeleccionada}" model="@{cuestionarioWindow$composer.preguntasIndividualesDeConsumo}" mold="paging"
-				rows="5" pageSize="3"> 
+				rows="5" pageSize="5"> 
 					<listhead>
 						<listheader label="Pregunta" />
 						<listheader label="Acciones"/>
@@ -46,7 +46,7 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="tru
 				</tabpanel>
 				<tabpanel>
   				<listbox checkmark="true" selectedItem="@{cuestionarioWindow$composer.preguntaColectivaSeleccionada}" model="@{cuestionarioWindow$composer.preguntasColectivasDeConsumo}" mold="paging"
-				rows="5" pageSize="3"> 
+				rows="5" pageSize="5"> 
 					<listhead>
 						<listheader label="Pregunta" />
 						<listheader label="Acciones"/>
