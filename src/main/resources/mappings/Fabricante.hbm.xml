@@ -21,7 +21,7 @@
         <property name="localidad" type="java.lang.String" column="LOCALIDAD"/>
         <property name="altura" type="java.lang.Integer" column="ALTURA"/>
         <property name="pathImagen" type="java.lang.String" column="IMAGEN"/>
-        <property name="descripcionCorta" type="java.lang.String" column="DESCRIPCION_CORTA"/>
+        <property name="descripcionCorta" type="text" column="DESCRIPCION_CORTA"/>
         <property name="descripcionLarga" type="text" column="DESCRIPCION_LARGA"/>
         <property name="idVendedor" type="java.lang.Integer" column="ID_VENDEDOR" insert="false" update="false"/>
         <bag name="productos" inverse="false" table="PRODUCTO" lazy="true" cascade="all">
