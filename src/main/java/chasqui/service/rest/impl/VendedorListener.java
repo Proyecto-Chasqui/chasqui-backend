@@ -119,7 +119,7 @@ public class VendedorListener {
 	}
 	
 	@GET
-	@Path("/preguntasDeConsumoColectivo(/{nombreVendedor}")
+	@Path("/preguntasDeConsumoColectivo/{nombreVendedor}")
 	@Produces("application/json")
 	public Response obtenerPreguntasDeConsumoColectivo(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
