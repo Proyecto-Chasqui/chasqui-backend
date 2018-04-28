@@ -78,19 +78,19 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
  
 	  <listbox id="listboxCaracteristicas" mold="paging" pageSize="3" selectedItem="@{productosWindow$composer.caracteristicaSeleccionada}"
 		model="@{productosWindow$composer.model.caracteristicas}" rows="3">
-		<listhead>
-			<listheader label="${c:l('zk.listcell.label.abmProducto.caracteristica')}"/>
-			<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
-		</listhead>
 		<auxhead>
 			<auxheader colspan="2">
-				<combobox id="comboCaracteristicas" readonly="true" model="@{productosWindow$composer.caracteristicasProducto}"
+				<combobox id="comboCaracteristicas"  readonly="true" model="@{productosWindow$composer.caracteristicasProducto}"
 				selectedItem="@{productosWindow$composer.caracteristicaProductoSeleccionada}"
 				itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"/>
 				<toolbarbutton id="botonAgregarCaracteristica" image="/imagenes/plus.png" 
 				label="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"/>
 			</auxheader>
 		</auxhead>
+		<listhead>
+			<listheader label="${c:l('zk.listcell.label.abmProducto.caracteristica')}"/>
+			<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+		</listhead>
 		<listitem self="@{each=caracteristica}">			
 			<listcell>
 				<image src="@{caracteristica.getPathImagen}" height="16px" width="16px"/>
