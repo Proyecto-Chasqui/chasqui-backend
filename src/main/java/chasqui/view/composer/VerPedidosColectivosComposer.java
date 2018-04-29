@@ -177,19 +177,6 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		}
 	}	
 	
-	public void onClick$exportarSeleccionados() throws Exception{
-//		List<Pedido> pedidosSeleccionados = new ArrayList<Pedido>();
-//		for(Pedido p: pedidosDentroDeColectivo){
-//			for(Integer id : idsSeleccionados){
-//				if(p.getId()==id){
-//					pedidosSeleccionados.add(p);
-//				}
-//			}
-//		}
-//		List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosSeleccionados);
-//		export.fullexport(pedidomerge);
-	}
-	
 	public void onClick$exportarTodosbtn(){
 		try {
 			PedidoColectivo pedidoc = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
@@ -223,7 +210,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		pedidogeneralgrupal.setPuntoDeRetiro(pedidoColectivo.getPuntoDeRetiro());
 		pedidogeneralgrupal.setComentario(pedidoColectivo.getComentario());
 		pedidogeneralgrupal.setZona(pedidoColectivo.getZona());
-		
+		pedidogeneralgrupal.setRespuestasAPreguntas(pedidoColectivo.getRespuestasAPreguntas());
 		for(Pedido p : pedidosgenerados){
 			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
 				for(ProductoPedido pp : p.getProductosEnPedido()){

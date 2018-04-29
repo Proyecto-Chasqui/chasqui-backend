@@ -29,6 +29,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Filedownload;
 
 import chasqui.model.Cliente;
@@ -53,11 +54,18 @@ public class XlsExporter {
 	
 	public void fullexport(List<Pedido> pedidos) throws Exception {
 		for (Pedido p : pedidos) {
+			ArrayList<String> claves = new ArrayList<String>();
 			doHeader(p,"Pedido de ");
 			doBody(p.getProductosEnPedido().size());
 			doContactArea(p);
+			if(!p.getRespuestasAPreguntas().isEmpty()){
+				doAnswerArea(p, claves);
+			}
 			loadInfoInTable(p);
 			loadInfoInContact(p);
+			if(!p.getRespuestasAPreguntas().isEmpty()){
+				loadInfoInAnswerArea(p, claves);
+			}
 			doDetails();
 		}
 		showDownload();
@@ -72,13 +80,37 @@ public class XlsExporter {
 				doHeader(p,"Pedido de ");
 			}
 			doBody(p.getProductosEnPedido().size());
+			ArrayList<String> claves = new ArrayList<String>();
+			if(!p.getRespuestasAPreguntas().isEmpty()){
+				doAnswerArea(p, claves);
+			}
 			doContactArea(p);
 			loadInfoInTable(p);
 			loadInfoInContact(p);
+			if(!p.getRespuestasAPreguntas().isEmpty()){
+				loadInfoInAnswerArea(p, claves);
+			}
 			doDetails();
 		}
 		showDownload();
 		clean();
+	}
+	
+	private void loadInfoInAnswerArea(Pedido p, ArrayList<String> claves) {
+		Map <String,String> respuestas = p.getRespuestasAPreguntas();		
+		Integer columnindex = 6;
+		Integer setPointer = 16;
+		if(p.getDireccionEntrega() == null && p.getPuntoDeRetiro() == null){
+			setPointer = 8;
+		}
+		Row row = sheet.getRow(setPointer);
+		setPointer = setPointer +1;	
+		for(int i=0; i<claves.size() ; i++){
+			row.getCell(columnindex).setCellValue(respuestas.get(claves.get(i)));
+			row = sheet.getRow(setPointer);
+			setPointer = setPointer +1;
+		}
+
 	}
 
 	private void loadInfoInContact(Pedido p) {
@@ -287,6 +319,10 @@ public class XlsExporter {
 			buildTitle(aRow,"Detalles de la Dirección",5,6,"$F$8:$G$8");
 			for(int i=0; i<contactaddress.length;i++){
 				aRow = sheet.getRow(startRow);
+				if(aRow == null){
+					sheet.createRow(startRow);
+					aRow = sheet.getRow(startRow);
+				}
 				datacell = aRow.createCell(5);
 				datacell.setCellValue(contactaddress[i]);
 				datacell.setCellStyle(styles.get("cell"));
@@ -309,6 +345,42 @@ public class XlsExporter {
 				startRow++;
 			}
 		}
+	}
+	
+	private void doAnswerArea(Pedido p, ArrayList<String> claves){
+		Map <String,String> respuestas = p.getRespuestasAPreguntas();
+		Integer size = respuestas.size();
+		claves.addAll(respuestas.keySet()); 
+		Cell datacell = null;
+		//fila de inicio
+		Integer startRow = 16;
+		if(p.getDireccionEntrega() == null && p.getPuntoDeRetiro() == null){
+			startRow = 8;
+		}
+		Row aRow = sheet.getRow(startRow -1);
+		if(aRow == null){
+			sheet.createRow(startRow -1);
+			aRow = sheet.getRow(startRow - 1);
+		}
+		//titulo
+		buildTitle(aRow,"Respuestas del cuestionario",5,6,"$F$"+startRow+":$G$"+startRow);
+		//primera seccion
+		for(int i= 0; i<size;i++){
+			if(sheet.getRow(startRow) == null){
+				sheet.createRow(startRow);
+			}
+			createCellInRow(aRow,startRow,datacell,claves.get(i));
+			startRow = startRow+1;
+		}
+	}
+	
+	private void createCellInRow(Row aRow, Integer startRow, Cell datacell, String value){
+		aRow = sheet.getRow(startRow);
+		datacell = aRow.createCell(5);
+		datacell.setCellValue(value);
+		datacell.setCellStyle(styles.get("cell"));
+		datacell = aRow.createCell(6);
+		datacell.setCellStyle(styles.get("cell"));
 	}
 
 	private void buildTitle(Row aRow, String msj,Integer celln, Integer celln2,String mergedregion) {

@@ -41,8 +41,8 @@ style="overflow:auto">
 <separator spacing="10px"/>
 <div align="center">
 	<button label="Confirmar Entrega" id="confirmarEntregabtn" visible="false"/>
-	<button label="Exportar Pedidos" id="exportarTodosbtn"/>
-	<button label="Exportar Pedidos Seleccionados" id="exportarSeleccionados"/>
+	<button label="Exportar Pedidos" id="exportarTodosbtn" />        
+	<button label="Exportar Pedidos Seleccionados" id="exportarSeleccionados" visible = "false"/>
 </div>
 <separator spacing="10px"/>
 </window>

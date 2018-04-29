@@ -310,8 +310,8 @@ public class PedidoServiceImpl implements PedidoService {
 		vendedor.descontarStockYReserva(pedido);
 		cliente.confirmarPedido(request.getIdPedido(),request.getIdDireccion(),request.getIdPuntoDeRetiro());
 		
-		notificacionService.enviarAClienteSuPedidoConfirmado(vendedor.getEmail(), email, pedido);
 		
+		notificacionService.enviarAClienteSuPedidoConfirmado(vendedor.getEmail(), email, pedido);
 		usuarioService.guardarUsuario(cliente);
 		usuarioService.guardarUsuario(vendedor);
 	}

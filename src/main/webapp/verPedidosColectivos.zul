@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window title="Detalles de los Pedidos" width="60%" style="overflow:auto" id="verPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.VerPedidosColectivosComposer" sizable="true" closable="true">
+<window title="Detalle del pedido colectivo abierto" width="60%" style="overflow:auto" id="verPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.VerPedidosColectivosComposer" sizable="true" closable="true">
 
 <div align="center">
 	<hbox>

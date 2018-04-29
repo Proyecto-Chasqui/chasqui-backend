@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window width="65%" title="Historial De Pedidos Colectivos" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="true"
+<window width="65%" title="Pedidos colectivos confirmados" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="true"
 style="overflow:auto">
 
 <div align="center">

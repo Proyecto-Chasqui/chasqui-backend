@@ -111,7 +111,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		// ------------------------------Botón para abrir el pedido en una
 		// pantalla
 		Toolbarbutton botonVerPedido = new Toolbarbutton("Ver en detalle los pedidos");
-		botonVerPedido.setTooltiptext("Ver detalle del pedido");
+		botonVerPedido.setTooltiptext("Muestra los pedidos de los integrantes del pedido colectivo");
 		botonVerPedido.setImage("/imagenes/eye.png");
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put(PedidosComposer.PEDIDO_KEY, pedidoColectivo);
