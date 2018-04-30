@@ -16,6 +16,7 @@ public class ConfirmarPedidoRequest implements Serializable{
 	private Integer idDireccion;
 	private Integer idPuntoDeRetiro;
 	private List<OpcionSeleccionadaRequest> opcionesSeleccionadas;
+	private Integer idZona;
 	private String comentario;
 	
 	public Integer getIdPedido() {
@@ -51,6 +52,13 @@ public class ConfirmarPedidoRequest implements Serializable{
 	public void setOpcionesSeleccionadas(List<OpcionSeleccionadaRequest> opcionesSeleccionadas) {
 		this.opcionesSeleccionadas = opcionesSeleccionadas;
 	}
+	public Integer getIdZona() {
+		return idZona;
+	}
+	public void setIdZona(Integer idZona) {
+		this.idZona = idZona;
+	}
+
 	
 	
 	

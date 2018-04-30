@@ -90,7 +90,7 @@ public interface GrupoService {
 	 *             indicado
 	 * @throws UsuarioInexistenteException
 	 */
-	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest> opcionesSeleccionadas)
+	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest> opcionesSeleccionadas, Integer idZona)
 			throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException,
 			DireccionesInexistentes, UsuarioInexistenteException;
 

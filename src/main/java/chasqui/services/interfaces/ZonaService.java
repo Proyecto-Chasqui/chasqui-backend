@@ -18,5 +18,7 @@ public interface ZonaService {
 	public List<Zona> obtenerZonas(Integer IdVendedor);
 	@Transactional
 	public Zona buscarZonaProxima(Integer idVendedor);
+	@Transactional
+	public Zona obtenerZonaPorId(Integer zonaID);
 
 }

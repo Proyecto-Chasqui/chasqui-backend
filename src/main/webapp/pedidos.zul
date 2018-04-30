@@ -6,22 +6,32 @@
 <zk>
 <window id="pedidosWindow"  border="normal" apply="chasqui.view.composer.PedidosComposer" sizable="true"
 style="overflow:auto">
+<style>
+.z-notification-pointer ~ .z-notification-content
+    {
+        display:table-cell;
+        width:auto;
+        height:50px;
+        min-height:60px;
+        padding:5px 18px 5px 45px;
+        vertical-align:middle;
+    }</style>
 
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" />
-		<datebox id="desde"/>
+		<datebox id="desde" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
 		<label value="Fecha Hasta:"/>
-		<datebox id="hasta"/>	
-		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
+		<datebox id="hasta" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>	
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>
 		<combobox id="estadosListbox"  readonly="true" model="@{pedidosWindow$composer.estados}" selectedItem="@{pedidosWindow$composer.estadoSeleccionado}"/>
 		<label value="Zona:"/>
 		<combobox id="zonasListbox"  readonly="true" model="@{pedidosWindow$composer.zonas.nombre}" selectedItem="@{pedidosWindow$composer.zonaSeleccionada}"/>
-		<button label="Buscar" id="buscar"/>
+		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
+		<button label="Buscar" id="buscar" visible="false"/>
 	</hbox>
 </div>
 <separator spacing="15px"/>

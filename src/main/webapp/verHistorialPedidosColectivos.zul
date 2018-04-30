@@ -10,18 +10,18 @@ style="overflow:auto">
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" />
-		<datebox id="desde"/>
+		<datebox id="desde" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
-		<label value="Fecha Hasta:"/>
+		<label value="Fecha Hasta:" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<datebox id="hasta"/>	
-		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>
 		<combobox id="estadosListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.estados}" selectedItem="@{historialPedidosColectivosWindow$composer.estadoSeleccionado}"/>
 		<label value="Zona:"/>
 		<combobox id="zonasListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.zonas.nombre}" selectedItem="@{historialPedidosColectivosWindow$composer.zonaSeleccionada}"/>
-		<button label="Buscar" id="buscar"/>
+		<button label="Buscar" id="buscar" visible="false"/>
+		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
 	</hbox>
 </div>
 <separator spacing="15px"/>

@@ -53,6 +53,11 @@ public class ZonaServiceImpl implements ZonaService{
 		return zonaDAO.buscarZonaProxima(idVendedor);
 	}
 
+	@Override
+	public Zona obtenerZonaPorId(Integer zonaID) {
+		return zonaDAO.obtenerZonaPorId(zonaID);
+	}
+
 	
 	
 	

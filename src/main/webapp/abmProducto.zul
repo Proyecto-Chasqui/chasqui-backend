@@ -6,6 +6,17 @@
 <zk>
 <window title="Alta/Edición de Productos" id="productosWindow" border="normal"
 apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" position="center,top" sizable="true">
+
+<style>
+.z-notification-pointer ~ .z-notification-content
+    {
+        display:table-cell;
+        width:auto;
+        height:50px;
+        min-height:60px;
+        padding:5px 18px 5px 45px;
+        vertical-align:middle;
+    }</style>
 <vbox>
 	<listbox>
 		<listhead>
@@ -15,37 +26,37 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 			<listheader/>
 		</listhead>
 		<listitem>
-			<listcell label="${c:l('zk.listheader.label.abmCategoria.nombre')}"/>
+			<listcell label="${c:l('zk.listheader.label.abmCategoria.nombre')} *"/>
 			<listcell>
 				<textbox width="190px" id="nombreProducto" placeholder="i.e: Mermelada" />
 			</listcell>
-			<listcell label="${c:l('zk.listcell.label.abmVariedad.codigo')}"/>
+			<listcell label="${c:l('zk.listcell.label.abmVariedad.codigo')} *"/>
 		<listcell>
 			<textbox width="180px" id="textboxCodigo" placeholder="Ingresar código del artículo"/>
 		</listcell>
 		</listitem>
 		<listitem>
-			<listcell label="${c:l('zk.listcell.label.abmProducto.categoria')} "/>
+			<listcell label="${c:l('zk.listcell.label.abmProducto.categoria')} * "/>
 			<listcell>
 				<hbox>
-					<toolbarbutton id="botonAgregarCategoria" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}" image="/imagenes/plus.png"/>
+					<toolbarbutton id="botonAgregarCategoria" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')} *" image="/imagenes/plus.png"/>
 					<combobox width="160px" readonly="true" id="comboCategorias" model="@{productosWindow$composer.usuario.categorias}" selectedItem="@{productosWindow$composer.categoriaSeleccionada }"/>
 				</hbox>
 			</listcell>
-			<listcell label="${c:l('zk.listcell.label.abmVariedad.precio')}"/>	
+			<listcell label="${c:l('zk.listcell.label.abmVariedad.precio')} *"/>	
 			<listcell>
 				<doublebox width="180px" id="doubleboxPrecio" placeholder="I.E: 10.20"/>
 			</listcell>
 		</listitem>
 		<listitem>
-			<listcell label="${c:l('zk.listcell.label.abmProducto.fabricante') }"/>
+			<listcell label="${c:l('zk.listcell.label.abmProducto.fabricante') } *"/>
 			<listcell>
 				<hbox>
 					<toolbarbutton image="/imagenes/plus.png" id="botonAgregarFabricante" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"/>
 					<combobox width="160px" readonly="true" id="comboFabricantes" model="@{productosWindow$composer.usuario.fabricantes}" selectedItem="@{productosWindow$composer.productorSeleccionado }"/>
 				</hbox>
 			</listcell>
-			<listcell label="${c:l('zk.listcell.label.abmVariedad.stock')}"/>
+			<listcell label="${c:l('zk.listcell.label.abmVariedad.stock')} *"/>
 			<listcell>
 				<intbox width="180px" id="intboxStock" placeholder="I.E: 4"/>
 			</listcell>
@@ -83,8 +94,6 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 				<combobox id="comboCaracteristicas"  readonly="true" model="@{productosWindow$composer.caracteristicasProducto}"
 				selectedItem="@{productosWindow$composer.caracteristicaProductoSeleccionada}"
 				itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"/>
-				<toolbarbutton id="botonAgregarCaracteristica" image="/imagenes/plus.png" 
-				label="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"/>
 			</auxheader>
 		</auxhead>
 		<listhead>

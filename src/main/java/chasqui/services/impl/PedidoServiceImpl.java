@@ -35,6 +35,7 @@ import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.ZonaService;
 import chasqui.view.composer.Constantes;
 
 @Auditada
@@ -51,6 +52,9 @@ public class PedidoServiceImpl implements PedidoService {
 	
 	@Autowired
 	private ProductoService productoService;
+	
+	@Autowired
+	private ZonaService zonaService;
 
 	
 	@Autowired
@@ -304,6 +308,9 @@ public class PedidoServiceImpl implements PedidoService {
 		Pedido pedido = cliente.encontrarPedidoConId(request.getIdPedido());
 		pedido.setComentario(request.getComentario());
 		pedido.setRespuestasAPreguntas(buildMap(request.getOpcionesSeleccionadas()));
+		if(request.getIdZona()!= null){
+			pedido.setZona(zonaService.obtenerZonaPorId(request.getIdZona()));
+		}
 		Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(pedido.getIdVendedor());
 		usuarioService.inicializarListasDe(vendedor);
 		

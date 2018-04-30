@@ -12,4 +12,5 @@ public interface ZonaDAO {
 	public Zona ObtenerZonaPorID(final Integer idUsuario, final Integer idZona);
 	public List<Zona> obtenerZonas(Integer idVendedor);
 	public Zona buscarZonaProxima(Integer idVendedor);
+	public Zona obtenerZonaPorId(Integer zonaID);
 }

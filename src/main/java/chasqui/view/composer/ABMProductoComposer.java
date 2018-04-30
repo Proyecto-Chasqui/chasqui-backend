@@ -3,6 +3,7 @@ package chasqui.view.composer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
@@ -32,6 +35,7 @@ import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Textbox;
@@ -171,6 +175,10 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		nombreProducto.setValue(model.getNombre());
 		varianteRollback = new ArrayList<Variante>( model.getVariantes());
 	}
+	
+	public void onSelect$comboCaracteristicas(SelectEvent evt) {
+		this.onClick$botonAgregarCaracteristica();
+	}	
 
 	
 	public void onDestacarVariante(Variante v){
@@ -314,6 +322,9 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			throw new WrongValueException("El producto ya posee la caracteristica que desea agregar");			
 		}
 		caracteristicas.add(caracteristicaProductoSeleccionada);
+		Clients.showNotification("Agregada la caracterisitica " + caracteristicaProductoSeleccionada.getNombre(),
+								"info", listboxCaracteristicas, "top_center",
+								3000);
 		comboCaracteristicas.setValue(null);
 		caracteristicaProductoSeleccionada = null;
 		refresh();

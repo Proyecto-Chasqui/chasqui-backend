@@ -5,7 +5,16 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window title="Detalle del pedido colectivo abierto" width="60%" style="overflow:auto" id="verPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.VerPedidosColectivosComposer" sizable="true" closable="true">
-
+<style>
+.z-notification-pointer ~ .z-notification-content
+    {
+        display:table-cell;
+        width:auto;
+        height:50px;
+        min-height:60px;
+        padding:5px 18px 5px 45px;
+        vertical-align:middle;
+    }</style>
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" visible="false"/>

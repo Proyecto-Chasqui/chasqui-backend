@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.event.ChangeEvent;
+
 import org.apache.commons.lang.StringUtils;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.web.servlet.dsp.action.Set;
@@ -87,6 +89,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	private ZonaService zonaService;
 	private XlsExporter export  = new XlsExporter();
 	private MailService mailService;
+	private Window window;
 //	private Integer maximaPaginaVisitada = 1;
 	
 	public void doAfterCompose(Component component) throws Exception{
@@ -104,6 +107,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO);
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 			binder = new AnnotateDataBinder(component);
+			window = (Window) component;
 			listboxPedidos.setItemRenderer(new PedidoRenderer((Window) component));
 			binder.loadAll();
 			
@@ -254,7 +258,19 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		for(Object check: ch){
 				idsSeleccionados.add(Integer.parseInt(((Listitem) check).getLabel()));
 		}
-	}	
+	}
+	
+	public void onBuscar(){
+		onClick$buscar();
+	}
+	
+	public void onSelect$estadosListbox(SelectEvent evt) {
+		onClick$buscar();
+	}
+	
+	public void onSelect$zonasListbox(SelectEvent evt) {
+		onClick$buscar();
+	}
 	
 	public void onClick$exportarSeleccionados() throws Exception{
 		List<Pedido> pedidosSeleccionados = new ArrayList<Pedido>();
@@ -270,10 +286,16 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	
 	public void onClick$exportarTodosbtn() throws EstadoPedidoIncorrectoException{
 		try {
+			Clients.showBusy(window,"Generando el archivo, por favor espere...");
 			export.fullexport(this.pedidos);
+			Clients.clearBusy(window);
+			Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 		} catch (Exception e) {
+			Clients.clearBusy(window);
+			Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
 			e.printStackTrace();
 		}
+		Clients.clearBusy(window);
 		this.binder.loadAll();
 	}
 

@@ -38,6 +38,7 @@ import chasqui.model.Pedido;
 import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
+import chasqui.model.Zona;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.service.rest.request.DireccionRequest;
@@ -47,6 +48,7 @@ import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.PuntoDeRetiroService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.ZonaService;
 import chasqui.view.composer.Constantes;
 import freemarker.template.TemplateException;
 
@@ -71,6 +73,9 @@ public class GrupoServiceImpl implements GrupoService {
 
 	@Autowired
 	private NotificacionService notificacionService;
+	
+	@Autowired
+	private ZonaService zonaService;
 
 	@Override
 	public void altaGrupo(Integer idVendedor, String aliasGrupo, String descripcion, String emailClienteAdministrador)
@@ -298,21 +303,24 @@ public class GrupoServiceImpl implements GrupoService {
 	@Override
 	 * @see chasqui.services.interfaces.GrupoService#confirmarPedidoColectivo(java.lang.Integer)
 	 */
-	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest>opcionesSeleccionadas) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
+	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest>opcionesSeleccionadas, Integer idZona) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
 		
 		//Confirmar que el idDomicilio le pertenezca al solicitante
 		Cliente solicitante = (Cliente) usuarioService.obtenerClientePorEmail(emailSolicitante);
 		Direccion direccion = solicitante.obtenerDireccionConId(idDomicilio);
 		PuntoDeRetiro puntoderetiro = buscarpuntoderetiro(grupo.getVendedor(), idPuntoDeRetiro);
-
+		Zona zona=null;
+		if(idZona != null){
+			zona = zonaService.obtenerZonaPorId(idZona);
+		}
 		if(!(direccion == null ^ puntoderetiro == null)){
 			throw new DireccionesInexistentes("El punto de retiro o direccion seleccionada no existe"); 
 		}
 		
 		
 		if (grupo.getAdministrador().getEmail().equals(emailSolicitante)) {
-			grupo.confirmarPedidoColectivo(puntoderetiro, direccion, comentario,opcionesSeleccionadas);
+			grupo.confirmarPedidoColectivo(puntoderetiro, direccion, comentario,opcionesSeleccionadas,zona);
 			List<MiembroDeGCC> miembros = grupo.getCache();
 			for (MiembroDeGCC miembroDeGCC : miembros) {
 				notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());

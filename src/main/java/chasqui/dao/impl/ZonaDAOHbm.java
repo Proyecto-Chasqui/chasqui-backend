@@ -95,6 +95,19 @@ public class ZonaDAOHbm extends HibernateDaoSupport implements ZonaDAO{
 		});
 		return zona;
 	}
+
+	@Override
+	public Zona obtenerZonaPorId(final Integer zonaID) {
+		Zona zona = this.getHibernateTemplate().execute(new HibernateCallback<Zona>() {
+
+			public Zona doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(Zona.class);
+				c.add(Restrictions.eq("id", zonaID));
+				return (Zona) c.uniqueResult();
+			}
+		});
+		return zona;
+	}
 	
 	
 

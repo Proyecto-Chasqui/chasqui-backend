@@ -31,6 +31,7 @@ import org.zkoss.zul.Paging;
 import org.zkoss.zul.Window;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
@@ -107,6 +108,19 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			this.onClick$limpiarCamposbtn();
 			
 		}
+	}
+	
+	public void onBuscar(){
+			onClick$buscar();
+	}
+	
+	public void onSelect$estadosListbox(SelectEvent evt) {
+			onClick$buscar();
+
+	}
+	
+	public void onSelect$zonasListbox(SelectEvent evt) {
+			onClick$buscar();
 	}
 	
 	public void onClick$buscar(){
