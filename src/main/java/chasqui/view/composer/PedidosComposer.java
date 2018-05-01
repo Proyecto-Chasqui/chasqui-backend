@@ -286,16 +286,12 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	
 	public void onClick$exportarTodosbtn() throws EstadoPedidoIncorrectoException{
 		try {
-			Clients.showBusy(window,"Generando el archivo, por favor espere...");
 			export.fullexport(this.pedidos);
-			Clients.clearBusy(window);
 			Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 		} catch (Exception e) {
-			Clients.clearBusy(window);
 			Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
 			e.printStackTrace();
 		}
-		Clients.clearBusy(window);
 		this.binder.loadAll();
 	}
 

@@ -15,7 +15,68 @@ style="overflow:auto">
         min-height:60px;
         padding:5px 18px 5px 45px;
         vertical-align:middle;
-    }</style>
+    }
+ 	.z-loading {
+      background-color:rgba(0,0,0,0.5);
+      border:1px outset #A0A0A0;
+      font-weight: bold;
+      padding:2px;
+     }
+     .z-loading-indicator {
+         background-color: #FFFFFF;
+		color: #102B6D;
+		border:1px solid #83B5F7;
+		white-space: nowrap;
+		padding:6px;
+      }
+     .z-loading-icon{
+     	background: transparent no-repeat center;
+		background-image: url(${c:encodeURL('~./zk/img/progress2.gif')}); 
+		height: 16px;
+		width: 16px;	
+     }
+ 	
+ </style>
+    
+<script type="text/javascript">
+		zk.afterLoad("zk", function () {
+			var oldProgressbox = zUtl.progressbox;
+			zUtl.progressbox = function () {
+				arguments[1] = "Procesando, por favor espere...";
+				oldProgressbox.apply(this,arguments);
+				console.log(arguments);
+				var $mask = jq('.z-loading');
+				if ($mask) {
+					var $img = jq('.z-loading-indicator'),
+						$body = jq(document.body),
+						body = $body[0],
+						bw = $body.width() + body.scrollLeft - 10,
+						bh = $body.height() + body.scrollTop - 10;
+						
+					// update mask and image's style
+					$mask.width(bw);
+					$mask.height(bh);
+
+					$img.width('200px');
+					$img.css('margin-left', (bw - $img.width()) / 2 + 'px');
+					$img.css('margin-top', (bh - $img.height()) / 2 + 'px');
+
+					// update mask size when window scroll
+					if (!window.eventBinded) {
+						var $win = jq(window);
+						$win.scroll(function () {
+							var $maskInst = jq('.z-loading');
+							if ($maskInst[0]) {
+								$maskInst.width(bw + $win.scrollLeft());
+								$maskInst.height(bh + $win.scrollTop());
+							}
+						});
+						window.eventBinded = true;
+					}
+				}
+			}
+		});
+</script>
 
 <div align="center">
 	<hbox>
