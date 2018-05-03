@@ -67,7 +67,6 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private Combobox comboCategorias;
 	private Combobox comboFabricantes;
 	private Combobox comboCaracteristicas;
-	private Toolbarbutton botonAgregarCaracteristica;
 	private Toolbarbutton botonAgregarFabricante;
 	private Toolbarbutton botonAgregarCategoria;
 	private Listbox listboxCaracteristicas;
@@ -452,7 +451,6 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		llenarCampos();
 		modoEdicion = false;
 		textboxCodigo.setDisabled(true);
-		botonAgregarCaracteristica.setDisabled(true);
 		comboCaracteristicas.setDisabled(true);
 		botonAgregarFabricante.setDisabled(true);
 		botonAgregarCategoria.setDisabled(true);
