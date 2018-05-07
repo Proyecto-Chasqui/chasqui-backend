@@ -304,4 +304,34 @@ public class Vendedor extends Usuario{
 		this.preguntasDePedidosColectivos = preguntasDePedidosColectivos;
 	}
 
+	public List<PuntoDeRetiro> getPuntosDeRetiroHabilitados() {
+		List<PuntoDeRetiro> list = new ArrayList<PuntoDeRetiro>();
+		for(PuntoDeRetiro p : this.getPuntosDeRetiro()){
+			if(p.getDisponible()){
+				list.add(p);
+			}
+		}
+		return list;
+	}
+
+	public List<PreguntaDeConsumo> getPreguntasDePedidosIndividualesHabilitadas() {
+		List<PreguntaDeConsumo> list = new ArrayList<PreguntaDeConsumo>();
+		for(PreguntaDeConsumo p : this.getPreguntasDePedidosIndividuales()){
+			if(p.getHabilitada()){
+				list.add(p);
+			}
+		}
+		return list;
+	}
+	
+	public List<PreguntaDeConsumo> getPreguntasDePedidosColectivosHabilitados() {
+		List<PreguntaDeConsumo> list = new ArrayList<PreguntaDeConsumo>();
+		for(PreguntaDeConsumo p : this.getPreguntasDePedidosColectivos()){
+			if(p.getHabilitada()){
+				list.add(p);
+			}
+		}
+		return list;
+	}
+
 }
