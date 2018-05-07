@@ -42,6 +42,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		Map<String,Object>params2 = new HashMap<String,Object>();
 		Map<String,Object>params3 = new HashMap<String,Object>();
 		Map<String,Object>params4 = new HashMap<String,Object>();
+		Map<String,Object>params5 = new HashMap<String,Object>();
 		
 		
 		params1.put("accion", "visualizar");
@@ -80,6 +81,20 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		}
 		botonDestacar.addForward(Events.ON_CLICK,administracionWindow, Events.ON_NOTIFY, params4);
 		
+		//////////Boton ocultar
+		Toolbarbutton botonOcultar = new Toolbarbutton();
+		botonOcultar.setTooltiptext(Labels.getLabel("ocultar"));
+		params5.put("accion", "ocultar");
+		params5.put("producto", p);
+		params5.put("boton", botonOcultar);
+		if(!p.isOcultado()){
+			botonOcultar.setImage("/imagenes/destacado_off.png");			
+		}else{
+			botonOcultar.setImage("/imagenes/destacado_on.png");
+		}
+		botonOcultar.addForward(Events.ON_CLICK,administracionWindow, Events.ON_NOTIFY, params5);
+		//////////Boton ocultar
+		
 		c1.setParent(item);
 		c2.setParent(item);
 		combo.setParent(c5);
@@ -87,6 +102,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		botonVisualizar.setParent(hboxImagenes);
 		botonEditar.setParent(hboxImagenes);
 		botonDestacar.setParent(hboxImagenes);
+		botonOcultar.setParent(hboxImagenes);
 		botonEliminar.setParent(hboxImagenes);
 
 		hboxImagenes.setParent(c6);
