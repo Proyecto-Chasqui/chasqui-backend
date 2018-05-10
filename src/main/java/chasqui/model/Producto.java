@@ -11,6 +11,7 @@ public class Producto {
 	private List<Caracteristica> caracteristicas;
 	private Fabricante fabricante;
 	private List<Variante> variantes;
+	private boolean ocultado;
 	
 	//GETs & SETs
 	
@@ -18,6 +19,7 @@ public class Producto {
 		this.nombre = nombre;
 		this.categoria = categoria;
 		this.fabricante = fabricante;
+		this.ocultado = false;
 	}
 
 	public Producto() {
@@ -73,6 +75,13 @@ public class Producto {
 		this.caracteristicas = caracteristica;
 	}
 	
+	public boolean isOcultado() {
+		return ocultado;
+	}
+	
+	public void setOcultado(boolean ocultado) {
+		this.ocultado = ocultado;
+	}
 		
 	//METHODS
 

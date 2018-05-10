@@ -36,5 +36,6 @@
 <!--             <list-index column="ORDEN"/> -->
             <one-to-many class="chasqui.model.Variante" />
         </bag>
+		<property name="ocultado" type="java.lang.Boolean" column="OCULTADO"/>
     </class>
 </hibernate-mapping>

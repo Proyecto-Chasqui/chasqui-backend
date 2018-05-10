@@ -37,6 +37,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("variante.producto", "producto");
 				c.createAlias("producto.fabricante", "fabricante");
 				c.add(Restrictions.eq("fabricante.idVendedor",idVendedor));
+				c.add(Restrictions.eq("producto.ocultado", false));
 				if(query!=null){
 					c.add(Restrictions.like("producto.nombre", "%"+query+"%"));
 				}
@@ -228,6 +229,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				 .createAlias("c.vendedor", "v")
 				 .add(Restrictions.eq("v.id", idVendedor))
 				 .add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
+				//OCULTADO .add(Restrictions.eq("p.ocultado", false))
 				 .add(or)
 				 .setFirstResult(inicio)
 				 .setMaxResults(cantItems)
@@ -353,6 +355,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("producto", "p")
 				 .createAlias("p.categoria", "c")
 				 .createAlias("c.vendedor", "v")
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .add(Restrictions.eq("v.id", idVendedor))
 				 .add(Restrictions.eq("destacado", true))
 				 .addOrder(Order.asc("p.nombre"));
@@ -393,6 +396,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				 .createAlias("p.fabricante", "f")
 				 .createAlias("f.caracteristica", "c")
 				 .add(Restrictions.eq("c.id", medallaId))
+				//OCULTADO .add(Restrictions.eq("p.ocultado", false))
 				 .addOrder(Order.asc("p.nombre"));
 				return  (List<Variante>)c.list();
 			}

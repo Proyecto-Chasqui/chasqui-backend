@@ -473,6 +473,15 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		}
 		this.binder.loadAll();
 	}
+	
+	///////Ocultar producto
+	public void onOcultarProducto(Producto producto, Toolbarbutton botonOcultar){
+		producto.setOcultado(!producto.isOcultado());
+		ocultar(producto,botonOcultar);
+		usuarioService.guardarUsuario(usuarioLogueado);
+		this.binder.loadAll();
+	}
+	///////Ocultar producto
 
 	public void onClick$buscarProducto(){
 		
@@ -493,6 +502,16 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		fabricanteSeleccionado = null;
 		this.binder.loadAll();
 	}
+	
+	////Actualizar imagen del boton de ocultar
+	private void ocultar(Producto producto, Toolbarbutton botonOcultar){
+		if(producto.isOcultado()){
+			botonOcultar.setImage("/imagenes/ocultado_on.png");
+		}else{
+			botonOcultar.setImage("/imagenes/ocultado_off.png");
+		}
+	}
+	////
 	
 	private void destacar(Variante v, Toolbarbutton botonDestacar){
 		if(v.getDestacado()){
@@ -716,7 +735,7 @@ class ProductoEventListener implements EventListener<Event>{
 		Producto p = (Producto) params.get("producto");
 		Fabricante f = (Fabricante) params.get("productor");
 		Toolbarbutton botonDestacar = (Toolbarbutton) params.get("boton");
-		
+		Toolbarbutton botonOcultar = (Toolbarbutton) params.get("boton");
 		if(params.get("accion").equals("editar") && p != null){
 			this.composer.onEditarProducto(p);
 		}
@@ -737,6 +756,9 @@ class ProductoEventListener implements EventListener<Event>{
 		}
 		if(params.get("accion").equals("destacar") && p != null){
 			this.composer.onDestacarProducto(p,botonDestacar);
+		}
+		if(params.get("accion").equals("ocultar") && p != null){
+			this.composer.onOcultarProducto(p,botonOcultar);
 		}
 	}
 	
