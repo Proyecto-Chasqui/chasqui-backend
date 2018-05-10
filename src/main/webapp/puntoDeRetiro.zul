@@ -20,25 +20,25 @@ apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true
 					<listheader/>
 				</listhead>
 				<listitem>
-					<listcell label="Nombre" style="text-align: center"/>
+					<listcell label="Nombre *" style="text-align: center"/>
 					<listcell>
 						<textbox id="textNombrePuntoDeRetiro"  width="100%"/>
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell label="Calle" style="text-align: center"/>
+					<listcell label="Calle *" style="text-align: center"/>
 					<listcell>
 						<textbox id="textCalle"  width="100%"/>
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell label="Altura" style="text-align: center"/>
+					<listcell label="Altura *" style="text-align: center"/>
 					<listcell>
 						<textbox id="textAltura"  width="100%"/>
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell label="Localidad" style="text-align: center"/>
+					<listcell label="Localidad *" style="text-align: center"/>
 					<listcell>
 						<textbox id="textLocalidad"  width="100%"/>
 					</listcell>
@@ -56,7 +56,7 @@ apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell label="Mensaje" style="text-align: center"/>
+					<listcell label="Mensaje * (250 caracteres max.)" style="text-align: center"/>
 					<listcell >
 						<textbox placeholder="ie. fecha de entrega 3/2/2017" rows="3" id="txtMensaje" maxlength="250" width="100%"/>
 					</listcell>

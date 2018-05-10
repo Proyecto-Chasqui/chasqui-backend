@@ -253,7 +253,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		txtMensaje.setValue(null);
 		puntoDeRetiroSeleccionado = null;
 		btnLimpiar.setLabel("Limpiar campos");
-		btnGuardar.setLabel("Agregar");
+		btnAgregar.setLabel("Agregar");
 	}
 
 	public void onClick$btnAgregar() throws VendedorInexistenteException{		
@@ -302,7 +302,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		puntoDeRetiro.setDescripcion(txtMensaje.getValue());
 		if(usuario.existePuntoDeRetiro(puntoDeRetiro)){
 			puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiro);
-			usuario = vendedorService.obtenerVendedor(usuario.getNombre());
+			usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
 		}else{
 			puntoDeRetiro.setDisponible(true);
 		    usuario.agregarPuntoDeRetiro(puntoDeRetiro);
