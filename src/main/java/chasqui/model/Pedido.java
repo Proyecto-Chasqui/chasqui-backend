@@ -164,10 +164,15 @@ public class Pedido implements IPedido {
 		if (this.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
 			this.estado = Constantes.ESTADO_PEDIDO_PREPARADO;
 			this.alterable = false;
+			this.grabarPuntoDeRetiro();
 		} else {
 			throw new EstadoPedidoIncorrectoException("El pedido no puede ser preparado pues su estado es: "+ this.getEstado());
 		}
 
+	}
+	
+	public void grabarPuntoDeRetiro(){
+		this.puntoDeRetiro = new PuntoDeRetiro(this.puntoDeRetiro);		
 	}
 
 	@Override

@@ -28,8 +28,8 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="tru
 							<hbox align="center">
 								<image src="/imagenes/editar.png" forward="onClick=cuestionarioWindow$composer.onEditarPreguntaIndividual"/>
 								<space spacing="15px"/>
-								<image src="/imagenes/destacado_off.png" visible="@{preguntaindividual.noHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaIndividual"/>
-								<image src="/imagenes/destacado_on.png" visible="@{preguntaindividual.getHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaIndividual"/>
+								<image  src="/imagenes/if_toggle-left.png" visible="@{preguntaindividual.noHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaIndividual"/>
+								<image  src="/imagenes/if_toggle-right.png" visible="@{preguntaindividual.getHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaIndividual"/>
 								<space spacing="15px"/>
 								<image src="/imagenes/detach.png" forward="onClick=cuestionarioWindow$composer.onEliminarPreguntaIndividual"/>
 							</hbox>
@@ -57,8 +57,8 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="tru
 							<hbox align="center">
 								<image src="/imagenes/editar.png" forward="onClick=cuestionarioWindow$composer.onEditarPreguntaColectiva"/>
 								<space spacing="15px"/>
-								<image src="/imagenes/destacado_off.png" visible="@{preguntaColectiva.noHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaColectiva"/>
-								<image src="/imagenes/destacado_on.png" visible="@{preguntaColectiva.getHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaColectiva"/>
+								<image  src="/imagenes/if_toggle-left.png" visible="@{preguntaColectiva.noHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaColectiva"/>
+								<image  src="/imagenes/if_toggle-right.png" visible="@{preguntaColectiva.getHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaColectiva"/>
 								<space spacing="15px"/>
 								<image src="/imagenes/detach.png" forward="onClick=cuestionarioWindow$composer.onEliminarPreguntaColectiva"/>
 							</hbox>

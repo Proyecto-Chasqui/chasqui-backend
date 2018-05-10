@@ -1,8 +1,11 @@
 package chasqui.view.renders;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hlayout;
@@ -23,7 +26,8 @@ import chasqui.view.composer.PedidosComposer;
 
 public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo>{
 	private Window pedidoWindow;
-	private Listcell celdaId,celdaUsr, celdaFechaCreacion, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
+	private Map<Integer,GrupoCC> datagrupo;
+	private Listcell celdaId,celdaUsr, celdaAdmn, celdaFechaCreacion, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
 			celdaDireccion, celdaBotones;
 
 	public PedidoColectivoRenderer(Window w) {
@@ -33,8 +37,19 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 	public void render(Listitem item, final PedidoColectivo pedidoColectivo, int arg2) throws Exception {
 
 		celdaId = new Listcell(String.valueOf(pedidoColectivo.getId()));
-
-		celdaUsr = new Listcell("Sin User");
+		if(datagrupo != null) {
+			GrupoCC grupo = this.datagrupo.get(pedidoColectivo.getId());
+			if(grupo!=null) {
+				celdaUsr = new Listcell(grupo.getAlias());
+				celdaAdmn = new Listcell(grupo.getAdministrador().getEmail());
+			}else {
+				celdaUsr = new Listcell("sin nombre grupo");
+				celdaAdmn = new Listcell("sin nombre admin");
+			}
+		}else {
+			celdaUsr = new Listcell("sin nombre grupo");
+			celdaAdmn = new Listcell("sin nombre admin");
+		}
 		if(pedidoColectivo.getFechaCreacion() != null){
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			Date d = new Date(pedidoColectivo.getFechaCreacion().getMillis());
@@ -94,6 +109,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 
 		celdaId.setParent(item);
 		celdaUsr.setParent(item);
+		celdaAdmn.setParent(item);
 		celdaFechaCreacion.setParent(item);
 		celdaZona.setParent(item);
 		celdaMontoMinimo.setParent(item);
@@ -102,6 +118,17 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		celdaDireccion.setParent(item);
 		celdaBotones.setParent(item);
 
+	}
+
+	private void completarCeldas(Listcell celdaUsr2, Listcell celdaAdmn2,Integer idpedido) {
+		GrupoCC grupo = this.datagrupo.get(idpedido);
+		if(grupo!=null) {
+			celdaUsr2 = new Listcell(grupo.getAlias());
+			celdaAdmn2 = new Listcell(grupo.getAdministrador().getEmail());
+		}else {
+			celdaUsr2 = new Listcell("sin nombre grupo");
+			celdaAdmn2 = new Listcell("sin nombre admin");
+		}		
 	}
 
 	private void configurarAcciones(final PedidoColectivo pedidoColectivo) {
@@ -211,5 +238,13 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		botonEntregar.setParent(hbox);
 		espacio.setParent(hbox);
 		hbox.setParent(celdaBotones);
+	}
+
+	public Map<Integer,GrupoCC> getDatagrupo() {
+		return datagrupo;
+	}
+
+	public void setDatagrupo(Map<Integer,GrupoCC> datagrupo) {
+		this.datagrupo = datagrupo;
 	}
 }

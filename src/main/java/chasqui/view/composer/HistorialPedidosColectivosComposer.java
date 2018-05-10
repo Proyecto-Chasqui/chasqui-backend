@@ -137,7 +137,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		if(zonaSeleccionada !=null){
 			zonaId = zonaSeleccionada.getId();
 		}
-		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedorDeGrupo(usuarioLogueado.getId(),grupo.getId(),d,h,estadoSeleccionado,zonaId));
+		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedorDeGrupo(usuarioLogueado.getId(),grupo.getId(),d,h,estadoSeleccionado,zonaId, null));
 		this.binder.loadAll();
 	}
 

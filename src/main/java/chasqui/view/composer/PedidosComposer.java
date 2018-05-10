@@ -127,7 +127,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			}
 		}		
 		pedidos.clear();
-		pedidos.addAll(pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId));
+		pedidos.addAll(pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId,null));
 		this.binder.loadAll();
 	}
 

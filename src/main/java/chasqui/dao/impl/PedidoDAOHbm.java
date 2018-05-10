@@ -270,7 +270,7 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pedido> obtenerPedidosIndividualesDeVendedor(final Integer idVendedor, final Date desde, final Date hasta,
-			final String estadoSeleccionado, final Integer zonaId) {
+			final String estadoSeleccionado, final Integer zonaId, final Integer idPuntoRetiro) {
 		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<Pedido>>() {
 
 			@Override
@@ -304,11 +304,16 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 					}
 				}
 				
+				if(idPuntoRetiro!=null) {
+					c.add(Restrictions.eq("puntoDeRetiro.id",idPuntoRetiro));
+				}
+				
 
 				return (List<Pedido>) c.list();
 			}
 		});
 	}
+
 
 
 }

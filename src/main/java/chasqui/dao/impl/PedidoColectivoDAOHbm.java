@@ -46,7 +46,8 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedorDeGrupo(Integer vendedorid,
-			final Integer grupoID, final Date d, final Date h, final String estadoSeleccionado, final Integer zonaId) {
+			final Integer grupoID, final Date d, final Date h, final String estadoSeleccionado, final Integer zonaId,
+			final Integer idPuntoRetiro) {
 		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<PedidoColectivo>>() {
 
 			@Override
@@ -86,6 +87,9 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 								pedidosColectivos.add(Restrictions.le("pedidoColectivo.fechaCreacion", hasta.plusDays(1).withHourOfDay(0)));
 							}
 						}
+					}
+					if(idPuntoRetiro!=null) {
+						pedidosColectivos.add(Restrictions.eq("puntoDeRetiro.id",idPuntoRetiro));
 					}
 
 				pedidosRet = pedidosColectivos.list();

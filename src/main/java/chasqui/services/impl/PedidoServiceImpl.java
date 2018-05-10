@@ -509,7 +509,8 @@ public class PedidoServiceImpl implements PedidoService {
 
 	@Override
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedor(Integer id, Date d, Date h,
-			String estadoSeleccionado, Integer zonaId) {
-		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedor( id, d, h,estadoSeleccionado,zonaId);
+			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro) {
+		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedor( id, d, h,estadoSeleccionado,zonaId,idPuntoRetiro);
 	}
+	
 }

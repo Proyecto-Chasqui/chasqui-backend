@@ -11,7 +11,7 @@ apply="chasqui.view.composer.ZonasComposer" width="60%"  closable="true">
 <tabbox>
 	<tabs>
 		<tab label="Zonas"/>
-		<tab label="Mapa"/>
+		<!--  <tab label="Mapa"/> -->
 	</tabs>
 	<tabpanels>
 		<tabpanel>		
