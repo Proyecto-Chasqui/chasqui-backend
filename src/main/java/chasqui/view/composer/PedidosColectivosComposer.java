@@ -80,6 +80,7 @@ public class PedidosColectivosComposer  extends GenericForwardComposer<Component
 	private ProductoService productoService;
 	private GrupoService grupoService;
 	private Combobox estadosListbox;
+	private Combobox zonasListbox;
 	private String estadoSeleccionado;
 	private String grupalSeleccionado;
 	private List<String>estados;
@@ -108,6 +109,7 @@ public class PedidosColectivosComposer  extends GenericForwardComposer<Component
 			
 		}
 	}
+	
 	
 	public void onClick$buscar() throws VendedorInexistenteException{
 		Date d = desde.getValue();

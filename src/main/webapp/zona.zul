@@ -2,7 +2,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./zonaWindow" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window id="zonaWindow" border="normal" title="Alta de Zonas" position="center,top"
 apply="chasqui.view.composer.ZonasComposer" width="60%"  closable="true">
@@ -11,7 +11,7 @@ apply="chasqui.view.composer.ZonasComposer" width="60%"  closable="true">
 <tabbox>
 	<tabs>
 		<tab label="Zonas"/>
-		<tab label="Mapa"/>
+		<!--  <tab label="Mapa"/> -->
 	</tabs>
 	<tabpanels>
 		<tabpanel>		

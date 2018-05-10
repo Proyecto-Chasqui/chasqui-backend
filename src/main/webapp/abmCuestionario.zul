@@ -1,0 +1,134 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./cuestionarioWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window id="cuestionarioWindow" border="normal" title="Configuracion del cuestionario" position="center,top"
+apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="true">
+
+<!-- Seccion Nueva Pregunta -->
+<div id="mostrarNuevaPregunta">
+			<tabbox>
+			<tabs>
+				<tab label="Preguntas de consumo individuales"/>
+				<tab label="Preguntas de consumo colectivo"/> 
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+  				<listbox checkmark="true" selectedItem="@{cuestionarioWindow$composer.preguntaIndividualSeleccionada}" model="@{cuestionarioWindow$composer.preguntasIndividualesDeConsumo}" mold="paging"
+				rows="5" pageSize="5"> 
+					<listhead>
+						<listheader label="Pregunta" />
+						<listheader label="Acciones"/>
+					</listhead>
+					<listitem self="@{each=preguntaindividual}">
+						<listcell label="@{preguntaindividual.getNombre}" style="font-weight:bold;"/>
+						<listcell>
+							<hbox align="center">
+								<image src="/imagenes/editar.png" forward="onClick=cuestionarioWindow$composer.onEditarPreguntaIndividual"/>
+								<space spacing="15px"/>
+								<image  src="/imagenes/if_toggle-left.png" visible="@{preguntaindividual.noHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaIndividual"/>
+								<image  src="/imagenes/if_toggle-right.png" visible="@{preguntaindividual.getHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaIndividual"/>
+								<space spacing="15px"/>
+								<image src="/imagenes/detach.png" forward="onClick=cuestionarioWindow$composer.onEliminarPreguntaIndividual"/>
+							</hbox>
+						</listcell>
+					</listitem>
+				</listbox>
+				<separator spacing="15px"/>
+					<div align="center">
+						<hbox>	
+							<button label="Nueva Pregunta Individual" id="btnAgregarPreguntaIndividual"/>
+						</hbox>
+					</div>
+				<separator spacing="15px"/>	
+				</tabpanel>
+				<tabpanel>
+  				<listbox checkmark="true" selectedItem="@{cuestionarioWindow$composer.preguntaColectivaSeleccionada}" model="@{cuestionarioWindow$composer.preguntasColectivasDeConsumo}" mold="paging"
+				rows="5" pageSize="5"> 
+					<listhead>
+						<listheader label="Pregunta" />
+						<listheader label="Acciones"/>
+					</listhead>
+					<listitem self="@{each=preguntaColectiva}">
+						<listcell label="@{preguntaColectiva.getNombre}" style="font-weight:bold;"/>
+						<listcell>
+							<hbox align="center">
+								<image src="/imagenes/editar.png" forward="onClick=cuestionarioWindow$composer.onEditarPreguntaColectiva"/>
+								<space spacing="15px"/>
+								<image  src="/imagenes/if_toggle-left.png" visible="@{preguntaColectiva.noHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaColectiva"/>
+								<image  src="/imagenes/if_toggle-right.png" visible="@{preguntaColectiva.getHabilitada}" forward="onClick=cuestionarioWindow$composer.onHabilitarPreguntaColectiva"/>
+								<space spacing="15px"/>
+								<image src="/imagenes/detach.png" forward="onClick=cuestionarioWindow$composer.onEliminarPreguntaColectiva"/>
+							</hbox>
+						</listcell>
+					</listitem>
+				</listbox>
+				<separator spacing="15px"/>
+					<div align="center">
+						<hbox>	
+							<button label="Nueva Pregunta Colectiva" id="btnAgregarPreguntaColectiva"/>
+						</hbox>
+					</div>
+				<separator spacing="15px"/>	
+				</tabpanel>
+				</tabpanels>
+			</tabbox>
+</div>
+<!-- Sección editar/crear Pregunta -->
+<div id="editarPregunta">
+			<listbox width="100%">
+				<listhead>
+					<listheader/>
+					<listheader/>
+				</listhead>
+				<listitem>
+					<listcell label="Pregunta" style="text-align: center"/>
+					<listcell>
+						<textbox id="textNombrePregunta"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Respuesta" style="text-align: center"/>
+					<listcell>
+						<hbox>
+						<textbox id="textNombreRespuesta"  width="100%"/>
+						<div id="enter" align="center">			
+						 <button label="Agregar" id="btnGuardarRespuesta" forward="enter.onOK"/>
+						</div>
+						</hbox>
+					</listcell>
+				</listitem>
+			</listbox>
+
+			<separator spacing="15px"/>
+  			<listbox checkmark="true" selectedItem="@{cuestionarioWindow$composer.respuestaSeleccionada}" model="@{cuestionarioWindow$composer.respuestasDeConsumo}" mold="paging"
+			rows="5" pageSize="5"> 
+				<listhead>
+					<listheader label="Respuesta" />
+					<listheader label="Acciones"/>
+				</listhead>
+				<listitem self="@{each=respuesta}">
+					<listcell label="@{respuesta}" style="font-weight:bold;"/>
+					<listcell>
+						<hbox align="center">
+							<space spacing="15px"/>
+							<image src="/imagenes/detach.png"  forward="onClick=cuestionarioWindow$composer.onEliminarRespuesta"/>
+						</hbox>
+					</listcell>
+				</listitem>
+			</listbox>
+				<separator spacing="15px"/>
+					<div align="center">
+						<hbox>	
+							<button label="Guardar Cambios" id="btnGuardarCambios" image="/imagenes/save.png" />
+							<space spacing="3px"/>
+							<button label="Cancelar Cambios" id="btnCancelarCambios" image="/imagenes/cancel.png"/>
+						</hbox>
+					</div>
+				<separator spacing="15px"/>	
+			
+</div>
+</window>
+</zk>

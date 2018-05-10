@@ -17,7 +17,7 @@
         </property>
         <property name="habilitada" type="java.lang.Boolean" column="HABILITADA"/>
         
-		<list name="opciones" table="OPCIONES" >
+		<list name="opciones" table="OPCIONES" lazy="false"  cascade="all-delete-orphan">
 			<key column="OPCIONES_ID"></key>
 			<index column="SECUENCE"></index>
 			<element column="OPCION" type="string"></element>

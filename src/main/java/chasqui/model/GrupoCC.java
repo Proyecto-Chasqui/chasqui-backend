@@ -252,7 +252,7 @@ public class GrupoCC {
 		this.pedidoActual.agregarPedidoIndividual(nuevoPedido);
 	}
 
-	public void confirmarPedidoColectivo(PuntoDeRetiro puntoDeRetiro, Direccion direccion, String comentario,List<OpcionSeleccionadaRequest> opcionesSeleccionadas) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException {
+	public void confirmarPedidoColectivo(PuntoDeRetiro puntoDeRetiro, Direccion direccion, String comentario,List<OpcionSeleccionadaRequest> opcionesSeleccionadas, Zona zona) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException {
 
 		if (!pedidoActual.tienePedidos()) {
 			throw new EstadoPedidoIncorrectoException(
@@ -272,6 +272,7 @@ public class GrupoCC {
 		if (this.pedidoActual.getMontoTotal() >= this.vendedor.getMontoMinimoPedido()) {
 			this.setearDireccionEnPedido(puntoDeRetiro,direccion);
 			this.setearOpcionesSeleccionadas(opcionesSeleccionadas);
+			this.pedidoActual.setZona(zona);
 			this.pedidoActual.setComentario(comentario);
 			this.pedidoActual.confirmarte();
 			this.historial.agregarAHistorial(this.pedidoActual);

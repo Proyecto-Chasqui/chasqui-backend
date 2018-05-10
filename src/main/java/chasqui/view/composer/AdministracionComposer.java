@@ -10,6 +10,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
@@ -100,7 +101,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 			Executions.sendRedirect("/");
 			return;
 		}
-		
+		Executions.getCurrent().getSession().setAttribute("administracionWindow", comp);
 		binder = new AnnotateDataBinder(comp);
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		productoService = (ProductoService) SpringUtil.getBean("productoService");
@@ -581,6 +582,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		this.binder.loadAll();
 	}
 	
+	public void onSelect$productorComboBox(SelectEvent evt){
+		onClick$buscarProducto();
+	}
 	
 
 	public Vendedor getUsuarioLogueado() {

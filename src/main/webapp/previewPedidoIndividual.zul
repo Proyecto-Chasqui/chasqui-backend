@@ -1,0 +1,34 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./previewPedidosIndividualesWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window id="previewPedidosIndividualesWindow" width="60%" title="Pedidos en conflicto" closable="true" border="normal" apply="chasqui.view.composer.PreviewPedidosIndividualesComposer" sizable="true"
+>
+<style>
+.z-notification-pointer ~ .z-notification-content
+    {
+        display:table-cell;
+        width:auto;
+        height:50px;
+        min-height:60px;
+        padding:5px 18px 5px 45px;
+        vertical-align:middle;
+    }</style>
+<separator spacing="15px"/>
+	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{previewPedidosIndividualesWindow$composer.pedidos}" mold="paging" pageSize="10" rows="10">
+		<listhead>
+			<listheader label="ID Pedido" align="center" visible="true"/>
+			<listheader label="Cliente Creador" align="center" />
+			<listheader label="Fecha Creación" align="center" />
+			<listheader label="Zona" align="center" visible="false"/>
+			<listheader label="Monto Minimo" align="center"/>
+			<listheader label="Monto Actual" align="center"/>
+			<listheader label="Estado" align="center"/>
+			<listheader label="Direccion de Entrega" align="center"/>
+			<listheader label="Acciones" align="center" hflex="4" visible="false"/>
+		</listhead>		
+	</listbox>
+</window>
+</zk>

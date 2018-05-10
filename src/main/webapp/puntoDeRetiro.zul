@@ -2,7 +2,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./puntosDeRetiroWindow" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window id="puntosDeRetiroWindow" border="normal" title="Alta de Puntos de retiro" position="center,top"
 apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true">
@@ -20,25 +20,25 @@ apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true
 					<listheader/>
 				</listhead>
 				<listitem>
-					<listcell label="Nombre" style="text-align: center"/>
+					<listcell label="Nombre *" style="text-align: center"/>
 					<listcell>
 						<textbox id="textNombrePuntoDeRetiro"  width="100%"/>
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell label="Calle" style="text-align: center"/>
+					<listcell label="Calle *" style="text-align: center"/>
 					<listcell>
 						<textbox id="textCalle"  width="100%"/>
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell label="Altura" style="text-align: center"/>
+					<listcell label="Altura *" style="text-align: center"/>
 					<listcell>
 						<textbox id="textAltura"  width="100%"/>
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell label="Localidad" style="text-align: center"/>
+					<listcell label="Localidad *" style="text-align: center"/>
 					<listcell>
 						<textbox id="textLocalidad"  width="100%"/>
 					</listcell>
@@ -56,7 +56,7 @@ apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell label="Mensaje" style="text-align: center"/>
+					<listcell label="Mensaje * (250 caracteres max.)" style="text-align: center"/>
 					<listcell >
 						<textbox placeholder="ie. fecha de entrega 3/2/2017" rows="3" id="txtMensaje" maxlength="250" width="100%"/>
 					</listcell>
@@ -83,8 +83,8 @@ apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true
 						<hbox align="center">
 							<image src="/imagenes/editar.png" forward="onClick=puntosDeRetiroWindow$composer.onEditarPuntoDeRetiro"/>
 							<space spacing="15px"/>
-							<image src="/imagenes/destacado_off.png" visible="@{puntoDeRetiro.noDisponible}" forward="onClick=puntosDeRetiroWindow$composer.onHabilitarPuntoDeRetiro"/>
-							<image src="/imagenes/destacado_on.png" visible="@{puntoDeRetiro.getDisponible}" forward="onClick=puntosDeRetiroWindow$composer.onHabilitarPuntoDeRetiro"/>
+							<image src="/imagenes/if_toggle-left.png" visible="@{puntoDeRetiro.noDisponible}" forward="onClick=puntosDeRetiroWindow$composer.onHabilitarPuntoDeRetiro"/>
+							<image src="/imagenes/if_toggle-right.png" visible="@{puntoDeRetiro.getDisponible}" forward="onClick=puntosDeRetiroWindow$composer.onHabilitarPuntoDeRetiro"/>
 							<space spacing="15px"/>
 							<image src="/imagenes/detach.png" forward="onClick=zonaWindow$composer.onEliminarPuntoDeRetiro"/>
 						</hbox>

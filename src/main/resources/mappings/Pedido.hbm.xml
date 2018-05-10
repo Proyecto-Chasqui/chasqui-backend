@@ -88,9 +88,9 @@
 			<column name="ID_PUNTO_DE_RETIRO" />
 		</many-to-one> 
     	
-     	 <map name="respuestasAPreguntas" table="RESPUESTA_A_PREGUNTA"
+     	 <map name="respuestasAPreguntas" table="RESPUESTA_A_PREGUNTA_INDIVIDUAL"
            	 order-by="nombre" lazy="false" access="field">
-         	<key column="id"/>
+         	<key column="id_pedidoindividual"/>
          	<map-key column="nombre" type="string"/>
          	<element column="opcionSeleccionada" type="string"/>
       	</map>

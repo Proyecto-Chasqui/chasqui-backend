@@ -101,8 +101,8 @@ public class GrupoCCRenderer implements ListitemRenderer<GrupoCC> {
 		espacio.setSpacing("10px");
 		
 		// Botón abrir historial de pedido en pantalla
-		Toolbarbutton botonVerHistorialDePedidos = new Toolbarbutton("Ver Historial de Pedidos");
-		botonVerHistorialDePedidos.setTooltiptext("Muestra los pedidos grupales confirmados");
+		Toolbarbutton botonVerHistorialDePedidos = new Toolbarbutton("Ver pedidos colectivos confirmados");
+		botonVerHistorialDePedidos.setTooltiptext("Muestra los pedidos colectivo confirmados");
 		botonVerHistorialDePedidos.setImage("/imagenes/eye.png");
 		HashMap<String, Object> paramsHistorial = new HashMap<String, Object>();
 		paramsHistorial.put(PedidosColectivosComposer.PEDIDO_KEY_HISTORIAL, grupo.getHistorial());
@@ -110,8 +110,8 @@ public class GrupoCCRenderer implements ListitemRenderer<GrupoCC> {
 		paramsHistorial.put(PedidosColectivosComposer.ACCION_KEY, PedidosColectivosComposer.ACCION_VER_HISTORIAL);
 		botonVerHistorialDePedidos.addForward(Events.ON_CLICK, grupoWindow, Events.ON_USER, paramsHistorial);
 		//Botón ver pedido actual
-		Toolbarbutton botonVerPedioActual = new Toolbarbutton("Ver pedido grupal en progreso");
-		botonVerPedioActual.setTooltiptext("Muestra el detalle del pedido grupal abierto");
+		Toolbarbutton botonVerPedioActual = new Toolbarbutton("Ver pedido colectivo abierto");
+		botonVerPedioActual.setTooltiptext("Muestra los pedidos de los integrantes del pedido colectivo");
 		botonVerPedioActual.setImage("/imagenes/eye.png");
 		HashMap<String, Object> paramsVerPedidoActual = new HashMap<String, Object>();
 		paramsVerPedidoActual.put(PedidosColectivosComposer.PEDIDO_KEY, grupo.getPedidoActual());

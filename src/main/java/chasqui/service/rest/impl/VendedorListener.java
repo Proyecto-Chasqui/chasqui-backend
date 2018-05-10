@@ -97,7 +97,7 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerPuntosDeRetiroDeVendedor(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
-			return Response.ok(new PuntosDeRetiroResponse(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPuntosDeRetiro())).build();
+			return Response.ok(new PuntosDeRetiroResponse(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPuntosDeRetiroHabilitados())).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			
@@ -119,7 +119,7 @@ public class VendedorListener {
 	}
 	
 	@GET
-	@Path("/preguntasDeConsumoColectivo(/{nombreVendedor}")
+	@Path("/preguntasDeConsumoColectivo/{nombreVendedor}")
 	@Produces("application/json")
 	public Response obtenerPreguntasDeConsumoColectivo(@PathParam("nombreVendedor")String nombreVendedor){
 		try{

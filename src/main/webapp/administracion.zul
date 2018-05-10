@@ -2,7 +2,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./administracionWindow" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <!-- <zscript><![CDATA[ -->
 <!--                   if(Executions.getCurrent().getSession().getAttribute("USERNAME") == null){ -->
@@ -50,13 +50,13 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 <separator spacing="5px"/>
 <hbox width="100%">
 	<space width="185px"/>
-	<toolbarbutton id="agregarButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
+	<toolbarbutton label="Nueva Categoria" id="agregarButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		 forward="onClick=administracionWindow$composer.onCrearCategoria"/>
-	<toolbarbutton visible="false" id="agregarProductoButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
+	<toolbarbutton label="Nuevo Producto" visible="false" id="agregarProductoButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		forward="onClick=administracionWindow$composer.onCrearProducto"/>
-	<toolbarbutton visible="false" id="agregarProductorButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
+	<toolbarbutton label="Nuevo Productor" visible="false" id="agregarProductorButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		forward="onClick=administracionWindow$composer.onCrearProductor"/>	
-	<toolbarbutton visible="false" id="agregarNodoButton" image="/imagenes/plus.png" tooltiptext="Agregar nodo"
+	<toolbarbutton label="Nuevo Nodo" visible="false" id="agregarNodoButton" image="/imagenes/plus.png" tooltiptext="Agregar nodo"
 		forward="onClick=administracionWindow$composer.onCrearNodo"/>	
 </hbox>
 <hbox height="100%">
@@ -139,7 +139,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 			<hbox>
 				<label value="Productor:"/>
 				<combobox id="productorComboBox" readonly="true" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}"/>
-				<button label="Buscar" id="buscarProducto"/>
+				<button label="Buscar" id="buscarProducto" visible="false"/>
 				<button label="Limpiar Campos" id="limpiarCamposbtn" visible="true"/>
 			</hbox>
 				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10"

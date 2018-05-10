@@ -23,6 +23,14 @@ public class PuntoDeRetiro{
 	public PuntoDeRetiro(Direccion dir){
 		this.direccion = dir;
 	}
+	
+	public PuntoDeRetiro(PuntoDeRetiro p) {
+		this.idExterno=p.getIdExterno();
+		this.nombre = p.getNombre();
+		this.descripcion = p.getDescripcion();
+		this.disponible = p.getDisponible();
+		this.direccion = p.getDireccion();
+	}
 
 	public Integer getId() {
 		return id;

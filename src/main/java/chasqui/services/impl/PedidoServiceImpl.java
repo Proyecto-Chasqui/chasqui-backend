@@ -35,6 +35,7 @@ import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.ZonaService;
 import chasqui.view.composer.Constantes;
 
 @Auditada
@@ -51,6 +52,9 @@ public class PedidoServiceImpl implements PedidoService {
 	
 	@Autowired
 	private ProductoService productoService;
+	
+	@Autowired
+	private ZonaService zonaService;
 
 	
 	@Autowired
@@ -304,14 +308,17 @@ public class PedidoServiceImpl implements PedidoService {
 		Pedido pedido = cliente.encontrarPedidoConId(request.getIdPedido());
 		pedido.setComentario(request.getComentario());
 		pedido.setRespuestasAPreguntas(buildMap(request.getOpcionesSeleccionadas()));
+		if(request.getIdZona()!= null){
+			pedido.setZona(zonaService.obtenerZonaPorId(request.getIdZona()));
+		}
 		Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(pedido.getIdVendedor());
 		usuarioService.inicializarListasDe(vendedor);
 		
 		vendedor.descontarStockYReserva(pedido);
 		cliente.confirmarPedido(request.getIdPedido(),request.getIdDireccion(),request.getIdPuntoDeRetiro());
 		
-		notificacionService.enviarAClienteSuPedidoConfirmado(vendedor.getEmail(), email, pedido);
 		
+		notificacionService.enviarAClienteSuPedidoConfirmado(vendedor.getEmail(), email, pedido);
 		usuarioService.guardarUsuario(cliente);
 		usuarioService.guardarUsuario(vendedor);
 	}
@@ -502,7 +509,8 @@ public class PedidoServiceImpl implements PedidoService {
 
 	@Override
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedor(Integer id, Date d, Date h,
-			String estadoSeleccionado, Integer zonaId) {
-		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedor( id, d, h,estadoSeleccionado,zonaId);
+			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro) {
+		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedor( id, d, h,estadoSeleccionado,zonaId,idPuntoRetiro);
 	}
+	
 }

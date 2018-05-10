@@ -109,7 +109,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 	private Listcell crearCeldaSegunEstado(Pedido pedido) {
 		Listcell ret;
 		if(pedido.getPerteneceAPedidoGrupal() && pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
-			ret = new Listcell("CONFIRMADO: ESPERA CONFIRMACION GRUPAL");
+			ret = new Listcell("CONFIRMADO");
 		}else{
 			ret = new Listcell(pedido.getEstado());
 		}

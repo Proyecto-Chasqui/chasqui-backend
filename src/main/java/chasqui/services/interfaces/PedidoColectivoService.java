@@ -16,7 +16,7 @@ public interface PedidoColectivoService {
 	
 	@Transactional
 	public Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedorDeGrupo(Integer vendedorid, Integer grupoID,
-			Date d, Date h, String estadoSeleccionado, Integer zonaId);
+			Date d, Date h, String estadoSeleccionado, Integer zonaId,Integer idPuntoRetiro);
 
 	public List<PedidoColectivo> obtenerPedidosColectivosDeGrupo(Integer id);
 

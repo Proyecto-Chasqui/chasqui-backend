@@ -92,12 +92,14 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 	private Integer idPedidoColectivo;
 	private GrupoCC grupo;
 	private Boolean exportar;
+	private Window window;
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		if(usuarioLogueado != null){
 			super.doAfterCompose(component);
+			window = (Window) component;
 			component.addEventListener(Events.ON_USER, new VerPedidoColectivoEventListener(this));
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
@@ -177,30 +179,24 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		}
 	}	
 	
-	public void onClick$exportarSeleccionados() throws Exception{
-//		List<Pedido> pedidosSeleccionados = new ArrayList<Pedido>();
-//		for(Pedido p: pedidosDentroDeColectivo){
-//			for(Integer id : idsSeleccionados){
-//				if(p.getId()==id){
-//					pedidosSeleccionados.add(p);
-//				}
-//			}
-//		}
-//		List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosSeleccionados);
-//		export.fullexport(pedidomerge);
-	}
-	
-	public void onClick$exportarTodosbtn(){
+	public void onClick$exportarTodosbtn(){	
+		
 		try {
+			Clients.showBusy(window,"Generando el archivo, por favor espere...");
 			PedidoColectivo pedidoc = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
 			List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
 			this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
 			pedidomerge.addAll(pedidosDentroDeColectivo);
 			pedidomerge = obtenerSoloConfirmados(pedidomerge);
-			export.exportColectivos(pedidomerge);			
+			export.exportColectivos(pedidomerge);
+			Clients.clearBusy(window);
+			Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 		} catch (Exception e) {
+			Clients.clearBusy(window);
+			Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
 			e.printStackTrace();
 		}
+		Clients.clearBusy(window);
 		this.binder.loadAll();
 	}
 	
@@ -223,7 +219,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		pedidogeneralgrupal.setPuntoDeRetiro(pedidoColectivo.getPuntoDeRetiro());
 		pedidogeneralgrupal.setComentario(pedidoColectivo.getComentario());
 		pedidogeneralgrupal.setZona(pedidoColectivo.getZona());
-		
+		pedidogeneralgrupal.setRespuestasAPreguntas(pedidoColectivo.getRespuestasAPreguntas());
 		for(Pedido p : pedidosgenerados){
 			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
 				for(ProductoPedido pp : p.getProductosEnPedido()){

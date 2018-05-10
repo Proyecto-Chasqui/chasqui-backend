@@ -186,6 +186,11 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		w.doModal();
 	}
 	
+	public void onClick$cuestionarioButton(){
+		Window w = (Window) Executions.createComponents("/abmCuestionario.zul", this.self, null);
+		w.doModal();
+	}
+	
 	public void onClick$buttonGuardar() throws Exception{
 		validarPassword();
 		validacionesDeCompra();

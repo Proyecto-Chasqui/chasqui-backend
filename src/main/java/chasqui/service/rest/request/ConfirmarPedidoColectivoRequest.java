@@ -17,6 +17,7 @@ public class ConfirmarPedidoColectivoRequest implements Serializable{
 	private Integer idPuntoDeRetiro;
 	private List<OpcionSeleccionadaRequest> opcionesSeleccionadas;
 	private String comentario;
+	private Integer idZona;
 	
 	public String getComentario() {
 		return comentario;
@@ -60,6 +61,14 @@ public class ConfirmarPedidoColectivoRequest implements Serializable{
 
 	public void setOpcionesSeleccionadas(List<OpcionSeleccionadaRequest> opcionesSeleccionadas) {
 		this.opcionesSeleccionadas = opcionesSeleccionadas;
+	}
+
+	public Integer getIdZona() {
+		return idZona;
+	}
+
+	public void setIdZona(Integer idZona) {
+		this.idZona = idZona;
 	}
 	
 

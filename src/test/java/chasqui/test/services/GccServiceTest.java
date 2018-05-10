@@ -250,7 +250,7 @@ public class GccServiceTest extends GenericSetUp {
 
 		
 		// ---------------------------------- CONFIRMAR PEDIDO COLECTIVO
-		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),null,"",null);
+		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),null,"",null,null);
 
 		// -----------------------------------Verificar notificaciones
 
@@ -396,7 +396,7 @@ public class GccServiceTest extends GenericSetUp {
 		opr.setNombre("Cargo");
 		opr.setOpcionSeleccionada("Docente");
 		opcionesSeleccionadas.add(opr);
-		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),null,"",opcionesSeleccionadas);
+		grupoService.confirmarPedidoColectivo(idGrupo, clienteJuanPerez.getEmail(),direccionCasa.getId(),null,"",opcionesSeleccionadas,null);
 
 		// -----------------------------------Verificar notificaciones
 

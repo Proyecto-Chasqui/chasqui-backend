@@ -2,7 +2,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./productorWindow" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window title="Alta/Edición de Productores" id="productorWindow" position="center,top"
 apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  sizable="true" closable="true">
@@ -14,7 +14,7 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 	</listhead>
 	<listitem>
 		<listcell>
-			<label value="${c:l('zk.listheader.label.abmCategoria.nombre')}*"/>
+			<label value="${c:l('zk.listheader.label.abmCategoria.nombre')} *"/>
 		</listcell>
 		<listcell>
 			<textbox maxlength="100" id="textboxNombreProductor"/>	
@@ -59,13 +59,13 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 		</listcell>
 	</listitem>
 	<listitem>
-		<listcell label="Descripción breve:*"/>
+		<listcell label="Descripción breve: * (300 caracteres max.)"/>
 		<listcell>
 			<textbox id="descCorta" maxlength="300" rows="3" width="90%"/>
 		</listcell>
 	</listitem>
 	<listitem height="30%">
-		<listcell label="Descripción Larga:"/>
+		<listcell label="Descripción Larga: * (8400 caracteres max.)"/>
 		<listcell>
 			<ckeditor id="descLarga" height="100px" width="95%" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
 		</listcell>

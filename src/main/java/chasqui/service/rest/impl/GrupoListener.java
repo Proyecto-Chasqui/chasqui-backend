@@ -321,7 +321,7 @@ public class GrupoListener {
 		try {
 			request = this.toConfirmarPedidoColectivoRequest(confirmarPedidoColectivoRequest);
 
-			grupoService.confirmarPedidoColectivo(request.getIdGrupo(), email,request.getIdDireccion(), request.getIdPuntoDeRetiro(), request.getComentario(), request.getOpcionesSeleccionadas());
+			grupoService.confirmarPedidoColectivo(request.getIdGrupo(), email,request.getIdDireccion(), request.getIdPuntoDeRetiro(), request.getComentario(), request.getOpcionesSeleccionadas(), request.getIdZona());
 
 		} catch (JsonParseException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();

@@ -2,33 +2,34 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./historialPedidosColectivosWindow" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?link rel="icon" type="image/x-icon" href="/imagenes/favicon.ico"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window width="65%" title="Historial De Pedidos Colectivos" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="true"
+<window width="65%" title="Pedidos colectivos confirmados" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="true"
 style="overflow:auto">
 
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" />
-		<datebox id="desde"/>
+		<datebox id="desde" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
-		<label value="Fecha Hasta:"/>
+		<label value="Fecha Hasta:" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<datebox id="hasta"/>	
-		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>
 		<combobox id="estadosListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.estados}" selectedItem="@{historialPedidosColectivosWindow$composer.estadoSeleccionado}"/>
 		<label value="Zona:"/>
 		<combobox id="zonasListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.zonas.nombre}" selectedItem="@{historialPedidosColectivosWindow$composer.zonaSeleccionada}"/>
-		<button label="Buscar" id="buscar"/>
+		<button label="Buscar" id="buscar" visible="false"/>
+		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
 	</hbox>
 </div>
 <separator spacing="15px"/>
 	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{historialPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
 		<listhead>
-			<listheader label="ID Pedido" align="center" visible="False"/>
-			<listheader label="Cliente Creador" align="center" visible="false" />
+			<listheader label="ID Pedido" align="center" visible="false"/>
+			<listheader label="Grupo" align="center" visible="false"></listheader>
+			<listheader label="Administrador del Grupo" align="center" visible="false"></listheader>
 			<listheader label="Fecha Creación" align="center"/>
 			<listheader label="Zona" align="center"/>
 			<listheader label="Monto Minimo" align="center" visible="false"/>

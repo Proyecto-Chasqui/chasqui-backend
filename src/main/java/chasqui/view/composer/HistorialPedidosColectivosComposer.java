@@ -31,6 +31,7 @@ import org.zkoss.zul.Paging;
 import org.zkoss.zul.Window;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
@@ -109,6 +110,19 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		}
 	}
 	
+	public void onBuscar(){
+			onClick$buscar();
+	}
+	
+	public void onSelect$estadosListbox(SelectEvent evt) {
+			onClick$buscar();
+
+	}
+	
+	public void onSelect$zonasListbox(SelectEvent evt) {
+			onClick$buscar();
+	}
+	
 	public void onClick$buscar(){
 		Date d = desde.getValue();
 		Date h = hasta.getValue();
@@ -123,7 +137,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		if(zonaSeleccionada !=null){
 			zonaId = zonaSeleccionada.getId();
 		}
-		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedorDeGrupo(usuarioLogueado.getId(),grupo.getId(),d,h,estadoSeleccionado,zonaId));
+		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedorDeGrupo(usuarioLogueado.getId(),grupo.getId(),d,h,estadoSeleccionado,zonaId, null));
 		this.binder.loadAll();
 	}
 
