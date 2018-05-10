@@ -66,7 +66,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		botonEliminar.addForward(Events.ON_CLICK,administracionWindow, Events.ON_NOTIFY, params3);
 		
 		Toolbarbutton botonDestacar = new Toolbarbutton();
-		botonDestacar.setTooltiptext(Labels.getLabel("destacar"));
+		botonDestacar.setTooltiptext(Labels.getLabel("zk.toolbarbutton.administracion.tooltip.destacar"));
 		params4.put("accion", "destacar");
 		params4.put("producto", p);
 		params4.put("boton", botonDestacar);
@@ -81,19 +81,17 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		}
 		botonDestacar.addForward(Events.ON_CLICK,administracionWindow, Events.ON_NOTIFY, params4);
 		
-		//////////Boton ocultar
 		Toolbarbutton botonOcultar = new Toolbarbutton();
-		botonOcultar.setTooltiptext(Labels.getLabel("ocultar"));
+		botonOcultar.setTooltiptext(Labels.getLabel("zk.toolbarbutton.administracion.tooltip.ocultar"));
 		params5.put("accion", "ocultar");
 		params5.put("producto", p);
 		params5.put("boton", botonOcultar);
 		if(!p.isOcultado()){
-			botonOcultar.setImage("/imagenes/destacado_off.png");			
+			botonOcultar.setImage("/imagenes/if_toggle-left.png");			
 		}else{
-			botonOcultar.setImage("/imagenes/destacado_on.png");
+			botonOcultar.setImage("/imagenes/if_toggle-right.png");
 		}
 		botonOcultar.addForward(Events.ON_CLICK,administracionWindow, Events.ON_NOTIFY, params5);
-		//////////Boton ocultar
 		
 		c1.setParent(item);
 		c2.setParent(item);
