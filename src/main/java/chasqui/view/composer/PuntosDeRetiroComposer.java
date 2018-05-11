@@ -300,7 +300,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		puntoDeRetiro.setLocalidad(textLocalidad.getValue());
 		puntoDeRetiro.setCodigoPostal(textCodigoPostal.getValue());
 		puntoDeRetiro.setDescripcion(txtMensaje.getValue());
-		if(usuario.existePuntoDeRetiro(puntoDeRetiro)){
+		if(puntoDeRetiroService.obtenerPuntoDeRetiroConId(puntoDeRetiro.getId())!=null){
 			puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiro);
 			usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
 		}else{
