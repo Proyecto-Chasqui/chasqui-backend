@@ -55,7 +55,7 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 	<listitem>
 		<listcell label="Altura:"/>
 		<listcell>
-			<intbox id="altura" maxlength="4"/>
+			<intbox id="altura" maxlength="5"/>
 		</listcell>
 	</listitem>
 	<listitem>
@@ -65,7 +65,7 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 		</listcell>
 	</listitem>
 	<listitem height="30%">
-		<listcell label="Descripción Larga: * (8400 caracteres max.)"/>
+		<listcell label="Descripción Larga: * (8200 caracteres max.)"/>
 		<listcell>
 			<ckeditor id="descLarga" height="100px" width="95%" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
 		</listcell>
