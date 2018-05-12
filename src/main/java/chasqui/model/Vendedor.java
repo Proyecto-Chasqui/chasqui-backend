@@ -265,23 +265,52 @@ public class Vendedor extends Usuario{
 	}
 
 	public void eliminarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiroSeleccionado) {
+		ArrayList<PuntoDeRetiro> refill = new ArrayList<PuntoDeRetiro>();
 		for(int i=0; i<puntosDeRetiro.size() ;i++){
 			PuntoDeRetiro pr = puntosDeRetiro.get(i);
+			if(pr!=null) {
 			if (pr.getId() == puntoDeRetiroSeleccionado.getId()){
 				puntosDeRetiro.remove(i);
 				i=puntosDeRetiro.size();
+			}
+			}
+		}
+		insertAllNotNullElements(refill,puntosDeRetiro);
+		puntosDeRetiro.clear();
+		puntosDeRetiro = refill;
+	}
+
+	private void insertAllNotNullElements(ArrayList<PuntoDeRetiro> refill, List<PuntoDeRetiro> puntosDeRetiro2) {
+		for(PuntoDeRetiro pr: puntosDeRetiro2) {
+			if(pr!=null) {
+				refill.add(pr);
 			}
 		}
 	}
 
 	public void eliminarZona(Zona zonaSeleccionada) {
+		ArrayList<Zona> refill = new ArrayList<Zona>();
 		for(int i = 0; i<zonas.size() ;i++){
+			Zona zs = zonas.get(i);
+			if(zs !=null)
 			if(zonas.get(i).getId().equals(zonaSeleccionada.getId())){
 				this.zonas.remove(i);
 				i = zonas.size();
 			}
 		}
 		
+		insertNotNullElements(refill,zonas);
+		zonas.clear();
+		zonas = refill;
+		
+	}
+	
+	private void insertNotNullElements(ArrayList<Zona> refill, List<Zona> zonas) {
+		for(Zona zs: zonas) {
+			if(zs!=null) {
+				refill.add(zs);
+			}
+		}
 	}
 	
 	public void agregarZona(Zona zona){

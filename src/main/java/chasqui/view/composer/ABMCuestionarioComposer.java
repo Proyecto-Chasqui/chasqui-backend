@@ -7,9 +7,11 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -41,6 +43,8 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	private Textbox textNombreRespuesta;
 	private boolean isPreguntaIndividual = true;
 	private Integer indice = -1;
+	private Listbox listboxPreguntaIndividual;
+	private Listbox listboxPreguntaColectiva;
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -148,7 +152,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 				textNombreRespuesta.setValue("");
 				binder.loadAll();
 			}else{
-				showError("No se puede tener mas de 15 respuestas por preguntas");
+				showError("No se puede tener mas de 15 respuestas por pregunta");
 			}
 		}else{
 			Messagebox.show("La respuesta no debe ser vacia","Pregunta",Messagebox.OK,Messagebox.INFORMATION,
@@ -213,6 +217,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 			preguntaColectivaSeleccionada.setOpciones(this.respuestasDeConsumo);
 		}
 		guardarEnBD();
+		Clients.showNotification("La pregunta se guardó correctamente", "info", listboxPreguntaColectiva, "middle_center", 3000,true);
 	}
 	
 	public void onOK() {
@@ -222,11 +227,22 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	public void onHabilitarPreguntaColectiva(){
 		this.preguntaColectivaSeleccionada.setHabilitada(!preguntaColectivaSeleccionada.getHabilitada());
 		guardarEnBD();
+		mostrarNotificacionDeHabilitado(preguntaColectivaSeleccionada, listboxPreguntaColectiva);
 	}
+	
 	
 	public void onHabilitarPreguntaIndividual(){
 		this.preguntaIndividualSeleccionada.setHabilitada(!preguntaIndividualSeleccionada.getHabilitada());
 		guardarEnBD();
+		mostrarNotificacionDeHabilitado(preguntaIndividualSeleccionada, listboxPreguntaIndividual);
+	}
+	
+	private void mostrarNotificacionDeHabilitado(PreguntaDeConsumo p, Component c) {
+		if(p.getHabilitada()) {
+			Clients.showNotification("Pregunta habilitada", "info", c, "middle_center", 3000,true);
+		}else {
+			Clients.showNotification("Pregunta deshabilitada", "info", c, "middle_center", 3000,true);
+		}
 	}
 	
 	public void onEliminarPreguntaColectiva(){
@@ -239,6 +255,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 					preguntasColectivasDeConsumo.remove(preguntaColectivaSeleccionada);
 					guardarEnBD();
 					binder.loadAll();
+					Clients.showNotification("Pregunta colectiva eliminada", "info", listboxPreguntaColectiva, "middle_center", 3000,true);
 				case Messagebox.NO:
 				}				
 			}
@@ -258,6 +275,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 					preguntasIndividualesDeConsumo.remove(preguntaIndividualSeleccionada);
 					guardarEnBD();
 					binder.loadAll();
+					Clients.showNotification("Pregunta individual eliminada", "info", listboxPreguntaIndividual, "middle_center", 3000,true);
 				case Messagebox.NO:
 				}				
 			}
@@ -277,6 +295,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 			preguntaIndividualSeleccionada.setOpciones(this.respuestasDeConsumo);
 		}
 		guardarEnBD();
+		Clients.showNotification("La pregunta se guardó correctamente", "info", listboxPreguntaIndividual, "middle_center", 3000,true);
 	}
 	
 	
@@ -367,6 +386,22 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 
 	public void setTextNombreRespuesta(Textbox textNombreRespuesta) {
 		this.textNombreRespuesta = textNombreRespuesta;
+	}
+
+	public Listbox getListboxPreguntaIndividual() {
+		return listboxPreguntaIndividual;
+	}
+
+	public void setListboxPreguntaIndividual(Listbox listboxPreguntaIndividual) {
+		this.listboxPreguntaIndividual = listboxPreguntaIndividual;
+	}
+
+	public Listbox getListboxPreguntaColectiva() {
+		return listboxPreguntaColectiva;
+	}
+
+	public void setListboxPreguntaColectiva(Listbox listboxPreguntaColectiva) {
+		this.listboxPreguntaColectiva = listboxPreguntaColectiva;
 	}
 
 
