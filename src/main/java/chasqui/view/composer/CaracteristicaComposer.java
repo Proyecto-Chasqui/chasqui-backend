@@ -18,6 +18,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Image;
@@ -68,11 +69,14 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 	CKeditor ckEditorProductor;
 
 	ICaracteristica caracteristicaAEditar;
+	private Component window;
 
 	private CaracteristicaService service;
 
 	public void doAfterCompose(Component c) throws Exception {
 		super.doAfterCompose(c);
+		this.window = c;
+		
 
 		usuario = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		binder = new AnnotateDataBinder(c);
@@ -110,13 +114,14 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 	public void onClick$agregarCaracteristicaProducto() {
 		String nombreCarac = txtbCaracteristica.getValue();
 		String descripcion = ckEditor.getValue();
-		validarNombreDeCaracteristicaProducto(nombreCarac);
-		validarCaracteristica();
 		if (caracteristicaAEditar != null) {
+
 			caracteristicaAEditar.setDescripcion(descripcion);
 			caracteristicaAEditar.setNombre(nombreCarac);
 			caracteristicaAEditar.setPathImagen(imagen.getPath());
 		} else {
+			validarNombreDeCaracteristicaProductor(nombreCarac);
+			validarCaracteristica(nombreCarac, descripcion, imagenProductor);
 			Caracteristica c = new Caracteristica();
 			c.setNombre(nombreCarac);
 			c.setEliminada(false);
@@ -124,6 +129,8 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 			c.setDescripcion(descripcion);
 			caracteristicas.add(c);
 		}
+		Clients.showNotification("Agregada la caracterisitica, debe guardarla " , "info", window, "middle_center",
+				3000, true);
 		txtbCaracteristica.setValue(null);
 		imagen = null;
 		imgIcon.setSrc(null);
@@ -162,6 +169,8 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 			c.setDescripcion(descripcion);
 			caracteristicasProductor.add(c);
 		}
+		Clients.showNotification("Agregada la caracterisitica, debe guardarla " , "info", window, "middle_center",
+				3000, true);
 		txtbCaracteristicaProductor.setValue(null);
 		ckEditorProductor.setValue(null);
 		imagenProductor = null;
