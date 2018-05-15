@@ -115,13 +115,12 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 		String nombreCarac = txtbCaracteristica.getValue();
 		String descripcion = ckEditor.getValue();
 		if (caracteristicaAEditar != null) {
-
 			caracteristicaAEditar.setDescripcion(descripcion);
 			caracteristicaAEditar.setNombre(nombreCarac);
 			caracteristicaAEditar.setPathImagen(imagen.getPath());
 		} else {
 			validarNombreDeCaracteristicaProductor(nombreCarac);
-			validarCaracteristica(nombreCarac, descripcion, imagenProductor);
+			validarCaracteristica(nombreCarac, descripcion, imagen);
 			Caracteristica c = new Caracteristica();
 			c.setNombre(nombreCarac);
 			c.setEliminada(false);
@@ -155,13 +154,13 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 	public void onClick$agregarCaracteristicaProductor() {
 		String nombreCarac = txtbCaracteristicaProductor.getValue();
 		String descripcion = ckEditorProductor.getValue();
-		validarNombreDeCaracteristicaProductor(nombreCarac);
-		validarCaracteristica(nombreCarac, descripcion, imagenProductor);
 		if (caracteristicaAEditar != null) {
 			caracteristicaAEditar.setDescripcion(descripcion);
 			caracteristicaAEditar.setNombre(nombreCarac);
 			caracteristicaAEditar.setPathImagen(imagenProductor.getPath());
 		} else {
+			validarNombreDeCaracteristicaProductor(nombreCarac);
+			validarCaracteristica(nombreCarac, descripcion, imagenProductor);
 			CaracteristicaProductor c = new CaracteristicaProductor();
 			c.setNombre(nombreCarac);
 			c.setEliminada(false);

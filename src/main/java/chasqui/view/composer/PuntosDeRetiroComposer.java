@@ -38,6 +38,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import chasqui.dtos.PedidosGrupalesDTO;
+import chasqui.exceptions.PedidoSinProductosException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
@@ -343,25 +344,73 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		    usuarioService.guardarUsuario(usuario);
 		}	
 	}	
-	
+	//TODO:
 	public void onHabilitarPuntoDeRetiro() throws VendedorInexistenteException{
-		Messagebox.show("¿Seguro que desea "+palabraDeContexto()+" el punto de retiro " + puntoDeRetiroSeleccionado.getNombre() +" ?","Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
-				new EventListener<Event>(){
+		if(this.puntoDeRetiroSeleccionado.getDisponible()) {
+		List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId());
+		PedidosGrupalesDTO pedidosColectivos = this.obtenerPedidosColectivosDeVendedor(usuario.getId(),Constantes.ESTADO_PEDIDO_CONFIRMADO,puntoDeRetiroSeleccionado.getId());	
+			this.generarMensajesSegunContexto(pedidosIndividuales, pedidosColectivos);
+		}else {
+			puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
+			puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
+			usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
+			binder.loadAll();
+		}				
+	}
+	
+	private void generarMensajesSegunContexto(final List<Pedido> pedidosIndividuales, final PedidosGrupalesDTO pedidosColectivos) {
+		if(pedidosIndividuales.isEmpty()) {
+			Messagebox.show("¿Seguro que desea "+palabraDeContexto()+" el punto de retiro " + puntoDeRetiroSeleccionado.getNombre() +" ?","Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
+					new EventListener<Event>(){
 
-			public void onEvent(Event event) throws Exception {
-				switch (((Integer) event.getData()).intValue()){
-				case Messagebox.YES:
-					puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
-					puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
-					usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
-					binder.loadAll();
-				case Messagebox.NO:
-					break;
+				public void onEvent(Event event) throws Exception {
+					switch (((Integer) event.getData()).intValue()){
+					case Messagebox.YES:
+						puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
+						puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
+						usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
+						binder.loadAll();
+					case Messagebox.NO:
+						break;
+					}
+					
 				}
-				
-			}
 
-			});	
+				});
+			}else{
+				Messagebox.show("Hay algunos pedidos confirmados que estan asociados al punto de entrega " + puntoDeRetiroSeleccionado.getNombre()+
+						" ¿Está seguro que desea deshabilitarlo?.",
+						"Info",
+			    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO,  Messagebox.Button.OK},
+			    		new String[] {"Aceptar","Cancelar","Ver Pedidos"},
+			    		Messagebox.EXCLAMATION, null, new EventListener<ClickEvent>(){
+
+					public void onEvent(ClickEvent event) throws Exception {
+						Object edata= event.getData();
+						String value = "NO";
+						if(edata!=null) {
+							value = edata.toString();
+						}
+						switch (value){
+						case "YES":
+							puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
+							puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
+							usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
+							binder.loadAll();
+							//Clients.showNotification("El punto de retiro se deshabilitado", "info", listboxPRs, "middle_center", 3000, true);
+							break;
+						case "NO":
+							binder.loadAll();
+							break;
+						case "OK":
+							mostrarMensajeDePedidos(pedidosIndividuales,pedidosColectivos);
+							event.stopPropagation();
+							break;
+						}
+					}
+
+					});
+			}
 	}
 	
 	private String palabraDeContexto(){
