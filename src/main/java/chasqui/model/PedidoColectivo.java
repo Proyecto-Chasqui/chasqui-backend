@@ -120,12 +120,14 @@ public class PedidoColectivo implements IPedido{
 	@Override
 	public void entregarte() throws EstadoPedidoIncorrectoException {
 		if (this.estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO)) {
-			this.estado = Constantes.ESTADO_PEDIDO_ENTREGADO;			
+			this.estado = Constantes.ESTADO_PEDIDO_ENTREGADO;
 		}
 		else{
 			throw new EstadoPedidoIncorrectoException("El pedido no estaba confirmado");
 		}
 	}
+	
+
 
 	public boolean tienePedidosAbiertos() {
 		for (Pedido pedido : pedidosIndividuales.values()) {
@@ -191,12 +193,20 @@ public class PedidoColectivo implements IPedido{
 	@Override
 	public void preparado() throws EstadoPedidoIncorrectoException {
 		if (this.estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
-			this.estado = Constantes.ESTADO_PEDIDO_PREPARADO;			
+			this.estado = Constantes.ESTADO_PEDIDO_PREPARADO;	
+			this.grabarPuntoDeRetiro();
 		}
 		else{
 			throw new EstadoPedidoIncorrectoException("El pedido no estaba confirmado");
 		}
 	}
+	
+	public void grabarPuntoDeRetiro(){
+		if(this.puntoDeRetiro != null) {
+			this.puntoDeRetiro = new PuntoDeRetiro(this.puntoDeRetiro);		
+		}
+	}
+
 
 	public PuntoDeRetiro getPuntoDeRetiro() {
 		return puntoDeRetiro;

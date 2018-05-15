@@ -171,8 +171,10 @@ public class Pedido implements IPedido {
 
 	}
 	
-	public void grabarPuntoDeRetiro(){
-		this.puntoDeRetiro = new PuntoDeRetiro(this.puntoDeRetiro);		
+	private void grabarPuntoDeRetiro(){
+		if(this.puntoDeRetiro != null) {
+			this.puntoDeRetiro = new PuntoDeRetiro(this.puntoDeRetiro);		
+		}
 	}
 
 	@Override
