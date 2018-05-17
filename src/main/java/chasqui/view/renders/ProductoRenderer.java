@@ -87,9 +87,9 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		params5.put("producto", p);
 		params5.put("boton", botonOcultar);
 		if(!p.isOcultado()){
-			botonOcultar.setImage("/imagenes/if_toggle-left.png");			
+			botonOcultar.setImage("/imagenes/if_toggle-right.png");			
 		}else{
-			botonOcultar.setImage("/imagenes/if_toggle-right.png");
+			botonOcultar.setImage("/imagenes/if_toggle-left.png");
 		}
 		botonOcultar.addForward(Events.ON_CLICK,administracionWindow, Events.ON_NOTIFY, params5);
 		

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
@@ -29,12 +30,15 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import chasqui.dtos.PedidosGrupalesDTO;
+import chasqui.exceptions.PedidoSinProductosException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
@@ -69,6 +73,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	private Button guardar;
 	private Button cancelar;
 	private Button btnAgregar;
+	private Listbox listboxPRs;
 	private Datebox fechaCierrePedidos;
 	private Textbox txtDescripcion;
 	private Button btnHabilitar;
@@ -119,6 +124,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 						puntoDeRetiroSeleccionado = null;
 						usuarioService.guardarUsuario(usuario);
 						binder.loadAll();
+						Clients.showNotification("El punto de retiro se elimino correctamente", "info", listboxPRs, "middle_center", 3000, true);
 					case "NO":
 					}
 				}
@@ -146,6 +152,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 						puntoDeRetiroSeleccionado = null;
 						usuarioService.guardarUsuario(usuario);
 						binder.loadAll();
+						Clients.showNotification("El punto de retiro se elimino correctamente", "info", listboxPRs, "middle_center", 3000, true);
 						break;
 					case "NO":
 						binder.loadAll();
@@ -161,6 +168,20 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		}
 		
 		this.binder.loadAll();
+	}
+	
+	private void setListDisabled() {
+		List<Listitem> list = listboxPRs.getItems();
+		for(Listitem item : list){
+			item.setDisabled(true);
+		}
+	}
+	
+	private void setListEnabled() {
+		List<Listitem> list = listboxPRs.getItems();
+		for(Listitem item : list){
+			item.setDisabled(false);
+		}
 	}
 	
 	//a falta de una referencia de pedidoColectivo a Grupo es necesario hacer esta
@@ -254,25 +275,25 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		puntoDeRetiroSeleccionado = null;
 		btnLimpiar.setLabel("Limpiar campos");
 		btnAgregar.setLabel("Agregar");
+		btnGuardar.setLabel("Guardar Cambios");
+		btnGuardar.setVisible(false);
+		btnAgregar.setVisible(true);
+		this.listboxPRs.setVisible(true);
 	}
 
 	public void onClick$btnAgregar() throws VendedorInexistenteException{		
 		validarPuntoDeRetiro();
-		Messagebox.show(fraseDeContexto(),"Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
+		Messagebox.show( "¿Está seguro que desea agregar un nuevo punto de retiro?","Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
 				new EventListener<Event>(){
 
 			public void onEvent(Event event) throws Exception {
 				switch (((Integer) event.getData()).intValue()){
 				case Messagebox.YES:
-					btnAgregar.setLabel("Agregar");
-					if(puntoDeRetiroSeleccionado == null){
-						agregarPuntoDeRetiro(new PuntoDeRetiro(new Direccion()));
-					}else{
-						agregarPuntoDeRetiro(puntoDeRetiroSeleccionado);
-					}		
+					agregarPuntoDeRetiro(new PuntoDeRetiro(new Direccion()));	
 					limpiarCampos();
 					puntoDeRetiroSeleccionado = null;
 					binder.loadAll();
+					Clients.showNotification("Punto de retiro guardado", "info", listboxPRs, "middle_center", 3000, true);
 				case Messagebox.NO:
 					break;
 				}
@@ -282,13 +303,26 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 			});		
 	}
 	
-	private String fraseDeContexto(){
-		String mensaje = "¿Está seguro que desea agregar un nuevo punto de retiro ?";
-		String s = "";
-		if(btnAgregar.getLabel().equals("Guardar Cambios")){
-			mensaje =  "¿Está seguro que desea guardar los cambios para el punto de retiro "+ textNombrePuntoDeRetiro.getValue() +" ?";
-		}
-		return mensaje;
+	public void onClick$btnGuardar() {
+		validarPuntoDeRetiro();
+		Messagebox.show("¿Está seguro que desea guardar los cambios para el punto de retiro "+ textNombrePuntoDeRetiro.getValue() +" ?","Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
+				new EventListener<Event>(){
+
+			public void onEvent(Event event) throws Exception {
+				switch (((Integer) event.getData()).intValue()){
+				case Messagebox.YES:
+					agregarPuntoDeRetiro(puntoDeRetiroSeleccionado);		
+					limpiarCampos();
+					puntoDeRetiroSeleccionado = null;
+					binder.loadAll();
+					Clients.showNotification("Los cambios se guardaron correctamente", "info", listboxPRs, "middle_center", 3000,true);
+				case Messagebox.NO:
+					break;
+				}
+				
+			}
+
+			});		
 	}
 	
 	public void agregarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiro) throws VendedorInexistenteException{
@@ -300,7 +334,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		puntoDeRetiro.setLocalidad(textLocalidad.getValue());
 		puntoDeRetiro.setCodigoPostal(textCodigoPostal.getValue());
 		puntoDeRetiro.setDescripcion(txtMensaje.getValue());
-		if(usuario.existePuntoDeRetiro(puntoDeRetiro)){
+		if(puntoDeRetiroService.obtenerPuntoDeRetiroConId(puntoDeRetiro.getId())!=null){
 			puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiro);
 			usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
 		}else{
@@ -310,25 +344,73 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		    usuarioService.guardarUsuario(usuario);
 		}	
 	}	
-	
+	//TODO:
 	public void onHabilitarPuntoDeRetiro() throws VendedorInexistenteException{
-		Messagebox.show("¿Seguro que desea "+palabraDeContexto()+" el punto de retiro " + puntoDeRetiroSeleccionado.getNombre() +" ?","Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
-				new EventListener<Event>(){
+		if(this.puntoDeRetiroSeleccionado.getDisponible()) {
+		List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId());
+		PedidosGrupalesDTO pedidosColectivos = this.obtenerPedidosColectivosDeVendedor(usuario.getId(),Constantes.ESTADO_PEDIDO_CONFIRMADO,puntoDeRetiroSeleccionado.getId());	
+			this.generarMensajesSegunContexto(pedidosIndividuales, pedidosColectivos);
+		}else {
+			puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
+			puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
+			usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
+			binder.loadAll();
+		}				
+	}
+	
+	private void generarMensajesSegunContexto(final List<Pedido> pedidosIndividuales, final PedidosGrupalesDTO pedidosColectivos) {
+		if(pedidosIndividuales.isEmpty()) {
+			Messagebox.show("¿Seguro que desea "+palabraDeContexto()+" el punto de retiro " + puntoDeRetiroSeleccionado.getNombre() +" ?","Pregunta",Messagebox.YES | Messagebox.NO,Messagebox.QUESTION,
+					new EventListener<Event>(){
 
-			public void onEvent(Event event) throws Exception {
-				switch (((Integer) event.getData()).intValue()){
-				case Messagebox.YES:
-					puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
-					puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
-					usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
-					binder.loadAll();
-				case Messagebox.NO:
-					break;
+				public void onEvent(Event event) throws Exception {
+					switch (((Integer) event.getData()).intValue()){
+					case Messagebox.YES:
+						puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
+						puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
+						usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
+						binder.loadAll();
+					case Messagebox.NO:
+						break;
+					}
+					
 				}
-				
-			}
 
-			});	
+				});
+			}else{
+				Messagebox.show("Hay algunos pedidos confirmados que estan asociados al punto de entrega " + puntoDeRetiroSeleccionado.getNombre()+
+						" ¿Está seguro que desea deshabilitarlo?.",
+						"Info",
+			    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO,  Messagebox.Button.OK},
+			    		new String[] {"Aceptar","Cancelar","Ver Pedidos"},
+			    		Messagebox.EXCLAMATION, null, new EventListener<ClickEvent>(){
+
+					public void onEvent(ClickEvent event) throws Exception {
+						Object edata= event.getData();
+						String value = "NO";
+						if(edata!=null) {
+							value = edata.toString();
+						}
+						switch (value){
+						case "YES":
+							puntoDeRetiroSeleccionado.setDisponible((! puntoDeRetiroSeleccionado.getDisponible()));
+							puntoDeRetiroService.guardarPuntoDeRetiro(puntoDeRetiroSeleccionado);
+							usuario = vendedorService.obtenerVendedorPorId(usuario.getId());
+							binder.loadAll();
+							//Clients.showNotification("El punto de retiro se deshabilitado", "info", listboxPRs, "middle_center", 3000, true);
+							break;
+						case "NO":
+							binder.loadAll();
+							break;
+						case "OK":
+							mostrarMensajeDePedidos(pedidosIndividuales,pedidosColectivos);
+							event.stopPropagation();
+							break;
+						}
+					}
+
+					});
+			}
 	}
 	
 	private String palabraDeContexto(){
@@ -342,7 +424,9 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	}
 	
 	public void onEditarPuntoDeRetiro(){
-		btnAgregar.setLabel("Guardar Cambios");
+		btnAgregar.setLabel("Agregar");
+		btnAgregar.setVisible(false);
+		btnGuardar.setVisible(true);
 		btnLimpiar.setLabel("Cancelar");
 		Integer paltura = puntoDeRetiroSeleccionado.getAltura();
 		textNombrePuntoDeRetiro.setValue(puntoDeRetiroSeleccionado.getNombre());
@@ -352,6 +436,8 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		textCodigoPostal.setValue(puntoDeRetiroSeleccionado.getCodigoPostal());
 		textDepartamento.setValue(puntoDeRetiroSeleccionado.getDepartamento());
 		txtMensaje.setValue(puntoDeRetiroSeleccionado.getDescripcion());
+		//this.setListDisabled();
+		this.listboxPRs.setVisible(false);
 		this.binder.loadAll();
 	}
 	
@@ -371,6 +457,10 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 			throw new WrongValueException(textAltura,"La altura no debe ser vacia");
 		}
 		
+		if(!Pattern.matches("[0-9]+", textAltura.getValue().toString())){
+			throw new WrongValueException(textAltura,"Debe ser solo numeros de hasta 5 digitos max");
+		}
+		
 		if(StringUtils.isEmpty(textLocalidad.getValue().toString())){
 			throw new WrongValueException(textLocalidad,"La localidad no debe ser vacia");
 		}
@@ -385,8 +475,10 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	private boolean estaEnLista(String nombre){
 		if(puntosDeRetiro != null){
 			for(PuntoDeRetiro pr : puntosDeRetiro){
-				if(pr.getNombre().equalsIgnoreCase(nombre) && ! estaEditando(pr.getId())){
-					return true;
+				if(pr != null) {
+					if(pr.getNombre().equalsIgnoreCase(nombre) && ! estaEditando(pr.getId())){
+						return true;
+					}
 				}
 			}
 		}
@@ -411,6 +503,14 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 
 	public void setPuntosDeRetiro(List<PuntoDeRetiro> puntosDeRetiro) {
 		this.puntosDeRetiro = puntosDeRetiro;
+	}
+
+	public Listbox getListboxPRs() {
+		return listboxPRs;
+	}
+
+	public void setListboxPRs(Listbox listboxPRs) {
+		this.listboxPRs = listboxPRs;
 	}
 		
 	
