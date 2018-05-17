@@ -275,18 +275,18 @@ public class PedidoServiceImpl implements PedidoService {
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
 		usuarioService.inicializarPedidos(cliente);
 		
-		Variante v = productoService.obtenerVariantePor(request.getIdVariante());
-		validarParaEliminar(v, cliente, request);
+		Variante variante = productoService.obtenerVariantePor(request.getIdVariante());
+		validarParaEliminar(variante, cliente, request);
 		
-		cliente.eliminarProductoEnPedido(request.getIdVariante(), v.getPrecio(), request.getIdPedido(),
+		cliente.eliminarProductoEnPedido(request.getIdVariante(), variante.getPrecio(), request.getIdPedido(),
 				request.getCantidad());
 		
-		v.eliminarReserva(request.getCantidad());
+		variante.eliminarReserva(request.getCantidad());
 		
 		usuarioService.guardarUsuario(cliente);
 		
 		
-		productoService.modificarVariante(v);
+		productoService.modificarVariante(variante);
 	}
 	
 
@@ -385,6 +385,13 @@ public class PedidoServiceImpl implements PedidoService {
 	private void validarParaEliminar(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request)
 			throws ProductoInexistenteException, RequestIncorrectoException, PedidoVigenteException {
 		validacionesGenerales(v, c, request);
+		
+		Pedido pedido = this.obtenerPedidosporId(request.getIdPedido());
+		
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)) {
+			throw new PedidoVigenteException("El pedido se encuentra vencido y no es posible modificarlo");
+		}
+		
 		if (!c.contieneProductoEnPedido(v, request.getIdPedido())) {
 			throw new ProductoInexistenteException(
 					"El usuario no tiene el producto con ID " + request.getIdVariante() + " en el pedido");

@@ -198,6 +198,7 @@ public class Pedido implements IPedido {
 			this.fechaDeVencimiento = nuevoVencimiento;
 			this.setMontoActual(new Double(0.0));
 			this.alterable = true;
+			this.setFechaCreacion(new DateTime());
 		}
 		
 		if (this.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
