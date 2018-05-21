@@ -3,6 +3,9 @@ package chasqui.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.joda.time.DateTime;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -22,7 +25,10 @@ public class PedidoColectivo implements IPedido{
 	private Zona zona;
 	private Direccion domicilioEntrega;
 	private PuntoDeRetiro puntoDeRetiro;
+	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime fechaCreacion;
+	@Temporal(TemporalType.TIMESTAMP)
+	private DateTime fechaModificacion;
 	private String comentario;
 	private Map<String,String> respuestasAPreguntas;
 	
@@ -222,6 +228,14 @@ public class PedidoColectivo implements IPedido{
 
 	public void setRespuestasAPreguntas(Map<String,String> respuestasAPreguntas) {
 		this.respuestasAPreguntas = respuestasAPreguntas;
+	}
+
+	public DateTime getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+	public void setFechaModificacion(DateTime fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
 	}
 
 }

@@ -14,6 +14,7 @@ import org.apache.cxf.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zkplus.spring.SpringUtil;
 
+import chasqui.aspect.Dateable;
 import chasqui.dao.GrupoDAO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
@@ -303,6 +304,7 @@ public class GrupoServiceImpl implements GrupoService {
 	@Override
 	 * @see chasqui.services.interfaces.GrupoService#confirmarPedidoColectivo(java.lang.Integer)
 	 */
+	@Dateable
 	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest>opcionesSeleccionadas, Integer idZona) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
 		
