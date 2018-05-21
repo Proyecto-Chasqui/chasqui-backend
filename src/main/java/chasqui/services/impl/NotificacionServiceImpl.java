@@ -195,7 +195,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
 		
 		this.invitar(adminGCC.getEmail(), emailInvitado, mensaje, iddisp,grupo.getId());
-		mailService.enviarmailInvitadoSinRegistrar(adminGCC, emailInvitado, grupo.getVendedor().getUrl(),grupo.getVendedor().getNombre(),grupo.getId());	
+		mailService.enviarmailInvitadoSinRegistrar(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre(), grupo.getId());	
 	}
 
 	@Override

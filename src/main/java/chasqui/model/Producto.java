@@ -76,6 +76,9 @@ public class Producto {
 	}
 	
 	public boolean isOcultado() {
+		if(this.ocultado != true && this.ocultado != false){
+			this.ocultado = false;
+		}
 		return ocultado;
 	}
 	

@@ -84,14 +84,14 @@ public class MailService {
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NOTIFICACION_PEDIDO, destino, Constantes.SUBJECT_ALERT_VENCIMIENTO, params);
 	}
 		
-	public void enviarmailInvitadoSinRegistrar(Cliente clienteOrigen, String destino, String urlVendedor, String nombreVendedor,Integer idGrupo) throws Exception  {
+	public void enviarmailInvitadoSinRegistrar(Cliente clienteOrigen, String destino, String urlVendedor, String nombreCorto, String nombreVendedor, Integer idGrupo) throws Exception  {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("usuarioOrigen", clienteOrigen.getUsername());
 		params.put("mailOrigen",clienteOrigen.getEmail());
 		params.put("vendedor", nombreVendedor);
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
 		String idInvitacion = invitacionService.obtenerInvitacionAGCCporIDGrupo(destino, idGrupo).getId().toString();
-		params.put("urlRegistracion", urlVendedor +slash + "#/registro/gcc/" + encrypter.encryptURL(idInvitacion));
+		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
 			 		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO, destino, Constantes.SUBJECT_INVITACION_NO_REGISTRADO, params);
 	}

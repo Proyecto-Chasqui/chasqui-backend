@@ -86,6 +86,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				  c.createAlias("p.fabricante", "productor")
 				  .add(Restrictions.eq("productor.id", idProductor));
 				 }
+				 c.add(Restrictions.eq("p.ocultado", false));
 				 c.setProjection(Projections.rowCount());				
 				return  (Long)c.uniqueResult();
 			}
