@@ -44,7 +44,12 @@
 		<property name="fechaCreacion"
 			type="org.joda.time.contrib.hibernate.PersistentDateTime">
 			<column name="FECHA_CREACION" />
-		</property>	 		
+		</property>	 
+		
+		<property name="fechaModificacion"
+			type="org.joda.time.contrib.hibernate.PersistentDateTime">
+			<column name="FECHA_MODIFICACION" />
+		</property>			
 		<property name="comentario" type="java.lang.String" column="COMENTARIO"/>
 		
 		<many-to-one name="puntoDeRetiro" class="chasqui.model.PuntoDeRetiro" fetch="join" not-found="ignore">

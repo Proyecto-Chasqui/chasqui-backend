@@ -121,9 +121,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		comp.addEventListener(Events.ON_CLICK, new BorrarImagenEventListener(this));
 		comp.addEventListener(Events.ON_USER, new DescargarImagenEventListener(this));
 		imagenes = new ArrayList<Imagen>();
-		if(model!=null){
-			listImagenes.setItemRenderer(imgRender);
-		}
+		
+		listImagenes.setItemRenderer(imgRender);
 		inicializarVentana(accion);		
 		
 		binder = new AnnotateDataBinder(comp);

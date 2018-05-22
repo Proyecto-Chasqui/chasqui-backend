@@ -309,7 +309,6 @@ public class GrupoListener {
 			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
 		
 	}
-
 	@POST
 	@Path("/confirmar")
 	@Produces("application/json")
