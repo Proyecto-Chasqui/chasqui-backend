@@ -281,7 +281,7 @@ public class MailServiceTest extends GenericSetUp {
 		grupo.invitarAlGrupo(this.destinatario);
 		notificacionService.notificarInvitacionAGCCClienteNoRegistrado(clienteFulano, this.destinatario, grupo, null);
 		
-		mailService.enviarmailInvitadoSinRegistrar(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombre(), idGrupo);;
+		mailService.enviarmailInvitadoSinRegistrar(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre(), idGrupo);;
 		assertEquals(true , true);
 	}
 }
