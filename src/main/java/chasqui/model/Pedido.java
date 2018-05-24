@@ -1,5 +1,6 @@
 package chasqui.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +51,7 @@ public class Pedido implements IPedido {
 		montoActual = new Double(0.0);
 		setFechaDeVencimiento(vencimiento);
 		productosEnPedido = new HashSet<ProductoPedido>();
+		respuestasAPreguntas = new HashMap<String,String>();
 	}
 
 	public Pedido() {
