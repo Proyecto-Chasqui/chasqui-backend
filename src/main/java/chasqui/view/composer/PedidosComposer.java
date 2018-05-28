@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.swing.event.ChangeEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.web.servlet.dsp.action.Set;
 import org.zkoss.zk.ui.Component;
@@ -39,15 +40,19 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import chasqui.dtos.PedidoIndividualDTO;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
+import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
 import chasqui.model.Producto;
 import chasqui.model.ProductoPedido;
+import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.services.impl.MailService;
@@ -285,14 +290,71 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	}
 	
 	public void onClick$exportarTodosbtn() throws EstadoPedidoIncorrectoException{
-		try {
-			export.fullexport(this.pedidos);
-			Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
-		} catch (Exception e) {
-			Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
-			e.printStackTrace();
-		}
+		Messagebox.show(
+				"¿Desea que se genere un resumen de todos los productos de los pedidos?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.ABORT},
+	    		new String[] {"Si","No","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						List<Pedido> resumen = generarPaginaResumen(pedidos);
+						resumen.addAll(pedidos);
+						export.fullexport(resumen);
+						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
+						e.printStackTrace();						
+					}
+					break;
+				case "NO":
+					try {
+						export.fullexport(pedidos);
+						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
+						e.printStackTrace();
+					}
+					break;
+				case "ABORT":
+				}
+			}
+			});
+
 		this.binder.loadAll();
+	}
+	
+
+	
+	private List<Pedido> generarPaginaResumen(List<Pedido> pedidosgenerados) throws EstadoPedidoIncorrectoException {
+		List<Pedido>paginaResumenCompleto = new ArrayList<Pedido>();
+		Pedido resumenPedidogeneral = new Pedido(usuarioLogueado,null,false, new DateTime());
+		for(Pedido p : pedidosgenerados){
+			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
+				for(ProductoPedido pp : p.getProductosEnPedido()){
+					ProductoPedido ppc = this.copiarProducto(pp);
+					resumenPedidogeneral.agregarProductoPedido(ppc, null);
+				}
+			}
+		}
+		resumenPedidogeneral.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		paginaResumenCompleto.add(resumenPedidogeneral);
+		return paginaResumenCompleto;	
+	}
+	
+	private ProductoPedido copiarProducto(ProductoPedido pp) {
+		ProductoPedido ppc = new ProductoPedido();
+		ppc.setCantidad(pp.getCantidad());
+		ppc.setIdVariante(pp.getIdVariante());
+		ppc.setImagen(pp.getImagen());
+		ppc.setNombreProducto(pp.getNombreProducto());
+		ppc.setNombreVariante(pp.getNombreVariante());
+		ppc.setPrecio(pp.getPrecio());
+		return ppc;
 	}
 
 	public List<String> getEstados() {

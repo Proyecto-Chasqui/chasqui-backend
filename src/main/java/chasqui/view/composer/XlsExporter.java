@@ -54,6 +54,40 @@ public class XlsExporter {
 	
 	public void fullexport(List<Pedido> pedidos) throws Exception {
 		for (Pedido p : pedidos) {
+			if(p.getCliente() != null) {
+				this.generarPedido(p);
+			}else {
+				this.generarResumen(p);
+			}
+			doDetails();
+		}
+		showDownload();
+		clean();
+	}
+	
+	private void generarResumen(Pedido p) throws Exception {
+		doHeader(p,"Resumen de pedidos");
+		doBody(p.getProductosEnPedido().size());
+		loadInfoInTable(p);		
+	}
+
+	private void generarPedido(Pedido p) throws Exception {
+		ArrayList<String> claves = new ArrayList<String>();
+		doHeader(p,"Pedido de ");
+		doBody(p.getProductosEnPedido().size());
+		doContactArea(p);
+		if(!p.getRespuestasAPreguntas().isEmpty()){
+			doAnswerArea(p, claves);
+		}
+		loadInfoInTable(p);
+		loadInfoInContact(p);
+		if(!p.getRespuestasAPreguntas().isEmpty()){
+			loadInfoInAnswerArea(p, claves);
+		}
+	}
+
+	public void export(List<Pedido> pedidos) throws Exception {
+		for (Pedido p : pedidos) {
 			ArrayList<String> claves = new ArrayList<String>();
 			doHeader(p,"Pedido de ");
 			doBody(p.getProductosEnPedido().size());
@@ -220,8 +254,11 @@ public class XlsExporter {
 
 	private void doHeader(Pedido pedido, String msj) throws Exception {
 		this.page = page + 1;
-		String titulo = pedido.getCliente().getNombre() + " " + pedido.getCliente().getApellido();
-		titulo = msj + titulo;
+		String titulo = "Resumen de los pedidos";
+		if(pedido.getCliente() != null) {
+			titulo = pedido.getCliente().getNombre() + " " + pedido.getCliente().getApellido();
+			titulo = msj + titulo;
+		}
 		sheet = wb.createSheet(page.toString() + "_" + titulo);
 		PrintSetup printSetup = sheet.getPrintSetup();
 		printSetup.setLandscape(true);
