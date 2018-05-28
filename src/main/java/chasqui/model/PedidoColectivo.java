@@ -35,6 +35,7 @@ public class PedidoColectivo implements IPedido{
 	public PedidoColectivo() {
 		pedidosIndividuales = new HashMap<String,Pedido>();
 		this.fechaCreacion = new DateTime();
+		this.fechaModificacion = new DateTime();
 		this.estado = Constantes.ESTADO_PEDIDO_ABIERTO;
 	}
 	
