@@ -190,4 +190,9 @@ public class ProductoServiceImpl implements ProductoService {
 	public Long totalVariantesBajoMultiplesFiltros(Integer idCategoria, Integer idMedalla, Integer idProductor) {
 		return productoDAO.totalVariantesBajoMultiplesFiltros(idCategoria, idMedalla, idProductor);
 	}
+	
+	@Override
+	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla, Integer idProductor, Integer idSelloProductor, String query){
+		return productoDAO.obtenerTotalVariantesPorMultiplesFiltros(idVendedor, idCategoria, idMedalla, idProductor, idSelloProductor, query);
+	}
 }

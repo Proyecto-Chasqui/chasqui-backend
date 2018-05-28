@@ -58,5 +58,8 @@ public interface ProductoService {
 	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
 			Integer idProductor,Integer idSelloProductor, String query,Integer pagina, Integer cantItems);
 	
+	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
+			Integer idProductor, Integer idSelloProductor, String query);
+	
 	
 }

@@ -39,11 +39,28 @@ public interface ProductoDAO {
 	public List<Variante> obtenerVariantesSinFiltro(Integer pagina, Integer cantItems, Integer idVendedor);
 	
 	public List<Variante> obtenerProductosConMedallaEnProductor(Integer medallaId);
-
+	
+	/**
+	 * @Deprecated usar obtenerTotalVariantesPorMultiplesFiltros
+	 */
+	@Deprecated
 	Long totalVariantesBajoMultiplesFiltros(Integer idCategoria, Integer idMedalla, Integer idProductor);
 	
 	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
 			Integer idProductor, Integer idSelloProductor, String query, Integer pagina, Integer cantidadDeItems);
-
-
+	
+	/**
+	 * @return Obtiene el total de productos (objeto Variante) que resultarian de ejecutar una busqueda con los mismos filtros.
+	 * 
+	 * @param idVendedor es el id del vendedor al que pertenecen los productos.
+	 * @param idCategoria es el id de la categoria a la que pertenecen los productos. Si es null no filtra por categoria.
+	 * @param idMedalla es el id del sello de producto al que pertenecen los productos. Si es null no filtra por sello de producto.
+	 * @param idProductor es el id del productor al que pertenecen los productos. Si es null no filtra por productor.
+	 * @param idSelloProductor es el id del sello de productor al que pertenecen los productos. Si es null no filtra por sello de productor.
+	 * @param query es la query es el filtro sobre el nombre de producto. Si es null no filtra por nombre de producto
+	 * 
+	 * @inheritDoc
+	 */
+	public Long obtenerTotalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
+			Integer idProductor, Integer idSelloProductor, String query);
 }

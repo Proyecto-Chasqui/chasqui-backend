@@ -65,8 +65,47 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 			}
 		});
 	}
+
+
+	@Override
+	public Long obtenerTotalVariantesPorMultiplesFiltros(final Integer idVendedor, final Integer idCategoria, final Integer idMedalla, final Integer idProductor, final Integer idSelloProductor,final String query) {
+		
+		return this.getHibernateTemplate().execute(new HibernateCallback<Long>() {
+
+			@Override
+			public Long doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(Variante.class, "variante");
+				c.createAlias("variante.producto", "producto");
+				c.createAlias("producto.fabricante", "fabricante");
+				c.add(Restrictions.eq("fabricante.idVendedor",idVendedor));
+				c.add(Restrictions.eq("producto.ocultado", false));
+				if(query!=null){
+					c.add(Restrictions.like("producto.nombre", "%"+query+"%"));
+				}
+				 if(idCategoria != null){
+					 c.createAlias("producto.categoria", "categoria")
+					 .add(Restrictions.eq("categoria.id", idCategoria));
+				 }
+				 if(idMedalla != null){
+					 c.createAlias("producto.caracteristicas","caracteristicas")
+					 .add(Restrictions.eq("caracteristicas.id", idMedalla));
+				 }
+				 if(idSelloProductor != null){
+					 c.createAlias("fabricante.caracteristica", "caracteristica")
+					  .add(Restrictions.eq("caracteristica.id", idSelloProductor));
+				 }
+				 if(idProductor !=null){
+				  c.add(Restrictions.eq("fabricante.id", idProductor));
+				 }
+				 c.add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
+				 .setProjection(Projections.rowCount());
+				return (Long) c.uniqueResult();
+			}
+		});
+	}
 	
 	@Override
+	@Deprecated
 	public Long totalVariantesBajoMultiplesFiltros(final Integer idCategoria, final Integer idMedalla, final Integer idProductor) {
 		return this.getHibernateTemplate().execute(new HibernateCallback<Long>() {
 

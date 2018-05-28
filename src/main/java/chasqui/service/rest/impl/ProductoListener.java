@@ -35,6 +35,7 @@ import chasqui.service.rest.request.SinFiltroRequest;
 import chasqui.service.rest.response.CaracteristicaResponse;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.ImagenResponse;
+import chasqui.service.rest.response.ProductoMultiplesFiltrosResponse;
 import chasqui.service.rest.response.ProductoResponse;
 import chasqui.services.interfaces.ProductoService;
 
@@ -114,10 +115,19 @@ public class ProductoListener {
 	public Response obtenerProductosConMultiplesFiltros(@Multipart(value="productoRequest", type="application/json")final String productoRequest){
 		try{
 			ByMultiplesFiltros request = toByMultiplesFiltros(productoRequest);	
-			return toResponse(productoService.obtenerVariantesPorMultiplesFiltros(request.getIdVendedor(),
-					request.getIdCategoria(),request.getIdMedalla(), request.getIdProductor(), request.getIdMedallaProductor(), request.getQuery(), request.getPagina(), 
-					request.getCantItems()),request.getPagina(),request.getCantItems(),request.getPrecio(),
-					productoService.totalVariantesBajoMultiplesFiltros(request.getIdCategoria(), request.getIdMedalla(), request.getIdProductor())
+			List<Variante> productos= productoService.obtenerVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(),request.getIdMedalla(), request.getIdProductor(), request.getIdMedallaProductor(), request.getQuery(), request.getPagina(), request.getCantItems());
+			///
+
+			Long cantidadDeVariantes = productoService.totalVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(), request.getIdMedalla(), request.getIdProductor(), request.getIdMedallaProductor(), request.getQuery());
+			Double cantidadDeProductos = Double.valueOf(cantidadDeVariantes.doubleValue());
+			Long cantidadDePaginas =  (long) Math.ceil(cantidadDeProductos / Double.valueOf(request.getCantItems()));
+			///
+			return toProductoMultiplesFiltrosResponse(productos, 
+					request.getPagina(),
+					request.getCantItems(),
+					request.getPrecio(),
+					Long.valueOf(cantidadDeProductos.intValue()),
+					cantidadDePaginas
 					);
 		}catch(IOException e){
 			return Response.status(406).entity(new ChasquiError("Parametros incorrectos "+e.getMessage())).build();
@@ -243,7 +253,6 @@ public class ProductoListener {
 		return prodRequest;
 	}
 	
-	
 	private MedallaRequest toMedallaRequest(String medallaRequest) throws IOException {
 		MedallaRequest request = new MedallaRequest();
 		ObjectMapper mapper = new ObjectMapper();
@@ -254,6 +263,10 @@ public class ProductoListener {
 
 	private Response toResponse(List<Variante> variantes, Integer pagina, Integer items,String precio, Long total) {
 		return Response.ok(new ProductoResponse(variantes,pagina,items, precio,total), MediaType.APPLICATION_JSON).build();
+	}
+	
+	private Response toProductoMultiplesFiltrosResponse(List<Variante> variantes, Integer pagina, Integer items,String precio, Long totalDeProductos, Long totalDePaginas) {
+		return Response.ok(new ProductoMultiplesFiltrosResponse(variantes, pagina, items, precio, totalDeProductos, totalDePaginas), MediaType.APPLICATION_JSON).build();
 	}
 
 	private Response toResponse(List<Variante> variantes) {
@@ -267,8 +280,4 @@ public class ProductoListener {
 		prodRequest = mapper.readValue(request, ByCategoriaRequest.class);
 		return prodRequest;
 	}
-	
-	
-	
-	
 }
