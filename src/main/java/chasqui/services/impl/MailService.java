@@ -313,21 +313,77 @@ public class MailService {
 				m.setSubject(MimeUtility.encodeText(asunto,"UTF-8","B"));
 				MimeMessageHelper helper = new MimeMessageHelper(m,true,"UTF-8");
 				StringWriter writer = new StringWriter();
-				ClassPathResource resource = new ClassPathResource("templates/imagenes/chasqui.png");
+				ClassPathResource resource = new ClassPathResource("templates/imagenes/logo.png");
 				helper.setFrom("administrator-chasqui-noreply@chasqui.org");
 				helper.setTo(destino);
-				template.process(params, writer);
-				
+				template.process(params, writer);				
 				writer.flush();
 				writer.close();
 				helper.setText(writer.toString(),true);
 				helper.addInline("logochasqui", resource);
+				insertarLogoCorrespondiente(templateURL,helper);
 				try {
 					mailSender.send(m); //TODO comentar si no funca el SMTP	
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				
+			}
+
+			private void insertarLogoCorrespondiente(String template, MimeMessageHelper helper) throws MessagingException {
+				if(Constantes.TEMPLATE_BIENVENIDA_CLIENTE.equals(template)||Constantes.TEMPLATE_BIENVENIDA_VENDEDOR.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/unnamed.png");
+					helper.addInline("bienvenido", resource);
+				}
+				if(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/confirmacion.png");
+					helper.addInline("confirmacion", resource);
+				}
+				
+				if(Constantes.TEMPLATE_INVITACION_CHASQUI.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/invitacion.png");
+					helper.addInline("invitacion", resource);
+				}
+				
+				if(Constantes.TEMPLATE_ACEPTAR_INVITACION_GCC.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/aceptadx.png");
+					helper.addInline("aceptado", resource);
+				}
+				
+				if(Constantes.TEMPLATE_INVITAR_GCC_REGISTRADO.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/grupodecomprascolectivas.png");
+					helper.addInline("grupodecomprascolectivas", resource);
+				}
+				
+				if(Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/invitadxaparticipar.png");
+					helper.addInline("invitadxaparticipar", resource);
+				}
+				
+				if(Constantes.TEMPLATE_NUEVO_ADMINISTRADOR.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/administracion.png");
+					helper.addInline("administracion", resource);
+				}
+				
+				if(Constantes.PEDIDO_PREPARADO_TEMPLATE.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/pedidopreparado.png");
+					helper.addInline("pedidopreparado", resource);
+				}
+				
+				if(Constantes.PEDIDOS_PREPARADOS_TEMPLATE.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/pedidospreparados.png");
+					helper.addInline("pedidospreparados", resource);
+				}
+				
+				if(Constantes.TEMPLATE_RECUPERO.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/recuperacion.png");
+					helper.addInline("recuperacion", resource);
+				}
+				
+				if(Constantes.VENCIMIENTO_PEDIDO_TEMPLATE.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/vencimiento.png");
+					helper.addInline("vencimiento", resource);
+				}
 			}
 
 			private Template obtenerTemplate(String nombreTemplate) throws IOException{

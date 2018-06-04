@@ -1,56 +1,108 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Bienvenido a Chasqui</title>
-    
+<meta charset="UTF-8">
+<title>
+Bienvenido a Chasqui
+</title>
 </head>
-<body  style=" font-family: arial, sans-serif;">
-	<table width="80%" cellspacing="0" cellpadding="0" border="0" bgColor="#0000ff" align="center" height="auto">
-        <th>
-            <td width="30%" align-center bgColor="#422140" style="padding-left:20px;">
-                <img src="cid:logochasqui" alt="logo" style="width:80%;">
-            </td>
-            <td width="70%" bgColor="#422140"><h1 style="text-align: center; color:#C09B3A;"><b>Chasqui</b></h1></td>
-        </th>
-    </table>
-    <table width="80%" cellspacing="0" cellpadding="0" border="0"  align="center" height="200" style="margin: 25px auto;">
-    
-            <td width="100" align-center></td>
-            <td width="600" bgColor="#EEF0F1" style="padding: 25px;" aligne="none">
-                <p><span>Estimado usuario: </span></p> <!-- header del cuerpo -->
-                <div style="padding: 25px;"> <!-- principio del cuerpo -->
-                     <span>Usted ha sido invitado a participar de un grupo de compras colectivas, pero encontramos que aún no se encuentra registrado en CHASQUI.
-                        Chasqui es una aplicación que te permite conocer y comprar los productos de la economía social, que tienen precio justo, trabajo legítimo y de fabricación sustentable.  </span>
+<body id="cuerpo">
+<table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody>
 
-                        <span>Le comentamos que el usuario <span style="font-weight:bold"> ${usuarioOrigen} </span> (${mailOrigen}) desea invitarlo a que compres con él.
-                        <br>
-                        Para poder aceptar la invitación, proceda con la registración aquí:
+<!-- Logo Chasqui -->
+<tr style="height: 90px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; height: 90px;"><a href="http://www.proyectochasqui.com"><img src="cid:logochasqui" border="0" alt="Chasqui" /></a></td>
+</tr>
+<!-- Imagen de referencia -->
+<tr style="height: 130px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: center; height: 130px;"><a href="http://www.proyectochasqui.com"><img src="cid:invitadxaparticipar" width="100%" border="0" alt="Comunidad de consumo solidario" /></a></td>
+</tr>
+
+<!-- cuerpo del mail -->
+
+<tr style="height: 20px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 20px;">&nbsp;</td>
+</tr>
+<tr style="height: 15px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 15px;">&nbsp;</td>
+</tr>
+
+<tr style="height: 21px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">Estimado usuario: </td>
+</tr>
+
+<tr style="height: 40px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
+</tr>
+
+ 
 
 
-                        <a href="${urlRegistracion}">Registracion</a>
+<tr style="height: 21px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">Usted ha sido invitado a participar de un grupo de compras colectivas, pero encontramos que aún no se encuentra registrado en CHASQUI.
+                        Chasqui es una aplicación que te permite conocer y comprar los productos de la economía social, que tienen precio justo, trabajo legítimo y de fabricación sustentable.
+						<br>
+						Le comentamos que el usuario <span style="font-weight: bold; color: #00adee;">${usuarioOrigen} (${mailOrigen})</span> desea invitarlo a que compres con él.
+                        <br><br>
+                        Para poder aceptar la invitación, proceda con la registración aquí:<br>
+                        <span style="font-weight: bold; color: #00adee;"><a href="${urlRegistracion}">Registracion</a></span>
+						
+</td>
+</tr>
 
-                        <!--Recordá que también podés descargate la app para navegar el catálogo de ${vendedor}--></span>
-                        <br>
-                        <br>
-                </div><!-- fin del cuerpo -->
+<tr style="height: 40px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
+</tr>
 
-                <div style="padding: 25px;"> <!-- footer del cuerpo -->
-					<br><small> 
-					<span>
-					  <span style="text-decoration: underline; font-weight: bold;">ATENCIÓN:
-					  </span> Este es un mensaje generado automáticamente por el 
-					  <span style="font-weight: bold;">Sistema Chasqui
-					  </span>y no debe ser respondido.  
-					</span></small>
-                </div>
-            </td>
-            <td width="100" align-center></td>
-        </div>
-    </table>
-    <table width="80%" cellspacing="0" cellpadding="0" border="0" bgColor="#393F43" align="center" height="30">
-		<td style="text-align: right; padding-right: 20px; color: #EEF0F1;"><h4>Chasqui</h4></td>
-    </table>
 
+<tr style="height: 40px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
+</tr>
+
+
+<tr style="height: 21px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #777777; text-align: center; height: 14px;">ATENCIÓN: Este es un mensaje generado automáticamente por el Sistema Chasqui y no debe ser respondido.</td>
+</tr>
+
+
+<tr style="height: 40px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
+</tr>
+<tr style="height: 20px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 20px;">&iquest;Queres saber mas de chaqui? Te ayudamos:</td>
+</tr>
+<tr style="height: 40px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 32px; color: #777777; text-align: center; font-weight: bold; height: 40px;">Proyectochasqui.com</td>
+</tr>
+
+<!-- footer linia violeta -->
+<tr style="height: 50px;">
+<td align="center" style="margin: 0px; padding: 0px; border: 0px; height: 50px;">
+<table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
+<tbody>
+<tr>
+<td style="margin: 0; padding: 0; border: 0; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; border-bottom: #412467 7px solid;">&nbsp;</td>
+</tr>
+<tr>
+<td style="margin: 0; padding: 0; border: 0; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+
+<!-- footer -->
+
+<tr style="height: 20px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 20px;">&nbsp;</td>
+</tr>
+<tr style="height: 30px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; color: #777777; text-align: justify; height: 30px;"><strong>NOTA:</strong> Bajo el decreto S.1618 titulo 3ro. Aprobado por el 105 congreso en base de las normativas internacionales sobre SPAM, este mail no podrá ser considerado SPAM mientras incluya una forma de ser removido. Si desea ser automáticamente eliminado de nuestra base de datos, por favor envíe un e-mail con el ASUNTO/SUBJECT : REMOVER y será borrado de nuestra base.</td>
+</tr>
+</tbody>
+</table>
 </body>
 </html>
+
