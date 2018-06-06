@@ -66,7 +66,7 @@ Para poder aceptar la invitación, <span style="font-weight: bold; color: #00ade
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 20px;">&iquest;Queres saber mas de chaqui? Te ayudamos:</td>
 </tr>
 <tr style="height: 40px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 32px; color: #777777; text-align: center; font-weight: bold; height: 40px;">Proyectochasqui.com</td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 32px; color: #777777; text-align: center; font-weight: bold; height: 40px;">Proyectochasqui.org</td>
 </tr>
 
 <!-- footer linia violeta -->

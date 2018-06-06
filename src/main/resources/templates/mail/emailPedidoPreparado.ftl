@@ -35,7 +35,7 @@ Bienvenido a Chasqui
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
 </tr>
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">su pedido esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:</td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">${textoDetalle}</td>
 </tr>
 <tr style="height: 40px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
@@ -49,7 +49,7 @@ Bienvenido a Chasqui
 </tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">Los datos de la dirección de entrega son los siguientes: ${tablaDireccionEntrega}</td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">${tablaDireccionEntrega}</td>
 </tr>
 <tr style="height: 40px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
@@ -79,7 +79,7 @@ Bienvenido a Chasqui
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 20px;">&iquest;Queres saber mas de chaqui? Te ayudamos:</td>
 </tr>
 <tr style="height: 40px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 32px; color: #777777; text-align: center; font-weight: bold; height: 40px;">Proyectochasqui.com</td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 32px; color: #777777; text-align: center; font-weight: bold; height: 40px;">Proyectochasqui.org</td>
 </tr>
 
 <!-- footer linia violeta -->

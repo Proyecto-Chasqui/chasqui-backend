@@ -179,10 +179,19 @@ public class MailService {
 	 * @param p
 	 */
 	public void enviarEmailConfirmacionPedido(final String emailVendedor,final String emailCliente, final Pedido p){
-
+		Direccion direccion;
+		String textoEnEmail = "";
+		String textoDeDireccionDeEntrega = "";
+		if(p.getDireccionEntrega() != null) {
+			direccion = p.getDireccionEntrega();
+			textoDeDireccionDeEntrega = "Dirección de envio";
+		}else {
+			direccion = p.getPuntoDeRetiro().getDireccion();
+			textoDeDireccionDeEntrega ="Dirección de retiro";
+		}
 
 		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
-		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p.getDireccionEntrega());
+		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
 		String cuerpoCliente = armarCuerpoCliente();
 		String cuerpoVendedor = armarCuerpoVendedor(emailCliente);
 		
@@ -191,6 +200,7 @@ public class MailService {
 		params.put("tablaContenidoPedido",tablaContenidoPedido);
 		params.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
 		params.put("agradecimiento",Constantes.AGRADECIMIENTO);
+		params.put("textoDetalle", textoEnEmail);
 
 		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailCliente, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, params);
 		
@@ -199,6 +209,7 @@ public class MailService {
 		paramsVendedor.put("tablaContenidoPedido",tablaContenidoPedido);
 		paramsVendedor.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
 		paramsVendedor.put("agradecimiento",Constantes.AGRADECIMIENTO);
+		params.put("textoDetalle", textoEnEmail);
 
 		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailVendedor, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, paramsVendedor);
 		
@@ -221,12 +232,26 @@ public class MailService {
 	
 	public void enviarEmailPreparacionDePedido(Pedido pedido) {
 		Map<String,Object> params = new HashMap<String,Object>();
+		Direccion direccion;
+		String textoEnEmail = "";
+		String textoDeDireccionDeEntrega = "";
+		if(pedido.getDireccionEntrega() != null) {
+			direccion = pedido.getDireccionEntrega();
+			textoEnEmail = "Su pedido esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
+			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
+		}else {
+			direccion = pedido.getPuntoDeRetiro().getDireccion();
+			textoEnEmail = "Su pedido esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
+			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar su pedido";
+		}
 		
 		String tablaContenidoPedido = armarTablaContenidoDePedido(pedido);
-		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedido.getDireccionEntrega());
+		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
 		
 		params.put("tablaContenidoPedido", tablaContenidoPedido);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
+		params.put("textoDetalle", textoEnEmail);
+		params.put("textoDeDireccionDeEntrega", textoDeDireccionDeEntrega);
 		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
 		
 		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), Constantes.PEDIDO_PREPARADO_SUBJECT, params);
@@ -235,16 +260,29 @@ public class MailService {
 	
 	public void enviarEmailPreparacionDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		Map<String,Object> params = new HashMap<String,Object>();
+		Direccion direccion;
+		String textoEnEmail = "";
+		String textoDeDireccionDeEntrega = "";
+		if(pedidoColectivo.getDireccionEntrega() != null) {
+			direccion = pedidoColectivo.getDireccionEntrega();
+			textoEnEmail = "El pedido esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
+			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
+		}else {
+			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
+			textoEnEmail = "Su pedido esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
+			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar su pedido";
+		}
 		//Genero tabla de contenido de pedido de cada persona
 		String tablaContenidoDePedidoColectivo = this.armarTablaContenidoDePedidoColectivo(pedidoColectivo);
 		//La direccion del grupo
-		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedidoColectivo.getDireccionEntrega());
+		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
 		
 		List<String> emailsClientesDestino = obtenerEmails(pedidoColectivo);
 		
 		params.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivo);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
 		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
+		params.put("textoDetalle", textoEnEmail);
 		
 		
 		//se envia todo a todos los integrantes del grupo
@@ -421,15 +459,42 @@ public class MailService {
 	
 	
 	
-	private String armarTablaDireccionDeEntrega(Direccion d){
+	private String armarTablaDireccionDeEntrega(Direccion d,String texto){
 		if (d!=null) {
 			String departamento =  d.getDepartamento() != null ? d.getDepartamento() : "---";
-			String tabla = "<table border="+ "0" +">"
-					+ "<tr><td>Calle:</td><td>" + d.getCalle() + "</td></tr>"
-					+ "<tr><td>Altura:</td>" + d.getAltura() + "</td></tr>"
-					+ "<tr><td>Departamento:</td>" + departamento + "</td></tr>"
-					+ "<tr><td>Cod. posta:</td>" + d.getCodigoPostal() + "</td></tr>"
-					+ "<tr><td>Localidad:</td>" + d.getLocalidad() + "</td></tr>";
+			
+			String tabla=
+					"<br><br>"
+					+"<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
+					   +"<thead bgcolor=\"#313231\">" 
+					       +"<tr height=\"32\" width=\"100%\">"
+					           +"<td colspan=\"2\"><font color=\"white\">" + texto +"</font></td>"
+					       +"</tr>"
+					  +"</thead>"
+					  +"<tbody align=\"left\">"
+					      +"<tr>"
+					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Calle </td>"
+					           +"<td>"+d.getCalle()+"</td>"
+					      +"</tr>"
+					      +"<tr>"
+					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Altura</td>"
+					           +"<td>"+d.getAltura()+"</td>"
+					      +"</tr>"
+					      +"<tr>"
+					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Departamento</td>"
+					           +"<td>"+departamento+"</td>"
+					       +"</tr>"
+					      +"<tr>"
+					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Cod.Postal</td>"
+					           +"<td>"+d.getCodigoPostal()+"</td>"
+					       +"</tr>"
+					      +"<tr>"
+					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Localidad</td>"
+					           +"<td>"+d.getLocalidad()+"</td>"
+					       +"</tr>"	   
+					   +"</tbody>"
+					+"</table>"
+					+"<br><br>";
 			
 			return tabla;
 				
@@ -450,17 +515,40 @@ public class MailService {
 	}
 
 	
+	private String armarHeader() {
+		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
+		   	   + "<thead bgcolor=\"#313231\">" 
+		       +  "<tr height=\"32\">"
+		       +     "<th><font color=\"white\">PRODUCTO</font></th>"
+		       +     "<th><font color=\"white\">PRECIO POR UNIDAD</font></th>"
+		       +     "<th><font color=\"white\">CANTIDAD</font></th>"
+		       +  "</tr>"
+		       + "</thead>"
+		       + "<tbody>";
+	}
 	
 	private String armarFilaDetalleProducto(ProductoPedido pp){
-		return  "<tr><td>"+ pp.getNombreProducto() + pp.getNombreVariante() + "</td><td>" +pp.getPrecio()+ "</td><td> "+ pp.getCantidad() +"</td></tr>";
+		return  "<tr>"
+				+	"<td>"+pp.getNombreProducto()+"</td>"
+				+	"<td>"+pp.getPrecio()+"</td>"
+				+	"<td>"+pp.getCantidad()+"</td>"
+				+"</tr>";
+				
+				
+		//"<tr><td>"+ pp.getNombreProducto() + pp.getNombreVariante() + "</td><td>" +pp.getPrecio()+ "</td><td> "+ pp.getCantidad() +"</td></tr>";
 	}	
 
-	private String armarHeader() {
-		return "<table border="+ "1" +"><tr><th>Producto</th><th>Precio por Unidad</th><th>Cantidad</th></tr>";
+	private String armarFooter(Double total){
+		return   "</tbody>"
+				 + "<tfoot bgcolor=\"#c1c1c1\">"
+				 +"<tr height=\"32\">"
+				 +	"<th>TOTAL</th>"
+				 +	"<th>$"+total+"</th>"
+				 +  "<th></th>"		   
+				 +"</tr>"
+				 + "</tfoot>"
+				 + "</table>";
 	}
 	
-	private String armarFooter(Double total){
-		return "<tr><td colspan="+"2"+">Total:</td><td>"+total+"</td></tr></table>";
-	}
 
 }
