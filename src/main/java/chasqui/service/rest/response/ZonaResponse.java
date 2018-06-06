@@ -8,11 +8,13 @@ import chasqui.model.Zona;
 
 public class ZonaResponse {
 	
+	private Integer id;
 	private String nombre;
 	private String fechaCierrePedidos;
 	private String descripcion;
 	
 	public ZonaResponse(Zona zona){
+		this.setId(zona.getId());
 		this.nombre = zona.getNombre();
 		this.setFechaCierrePedidos(format(zona.getFechaCierrePedidos()));
 		this.descripcion = zona.getDescripcion();
@@ -46,6 +48,14 @@ public class ZonaResponse {
 
 	public void setFechaCierrePedidos(String fechaCierrePedidos) {
 		this.fechaCierrePedidos = fechaCierrePedidos;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 }

@@ -63,7 +63,11 @@ public class VendedorListener {
 	@Path("/zonas/proxima/{idVendedor}")
 	@Produces("application/json")
 	public Response obtenerProximaZonaDeEntrega(@PathParam("idVendedor") Integer idVendedor){
+		try {
 		return Response.ok(toResponseZona(zonaService.buscarZonaProxima(idVendedor)),MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError ("No hay zonas proximas disponibles")).build();
+		}
 	}
 	
 	private ZonaResponse toResponseZona(Zona z) {
