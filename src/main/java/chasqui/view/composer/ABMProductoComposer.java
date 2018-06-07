@@ -200,6 +200,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	public void onClick$botonGuardar() throws IOException{
 		validaciones();
 		ejecutarValidaciones();
+		guardarImagenNoDisponible();
 		model.setNombre(nombreProducto.getValue());
 		model.setCaracteristicas(caracteristicas);
 		if(model.getId() == null){
@@ -237,6 +238,24 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		params.put("accion", "productoGuardado");		
 		Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
 		this.self.detach();
+	}
+	
+	private void guardarImagenNoDisponible() throws IOException {
+		if(imagenes.isEmpty()){
+			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
+			String path = context.getRealPath("/imagenes/");
+			String sourcePath = context.getRealPath("/imagenes/imagen no disponible.jpg");
+			BufferedImage originalImage = ImageIO.read(new File(sourcePath));
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write( originalImage, "jpg", baos );
+			baos.flush();
+			byte[] imageInByte = baos.toByteArray();
+			baos.close();
+			Imagen imagen = fileSaver.guardarImagen(path ,usuario.getUsername(),nombreProducto.getValue()+"ND",imageInByte);
+			imagen.setNombre(nombreProducto.getValue() + "_imagenNoDisponible");
+			imagen.setPreview(false);
+			imagenes.add(imagen);
+		}
 	}
 	
 	private void destacarSiNoLoEsta(Variante modelv2) {
@@ -519,22 +538,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		Double precio = doubleboxPrecio.getValue();
 		Integer stock = intboxStock.getValue();
 		String descripcion = ckEditor.getValue();
-		
-		if(imagenes.isEmpty()){
-			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
-			String path = context.getRealPath("/imagenes/");
-			String sourcePath = context.getRealPath("/imagenes/imagen no disponible.jpg");
-			BufferedImage originalImage = ImageIO.read(new File(sourcePath));
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write( originalImage, "jpg", baos );
-			baos.flush();
-			byte[] imageInByte = baos.toByteArray();
-			baos.close();
-			Imagen imagen = fileSaver.guardarImagen(path ,usuario.getUsername(),nombreProducto.getValue()+"ND",imageInByte);
-			imagen.setNombre(nombreProducto.getValue() + "_imagenNoDisponible");
-			imagen.setPreview(false);
-			imagenes.add(imagen);
-		}
+
 		if(precio == null || precio < 0){
 			throw new WrongValueException(doubleboxPrecio,"El precio debe ser mayor a 0");
 		}
@@ -557,6 +561,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		if(previews > 1){
 			throw new WrongValueException(listImagenes,"No se puede elegir mas de una imagen de previsualización");
 		}
+		
 		
 	}
 
