@@ -19,7 +19,7 @@ public interface GeoService {
 
 	List<GrupoCC> obtenerGCC_CercanosACliente(String email) throws ParseException;
 
-	void crearGuardarZona(ZonaRequest request);
+	void crearGuardarZona(ZonaRequest request) throws Exception;
 
 	void eliminarZona(EliminarZonaRequest request);
 

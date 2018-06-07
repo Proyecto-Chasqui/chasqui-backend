@@ -68,7 +68,7 @@ public class GeoServiceImpl implements GeoService{
 	}
 	
 	@Override
-	public void crearGuardarZona(ZonaRequest request) {
+	public void crearGuardarZona(ZonaRequest request) throws Exception {
 		
 		try {
 			ArrayList<ArrayList<Double>> coordenadas = (ArrayList<ArrayList<Double>>) request.getCoordenadas();		
@@ -84,7 +84,11 @@ public class GeoServiceImpl implements GeoService{
 			z.setNombre(request.getNombre());
 			z.setFechaCierrePedidos(request.getFechaCierre());
 			z.setDescripcion(request.getMensaje());
-			zonaDAO.guardar(z);
+			if(!seSolapaCon(z,z.getId(),zonaDAO.obtenerZonas(request.getIdVendedor()))) {
+				zonaDAO.guardar(z);				
+			}else {
+				throw new Exception("La Zona se solapa");
+			}
 			request.setId(z.getId());
 			
 		} catch (ParseException e) {
@@ -246,6 +250,24 @@ public class GeoServiceImpl implements GeoService{
 		for(Zona vzona : zonas){
 			if(!seSolapa){
 				seSolapa = zona.getGeoArea().overlaps(vzona.getGeoArea());
+			}
+		}
+		return seSolapa;
+	}
+	
+	private Boolean seSolapaCon(Zona zona, Integer idZona, List<Zona>zonas){
+		Boolean seSolapa = false;
+		Double area = 0.0;
+		Double tolerancia = (double) 1000;
+		for(Zona vzona : zonas){
+			if(!seSolapa && vzona.getGeoArea() != null && vzona.getId() != idZona){
+				Double areacalculada = zona.getGeoArea().intersection(vzona.getGeoArea()).getArea();
+				if(area < areacalculada) {
+					area = areacalculada;
+				}
+				if(area > tolerancia) {
+					seSolapa = true;
+				}
 			}
 		}
 		return seSolapa;

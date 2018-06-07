@@ -63,7 +63,9 @@ public class ZonaListener {
 			return Response.ok(returnZona).build();
 		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
-		} 
+		} catch (Exception e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
 	}
 	
 	@POST
