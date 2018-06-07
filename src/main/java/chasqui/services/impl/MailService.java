@@ -179,17 +179,18 @@ public class MailService {
 	 * @param p
 	 */
 	public void enviarEmailConfirmacionPedido(final String emailVendedor,final String emailCliente, final Pedido p){
-		Direccion direccion;
+		Direccion direccion = null;
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
 		if(p.getDireccionEntrega() != null) {
 			direccion = p.getDireccionEntrega();
 			textoDeDireccionDeEntrega = "Dirección de envio";
-		}else {
+		}
+		if(p.getPuntoDeRetiro() != null) {
 			direccion = p.getPuntoDeRetiro().getDireccion();
 			textoDeDireccionDeEntrega ="Dirección de retiro";
 		}
-
+		
 		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
 		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
 		String cuerpoCliente = armarCuerpoCliente();
