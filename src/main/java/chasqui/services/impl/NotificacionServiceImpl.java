@@ -143,7 +143,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 		//--------------Notificación interna
 		this.notificar(emailAdministrador,emailClienteDestino,mensaje, null);
 		//--------------Mail de respaldo
-		mailService.enviarEmailNotificacionChasqui(emailAdministrador,emailClienteDestino, mensaje, nombreUsuario, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT);
+		mailService.enviarEmailNotificacionChasqui(emailAdministrador,nombreUsuario,emailClienteDestino, mensaje, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT);
 	}
 
 	/**
