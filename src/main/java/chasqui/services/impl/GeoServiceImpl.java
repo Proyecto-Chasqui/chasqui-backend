@@ -34,6 +34,8 @@ import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.Zona;
+import chasqui.service.rest.request.EliminarZonaRequest;
+import chasqui.service.rest.request.ZonaRequest;
 import chasqui.services.interfaces.GeoService;
 
 
@@ -43,6 +45,7 @@ public class GeoServiceImpl implements GeoService{
 	@Autowired VendedorDAO vendedorDAO;
 	@Autowired UsuarioDAO usuarioDAO;
 	@Autowired GrupoDAO grupoDAO;
+	GeometryFactory geometryFactory = new GeometryFactory();
 	
 	// Asume que cada poligono esta definido en una linea, y son todos poligonos.
 	// El numeroZona es para todas las zonas la misma, solo es para la instanciacion de zonas, 
@@ -62,6 +65,39 @@ public class GeoServiceImpl implements GeoService{
 		} catch (IOException e) {
 			new ArchivoConFormatoIncorrectoException("El archivo es incorrecto o no se encuentra en la ruta especificada: /n" + " Path: " + absolutePath);
 		}
+	}
+	
+	@Override
+	public void crearGuardarZona(ZonaRequest request) {
+		
+		try {
+			ArrayList<ArrayList<Double>> coordenadas = (ArrayList<ArrayList<Double>>) request.getCoordenadas();		
+			Polygon poly = crearPolygon(coordenadas);
+			Zona z;
+			if(request.getId()!=null) {
+				z = zonaDAO.obtenerZonaPorId(request.getId());
+			}else {
+				z = new Zona();
+				z.setIdVendedor(request.getIdVendedor());
+			}
+			z.setGeoArea(poly);
+			z.setNombre(request.getNombre());
+			z.setFechaCierrePedidos(request.getFechaCierre());
+			z.setDescripcion(request.getMensaje());
+			zonaDAO.guardar(z);
+			request.setId(z.getId());
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}			
+		
+		
+	}
+
+	private Polygon crearPolygon(ArrayList<ArrayList<Double>> coordinates) throws ParseException {
+		String zonaEnformatoWKT = parsearAWkt("Polygon",coordinates);
+		Polygon geoArea = (Polygon) new WKTReader().read(zonaEnformatoWKT);
+		return geoArea;
 	}
 
 	//Asume que el archivo geoJson tiene un campo descripcion (tentativo) con el nombre del vendedor.
@@ -225,6 +261,12 @@ public class GeoServiceImpl implements GeoService{
 				zonaDAO.guardar(zona);
 			}
 		}
+		
+	}
+
+	@Override
+	public void eliminarZona(EliminarZonaRequest request) {
+		this.zonaDAO.eliminar(this.zonaDAO.obtenerZonaPorId(request.getId()));
 		
 	}
 	

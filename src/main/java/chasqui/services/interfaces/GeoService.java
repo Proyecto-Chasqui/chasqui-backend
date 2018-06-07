@@ -6,6 +6,8 @@ import com.vividsolutions.jts.io.ParseException;
 
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
+import chasqui.service.rest.request.EliminarZonaRequest;
+import chasqui.service.rest.request.ZonaRequest;
 
 public interface GeoService {
 
@@ -16,5 +18,9 @@ public interface GeoService {
 	List<Cliente> obtenerClientesCercanos(String email) throws ParseException;
 
 	List<GrupoCC> obtenerGCC_CercanosACliente(String email) throws ParseException;
+
+	void crearGuardarZona(ZonaRequest request);
+
+	void eliminarZona(EliminarZonaRequest request);
 
 }

@@ -13,7 +13,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +23,12 @@ import org.springframework.stereotype.Service;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Zona;
+import chasqui.service.rest.request.EliminarZonaRequest;
 import chasqui.service.rest.request.GrupoRequest;
 import chasqui.service.rest.request.ZonaRequest;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.ZonaGeoJsonResponse;
+import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.ZonaService;
 
 @Service
@@ -32,6 +36,8 @@ import chasqui.services.interfaces.ZonaService;
 public class ZonaListener {
 	@Autowired
 	ZonaService zonaService;
+	@Autowired
+	GeoService geoService;
 	
 	@GET
 	@Path("/all/{idVendedor}")
@@ -52,13 +58,37 @@ public class ZonaListener {
 		ZonaRequest request;
 		try {
 			request = this.toZonaRequest(zonaRequest);
-			//crear el objeto zona segun los casos necesarios.
-			return Response.ok(request).build();
+			geoService.crearGuardarZona(request);
+			ZonaGeoJsonResponse returnZona = toEchoZona(zonaService.obtenerZonaPorId(request.getId()));
+			return Response.ok(returnZona).build();
 		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} 
 	}
 	
+	@POST
+	@Path("/eliminarZona")
+	@Produces("application/json")
+	public Response eliminarZona(
+			@Multipart(value = "grupoRequest", type = "application/json") final String eliminarZonaRequest) {
+		EliminarZonaRequest request;
+		try {
+			request = this.toEliminarZonaRequest(eliminarZonaRequest);
+			geoService.eliminarZona(request);
+			return Response.ok("{\"STATUS\":\"OK\"}").build();
+		} catch (IOException e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} 
+	}
+	
+	private EliminarZonaRequest toEliminarZonaRequest(String eliminarZonaRequest) throws JsonParseException, JsonMappingException, IOException {
+		EliminarZonaRequest request = new EliminarZonaRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		request = mapper.readValue(eliminarZonaRequest, EliminarZonaRequest.class);
+		return request;
+	}
+
 	private ZonaRequest toZonaRequest(String req) throws IOException {
 		ZonaRequest request = new ZonaRequest();
 		ObjectMapper mapper = new ObjectMapper();
@@ -75,5 +105,9 @@ public class ZonaListener {
 			response.add(new ZonaGeoJsonResponse(z));
 		}
 		return response;
+	}
+	
+	private ZonaGeoJsonResponse toEchoZona(Zona zona) {
+		return new ZonaGeoJsonResponse(zona);
 	}
 }
