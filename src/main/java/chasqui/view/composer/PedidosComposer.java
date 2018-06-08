@@ -334,11 +334,9 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		List<Pedido>paginaResumenCompleto = new ArrayList<Pedido>();
 		Pedido resumenPedidogeneral = new Pedido(usuarioLogueado,null,false, new DateTime());
 		for(Pedido p : pedidosgenerados){
-			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
-				for(ProductoPedido pp : p.getProductosEnPedido()){
-					ProductoPedido ppc = this.copiarProducto(pp);
-					resumenPedidogeneral.agregarProductoPedido(ppc, null);
-				}
+			for(ProductoPedido pp : p.getProductosEnPedido()){
+				ProductoPedido ppc = this.copiarProducto(pp);
+				resumenPedidogeneral.agregarProductoPedido(ppc, null);
 			}
 		}
 		resumenPedidogeneral.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
