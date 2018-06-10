@@ -374,6 +374,10 @@ public class XlsExporter {
 			buildTitle(aRow,"Punto de Retiro",5,6,"$F$8:$G$8");
 			for(int i=0; i<campospuntoderetiro.length;i++){
 				aRow = sheet.getRow(startRow);
+				if(aRow == null){
+					sheet.createRow(startRow);
+					aRow = sheet.getRow(startRow);
+				}
 				datacell = aRow.createCell(5);
 				datacell.setCellValue(campospuntoderetiro[i]);
 				datacell.setCellStyle(styles.get("cell"));
