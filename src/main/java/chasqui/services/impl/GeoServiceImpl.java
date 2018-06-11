@@ -16,10 +16,14 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
@@ -37,6 +41,7 @@ import chasqui.model.Zona;
 import chasqui.service.rest.request.EliminarZonaRequest;
 import chasqui.service.rest.request.ZonaRequest;
 import chasqui.services.interfaces.GeoService;
+import chasqui.utils.SphericalMercator;
 
 
 public class GeoServiceImpl implements GeoService{
@@ -97,6 +102,8 @@ public class GeoServiceImpl implements GeoService{
 		
 		
 	}
+	
+
 
 	private Polygon crearPolygon(ArrayList<ArrayList<Double>> coordinates) throws ParseException {
 		String zonaEnformatoWKT = parsearAWkt("Polygon",coordinates);
@@ -255,13 +262,17 @@ public class GeoServiceImpl implements GeoService{
 		return seSolapa;
 	}
 	
-	private Boolean seSolapaCon(Zona zona, Integer idZona, List<Zona>zonas){
+	private Boolean seSolapaCon(Zona zona, Integer idZona, List<Zona>zonas) throws Exception{
 		Boolean seSolapa = false;
 		Double area = 0.0;
-		Double tolerancia = (double) 1000;
+		Double tolerancia = (double) 4000;
 		for(Zona vzona : zonas){
 			if(!seSolapa && vzona.getGeoArea() != null && vzona.getId() != idZona){
-				Double areacalculada = zona.getGeoArea().intersection(vzona.getGeoArea()).getArea();
+				Geometry geom = zona.getGeoArea().intersection(vzona.getGeoArea());
+				double areacalculada = 0.0;
+				for(int i=0; i<geom.getNumGeometries();i++) {
+					areacalculada = areacalculada + GeoServiceImpl.getArea(geom.getGeometryN(i),true);
+				}
 				if(area < areacalculada) {
 					area = areacalculada;
 				}
@@ -270,8 +281,67 @@ public class GeoServiceImpl implements GeoService{
 				}
 			}
 		}
+		
 		return seSolapa;
 	}
+	
+	public static double getArea(Geometry geom, Boolean inMeters) throws Exception
+	{
+		double retArea = 0.0;
+		if (inMeters) {
+			if (geom instanceof Polygon)
+			{
+				Polygon poly = (Polygon) geom;
+				double area = Math.abs(getSignedArea(poly.getExteriorRing().getCoordinateSequence()));
+				
+				for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+					LineString hole =	poly.getInteriorRingN(i);
+					area -= Math.abs(getSignedArea(hole.getCoordinateSequence()));
+				}
+				retArea = area;
+			}
+			else if (geom instanceof LineString)
+			{
+				LineString ring = (LineString)geom;
+				retArea = getSignedArea(ring.getCoordinateSequence());
+			}
+		} else {
+			retArea = geom.getArea();
+		}
+		return retArea;
+	}
+	
+	private static double getSignedArea(CoordinateSequence ring)
+	{
+		int n = ring.size();
+		if (n < 3)
+			return 0.0;
+		Coordinate p0 = new Coordinate();
+		Coordinate p1 = new Coordinate();
+		Coordinate p2 = new Coordinate();
+		getMercatorCoordinate(ring, 0, p1);
+		getMercatorCoordinate(ring, 1, p2);
+		double x0 = p1.x;
+		p2.x -= x0;
+		double sum = 0.0;
+		for (int i = 1; i < n - 1; i++) {
+			p0.y = p1.y;
+			p1.x = p2.x;
+			p1.y = p2.y;
+			getMercatorCoordinate(ring, i + 1, p2);
+			p2.x -= x0;
+			sum += p1.x * (p0.y - p2.y);
+		}
+		return sum / 2.0;
+	}
+	
+	private static void getMercatorCoordinate(CoordinateSequence seq, int index, Coordinate coord)
+	{
+		seq.getCoordinate(index, coord);
+		coord.x = SphericalMercator.lonToX(coord.x);
+		coord.y = SphericalMercator.latToY(coord.y);
+	}
+
 	
 	private void guardarZonas(List<String> nombresDeZonasQueSeSolapan, List<Zona> zonas, Integer idVendedor) {
 		if(!nombresDeZonasQueSeSolapan.isEmpty()){				
@@ -290,6 +360,8 @@ public class GeoServiceImpl implements GeoService{
 	public void eliminarZona(EliminarZonaRequest request) {
 		this.zonaDAO.eliminar(this.zonaDAO.obtenerZonaPorId(request.getId()));
 		
-	}
+	}	
 	
 }
+
+
