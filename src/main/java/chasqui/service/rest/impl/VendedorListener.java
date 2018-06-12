@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import chasqui.exceptions.TokenInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Vendedor;
@@ -24,6 +25,7 @@ import chasqui.service.rest.response.VendedorResponse;
 import chasqui.service.rest.response.ZonaResponse;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
+import chasqui.utils.TokenGenerator;
 
 @Service
 @Path("/vendedor")
@@ -36,6 +38,8 @@ public class VendedorListener {
 	@Autowired
 	ZonaService zonaService;
 	
+	@Autowired
+	TokenGenerator tokenGenerator;
 	
 	@GET
 	@Path("/all")
@@ -47,6 +51,7 @@ public class VendedorListener {
 			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
 		}
 	}
+	
 	
 	@GET
 	@Path("/zonas/{idVendedor}")
@@ -93,6 +98,20 @@ public class VendedorListener {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	@GET
+	@Path("/byToken/{token}")
+	@Produces("application/json")
+	public Response obtenerVendedorPorToken(@PathParam("token")String token){
+		try {
+			Integer idVendedor = tokenGenerator.getIdDeVendedorConToken(token);
+			return Response.ok(new VendedorResponse(vendedorService.obtenerVendedorPorId(idVendedor))).build();
+		} catch (TokenInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	

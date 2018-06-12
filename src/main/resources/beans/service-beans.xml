@@ -111,6 +111,7 @@
 	   </bean>
 	   <bean id="applicationContextProvider" name="applicationContextProvider" class="chasqui.model.ApplicationContextProvider"/>
 	   
+	   <bean id="tokenGenerator" name="tokenGenerator" class="chasqui.utils.TokenGenerator"></bean>
 	   <!-- SERVICIO EMAIL -->
 	   
 	   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
