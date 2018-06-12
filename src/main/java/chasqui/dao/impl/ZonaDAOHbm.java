@@ -9,11 +9,14 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernatespatial.criterion.SpatialRestrictions;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import com.vividsolutions.jts.geom.Point;
 
 import chasqui.dao.ZonaDAO;
 import chasqui.model.Zona;
@@ -109,8 +112,20 @@ public class ZonaDAOHbm extends HibernateDaoSupport implements ZonaDAO{
 		return zona;
 	}
 	
-	
+	@Override
+	public Zona obtenerZonaDePertenenciaDeDireccion(final Point punto, final Integer idVendedor){
+		Zona zona = this.getHibernateTemplate().execute(new HibernateCallback<Zona>() {
 
+			public Zona doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(Zona.class);
+				c.add(Restrictions.eq("idVendedor", idVendedor))
+				.add(SpatialRestrictions.contains("geoArea", punto));
+				return (Zona) c.uniqueResult();
+			}
+		});
+		return zona;
+		
+	}
 	
 	
 	

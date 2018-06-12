@@ -158,6 +158,13 @@ public class GeoServiceImpl implements GeoService{
 		return grupoDAO.obtenerGruposEnUnArea(area);
 	}
 	
+	public Zona calcularZonaDePertenencia(Point punto,Integer idVendedor) {
+		List<Zona> zonas = zonaDAO.obtenerZonas(idVendedor);
+		
+		return null;
+		
+	}
+	
 	/*-------------------------------------------
 	 *  		OPERACIONES AUXILIARES
 	 *-------------------------------------------*/

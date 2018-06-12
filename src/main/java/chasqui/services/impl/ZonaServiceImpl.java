@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vividsolutions.jts.geom.Point;
+
 import chasqui.aspect.Auditada;
 import chasqui.dao.ZonaDAO;
 import chasqui.model.Zona;
@@ -56,6 +58,12 @@ public class ZonaServiceImpl implements ZonaService{
 	@Override
 	public Zona obtenerZonaPorId(Integer zonaID) {
 		return zonaDAO.obtenerZonaPorId(zonaID);
+	}
+
+	@Override
+	public Zona obtenerZonaDePertenenciaDeDireccion(Point punto, Integer idVendedor) {
+		
+		return zonaDAO.obtenerZonaDePertenenciaDeDireccion(punto, idVendedor);
 	}
 
 	
