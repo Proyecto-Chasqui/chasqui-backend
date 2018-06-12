@@ -63,7 +63,11 @@ public class VendedorListener {
 	@Path("/zonas/proxima/{idVendedor}")
 	@Produces("application/json")
 	public Response obtenerProximaZonaDeEntrega(@PathParam("idVendedor") Integer idVendedor){
+		try {
 		return Response.ok(toResponseZona(zonaService.buscarZonaProxima(idVendedor)),MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError ("No hay zonas proximas disponibles")).build();
+		}
 	}
 	
 	private ZonaResponse toResponseZona(Zona z) {
@@ -110,7 +114,7 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerPreguntasDeConsumoIndividual(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
-			return Response.ok(this.toResponsePreguntaConsumo(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPreguntasDePedidosIndividuales())).build();
+			return Response.ok(this.toResponsePreguntaConsumo(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPreguntasDePedidosIndividualesHabilitadas())).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			
@@ -123,7 +127,7 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerPreguntasDeConsumoColectivo(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
-			return Response.ok(this.toResponsePreguntaConsumo(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPreguntasDePedidosColectivos())).build();
+			return Response.ok(this.toResponsePreguntaConsumo(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPreguntasDePedidosColectivosHabilitados())).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			

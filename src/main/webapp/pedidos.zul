@@ -96,7 +96,7 @@ style="overflow:auto">
 	</hbox>
 </div>
 <separator spacing="15px"/>
-	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{pedidosWindow$composer.pedidos}" mold="paging" pageSize="10" rows="10">
+	<listbox multiple="flase" checkmark="false" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{pedidosWindow$composer.pedidos}" mold="paging" pageSize="10" rows="10">
 		<listhead>
 			<listheader label="ID Pedido" align="center" visible="true"/>
 			<listheader label="Cliente Creador" align="center" />

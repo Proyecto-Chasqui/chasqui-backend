@@ -150,9 +150,10 @@ public class GrupoServiceImpl implements GrupoService {
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);		
 		InvitacionAGCC invitacion = invitacionService.obtenerInvitacionAGCCporID(idInvitacion);		
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(invitacion.getIdGrupo());
-		invitacionService.rechazarInvitacionAGCC(invitacion);
-		
+		invitacionService.rechazarInvitacionAGCC(invitacion);		
 		grupo.registrarInvitacionRechazada(cliente);
+		grupo.quitarMiembro(cliente);
+		notificacionService.notificar(cliente.getEmail(), grupo.getAdministrador().getEmail(), "El usuario con el email " + cliente.getEmail() + " que invitaste, rechazo tu invitacion al grupo "+ grupo.getAlias() , null);
 		grupoDao.guardarGrupo(grupo);
 	}
 
