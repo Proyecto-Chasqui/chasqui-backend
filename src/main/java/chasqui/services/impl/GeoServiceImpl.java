@@ -37,10 +37,14 @@ import chasqui.exceptions.ErrorDeParseoDeCoordenadasException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
+import chasqui.model.Usuario;
+import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.service.rest.request.EliminarZonaRequest;
 import chasqui.service.rest.request.ZonaRequest;
 import chasqui.services.interfaces.GeoService;
+import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.VendedorService;
 import chasqui.utils.SphericalMercator;
 
 
@@ -50,6 +54,7 @@ public class GeoServiceImpl implements GeoService{
 	@Autowired VendedorDAO vendedorDAO;
 	@Autowired UsuarioDAO usuarioDAO;
 	@Autowired GrupoDAO grupoDAO;
+	@Autowired UsuarioService usuarioService;
 	GeometryFactory geometryFactory = new GeometryFactory();
 	
 	// Asume que cada poligono esta definido en una linea, y son todos poligonos.
@@ -365,8 +370,11 @@ public class GeoServiceImpl implements GeoService{
 
 	@Override
 	public void eliminarZona(EliminarZonaRequest request) {
-		this.zonaDAO.eliminar(this.zonaDAO.obtenerZonaPorId(request.getId()));
-		
+		Vendedor usuario = this.usuarioDAO.obtenerVendedorPorID(request.getIdVendedor());
+		Zona zona = this.zonaDAO.obtenerZonaPorId(request.getId());
+		usuarioService.inicializarListasDe(usuario);
+		usuario.eliminarZona(zona);
+		usuarioService.guardarUsuario(usuario);
 	}	
 	
 }
