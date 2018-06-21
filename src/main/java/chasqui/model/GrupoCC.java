@@ -53,6 +53,7 @@ public class GrupoCC {
 		this.invitarAlGrupo(administrador);
 		this.registrarInvitacionAceptada(administrador);
 		this.pedidoActual = new PedidoColectivo();
+		this.pedidoActual.setColectivo(this);
 		this.historial = new HistorialGCC(this.id);
 	}
 

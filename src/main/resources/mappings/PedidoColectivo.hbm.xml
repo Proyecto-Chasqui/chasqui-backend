@@ -13,24 +13,13 @@
          	</generator>
         </id>
         
-        
       <map name="pedidosIndividuales" table="PEDIDO" lazy="false"   cascade="all" inverse="false" >
          <key column="ID_PEDIDO_COLECTIVO"/>
          <index column="USUARIO_CREADOR" type="string"/>
          <one-to-many class="chasqui.model.Pedido"/>
       </map>
         
-        
-<!--          <bag name="pedidosIndividuales" inverse="false" table="PEDIDO" lazy="false"  cascade="all"> -->
-<!--             <key> -->
-<!--                 <column name="ID_PEDIDO_COLECTIVO" /> -->
-<!--             </key> -->
-<!--             <one-to-many class="chasqui.model.Pedido" /> -->
-<!--         </bag> -->
-        
-        
         <property name="estado" type="java.lang.String" column="ESTADO"/>
-         
        
 		<many-to-one name="zona" class="chasqui.model.Zona" fetch="join" not-found="ignore">
 			<column name="ID_ZONA" />
@@ -63,5 +52,11 @@
          	<element column="opcionSeleccionada" type="string"/>
       	</map>
 		 
+
+		<many-to-one name="colectivo" class="chasqui.model.GrupoCC"
+			fetch="join" not-null="false" not-found="ignore">
+			<column name="COLECTIVO" />
+		</many-to-one>
+		
     </class>
 </hibernate-mapping>

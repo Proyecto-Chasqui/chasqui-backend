@@ -31,6 +31,7 @@ public class PedidoColectivo implements IPedido{
 	private DateTime fechaModificacion;
 	private String comentario;
 	private Map<String,String> respuestasAPreguntas;
+	private GrupoCC colectivo;
 	
 	public PedidoColectivo() {
 		pedidosIndividuales = new HashMap<String,Pedido>();
@@ -83,6 +84,14 @@ public class PedidoColectivo implements IPedido{
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public GrupoCC getColectivo() {
+		return colectivo;
+	}
+
+	public void setColectivo(GrupoCC colectivo) {
+		this.colectivo = colectivo;
 	}
 
 	@Override
