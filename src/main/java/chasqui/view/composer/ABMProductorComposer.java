@@ -72,6 +72,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
+		textboxNombreProductor.setMaxlength(64);
 		usuario = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		comp.addEventListener(Events.ON_NOTIFY, new SubirArchivo(this));
 		model = (Fabricante) Executions.getCurrent().getArg().get("productor");
@@ -231,10 +232,10 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 			throw new WrongValueException("El usuario: " + usuario.getUsername() + " ya tiene el productor: " + productor );
 		}
 		
-		if(productor.matches(".*[0-9].*")){
-			throw new WrongValueException(textboxNombreProductor,"El productor debe ser un nombre sin numeros");
-		}
-		
+//		if(productor.matches(".*[0-9].*")){
+//			throw new WrongValueException(textboxNombreProductor,"El productor debe ser un nombre sin numeros");
+//		}
+//		
 //		if(StringUtils.isEmpty(pais)){
 //			throw new WrongValueException(txtPais,"El pais no debe ser vacio!");
 //		}
