@@ -36,5 +36,9 @@ public class TokenGenerator {
 		}
 		return tokensVendedor.get(token);
 	}
+	
+	public boolean tokenActivo(String token) {
+		return tokensVendedor.get(token) != null;
+	}
 
 }

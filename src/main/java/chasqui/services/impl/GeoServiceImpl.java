@@ -14,6 +14,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
@@ -46,6 +47,7 @@ import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.utils.SphericalMercator;
+import chasqui.utils.TokenGenerator;
 
 
 public class GeoServiceImpl implements GeoService{
@@ -56,6 +58,8 @@ public class GeoServiceImpl implements GeoService{
 	@Autowired GrupoDAO grupoDAO;
 	@Autowired UsuarioService usuarioService;
 	GeometryFactory geometryFactory = new GeometryFactory();
+	@Autowired
+	TokenGenerator tokenGenerator;
 	
 	// Asume que cada poligono esta definido en una linea, y son todos poligonos.
 	// El numeroZona es para todas las zonas la misma, solo es para la instanciacion de zonas, 
@@ -81,6 +85,7 @@ public class GeoServiceImpl implements GeoService{
 	public void crearGuardarZona(ZonaRequest request) throws Exception {
 		
 		try {
+			validar(request);
 			ArrayList<ArrayList<Double>> coordenadas = (ArrayList<ArrayList<Double>>) request.getCoordenadas();		
 			Polygon poly = crearPolygon(coordenadas);
 			Zona z;
@@ -107,8 +112,56 @@ public class GeoServiceImpl implements GeoService{
 		
 		
 	}
-	
 
+	private void validar(ZonaRequest request) {
+		
+		if(tokenGenerator.tokenActivo(request.getToken())) {
+			new Exception("el token es invalido");
+		}
+		
+		if(request.getCoordenadas() == null) {
+			new Exception("Las coordenadas estan vacias");
+		}
+		
+		if(request.getFechaCierre().isAfterNow()) {
+			new Exception("La fecha de cierre es invalida");
+		}
+		
+		if(request.getIdVendedor() == null) {
+			new Exception("El idVendedor es invalido");
+		}
+		
+		if(request.getMensaje().isEmpty()) {
+			new Exception("El mensaje esta vacio");
+		}
+		
+		if(request.getNombre().isEmpty()) {
+			new Exception("El nombre esta vacio");
+		}
+		
+		if( request.getId() == null && existeZonaConNombre(request) ) {
+			new Exception("Ya existe una zona con el nombre" + request.getNombre());
+		}
+		
+		if(!laZonaConIdTieneElNombre(request)) {
+			if(existeZonaConNombre(request)){
+				new Exception("Ya existe una zona con el nombre" + request.getNombre());
+			}
+		}
+		
+	}
+
+	private boolean laZonaConIdTieneElNombre(ZonaRequest request) {
+		boolean ret=false;
+		if(request.getId() != null) {
+			ret = zonaDAO.obtenerZonaPorId(request.getId()).getNombre() == request.getNombre();
+		}
+		return ret;
+	}
+
+	private boolean existeZonaConNombre(ZonaRequest request) {
+		return zonaDAO.obtenerZonaPorNombre(request.getNombre()) != null;
+	}
 
 	private Polygon crearPolygon(ArrayList<ArrayList<Double>> coordinates) throws ParseException {
 		String zonaEnformatoWKT = parsearAWkt("Polygon",coordinates);

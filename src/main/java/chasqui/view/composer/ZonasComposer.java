@@ -78,7 +78,7 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 			imgMapa.setSrc(usuario.getMapaZonas());			
 		}
 		tokenGenerator = (TokenGenerator) SpringUtil.getBean("tokenGenerator");
-		String selfurl = "http://" + Executions.getCurrent().getServerName() + ":" + Executions.getCurrent().getServerPort()+"/map/";
+		String selfurl = "http://localhost:8080/map";//"http://" + Executions.getCurrent().getServerName() + ":" + Executions.getCurrent().getServerPort()+"/map/";
 		mapFrame.setSrc(selfurl+"?token="+tokenGenerator.generarTokenParaVendedor(usuario.getId()));
 		binder = new AnnotateDataBinder(c);
 		binder.loadAll();

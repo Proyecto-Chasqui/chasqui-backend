@@ -13,17 +13,19 @@ public class ZonaRequest {
 	private DateTime fechaCierre;
 	private String mensaje;
 	private Object coordenadas;
+	private String token;
 	
 	public ZonaRequest(){
 	}
 	
-	public ZonaRequest(Integer id, Integer idVendedor, String nombre, String fechacierre, String mensaje,Object coords) throws ParseException, java.text.ParseException {
+	public ZonaRequest(Integer id, Integer idVendedor, String nombre, String fechacierre, String mensaje,Object coords,String token) throws ParseException, java.text.ParseException {
 		this.id = id;
 		this.idVendedor = idVendedor;
 		this.nombre = nombre;
 		this.setFechaCierre(stringToDate(fechacierre));
 		this.coordenadas = coords;
 		this.mensaje = mensaje;
+		this.token = token;
 	}
 	
 	private DateTime stringToDate(String dateString) throws ParseException, java.text.ParseException{
@@ -79,6 +81,14 @@ public class ZonaRequest {
 
 	public void setIdVendedor(Integer idVendedor) {
 		this.idVendedor = idVendedor;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 	
 	

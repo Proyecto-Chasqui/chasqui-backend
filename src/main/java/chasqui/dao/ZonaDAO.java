@@ -15,5 +15,6 @@ public interface ZonaDAO {
 	public List<Zona> obtenerZonas(Integer idVendedor);
 	public Zona buscarZonaProxima(Integer idVendedor);
 	public Zona obtenerZonaPorId(Integer zonaID);
-	Zona obtenerZonaDePertenenciaDeDireccion(Point punto, Integer idVendedor);
+	public Zona obtenerZonaDePertenenciaDeDireccion(Point punto, Integer idVendedor);
+	public Zona obtenerZonaPorNombre(String nombre);
 }
