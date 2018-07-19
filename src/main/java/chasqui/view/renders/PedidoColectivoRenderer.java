@@ -27,7 +27,7 @@ import chasqui.view.composer.PedidosComposer;
 public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo>{
 	private Window pedidoWindow;
 	private Map<Integer,GrupoCC> datagrupo;
-	private Listcell celdaId,celdaUsr, celdaAdmn, celdaFechaCreacion, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
+	private Listcell celdaId,celdaUsr, celdaAdmn, celdaFechaCreacion, celdaFechaCierre, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
 			celdaDireccion, celdaBotones;
 
 	public PedidoColectivoRenderer(Window w) {
@@ -37,18 +37,24 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 	public void render(Listitem item, final PedidoColectivo pedidoColectivo, int arg2) throws Exception {
 
 		celdaId = new Listcell(String.valueOf(pedidoColectivo.getId()));
-		if(datagrupo != null) {
-			GrupoCC grupo = this.datagrupo.get(pedidoColectivo.getId());
-			if(grupo!=null) {
-				celdaUsr = new Listcell(grupo.getAlias());
-				celdaAdmn = new Listcell(grupo.getAdministrador().getEmail());
-			}else {
-				celdaUsr = new Listcell("sin nombre grupo");
-				celdaAdmn = new Listcell("sin nombre admin");
-			}
+		
+		if(pedidoColectivo.getColectivo() !=null) {
+			celdaUsr = new Listcell(pedidoColectivo.getColectivo().getAlias());
+			celdaAdmn = new Listcell(pedidoColectivo.getColectivo().getAdministrador().getEmail());
+		}
+		
+		if(pedidoColectivo.estaAbierto() || 
+				 pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) || 
+				 pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)) {
+			celdaFechaCierre = new Listcell("N/D");
 		}else {
-			celdaUsr = new Listcell("sin nombre grupo");
-			celdaAdmn = new Listcell("sin nombre admin");
+			if(pedidoColectivo.getFechaModificacion() != null) {
+				SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+				Date d1 = new Date(pedidoColectivo.getFechaModificacion().getMillis());
+				celdaFechaCierre = new Listcell(format.format(d1));
+			}else {
+				celdaFechaCierre = new Listcell("N/D(error 68)");
+			}
 		}
 		if(pedidoColectivo.getFechaCreacion() != null){
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
@@ -99,10 +105,15 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		if(pedidoColectivo.getPuntoDeRetiro() != null){
 			direccion = "Punto de Retiro: " + pedidoColectivo.getPuntoDeRetiro().getNombre();
 		}
+		if(direccion.equals("")) {
+			direccion = "N/D";
+		}
 		celdaDireccion = new Listcell(direccion);
 		if(pedidoColectivo.getPuntoDeRetiro() != null){
 			celdaDireccion.setStyle("color:blue; font-family:Courier Black;");
 		}
+		
+
 		celdaBotones = new Listcell();
 
 		this.configurarAcciones(pedidoColectivo);
@@ -111,6 +122,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		celdaUsr.setParent(item);
 		celdaAdmn.setParent(item);
 		celdaFechaCreacion.setParent(item);
+		celdaFechaCierre.setParent(item);
 		celdaZona.setParent(item);
 		celdaMontoMinimo.setParent(item);
 		celdaMontoActual.setParent(item);
@@ -137,7 +149,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 
 		// ------------------------------Botón para abrir el pedido en una
 		// pantalla
-		Toolbarbutton botonVerPedido = new Toolbarbutton("Ver en detalle los pedidos");
+		Toolbarbutton botonVerPedido = new Toolbarbutton("Ver detalle");
 		botonVerPedido.setTooltiptext("Muestra los pedidos de los integrantes del pedido colectivo");
 		botonVerPedido.setImage("/imagenes/eye.png");
 		HashMap<String, Object> params = new HashMap<String, Object>();

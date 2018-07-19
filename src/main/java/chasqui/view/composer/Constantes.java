@@ -40,7 +40,7 @@ public class Constantes {
 //	public final static String ESTADO_NOTIFICACION_LEIDA = "Leído";
 	public final static String ESTADO_NOTIFICACION_LEIDA_ACEPTADA = "NOTIFICACION_ACEPTADA";
 	public final static String ESTADO_NOTIFICACION_LEIDA_RECHAZADA = "NOTIFICACION_RECHAZADA";
-	public static final String ZONA_NO_DEFINIDA = "Zona no definida";
+	public static final String ZONA_NO_DEFINIDA = "No definida";
 	
 	// ENVIO MAILS
 	public static final String VENCIMIENTO_DE_PEDIDO_SUBJECT = "Vencimiento automatico";

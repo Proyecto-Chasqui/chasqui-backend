@@ -161,7 +161,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		</div>
 		
 		<div id="divPedidosColectivos" visible="false">
-			<include id="pedidosColectivosInclude" visible="false" src="/pedidosColectivos.zul"/>
+			<include id="pedidosColectivosInclude" visible="false" src="/verHistorialPedidosColectivos.zul"/>
 		</div>
 		<div id="divSolicitudesNodos" visible="false">
 			<include id="solicitudesNodosInclude" visible="false" src="/solicitudesNodos.zul"/>
