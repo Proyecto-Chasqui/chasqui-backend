@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window width="100%" title="Pedidos colectivos" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="false"
+<window width="100%" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="false"
 style="overflow:auto">
 
 <div align="center">
@@ -14,7 +14,7 @@ style="overflow:auto">
 		<space spacing="10px"/>
 		<label value="Fecha Hasta:" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<datebox id="hasta"/>
-		<textbox id="buscadorPorUsuario" value="Buscar por usuario..."  forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
+		<textbox id="buscadorPorUsuario" placeholder="Buscar por email admin"  forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>

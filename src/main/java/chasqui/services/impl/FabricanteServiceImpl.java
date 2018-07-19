@@ -3,6 +3,7 @@ package chasqui.services.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.zul.Textbox;
 
 import chasqui.aspect.Auditada;
 import chasqui.dao.FabricanteDAO;
@@ -29,6 +30,13 @@ public class FabricanteServiceImpl implements ProductorService{
 	@Override
 	public List<Fabricante> obtenerProductores(Integer idVendedor) {
 		return fabricanteDAO.obtenerProductoresDe(idVendedor);
+	}
+
+
+	@Override
+	public List<Fabricante> obtenerProductoresPorNombre(Integer idVendedor, String busquedaPorNombreProductor) throws VendedorInexistenteException {
+		List<Fabricante> productores = fabricanteDAO.obtenerProductoresDeConNombre(idVendedor,busquedaPorNombreProductor);
+		return productores;
 	}
 
 }

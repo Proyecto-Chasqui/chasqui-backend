@@ -8,4 +8,6 @@ public interface FabricanteDAO {
 
 	public List<Fabricante> obtenerProductoresDe(Integer idVendedor);
 
+	public List<Fabricante> obtenerProductoresDeConNombre(Integer idVendedor, String nombre);
+
 }

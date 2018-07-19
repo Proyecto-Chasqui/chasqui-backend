@@ -84,7 +84,8 @@ style="overflow:auto">
 		<datebox id="desde" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
 		<label value="Fecha Hasta:"/>
-		<datebox id="hasta" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>	
+		<datebox id="hasta" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
+		<textbox id="buscadorPorCliente" placeholder="Buscar por email cliente"  forward="onOK=pedidosWindow$composer.onBuscar"/>	
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>
