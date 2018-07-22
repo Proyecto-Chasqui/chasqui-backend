@@ -240,7 +240,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 				}
 			}
 		};
-		Messagebox.show("¿Esta seguro que desea preparar la entrega para este pedido colectivo?",
+		Messagebox.show("¿Esta seguro que desea preparar la entrega para este pedido colectivo? (Recuerde que se enviara un email al consumidor)",
 				"Confirmar", 
 				Messagebox.OK|Messagebox.CANCEL,
 				Messagebox.QUESTION,
