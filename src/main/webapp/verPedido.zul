@@ -7,11 +7,6 @@
 <window title="Detalle Del Pedido" border="normal" id="pedidoWindow" closable="true" sizable="true"
 apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
 
-
-
-<label id="informacion" visible="@{pedidoWindow$composer.pedidoMostrado.sinConfirmar}" value="Información: Este pedido aún no se encuentra confirmado, solo se muestra un pedido potencial. Cuando el usuario confirme
-la compra, se visualizarán los datos de entrega."  style="font-weight:bold; color:red"/>
-
 <separator spacing="20px"/>
 
 <listbox width="100%">
