@@ -26,7 +26,7 @@ style="overflow:auto">
 	</hbox>
 </div>
 <separator spacing="15px"/>
-	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{historialPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
+	<listbox multiple="false" checkmark="false" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{historialPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
 		<listhead>
 			<listheader label="ID Pedido" align="center" visible="false"/>
 			<listheader label="Grupo" align="center" visible="true"></listheader>

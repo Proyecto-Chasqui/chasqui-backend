@@ -33,20 +33,21 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 			<vbox>
 			<separator spacing="80px"/>
 			<hbox>
-				<space spacing="190px"/>
+				<space spacing="180px"/>
 				<vbox>
 					<separator spacing="5px"/>
 					<label value="@{administracionWindow$composer.usuarioLogueado.getUsername}" style="font-size:15px;font-weight:bold; color:white"/>
 				</vbox>
-				<toolbar style="background:#026290">
-					<toolbarbutton style="background: #026290" id="logout" tooltiptext="${c:l('zk.toolbar.disconnect')}" image="/imagenes/logout.png"/>
-				</toolbar>
+
+					<toolbarbutton style="background: #00b8fc, hover:background-color: red" id="logout" tooltiptext="${c:l('zk.toolbar.disconnect')}" image="/imagenes/logout.png"/>
+
 			</hbox>
 			</vbox>
 			</row>				
 		</rows>
 	</grid>
 </div>
+
 <separator spacing="5px"/>
 <hbox width="100%">
 	<space width="185px"/>

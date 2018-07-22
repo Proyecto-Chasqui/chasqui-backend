@@ -95,5 +95,6 @@ public class Constantes {
 	public static final String PASSWORD_ANTERIOR_INCORRECTO = "El password anterior no coincide";
 	public static final String ERROR_USUARIO_NO_ES_MIEMBRO = "El usuario no es miembro del grupo de compras";
 	public static final String ERROR_PUNTO_DE_RETIRO_INEXISTENTE = "El punto de retiro solicitado no existe";
+	public static final String ZONA_NO_NECESARIA = "---";
 	
 }

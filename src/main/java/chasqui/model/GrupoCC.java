@@ -279,6 +279,7 @@ public class GrupoCC {
 			this.historial.agregarAHistorial(this.pedidoActual);
 			this.historial.setId(this.id);
 			this.pedidoActual = new PedidoColectivo();
+			this.pedidoActual.setColectivo(this);
 		} else {
 			throw new NoAlcanzaMontoMinimoException();
 		}

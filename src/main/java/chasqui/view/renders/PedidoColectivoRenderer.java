@@ -67,8 +67,13 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		// -----------------Mostrar la zona
 		Zona zonaPedido = pedidoColectivo.getZona();
 		if (zonaPedido == null) {
-			celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
-			celdaZona.setStyle("color:red;");
+			if(pedidoColectivo.getPuntoDeRetiro() != null) {
+				celdaZona = new Listcell(Constantes.ZONA_NO_NECESARIA);
+				celdaZona.setStyle("color:green;");
+			}else {
+				celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
+				celdaZona.setStyle("color:red;");
+			}
 		} else {
 			celdaZona = new Listcell(zonaPedido.getNombre());
 		}

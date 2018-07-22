@@ -54,7 +54,8 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 				Criteria c = session.createCriteria(PedidoColectivo.class, "pedidoColectivo")
 				.createAlias("pedidoColectivo.colectivo", "grupoCC")
 				.createAlias("grupoCC.vendedor", "vendedor")
-				.add(Restrictions.eq("vendedor.id", vendedorid));
+				.add(Restrictions.eq("vendedor.id", vendedorid))
+				.addOrder(Order.desc("pedidoColectivo.id"));
 				if (!StringUtils.isEmpty(estadoSeleccionado)) {
 					c.add(Restrictions.eq("pedidoColectivo.estado", estadoSeleccionado));
 				}
@@ -81,8 +82,10 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 					c.add(Restrictions.eq("zona.id",zonaId));
 				}
 				if(emailAdmin!=null) {
-					c.createAlias("grupoCC.administrador", "administrador");
-					c.add(Restrictions.like("administrador.email", "%"+emailAdmin+"%"));
+					if(!emailAdmin.equals("")){
+						c.createAlias("grupoCC.administrador", "administrador");
+						c.add(Restrictions.like("administrador.email", "%"+emailAdmin+"%"));
+					}
 				}
 				return c.list();
 			}
