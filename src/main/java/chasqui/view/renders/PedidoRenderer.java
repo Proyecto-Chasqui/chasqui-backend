@@ -50,8 +50,13 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		// -----------------Mostrar la zona
 		Zona zonaPedido = pedido.getZona();
 		if (zonaPedido == null) {
-			celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
-			celdaZona.setStyle("color:red;");
+			if(pedido.getPuntoDeRetiro() != null) {
+				celdaZona = new Listcell(Constantes.ZONA_NO_NECESARIA);
+				celdaZona.setStyle("color:green;");
+			}else {
+				celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
+				celdaZona.setStyle("color:red;");
+			}
 		} else {
 			celdaZona = new Listcell(zonaPedido.getNombre());
 		}

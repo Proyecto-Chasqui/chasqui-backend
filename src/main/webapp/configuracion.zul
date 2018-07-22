@@ -60,7 +60,7 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
 					</hbox>
 				</listcell>
 			</listitem>-->
-			<listitem>
+			<listitem visible="false">
 				<listcell label="${c:l('zk.label.configuracion.compra.colectiva')}"/>
 				<listcell>
 					<hbox>

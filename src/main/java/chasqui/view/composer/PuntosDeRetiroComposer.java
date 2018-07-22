@@ -103,7 +103,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	}
 
 	public void onEliminarPuntoDeRetiro(Event e) throws VendedorInexistenteException{
-		final List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId());
+		final List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId(),null);
 		final PedidosGrupalesDTO pedidosColectivos = this.obtenerPedidosColectivosDeVendedor(usuario.getId(),Constantes.ESTADO_PEDIDO_CONFIRMADO,puntoDeRetiroSeleccionado.getId());
 		final Component c = this.self;
 		if(pedidosIndividuales.isEmpty()) {
@@ -347,7 +347,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	//TODO:
 	public void onHabilitarPuntoDeRetiro() throws VendedorInexistenteException{
 		if(this.puntoDeRetiroSeleccionado.getDisponible()) {
-		List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId());
+		List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId(),null);
 		PedidosGrupalesDTO pedidosColectivos = this.obtenerPedidosColectivosDeVendedor(usuario.getId(),Constantes.ESTADO_PEDIDO_CONFIRMADO,puntoDeRetiroSeleccionado.getId());	
 			this.generarMensajesSegunContexto(pedidosIndividuales, pedidosColectivos);
 		}else {

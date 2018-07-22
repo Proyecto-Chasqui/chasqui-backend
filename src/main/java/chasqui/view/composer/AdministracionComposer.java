@@ -1,5 +1,6 @@
 package chasqui.view.composer;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -21,10 +23,12 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
 import chasqui.dao.ProductoDAO;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Categoria;
 import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.Fabricante;
@@ -77,6 +81,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Include caracInclude; 
 	private Vendedor usuarioLogueado;
 	private List<Fabricante> fabricantes;
+	private List<Fabricante> listfabricantes;
 	private Combobox productorListBox;
 	private Fabricante fabricanteSeleccionado;
 	private Div divCategoria;
@@ -91,6 +96,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private ProductorService productorService;
 	private Integer numeroDestacados = 0;
 	private Integer numeroMaxDestacados = 6;
+	private Textbox busquedaPorCodigoProducto;
+	private Textbox busquedaPorNombreProductor;
 	
 //	private List<Producto>productos;
 	
@@ -109,6 +116,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		numeroDestacados = productoService.obtenerVariantesDestacadas(usuarioLogueado.getId()).size();
 		productosFiltrados = usuarioLogueado.getProductos();
 		fabricantes = (List<Fabricante>) productorService.obtenerProductores(usuarioLogueado.getId());
+		listfabricantes = new ArrayList<Fabricante>();
+		listfabricantes.addAll(fabricantes);
 		super.doAfterCompose(comp);
 		if(usuarioLogueado.getIsRoot()){
 			inicializacionUsuarioROOT();
@@ -482,14 +491,26 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		this.binder.loadAll();
 	}
 	///////Ocultar producto
-
+	
+	public void onBuscar() {
+		this.onClick$buscarProducto();
+	}
+	
+	public void onBuscarProductor() throws WrongValueException, VendedorInexistenteException {
+		this.listfabricantes.clear();
+		this.listfabricantes.addAll(productorService.obtenerProductoresPorNombre(usuarioLogueado.getId(),busquedaPorNombreProductor.getValue()));
+		this.binder.loadAll();
+	}
+	
 	public void onClick$buscarProducto(){
 		
 		Integer fabricanteSeleccionadoId = null;
-		if(fabricanteSeleccionado!=null){
-			fabricanteSeleccionadoId = fabricanteSeleccionado.getId();
+		if(fabricanteSeleccionado!=null||busquedaPorCodigoProducto.getValue() != null){
+			if(fabricanteSeleccionado != null) {
+				fabricanteSeleccionadoId = fabricanteSeleccionado.getId();
+			}
 			productosFiltrados.clear();	
-			productosFiltrados.addAll(usuarioLogueado.obtenerProductosDelFabricante(fabricanteSeleccionadoId));
+			productosFiltrados.addAll(usuarioLogueado.obtenerProductosDelFabricante(fabricanteSeleccionadoId,busquedaPorCodigoProducto.getValue()));
 		}else{
 			this.onClick$limpiarCamposbtn();
 		}
@@ -500,6 +521,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		productosFiltrados.clear();
 		productosFiltrados.addAll(usuarioLogueado.getProductos());
 		fabricanteSeleccionado = null;
+		busquedaPorCodigoProducto.setValue(null);
 		this.binder.loadAll();
 	}
 	
@@ -671,6 +693,14 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 
 	public void setEstrategiasInclude(Include estrategiasInclude) {
 		this.estrategiasInclude = estrategiasInclude;
+	}
+
+	public List<Fabricante> getListfabricantes() {
+		return listfabricantes;
+	}
+
+	public void setListfabricantes(List<Fabricante> listfabricantes) {
+		this.listfabricantes = listfabricantes;
 	}
 	
 //	public void setVisibleEstrategiasConfig(Boolean b){

@@ -219,12 +219,33 @@ public class Vendedor extends Usuario{
 		this.zonas = zonas;
 	}
 
-	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId) {
+	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId, String codigoProducto) {
 		List<Producto>p = new ArrayList<Producto>();
 		for(Fabricante f :fabricantes){
-			if(f.getId() == fabricanteSeleccionadoId){
-				p.addAll(f.getProductos());
+			if(fabricanteSeleccionadoId != null) {
+				if(codigoProducto != null) {
+					if(f.getId() == fabricanteSeleccionadoId){
+						for(Producto producto: f.getProductos()) {
+							if(producto.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
+								p.add(producto);
+							}
+						}						
+					}
+				}else {
+					if(f.getId() == fabricanteSeleccionadoId){
+						p.addAll(f.getProductos());
+					}
+				}
+			}else {
+				if(codigoProducto != null) {
+					for(Producto producto: f.getProductos()) {
+						if(producto.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
+							p.add(producto);
+						}
+					}	
+				}
 			}
+
 		}
 		return p;
 	}
