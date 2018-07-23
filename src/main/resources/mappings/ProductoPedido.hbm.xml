@@ -28,5 +28,6 @@
             <column name="CANTIDAD" />
         </property>
         <property name="imagen" column="IMAGEN" type="java.lang.String"/>
+        <property name="nombreProductor" column="NOMBRE_PRODUCTOR" type="java.lang.String"/>
     </class>
 </hibernate-mapping>

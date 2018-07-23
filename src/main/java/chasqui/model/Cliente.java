@@ -302,7 +302,7 @@ public class Cliente extends Usuario {
 
 	public void agregarProductoAPedido(Variante v, Integer idPedido, Integer cantidad, DateTime nuevoVencimiento) throws EstadoPedidoIncorrectoException {
 		Pedido p = encontrarPedidoConId(idPedido);
-		ProductoPedido pp = new ProductoPedido(v, cantidad);
+		ProductoPedido pp = new ProductoPedido(v, cantidad,v.getProducto().getFabricante().getNombre());
 		p.agregarProductoPedido(pp, nuevoVencimiento);
 		p.sumarAlMontoActual(v.getPrecio(), cantidad);
 	}
