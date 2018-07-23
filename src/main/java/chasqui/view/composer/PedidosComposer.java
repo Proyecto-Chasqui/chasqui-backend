@@ -352,6 +352,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		ProductoPedido ppc = new ProductoPedido();
 		ppc.setCantidad(pp.getCantidad());
 		ppc.setIdVariante(pp.getIdVariante());
+		ppc.setNombreProductor(pp.getNombreProductor());
 		ppc.setImagen(pp.getImagen());
 		ppc.setNombreProducto(pp.getNombreProducto());
 		ppc.setNombreVariante(pp.getNombreVariante());

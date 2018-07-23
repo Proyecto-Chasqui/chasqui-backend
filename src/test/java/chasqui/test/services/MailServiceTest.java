@@ -74,7 +74,7 @@ public class MailServiceTest extends GenericSetUp {
 		
 		DateTime fechaVencimiento = new DateTime();
 		Pedido pedido= new Pedido(vendedor, clienteFulano, false, fechaVencimiento.plusHours(24));
-		ProductoPedido prodPed = new ProductoPedido(variante, 5);
+		ProductoPedido prodPed = new ProductoPedido(variante, 5,"N/D");
 		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
 		pedido.setDireccionEntrega(direccionCasa);
@@ -147,7 +147,7 @@ public class MailServiceTest extends GenericSetUp {
 		
 		DateTime fechaVencimiento = new DateTime().plusHours(24);
 		Pedido pedido = new Pedido(this.vendedor, this.clienteFulano, false, fechaVencimiento);
-		ProductoPedido prodPed = new ProductoPedido(variante, 5);
+		ProductoPedido prodPed = new ProductoPedido(variante, 5,"N/D");
 		pedido.setDireccionEntrega(direccionCasa);
 		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
@@ -170,8 +170,8 @@ public class MailServiceTest extends GenericSetUp {
 		Pedido pedidoFulano = new Pedido(this.vendedor, this.clienteFulano, true, fechaVencimiento);
 		Pedido pedidoPerez = new Pedido(this.vendedor, this.clienteJuanPerez, true, fechaVencimiento);
 		
-		ProductoPedido prodPedidoCincoUnidades = new ProductoPedido(variante, 5);
-		ProductoPedido prodPedidoVeintiCuatroUnidades = new ProductoPedido(variante, 24);
+		ProductoPedido prodPedidoCincoUnidades = new ProductoPedido(variante, 5,"N/D");
+		ProductoPedido prodPedidoVeintiCuatroUnidades = new ProductoPedido(variante, 24,"N/D");
 
 		pedidoFulano.agregarProductoPedido(prodPedidoCincoUnidades, fechaVencimiento.plusHours(48));
 		pedidoFulano.sumarAlMontoActual(prodPedidoCincoUnidades.getPrecio(), prodPedidoCincoUnidades.getCantidad());
