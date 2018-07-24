@@ -14,8 +14,8 @@
 <!-- </zscript> -->
 <window id="administracionWindow"  border="normal" apply="chasqui.view.composer.AdministracionComposer"
 visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="overflow:auto;">
-<div style="background: #026290">
-	<grid  style="background: #026290">
+<div style="background: #00b8fc">
+	<grid  style="background: #00b8fc">
 		<columns zclass="none">
 			<column width="25%" align="left" zclass="none" style="background: blue"/>
 			<column width="60%" align="center" zclass="none" style="background: blue"/>
@@ -25,7 +25,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 			<row zclass="none">
 				<hbox>
 					<space spacing="5px"/>
-					<image src="/imagenes/logo_ch.png" height="auto" width="auto"/>
+					<image src="/imagenes/logo_ch_admn.png" height="auto" width="auto"/>
 				</hbox>
 				<div>
 					<label value="${c:l('zk.label.administrador')}" style="font-size:30px;font-weight:bold; color:white"/>
