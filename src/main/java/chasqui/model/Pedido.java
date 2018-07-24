@@ -280,6 +280,7 @@ public class Pedido implements IPedido {
 		if (this.getPerteneceAPedidoGrupal() || this.getMontoActual() >= this.getMontoMinimo()) {
 			this.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
 			this.alterable = false;
+			this.fechaModificacion = new DateTime();
 		} else
 			throw new EstadoPedidoIncorrectoException(
 					"El monto de compra no supera el mínimo (" + this.getMontoMinimo().toString() + ")");

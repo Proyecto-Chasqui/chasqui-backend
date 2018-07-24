@@ -147,6 +147,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				 .createAlias("p.categoria", "c")
 				 .add(Restrictions.eq("c.id", idCategoria))
 				 .add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .addOrder(Order.asc("id"))
 				 .setFirstResult(inicio )
 				 .setMaxResults(cantidadDeItems);
@@ -168,6 +169,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				 .createAlias("p.fabricante", "f")
 				 .add(Restrictions.eq("f.id", idProductor))
 				 .add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .setFirstResult(inicio)
 				 .setMaxResults(cantItems)
 				 .addOrder(Order.asc("id"));
@@ -192,6 +194,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				 .add(Restrictions.eq("m.id", idMedalla))
 				 .add(Restrictions.eq("f.idVendedor",idVendedor))
 				 .add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .setFirstResult(inicio)
 				 .setMaxResults(cantItems)
 				 .addOrder(Order.asc("id"));
@@ -214,6 +217,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				 .createAlias("p.fabricante", "f")
 				 .add(Restrictions.eq("f.idVendedor",idVendedor))
 				 .add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .setFirstResult(inicio)
 				 .setMaxResults(cantItems)
 				 .addOrder(Order.asc("id"));
@@ -267,6 +271,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("producto", "p")
 				 .createAlias("p.categoria", "c")
 				 .createAlias("c.vendedor", "v")
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .add(Restrictions.eq("v.id", idVendedor))
 				 .add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
 				//OCULTADO .add(Restrictions.eq("p.ocultado", false))
@@ -321,6 +326,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				Criteria c = session.createCriteria(Variante.class);
 				c.createAlias("producto", "p")
 				 .createAlias("p.categoria", "c")
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .add(Restrictions.eq("c.id", idCategoria))
 				 .setProjection(Projections.rowCount());				
 				return  (Long)c.uniqueResult();
@@ -338,6 +344,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("producto", "p")
 				 .createAlias("p.fabricante", "f")
 				 .add(Restrictions.eq("f.id", idProductor))
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .setProjection(Projections.rowCount());				
 				return  (Long)c.uniqueResult();
 			}
@@ -354,6 +361,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("producto", "p")
 				 .createAlias("p.caracteristicas", "m")
 				 .add(Restrictions.eq("m.id", idMedalla))
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .setProjection(Projections.rowCount());
 				
 				return  (Long)c.uniqueResult();
@@ -375,6 +383,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("producto", "p")
 				 .createAlias("p.categoria", "c")
 				 .createAlias("c.vendedor", "v")
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .add(Restrictions.eq("v.id", idVendedor))
 				 .add(or)
 				 .setProjection(Projections.rowCount());
@@ -419,6 +428,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("producto", "p")
 				 .createAlias("p.fabricante", "f")
 				 .add(Restrictions.eq("f.idVendedor", idVendedor))
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .setProjection(Projections.rowCount());				
 				return  (Long)c.uniqueResult();
 			}
@@ -435,6 +445,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				c.createAlias("producto", "p")
 				 .createAlias("p.fabricante", "f")
 				 .createAlias("f.caracteristica", "c")
+				 .add(Restrictions.eq("p.ocultado", false))
 				 .add(Restrictions.eq("c.id", medallaId))
 				//OCULTADO .add(Restrictions.eq("p.ocultado", false))
 				 .addOrder(Order.asc("p.nombre"));

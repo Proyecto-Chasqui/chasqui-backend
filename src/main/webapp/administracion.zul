@@ -14,8 +14,8 @@
 <!-- </zscript> -->
 <window id="administracionWindow"  border="normal" apply="chasqui.view.composer.AdministracionComposer"
 visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="overflow:auto;">
-<div style="background: #026290">
-	<grid  style="background: #026290">
+<div style="background: #00b8fc">
+	<grid  style="background: #00b8fc">
 		<columns zclass="none">
 			<column width="25%" align="left" zclass="none" style="background: blue"/>
 			<column width="60%" align="center" zclass="none" style="background: blue"/>
@@ -25,7 +25,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 			<row zclass="none">
 				<hbox>
 					<space spacing="5px"/>
-					<image src="/imagenes/logo_ch.png" height="auto" width="auto"/>
+					<image src="/imagenes/logo_ch_admn.png" height="auto" width="auto"/>
 				</hbox>
 				<div>
 					<label value="${c:l('zk.label.administrador')}" style="font-size:30px;font-weight:bold; color:white"/>
@@ -33,20 +33,21 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 			<vbox>
 			<separator spacing="80px"/>
 			<hbox>
-				<space spacing="190px"/>
+				<space spacing="180px"/>
 				<vbox>
 					<separator spacing="5px"/>
 					<label value="@{administracionWindow$composer.usuarioLogueado.getUsername}" style="font-size:15px;font-weight:bold; color:white"/>
 				</vbox>
-				<toolbar style="background:#026290">
-					<toolbarbutton style="background: #026290" id="logout" tooltiptext="${c:l('zk.toolbar.disconnect')}" image="/imagenes/logout.png"/>
-				</toolbar>
+
+					<toolbarbutton style="background: #00b8fc, hover:background-color: red" id="logout" tooltiptext="${c:l('zk.toolbar.disconnect')}" image="/imagenes/logout.png"/>
+
 			</hbox>
 			</vbox>
 			</row>				
 		</rows>
 	</grid>
 </div>
+
 <separator spacing="5px"/>
 <hbox width="100%">
 	<space width="185px"/>
@@ -140,6 +141,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 				<label value="Productor:"/>
 				<combobox id="productorComboBox" readonly="true" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}"/>
 				<button label="Buscar" id="buscarProducto" visible="false"/>
+				<textbox id="busquedaPorCodigoProducto" placeholder="Buscar por codigo producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
 				<button label="Limpiar Campos" id="limpiarCamposbtn" visible="true"/>
 			</hbox>
 				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10"
@@ -161,13 +163,17 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		</div>
 		
 		<div id="divPedidosColectivos" visible="false">
-			<include id="pedidosColectivosInclude" visible="false" src="/pedidosColectivos.zul"/>
+			<include id="pedidosColectivosInclude" visible="false" src="/verHistorialPedidosColectivos.zul"/>
 		</div>
 		<div id="divSolicitudesNodos" visible="false">
 			<include id="solicitudesNodosInclude" visible="false" src="/solicitudesNodos.zul"/>
 		</div>
 		<div id="divProductores" visible="false">
-			<listbox id="listboxProductores" model="@{administracionWindow$composer.usuarioLogueado.fabricantes}" mold="paging" pageSize="10" 
+			<vbox>
+			<hbox>
+				<textbox id="busquedaPorNombreProductor" placeholder="Buscar por nombre"  forward="onOK=administracionWindow$composer.onBuscarProductor"/>
+			</hbox>
+			<listbox id="listboxProductores" model="@{administracionWindow$composer.listfabricantes}" mold="paging" pageSize="10" 
 			rows="10">
 				<listhead>
 					<listheader label="${c:l('zk.listheader.label.administracion.productor')}"/>
@@ -176,6 +182,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 					<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
 				</listhead>
 			</listbox>
+			</vbox>
 		</div>
 		<div>
 			<vbox>

@@ -28,6 +28,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -84,6 +85,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private PedidoColectivoService pedidoColectivoService;
 	private ZonaService zonaService;
 	private MailService mailService;
+	private Textbox buscadorPorUsuario;
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -101,7 +103,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			zonaService = (ZonaService) SpringUtil.getBean("zonaService");
 			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
-			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO);
+			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO,Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_PREPARADO);
 			pedidosColectivos = (List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo");			
 			binder = new AnnotateDataBinder(component);
 			listboxPedidos.setItemRenderer(new PedidoColectivoRenderer((Window) component));
@@ -112,6 +114,10 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	
 	public void onBuscar(){
 			onClick$buscar();
+	}
+	
+	public void buscadorPorUsuario$onOK(SelectEvent evt) {
+		onClick$buscar();
 	}
 	
 	public void onSelect$estadosListbox(SelectEvent evt) {
@@ -126,7 +132,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	public void onClick$buscar(){
 		Date d = desde.getValue();
 		Date h = hasta.getValue();
-		
+		String email = buscadorPorUsuario.getValue();
 		if(d != null && h != null){
 			if(h.before(d)){
 				Messagebox.show("La fecha hasta debe ser posterior a la fecha desde", "Error", Messagebox.OK,Messagebox.EXCLAMATION);
@@ -137,7 +143,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		if(zonaSeleccionada !=null){
 			zonaId = zonaSeleccionada.getId();
 		}
-		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedorDeGrupo(usuarioLogueado.getId(),grupo.getId(),d,h,estadoSeleccionado,zonaId, null));
+		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedor(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId, null, email));
 		this.binder.loadAll();
 	}
 
@@ -190,7 +196,8 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		hasta.setValue(null);
 		estadosListbox.setValue("");
 		zonasListbox.setValue(null);
-		pedidosColectivos = pedidoColectivoService.obtenerPedidosColectivosDeGrupo(grupo.getId());
+		buscadorPorUsuario.setValue("");
+		pedidosColectivos = (List<PedidoColectivo>) pedidoColectivoService.obtenerPedidosColectivosDeVendedor(usuarioLogueado.getId(),null,null,null,null,null,null);
 		this.binder.loadAll();
 	}
 	
@@ -233,7 +240,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 				}
 			}
 		};
-		Messagebox.show("¿Esta seguro que desea preparar la entrega para este pedido colectivo?",
+		Messagebox.show("¿Esta seguro que desea preparar la entrega para este pedido colectivo? (Recuerde que se enviara un email al consumidor)",
 				"Confirmar", 
 				Messagebox.OK|Messagebox.CANCEL,
 				Messagebox.QUESTION,

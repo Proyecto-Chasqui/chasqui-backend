@@ -9,17 +9,19 @@ public class ProductoPedido {
 	private String nombreVariante;
 	private Integer cantidad;
 	private String imagen;//TODO analizar
+	private String nombreProductor;
 	
 	
 	public ProductoPedido (){}
 	
-	public ProductoPedido(Variante v,Integer cant) {
+	public ProductoPedido(Variante v,Integer cant, String vnombreProductor) {
 		idVariante = v.getId();
 		cantidad = cant;
 		nombreProducto = v.getProducto().getNombre();
 		nombreVariante = " "; //v.getNombre();
 		precio = v.getPrecio();
 		imagen = (v.getImagenes().size()>0)?v.getImagenes().get(0).getPath():null;
+		setNombreProductor(vnombreProductor);
 	}
 
 	//GETs & SETs
@@ -83,6 +85,14 @@ public class ProductoPedido {
 	public void sumarCantidad(Integer cant) {
 		cantidad += cant;
 		
+	}
+
+	public String getNombreProductor() {
+		return nombreProductor;
+	}
+
+	public void setNombreProductor(String nombreProductor) {
+		this.nombreProductor = nombreProductor;
 	}
 	
 	

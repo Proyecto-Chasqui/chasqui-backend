@@ -85,13 +85,14 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 	<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadImagen"  upload="true,maxsize=-1" />
 </div>
 </hbox>
+<div align="center" > Descripción* </div>
 <ckeditor width="100%" height="100px" id="ckEditor" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
  
 	  <listbox id="listboxCaracteristicas" mold="paging" pageSize="3" selectedItem="@{productosWindow$composer.caracteristicaSeleccionada}"
 		model="@{productosWindow$composer.model.caracteristicas}" rows="3">
 		<auxhead>
 			<auxheader colspan="2">
-				<combobox id="comboCaracteristicas"  readonly="true" model="@{productosWindow$composer.caracteristicasProducto}"
+				<combobox id="comboCaracteristicas" placeholder="Seleccione un sello"  readonly="true" model="@{productosWindow$composer.caracteristicasProducto}"
 				selectedItem="@{productosWindow$composer.caracteristicaProductoSeleccionada}"
 				itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"/>
 			</auxheader>

@@ -22,7 +22,7 @@ import chasqui.view.composer.PedidosComposer;
 public class PedidoRenderer implements ListitemRenderer<Pedido> {
 
 	private Window pedidoWindow;
-	private Listcell celdaId, celdaUsr, celdaFechaCreacion, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
+	private Listcell celdaId, celdaUsr, celdaFechaCreacion, celdaFechaCierre, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
 			celdaDireccion, celdaBotones;
 
 	public PedidoRenderer(Window w) {
@@ -38,12 +38,25 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		Date d = new Date(pedido.getFechaCreacion().getMillis());
 		celdaFechaCreacion = new Listcell(format.format(d));
-
+		Date d2 = null;
+		if(pedido.getFechaModificacion()!=null) {
+			d2 = new Date(pedido.getFechaModificacion().getMillis());
+		}
+		if(d2 == null || pedido.estaAbierto() ||pedido.estaCancelado()|| pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)) {
+			celdaFechaCierre = new Listcell("N/D");
+		}else {
+			celdaFechaCierre = new Listcell(format.format(d2));
+		}
 		// -----------------Mostrar la zona
 		Zona zonaPedido = pedido.getZona();
 		if (zonaPedido == null) {
-			celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
-			celdaZona.setStyle("color:red;");
+			if(pedido.getPuntoDeRetiro() != null) {
+				celdaZona = new Listcell(Constantes.ZONA_NO_NECESARIA);
+				celdaZona.setStyle("color:green;");
+			}else {
+				celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
+				celdaZona.setStyle("color:red;");
+			}
 		} else {
 			celdaZona = new Listcell(zonaPedido.getNombre());
 		}
@@ -93,10 +106,11 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		celdaBotones = new Listcell();
 
 		this.configurarAcciones(pedido);
-
+		
 		celdaId.setParent(item);
 		celdaUsr.setParent(item);
 		celdaFechaCreacion.setParent(item);
+		celdaFechaCierre.setParent(item);
 		celdaZona.setParent(item);
 		celdaMontoMinimo.setParent(item);
 		celdaMontoActual.setParent(item);
@@ -223,6 +237,14 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		}
 		espacio.setParent(hbox);
 		hbox.setParent(celdaBotones);
+	}
+
+	public Listcell getCeldaFechaCierre() {
+		return celdaFechaCierre;
+	}
+
+	public void setCeldaFechaCierre(Listcell celdaFechaCierre) {
+		this.celdaFechaCierre = celdaFechaCierre;
 	}
 
 }

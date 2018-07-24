@@ -28,7 +28,7 @@ public class PedidoDTO {
 		domicilio = pedido.getDireccionEntrega();
 		montoTotal = pedido.getMontoTotal();
 		pedidosIndividuales = new ArrayList<PedidoIndividualDTO>();
-		esIndividual = !pedido.getPerteneceAPedidoGrupal();
+		esIndividual = !pedido.getPerteneceAPedidoGrupal()&&pedido.getPuntoDeRetiro()==null;
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
 	}
 	

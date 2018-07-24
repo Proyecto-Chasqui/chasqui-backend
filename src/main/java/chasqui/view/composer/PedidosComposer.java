@@ -39,6 +39,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.Messagebox.ClickEvent;
 
@@ -95,6 +96,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	private XlsExporter export  = new XlsExporter();
 	private MailService mailService;
 	private Window window;
+	private Textbox buscadorPorCliente;
 //	private Integer maximaPaginaVisitada = 1;
 	
 	public void doAfterCompose(Component component) throws Exception{
@@ -123,6 +125,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		Date d = desde.getValue();
 		Date h = hasta.getValue();
 		Integer zonaId = null;
+		String email = buscadorPorCliente.getValue();
 		if(zonaSeleccionada!=null){
 			zonaId = zonaSeleccionada.getId();
 		}
@@ -132,7 +135,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			}
 		}		
 		pedidos.clear();
-		pedidos.addAll(pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId,null));
+		pedidos.addAll(pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId,null,email));
 		this.binder.loadAll();
 	}
 
@@ -182,6 +185,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		hasta.setValue(null);
 		estadosListbox.setValue("");
 		zonasListbox.setValue("");
+		buscadorPorCliente.setValue(null);
 		pedidos = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
 		this.binder.loadAll();
 	}
@@ -348,6 +352,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		ProductoPedido ppc = new ProductoPedido();
 		ppc.setCantidad(pp.getCantidad());
 		ppc.setIdVariante(pp.getIdVariante());
+		ppc.setNombreProductor(pp.getNombreProductor());
 		ppc.setImagen(pp.getImagen());
 		ppc.setNombreProducto(pp.getNombreProducto());
 		ppc.setNombreVariante(pp.getNombreVariante());
