@@ -16,6 +16,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 
 import chasqui.aspect.Dateable;
 import chasqui.dao.GrupoDAO;
+import chasqui.dao.PedidoDAO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
@@ -368,23 +369,21 @@ public class GrupoServiceImpl implements GrupoService {
 		validarRequest(request.getIdPedido());
 		
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
-		usuarioService.inicializarPedidos(cliente);
-		//usuarioService.inicializarHistorial(cliente);
-		//suarioService.inicializarColecciones(cliente);
-
-		validarConfirmacionDePedidoSinDireccionPara(cliente, request); //TODO fusionar este metodo con cliente.encontrarPedidoConId
-		
-		Pedido pedido = cliente.encontrarPedidoConId(request.getIdPedido());
+		Pedido pedido = pedidoService.obtenerPedidosporId(request.getIdPedido());
+		validarConfirmacionDePedidoSinDireccionPara(pedido, request); 
 		
 		validarQueContengaProductos(pedido);
 		
 		Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(pedido.getIdVendedor());
 		usuarioService.inicializarListasDe(vendedor);
-		
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+		pedido.confirmarte();
+		}else {
+			throw new EstadoPedidoIncorrectoException("El pedido no esta abierto");
+		}
 		vendedor.descontarStockYReserva(pedido);
-		cliente.confirmarPedidoSinDireccion(pedido.getId());
-		
-		usuarioService.guardarUsuario(cliente);
+
+		pedidoService.guardar(pedido);
 		usuarioService.guardarUsuario(vendedor);
 		
 		//Notificar al cliente y a sus compañeros
@@ -420,11 +419,11 @@ public class GrupoServiceImpl implements GrupoService {
 	}
 	
 
-	private void validarConfirmacionDePedidoSinDireccionPara(Cliente c, ConfirmarPedidoSinDireccionRequest request)
+	private void validarConfirmacionDePedidoSinDireccionPara(Pedido p, ConfirmarPedidoSinDireccionRequest request)
 			throws PedidoInexistenteException {
-		if (!c.contienePedido(request.getIdPedido())) {
+		if (p == null) {
 			throw new PedidoInexistenteException(
-					"El usuario: " + c.getUsername() + " no posee un pedido vigente con el ID otorgado");
+					"El usuario no posee un pedido vigente con el ID otorgado");
 		}
 	}
 

@@ -25,6 +25,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
+import chasqui.model.ProductoPedido;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
@@ -198,17 +199,18 @@ public class PedidoServiceImpl implements PedidoService {
 			RequestIncorrectoException, EstadoPedidoIncorrectoException {
 		
 		validarRequest(request);
-
-		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
-		usuarioService.inicializarPedidos(cliente);
+		Pedido p = pedidoDAO.obtenerPedidoPorId(request.getIdPedido());
 		Variante variante = productoService.obtenerVariantePor(request.getIdVariante());
 		
-		validar(variante, cliente, request);
+		validar(variante, null, request);
 		
-		cliente.agregarProductoAPedido(variante, request.getIdPedido(), request.getCantidad(), nuevaFechaVencimiento());
-		usuarioService.guardarUsuario(cliente);
-		
+		ProductoPedido pp = new ProductoPedido(variante, request.getCantidad(),variante.getProducto().getFabricante().getNombre());
+		p.agregarProductoPedido(pp, nuevaFechaVencimiento());
+		p.sumarAlMontoActual(variante.getPrecio(), request.getCantidad());
 		variante.reservarCantidad(request.getCantidad());
+		
+		
+		pedidoDAO.guardar(p);
 		productoService.modificarVariante(variante);
 	}
 
@@ -404,7 +406,7 @@ public class PedidoServiceImpl implements PedidoService {
 
 	private void validar(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request)
 			throws ProductoInexistenteException, PedidoVigenteException, RequestIncorrectoException {
-		validacionesGenerales(v, c, request);
+		//validacionesGenerales(v, c, request);
 		if (!v.tieneStockParaReservar(request.getCantidad())) {
 			throw new ProductoInexistenteException("El producto no posee más Stock");
 		}
