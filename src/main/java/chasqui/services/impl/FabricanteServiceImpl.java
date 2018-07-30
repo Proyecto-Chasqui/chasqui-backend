@@ -44,4 +44,18 @@ public class FabricanteServiceImpl implements ProductorService{
 		fabricanteDAO.guardar(fabricante);
 	}
 
+
+	@Override
+	public void inicializarListasDeProducto(Fabricante fabricante) {
+		fabricanteDAO.inicializarlistasDeProductos(fabricante);
+		
+	}
+
+
+	@Override
+	public void eliminar(Fabricante fabricante) {
+		fabricanteDAO.delete(fabricante);
+		
+	}
+
 }

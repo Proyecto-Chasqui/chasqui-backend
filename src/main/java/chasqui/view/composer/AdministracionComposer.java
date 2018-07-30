@@ -27,6 +27,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
+import chasqui.dao.FabricanteDAO;
 import chasqui.dao.ProductoDAO;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Categoria;
@@ -591,7 +592,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		
 	}
 	
-	public void eliminarProductor(Fabricante f){
+	public void eliminarProductor(Fabricante f) throws WrongValueException, VendedorInexistenteException{
+		productorService.inicializarListasDeProducto(f);
 		if (f.getProductos() != null && f.getProductos().size() > 0){
 			Messagebox.show("El productor: '" + f.getNombre() + "' aún tiene productos asociados. desasocie los mismos para eliminar el productor"
 					, "Error!", Messagebox.OK, Messagebox.ERROR);
@@ -599,7 +601,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		}
 		// mostrar cartel
 		usuarioLogueado.eliminarProductor(f);
-		usuarioService.guardarUsuario(usuarioLogueado);
+		productorService.eliminar(f);
+		//usuarioService.guardarUsuario(usuarioLogueado);
+		this.onBuscarProductor();
 		alert("El productor: '" + f.getNombre() + "' fue eliminado con exito!");
 		this.binder.loadAll();
 	}

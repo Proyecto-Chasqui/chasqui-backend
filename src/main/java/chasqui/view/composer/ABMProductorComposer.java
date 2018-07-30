@@ -74,7 +74,8 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
-		textboxNombreProductor.setMaxlength(64);
+		//hotfix (Ver de limitar desde panel);
+		//textboxNombreProductor.setMaxlength(64);
 		usuario = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		comp.addEventListener(Events.ON_NOTIFY, new SubirArchivo(this));
 		model = (Fabricante) Executions.getCurrent().getArg().get("productor");

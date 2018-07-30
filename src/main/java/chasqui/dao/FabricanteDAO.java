@@ -12,4 +12,8 @@ public interface FabricanteDAO {
 
 	public void guardar(Fabricante fabricante);
 
+	Fabricante inicializarlistasDeProductos(Fabricante fabricante);
+
+	public void delete(Fabricante fabricante);
+
 }
