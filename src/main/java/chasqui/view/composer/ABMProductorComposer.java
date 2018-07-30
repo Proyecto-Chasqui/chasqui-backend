@@ -35,6 +35,7 @@ import chasqui.model.Imagen;
 import chasqui.model.Vendedor;
 import chasqui.services.impl.FileSaver;
 import chasqui.services.interfaces.CaracteristicaService;
+import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.genericEvents.RefreshListener;
 import chasqui.view.genericEvents.Refresher;
@@ -57,6 +58,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	private Toolbarbutton buttonGuardar;
 	private Image imagenProductor;
 	private Fileupload uploadImagen;
+	private ProductorService productorService;
 	
 	
 	
@@ -79,6 +81,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		Integer edicion = (Integer) Executions.getCurrent().getArg().get("accion");
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		service = (CaracteristicaService) SpringUtil.getBean("caracteristicaService");
+		productorService = (ProductorService) SpringUtil.getBean("productorService");
 		fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
 		comp.addEventListener(Events.ON_NOTIFY, new RefreshListener<Refresher>(this));
 		caracteristicas = service.buscarCaracteristicasProductor();
@@ -161,8 +164,10 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		model.setIdVendedor(usuario.getId());
 		if(!existe){
 			usuario.agregarProductor(model);
+			usuarioService.guardarUsuario(usuario);
+		}else {
+			productorService.guardar(model);
 		}
-		usuarioService.guardarUsuario(usuario);
 		Events.sendEvent(Events.ON_RENDER,this.self.getParent(),null);
 		this.self.detach();
 	}

@@ -19,4 +19,6 @@ public interface ProductorService {
 	List<Fabricante> obtenerProductores(Integer idVendedor);
 
 	public List<Fabricante> obtenerProductoresPorNombre(Integer id, String busquedaPorNombreProductor) throws VendedorInexistenteException;
+	
+	public void guardar(Fabricante fabricante);
 }

@@ -14,6 +14,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import chasqui.dao.VendedorDAO;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.PuntoDeRetiro;
+import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 
 @SuppressWarnings("unchecked")
@@ -44,6 +45,20 @@ public class VendedorDAOHbm  extends HibernateDaoSupport implements VendedorDAO{
 				return (Vendedor) criteria.uniqueResult();
 			}
 		});
+	}
+	
+	public Vendedor obtenerVendedorRoot(final String username) {
+		Vendedor u = this.getHibernateTemplate().execute(new HibernateCallback<Vendedor>() {
+
+			public Vendedor doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Vendedor.class);
+				criteria.add(Restrictions.eq("username", username))
+				.add(Restrictions.eq("isRoot", true));
+				return (Vendedor) criteria.uniqueResult();
+			}
+
+		});
+		return u;
 	}
 	
 	@Override

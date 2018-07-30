@@ -15,6 +15,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import chasqui.dao.FabricanteDAO;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Fabricante;
+import chasqui.model.Pedido;
 import chasqui.model.Variante;
 
 @SuppressWarnings("unchecked")
@@ -49,6 +50,13 @@ public class FabricanteDAOHbm extends HibernateDaoSupport implements FabricanteD
 				return (List<Fabricante>) c.list();
 			}
 		});
+	}
+
+	@Override
+	public void guardar(Fabricante f) {
+		this.getHibernateTemplate().saveOrUpdate(f);
+		this.getHibernateTemplate().flush();
+
 	}
 	
 	

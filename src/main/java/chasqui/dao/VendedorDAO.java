@@ -23,5 +23,7 @@ public interface VendedorDAO {
 	public List<PreguntaDeConsumo> obtenerPreguntasDeConsumoIndividuales(Integer idVendedor);
 	
 	public List<PreguntaDeConsumo> obtenerPreguntasDeConsumoColectivas(Integer idVendedor);
+	
+	public Vendedor obtenerVendedorRoot(String username);
 
 }
