@@ -223,8 +223,8 @@ public class Vendedor extends Usuario{
 		List<Producto>p = new ArrayList<Producto>();
 		for(Fabricante f :fabricantes){
 			if(fabricanteSeleccionadoId != null) {
-				if(codigoProducto != null) {
-					if(f.getId() == fabricanteSeleccionadoId){
+				if(!codigoProducto.equals("")) {
+					if(f.getId().equals(fabricanteSeleccionadoId)){
 						for(Producto producto: f.getProductos()) {
 							if(producto.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
 								p.add(producto);
@@ -232,12 +232,12 @@ public class Vendedor extends Usuario{
 						}						
 					}
 				}else {
-					if(f.getId() == fabricanteSeleccionadoId){
+					if(f.getId().equals(fabricanteSeleccionadoId)){
 						p.addAll(f.getProductos());
 					}
 				}
 			}else {
-				if(codigoProducto != null) {
+				if(!codigoProducto.equals("")) {
 					for(Producto producto: f.getProductos()) {
 						if(producto.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
 							p.add(producto);
