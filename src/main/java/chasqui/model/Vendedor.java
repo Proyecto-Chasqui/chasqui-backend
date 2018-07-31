@@ -243,6 +243,8 @@ public class Vendedor extends Usuario{
 							p.add(producto);
 						}
 					}	
+				}else {
+					p.addAll(f.getProductos());
 				}
 			}
 
