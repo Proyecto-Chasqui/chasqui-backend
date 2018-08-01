@@ -234,17 +234,25 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			model.setVariantes(variantes);
 		}
 		usuarioService.guardarUsuario(usuario);
+		actualizarUsuarioEnMemoria();
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("accion", "productoGuardado");		
 		Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
 		this.self.detach();
 	}
 	
+	private void actualizarUsuarioEnMemoria() {
+		Vendedor user =(Vendedor) usuarioService.obtenerUsuarioPorID(usuario.getId());
+		usuarioService.inicializarListasDe(user);
+		Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
+		usuario = user;
+	}
+	
 	private void guardarImagenNoDisponible() throws IOException {
 		if(imagenes.isEmpty()){
 			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
 			String path = context.getRealPath("/imagenes/");
-			String sourcePath = context.getRealPath("/imagenes/imagen no disponible.jpg");
+			String sourcePath = context.getRealPath("/imagenes/imagennodisponible.jpg");
 			BufferedImage originalImage = ImageIO.read(new File(sourcePath));
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write( originalImage, "jpg", baos );

@@ -168,12 +168,20 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 			usuarioService.guardarUsuario(usuario);
 		}else {
 			productorService.guardar(model);
+			actualizarUsuarioEnMemoria();
 		}
 		Events.sendEvent(Events.ON_RENDER,this.self.getParent(),null);
 		this.self.detach();
 	}
 	
 	
+	private void actualizarUsuarioEnMemoria() {
+		Vendedor user =(Vendedor) usuarioService.obtenerUsuarioPorID(usuario.getId());
+		usuarioService.inicializarListasDe(user);
+		Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
+		usuario = user;
+	}
+
 	public void onUpload$uploadImagen(UploadEvent evt){
 		Clients.showBusy("Procesando...");
 		Events.echoEvent(Events.ON_NOTIFY,this.self,evt);
