@@ -207,13 +207,8 @@ public class GrupoCC {
 
 	public void registrarInvitacionAceptada(Cliente c) {
 		MiembroDeGCC miembro = this.findMiembro(c.getEmail());
-		if (miembro == null || !miembro.tieneInvitacionPendiente()) { // se
-																		// chequea
-																		// si el
-																		// miembro
-																		// ya ha
-																		// sido
-																		// invitado
+		if (miembro == null || !miembro.tieneInvitacionPendiente()) {
+			// se chequea si el miembro ya ha sido invitado
 			throw new InvitacionInexistenteException("El cliente ( " + c.getEmail()
 					+ ") no había sido invitado o la invitacion ya había sido confirmada");
 		}
