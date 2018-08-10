@@ -182,7 +182,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		usuarioDAO.guardarUsuario(c);
 		editarAvatarDe((Cliente)usuarioDAO.obtenerUsuarioPorEmail(request.getEmail()), request.getAvatar(), request.getExtension());
 		mailService.enviarEmailBienvenidaCliente(request.getEmail(), request.getNombre(), request.getApellido());
-		return c;
+		return (Cliente) usuarioDAO.obtenerUsuarioPorEmail(request.getEmail()); //Cliente de la BD porque sino no tiene el avatar
 	}
 	
 	@Override
@@ -192,9 +192,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 		String email = notificacionService.obtenerNotificacionPorID(Integer.valueOf(idInvitacion)).getUsuarioDestino();
 		
 		Cliente nuevoCliente = this.crearCliente(this.generateRequest(requestWithInvitation, email));
-		
+		this.actualizarDatosDeNuevoCliente(nuevoCliente);
 		grupoService.confirmarInvitacionGCC(idInvitacion, email);
-		
 		return nuevoCliente;
 	}
 
