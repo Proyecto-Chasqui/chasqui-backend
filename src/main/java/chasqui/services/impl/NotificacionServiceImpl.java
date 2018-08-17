@@ -142,8 +142,8 @@ public class NotificacionServiceImpl implements NotificacionService{
 		
 		//--------------Notificación interna
 		this.notificar(emailAdministrador,emailClienteDestino,mensaje, null);
-		//--------------Mail de respaldo
-		mailService.enviarEmailNotificacionChasqui(emailAdministrador,nombreUsuario,emailClienteDestino, mensaje, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT);
+		//--------------Mail de respaldo (Deprecado, queda comentado para en un futuro habilitarlo segun opcion del usuario)
+		//mailService.enviarEmailNotificacionChasqui(emailAdministrador,nombreUsuario,emailClienteDestino, mensaje, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT);
 	}
 
 	/**
@@ -161,8 +161,8 @@ public class NotificacionServiceImpl implements NotificacionService{
 				
 		//--------------Notificación interna
 		this.notificar(emailOriginante,emailDestinatario,mensaje, null);
-		//--------------Mail de respaldo
-		mailService.enviarEmailNotificacionChasqui(emailOriginante,nicknameDestinatario,emailDestinatario, mensaje , Constantes.NUEVO_PEDIDO_EN_GCC_SUBJECT);
+		//--------------Mail de respaldo (Desestimado, queda comentado para futura opcion de mandar mail si lo desea el usuario)
+		//mailService.enviarEmailNotificacionChasqui(emailOriginante,nicknameDestinatario,emailDestinatario, mensaje , Constantes.NUEVO_PEDIDO_EN_GCC_SUBJECT);
 	}
 
 	@Override

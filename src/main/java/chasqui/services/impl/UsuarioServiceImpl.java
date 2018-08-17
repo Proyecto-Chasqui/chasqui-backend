@@ -146,10 +146,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	public Cliente obtenerClientePorEmail(String email) throws UsuarioInexistenteException {
 		Cliente usr = (Cliente) usuarioDAO.obtenerUsuarioPorEmail(email);
-		usuarioDAO.inicializarDirecciones(usr);
 		if (usr == null) {
 			throw new UsuarioInexistenteException(email);
 		}
+		usuarioDAO.inicializarDirecciones(usr);
+
 		return usr;
 	}
 
