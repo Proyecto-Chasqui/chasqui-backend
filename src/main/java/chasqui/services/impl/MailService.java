@@ -259,6 +259,38 @@ public class MailService {
 		
 	}
 	
+	public void enviarEmailCierreDePedidoColectivo(PedidoColectivo pedidoColectivo) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		Direccion direccion;
+		String textoEnEmail = "";
+		String textoDeDireccionDeEntrega = "";
+		if(pedidoColectivo.getDireccionEntrega() != null) {
+			direccion = pedidoColectivo.getDireccionEntrega();
+			textoEnEmail = "Su pedido colectivo ha sido confirmado. El detalle de su pedido es el siguiente:";
+			textoDeDireccionDeEntrega = "La dirección elegida es la siguiente:";
+		}else {
+			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
+			textoEnEmail = "Su pedido colectivo ha sido confirmado. El detalle de su pedido es el siguiente:";
+			textoDeDireccionDeEntrega ="El punto de retiro elegido es el siguiente:";
+		}
+		//Genero tabla de contenido de pedido de cada persona
+		String tablaContenidoDePedidoColectivo = this.armarTablaContenidoDePedidoColectivo(pedidoColectivo);
+		//La direccion del grupo
+		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
+		
+		List<String> emailsClientesDestino = obtenerEmails(pedidoColectivo);
+		
+		params.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivo);
+		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
+		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
+		params.put("textoDetalle", textoEnEmail);
+		
+		
+		//se envia todo a todos los integrantes del grupo
+		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
+		
+	}
+	
 	public void enviarEmailPreparacionDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		Direccion direccion;
