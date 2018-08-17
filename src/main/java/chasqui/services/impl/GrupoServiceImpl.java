@@ -515,8 +515,9 @@ public class GrupoServiceImpl implements GrupoService {
 		
 		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelGCC(emailCliente,grupo.getId());
 		for (MiembroDeGCC compa : compas) {
-		     notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
-			
+			if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+				notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
+			}
 		}
 	}
 	
