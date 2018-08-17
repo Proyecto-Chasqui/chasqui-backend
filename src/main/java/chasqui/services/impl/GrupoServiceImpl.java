@@ -330,17 +330,9 @@ public class GrupoServiceImpl implements GrupoService {
 			grupo.confirmarPedidoColectivo(puntoderetiro, direccion, comentario,opcionesSeleccionadas,zona);
 			List<MiembroDeGCC> miembros = grupo.getCache();
 			for (MiembroDeGCC miembroDeGCC : miembros) {
-				
-				if(miembroDeGCC.getNickname() != null || miembroDeGCC.getNickname() != ""){
-					actualizarMiembroGCC(miembroDeGCC);
-					if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
-						notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
-					}
-				}else {
-					actualizarMiembroGCC(miembroDeGCC);
-					if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
-						notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
-					}
+				actualizarMiembroGCC(miembroDeGCC);
+				if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+					notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
 				}
 			}
 			grupoDao.guardarGrupo(grupo);
@@ -351,7 +343,7 @@ public class GrupoServiceImpl implements GrupoService {
 		}
 		
 	}
-	//Sync fix aplicado cada vez que el grupo cierra.
+	
 	private void actualizarMiembroGCC(MiembroDeGCC miembroDeGCC) {
 		try {
 			Usuario usuario = null;
