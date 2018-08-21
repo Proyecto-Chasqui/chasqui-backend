@@ -38,5 +38,24 @@ public class FabricanteServiceImpl implements ProductorService{
 		List<Fabricante> productores = fabricanteDAO.obtenerProductoresDeConNombre(idVendedor,busquedaPorNombreProductor);
 		return productores;
 	}
+	
+	@Override
+	public void guardar(Fabricante fabricante) {
+		fabricanteDAO.guardar(fabricante);
+	}
+
+
+	@Override
+	public void inicializarListasDeProducto(Fabricante fabricante) {
+		fabricanteDAO.inicializarlistasDeProductos(fabricante);
+		
+	}
+
+
+	@Override
+	public void eliminar(Fabricante fabricante) {
+		fabricanteDAO.delete(fabricante);
+		
+	}
 
 }

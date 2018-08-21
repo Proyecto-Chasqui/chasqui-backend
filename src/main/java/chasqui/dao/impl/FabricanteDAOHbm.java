@@ -10,11 +10,14 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.FabricanteDAO;
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.Cliente;
 import chasqui.model.Fabricante;
+import chasqui.model.Pedido;
 import chasqui.model.Variante;
 
 @SuppressWarnings("unchecked")
@@ -46,9 +49,34 @@ public class FabricanteDAOHbm extends HibernateDaoSupport implements FabricanteD
 				Criteria c = session.createCriteria(Fabricante.class, "fabricante");
 				c.add(Restrictions.eq("fabricante.idVendedor",idVendedor));
 				c.add(Restrictions.like("fabricante.nombre", "%"+nombreProductor+"%"));
+				c.addOrder(Order.asc("fabricante.nombre"));
 				return (List<Fabricante>) c.list();
 			}
 		});
+	}
+
+	@Override
+	public void guardar(Fabricante f) {
+		this.getHibernateTemplate().saveOrUpdate(f);
+		this.getHibernateTemplate().flush();
+
+	}
+	
+	@Override
+	public Fabricante inicializarlistasDeProductos(Fabricante fabricante){
+
+		HibernateTemplate ht = this.getHibernateTemplate();
+		ht.refresh(fabricante);
+		if (fabricante != null) {
+			ht.initialize(fabricante.getProductos());
+		}
+		return fabricante;
+	}
+
+	@Override
+	public void delete(Fabricante fabricante) {
+		this.getHibernateTemplate().delete(fabricante);
+		this.getHibernateTemplate().flush();	
 	}
 	
 	

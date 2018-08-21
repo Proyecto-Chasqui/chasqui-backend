@@ -17,6 +17,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import chasqui.aspect.Dateable;
 import chasqui.dao.GrupoDAO;
 import chasqui.dao.PedidoDAO;
+import chasqui.dao.MiembroDeGCCDAO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
@@ -78,6 +79,9 @@ public class GrupoServiceImpl implements GrupoService {
 	
 	@Autowired
 	private ZonaService zonaService;
+	
+	@Autowired
+	private MiembroDeGCCDAO miembroDeGCCDao;
 
 	@Override
 	public void altaGrupo(Integer idVendedor, String aliasGrupo, String descripcion, String emailClienteAdministrador)
@@ -327,13 +331,34 @@ public class GrupoServiceImpl implements GrupoService {
 			grupo.confirmarPedidoColectivo(puntoderetiro, direccion, comentario,opcionesSeleccionadas,zona);
 			List<MiembroDeGCC> miembros = grupo.getCache();
 			for (MiembroDeGCC miembroDeGCC : miembros) {
-				notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+				actualizarMiembroGCC(miembroDeGCC);
+				if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+					notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+				}
 			}
 			grupoDao.guardarGrupo(grupo);
 			
 		}
 		else{
 			throw new RequestIncorrectoException("El usuario "+emailSolicitante + " no es el administrador del grupo:"+ grupo.getAlias());
+		}
+		
+	}
+	
+	private void actualizarMiembroGCC(MiembroDeGCC miembroDeGCC) {
+		try {
+			Usuario usuario = null;
+			if(miembroDeGCC.getIdCliente() != null) {
+				usuario = usuarioService.obtenerUsuarioPorID(miembroDeGCC.getIdCliente());
+			}else {
+				usuario = usuarioService.obtenerUsuarioPorEmail(miembroDeGCC.getEmail());
+			}
+			miembroDeGCC.setNickname(usuario.getUsername());
+			miembroDeGCC.setAvatar(usuario.getImagenPerfil());
+			miembroDeGCC.setEmail(usuario.getEmail());
+			miembroDeGCC.setIdCliente(usuario.getId());
+		}catch(UsuarioInexistenteException e){
+			
 		}
 		
 	}
@@ -489,8 +514,9 @@ public class GrupoServiceImpl implements GrupoService {
 		
 		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelGCC(emailCliente,grupo.getId());
 		for (MiembroDeGCC compa : compas) {
-		     notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
-			
+			if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+				notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
+			}
 		}
 	}
 	

@@ -142,7 +142,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 		
 		//--------------Notificación interna
 		this.notificar(emailAdministrador,emailClienteDestino,mensaje, null);
-		//--------------Mail de respaldo
+		//--------------Mail de respaldo (Deprecado, queda comentado para en un futuro habilitarlo segun opcion del usuario)
 		mailService.enviarEmailNotificacionChasqui(emailAdministrador,nombreUsuario,emailClienteDestino, mensaje, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT);
 	}
 
@@ -161,8 +161,8 @@ public class NotificacionServiceImpl implements NotificacionService{
 				
 		//--------------Notificación interna
 		this.notificar(emailOriginante,emailDestinatario,mensaje, null);
-		//--------------Mail de respaldo
-		mailService.enviarEmailNotificacionChasqui(emailOriginante,nicknameDestinatario,emailDestinatario, mensaje , Constantes.NUEVO_PEDIDO_EN_GCC_SUBJECT);
+		//--------------Mail de respaldo (Desestimado, queda comentado para futura opcion de mandar mail si lo desea el usuario)
+		//mailService.enviarEmailNotificacionChasqui(emailOriginante,nicknameDestinatario,emailDestinatario, mensaje , Constantes.NUEVO_PEDIDO_EN_GCC_SUBJECT);
 	}
 
 	@Override
@@ -235,15 +235,15 @@ public class NotificacionServiceImpl implements NotificacionService{
 	}
 
 	@Override
-	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, String emailVendedor, String nombreVendedor) {
+	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, Pedido pedido, String emailVendedor, String nombreVendedor) {
 		String mensaje = Constantes.PEDIDO_VENCIDO_NOTIFICACION;
 		
 		mensaje = mensaje.replaceAll("<timestamp>", this.dateTimeToString(fechaCreacion));
 		mensaje = mensaje.replaceAll("<vendedor>", nombreVendedor);
 		
 		this.notificar(emailVendedor, cliente.getEmail(), mensaje, null);
-		//TODO hace falta enviar mail de respaldo? mailService.env(grupo, invitado);
-		mailService.enviarEmailVencimientoPedido(nombreVendedor, cliente, this.dateTimeToString(fechaCreacion), cantidadDeMinutosParaExpiracion.toString());
+		//TODO desestimado hasta que se defina si es correcto mandarlo, o va a ser parte de una configuracion opcional
+		//mailService.enviarEmailVencimientoPedido(nombreVendedor, cliente, this.dateTimeToString(fechaCreacion), cantidadDeMinutosParaExpiracion.toString());
 	}
 
 	private String dateTimeToString(DateTime fecha){

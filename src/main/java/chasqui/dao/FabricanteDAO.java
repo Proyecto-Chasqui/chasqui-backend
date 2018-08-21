@@ -10,4 +10,10 @@ public interface FabricanteDAO {
 
 	public List<Fabricante> obtenerProductoresDeConNombre(Integer idVendedor, String nombre);
 
+	public void guardar(Fabricante fabricante);
+
+	Fabricante inicializarlistasDeProductos(Fabricante fabricante);
+
+	public void delete(Fabricante fabricante);
+
 }
