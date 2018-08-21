@@ -154,7 +154,18 @@ public class PedidoResponse implements Serializable {
 
 
 	public PedidoResponse(Pedido p) {
-
+		if(p.getPerteneceAPedidoGrupal()) {
+			if(p.getPedidoColectivo() != null) {
+				if(p.getPedidoColectivo().getColectivo() != null) {
+					this.setIdGrupo(p.getPedidoColectivo().getColectivo().getId());
+					this.setAliasGrupo(p.getPedidoColectivo().getColectivo().getAlias());
+				}else {
+					this.setAliasGrupo("Pedido Grupal");
+				}
+			}else {
+				this.setAliasGrupo("Pedido Grupal");
+			}
+		}
 		id = p.getId();
 		idVendedor = p.getIdVendedor();
 		estado = p.getEstado();
