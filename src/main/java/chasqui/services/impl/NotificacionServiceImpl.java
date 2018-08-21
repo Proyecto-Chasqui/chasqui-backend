@@ -235,7 +235,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 	}
 
 	@Override
-	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, String emailVendedor, String nombreVendedor) {
+	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, Pedido pedido, String emailVendedor, String nombreVendedor) {
 		String mensaje = Constantes.PEDIDO_VENCIDO_NOTIFICACION;
 		
 		mensaje = mensaje.replaceAll("<timestamp>", this.dateTimeToString(fechaCreacion));
@@ -243,7 +243,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 		
 		this.notificar(emailVendedor, cliente.getEmail(), mensaje, null);
 		//TODO hace falta enviar mail de respaldo? mailService.env(grupo, invitado);
-		mailService.enviarEmailVencimientoPedido(nombreVendedor, cliente, this.dateTimeToString(fechaCreacion), cantidadDeMinutosParaExpiracion.toString());
+		mailService.enviarEmailVencimientoPedido(nombreVendedor, cliente, pedido, this.dateTimeToString(fechaCreacion), cantidadDeMinutosParaExpiracion.toString());
 	}
 
 	private String dateTimeToString(DateTime fecha){

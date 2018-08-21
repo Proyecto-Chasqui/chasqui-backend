@@ -43,7 +43,7 @@ Bienvenido a Chasqui
 
 <tr style="height: 21px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">
-                      Su pedido para <span style="font-weight: bold; color: #00adee;">${vendedor}</span> realizado el <span style="font-weight: bold; color: #00adee;">${fechaCreacionPedido}</span> ha expirado automáticamente porque no tuvo cambios por mas de <span style="font-weight: bold; color: #00adee;">${cantidadDeMinutosParaExpiracion}</span> minutos. 
+                      Su pedido <span style="font-weight: bold; color: #00adee;">${tipoDePedido} ${aliasColectivo}</span> para <span style="font-weight: bold; color: #00adee;">${vendedor}</span> realizado el <span style="font-weight: bold; color: #00adee;">${fechaCreacionPedido}</span> ha expirado automáticamente porque no tuvo cambios por mas de <span style="font-weight: bold; color: #00adee;">${cantidadDeMinutosParaExpiracion}</span> minutos. 
 					  <br>				
 					
 </td>

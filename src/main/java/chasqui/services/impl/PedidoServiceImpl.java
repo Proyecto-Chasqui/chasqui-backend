@@ -223,7 +223,7 @@ public class PedidoServiceImpl implements PedidoService {
 		
 		Vendedor vendedor = usuarioService.obtenerVendedorPorID(pedido.getIdVendedor());
 		
-		notificacionService.notificarPedidoVencido(pedido.getCliente(), pedido.getFechaCreacion(), vendedor.getEmail(), vendedor.getNombre());
+		notificacionService.notificarPedidoVencido(pedido.getCliente(), pedido.getFechaCreacion(), pedido, vendedor.getEmail(), vendedor.getNombre());
 	}
 	
 	@Override
