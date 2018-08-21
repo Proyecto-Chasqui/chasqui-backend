@@ -216,7 +216,7 @@ public class MailService {
 		
 	}
 	
-	public void enviarEmailVencimientoPedido(String nombreVendedor, Cliente cliente, String fechaCreacionPedido,
+	public void enviarEmailVencimientoPedido(String nombreVendedor, Cliente cliente, Pedido pedido, String fechaCreacionPedido,
 			String cantidadDeMinutosParaExpiracion) {
 		
 
@@ -226,6 +226,14 @@ public class MailService {
 		params.put("cantidadDeMinutosParaExpiracion", cantidadDeMinutosParaExpiracion);
 		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
 		params.put("nombreUsuario", cliente.getUsername());
+		
+		if(pedido.getPerteneceAPedidoGrupal()){
+			params.put("tipoDePedido", "grupal");
+			params.put("aliasColectivo", "del grupo " + pedido.getPedidoColectivo().getColectivo().getAlias());
+		}else{
+			params.put("tipoDePedido", "individual");
+			params.put("aliasColectivo", "");
+		}
 		
 		this.enviarMailEnThreadAparte(Constantes.VENCIMIENTO_PEDIDO_TEMPLATE, cliente.getEmail(), Constantes.VENCIMIENTO_DE_PEDIDO_SUBJECT, params);
 		

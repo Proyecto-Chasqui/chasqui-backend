@@ -235,7 +235,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 	}
 
 	@Override
-	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, String emailVendedor, String nombreVendedor) {
+	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, Pedido pedido, String emailVendedor, String nombreVendedor) {
 		String mensaje = Constantes.PEDIDO_VENCIDO_NOTIFICACION;
 		
 		mensaje = mensaje.replaceAll("<timestamp>", this.dateTimeToString(fechaCreacion));
