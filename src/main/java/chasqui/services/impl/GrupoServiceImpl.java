@@ -310,6 +310,7 @@ public class GrupoServiceImpl implements GrupoService {
 	@Override
 	 * @see chasqui.services.interfaces.GrupoService#confirmarPedidoColectivo(java.lang.Integer)
 	 */
+	@Override
 	@Dateable
 	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest>opcionesSeleccionadas, Integer idZona) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
@@ -320,7 +321,7 @@ public class GrupoServiceImpl implements GrupoService {
 		PuntoDeRetiro puntoderetiro = buscarpuntoderetiro(grupo.getVendedor(), idPuntoDeRetiro);
 		Zona zona=null;
 		if(idZona != null){
-			zona = zonaService.obtenerZonaPorId(idZona);
+			zona = buscarZona(grupo.getVendedor(),idZona);
 		}
 		if(!(direccion == null ^ puntoderetiro == null)){
 			throw new DireccionesInexistentes("El punto de retiro o direccion seleccionada no existe"); 
@@ -332,11 +333,13 @@ public class GrupoServiceImpl implements GrupoService {
 			List<MiembroDeGCC> miembros = grupo.getCache();
 			for (MiembroDeGCC miembroDeGCC : miembros) {
 				actualizarMiembroGCC(miembroDeGCC);
+			}
+			grupoDao.guardarGrupo(grupo);
+			for (MiembroDeGCC miembroDeGCC : miembros) {
 				if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
 					notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
 				}
 			}
-			grupoDao.guardarGrupo(grupo);
 			
 		}
 		else{
@@ -367,6 +370,16 @@ public class GrupoServiceImpl implements GrupoService {
 		PuntoDeRetiro ret = null;
 		for(PuntoDeRetiro pr: vendedor.getPuntosDeRetiro()) {
 			if(pr.getId()==idPr) {
+				ret = pr;
+			}
+		}
+		return ret;
+	}
+	
+	private Zona buscarZona(Vendedor vendedor, Integer idZona) {
+		Zona ret = null;
+		for(Zona pr: vendedor.getZonas()) {
+			if(pr.getId()==idZona) {
 				ret = pr;
 			}
 		}

@@ -63,7 +63,7 @@
                 
         
         
-        <bag name="zonas" inverse="false" table="ZONA" lazy="true"  cascade="all">
+        <bag name="zonas" inverse="false" table="ZONA" lazy="false"  cascade="all">
             <key>
                 <column name="ID_VENDEDOR" />
             </key>
