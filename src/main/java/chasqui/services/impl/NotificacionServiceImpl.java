@@ -242,8 +242,8 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensaje = mensaje.replaceAll("<vendedor>", nombreVendedor);
 		
 		this.notificar(emailVendedor, cliente.getEmail(), mensaje, null);
-		//TODO hace falta enviar mail de respaldo? mailService.env(grupo, invitado);
-		mailService.enviarEmailVencimientoPedido(nombreVendedor, cliente, pedido, this.dateTimeToString(fechaCreacion), cantidadDeMinutosParaExpiracion.toString());
+		//TODO desestimado hasta que se defina si es correcto mandarlo, o va a ser parte de una configuracion opcional
+		//mailService.enviarEmailVencimientoPedido(nombreVendedor, cliente, this.dateTimeToString(fechaCreacion), cantidadDeMinutosParaExpiracion.toString());
 	}
 
 	private String dateTimeToString(DateTime fecha){
