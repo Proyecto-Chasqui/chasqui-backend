@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
+import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.ProductoInexistenteException;
@@ -37,6 +38,7 @@ import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.service.rest.request.CrearPedidoRequest;
+import chasqui.service.rest.request.IdRequest;
 import chasqui.service.rest.request.ObtenerPedidosConEstadoRequest;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.PedidoResponse;
@@ -89,10 +91,42 @@ public class PedidoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
+	
+	@POST
+	/**
+	 * Refresca la fecha de vencimiento del pedido
+	 * con el id que recibe en el idRequest.
+	 * Precondiciones:
+	 * 	El pedido pertenece al usuario logeado.
+	 * 	El pedido tiene que estar con estado ABIERTO.
+	 * 
+	 */
+	@Produces("application/json")
+	@Path("/refrescarVencimiento")
+	public Response refrescarVencimiento(@Multipart(value="idRequest", type="application/json") final String idRequest){
+		//TODO Provar que funcione correctamente, tambien ver que levante excepciones.
+		String email = obtenerEmailDeContextoDeSeguridad();
+		Integer idPedido = null;
+
+		try {
+			IdRequest request = toIdRequest(idRequest);
+			idPedido = request.getId();
+				pedidoService.refrescarVencimiento(idPedido, email);
+			} catch (UsuarioInexistenteException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (PedidoInexistenteException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (JsonParseException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (JsonMappingException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (IOException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (EstadoPedidoIncorrectoException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			}
+			return Response.ok().build();
+	}
 
 	@POST
 	@Produces("application/json")
@@ -171,10 +205,6 @@ public class PedidoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
 	
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -263,6 +293,12 @@ public class PedidoListener {
 		return mapper.readValue(agregarRequest, AgregarQuitarProductoAPedidoRequest.class);
 	}
 
+	private IdRequest toIdRequest(String idRequest) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		return mapper.readValue(idRequest, IdRequest.class);
+	}
+	
 	private PedidoResponse toResponse(Pedido pedido) {
 		return new PedidoResponse( pedido);
 	}

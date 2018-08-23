@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import chasqui.aspect.Auditada;
 import chasqui.aspect.Dateable;
 import chasqui.dao.PedidoDAO;
+import chasqui.dao.UsuarioDAO;
 import chasqui.dao.ZonaDAO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
@@ -46,20 +47,14 @@ public class PedidoServiceImpl implements PedidoService {
 	private PedidoDAO pedidoDAO;
 	@Autowired
 	private ZonaDAO zonaDAO;
-
 	@Autowired
 	private UsuarioService usuarioService;
-	
 	@Autowired
 	private ProductoService productoService;
-	
 	@Autowired
 	private ZonaService zonaService;
-
-	
 	@Autowired
 	private NotificacionService notificacionService;
-
 	@Autowired
 	private Integer cantidadDeMinutosParaExpiracion;
 	
@@ -164,15 +159,24 @@ public class PedidoServiceImpl implements PedidoService {
 		usuarioService.guardarUsuario(cliente);
 	}
 	
-
-
-	
 	private DateTime nuevaFechaVencimiento() {
 		DateTime d = new DateTime();
 		d = d.plusMinutes(this.cantidadDeMinutosParaExpiracion );
 		return d;
 	}
 
+	@Override
+	public void refrescarVencimiento(Integer idPedido, String email) throws UsuarioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException {
+		Pedido pedido = pedidoDAO.obtenerPedidoPorId(idPedido);
+		if(pedido == null || !pedido.getCliente().getEmail().equals(email)){
+			throw new PedidoInexistenteException("Id incorrecto");
+		}
+		if(!pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)){
+			throw new EstadoPedidoIncorrectoException("El pedido debe estar abierto");
+		}
+		pedido.setFechaDeVencimiento(this.nuevaFechaVencimiento());
+		pedidoDAO.guardar(pedido);
+	}
 
 	@Override
 	public Pedido crearPedidoIndividualEnGrupo(GrupoCC grupo, String email, Integer idVendedor)
@@ -519,5 +523,5 @@ public class PedidoServiceImpl implements PedidoService {
 			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro, String email) {
 		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedor( id, d, h,estadoSeleccionado,zonaId,idPuntoRetiro, email);
 	}
-	
+
 }
