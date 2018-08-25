@@ -170,6 +170,13 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			paramsZona.put(PedidosColectivosComposer.ACCION_KEY, PedidosComposer.ACCION_EDITAR);
 			botonEditarZona.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsZona);
 		}
+		
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO)){
+			botonEditarZona.setTooltiptext("El pedido esta preparado");
+			botonEditarZona.setDisabled(true);
+			botonEditarZona.setStyle("color:gray");
+		}
+		
 		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)){
 			botonEditarZona.setTooltiptext("El pedido esta entregado");
 			botonEditarZona.setDisabled(true);
