@@ -173,7 +173,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	public void onEditarZona(PedidoColectivo p, GrupoCC grupo){
 		HashMap<String,Object>params = new HashMap<String,Object>();
 		params.put("pedidoColectivo", p);
-		params.put("grupo", grupo);
+		params.put("grupo", p.getColectivo());
 		params.put("zonas", usuarioLogueado.getZonas());
 		Window w = (Window) Executions.createComponents("/editarPedidoColectivo.zul", this.self, params);
 		w.doModal();

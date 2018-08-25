@@ -16,6 +16,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 
 import chasqui.aspect.Dateable;
 import chasqui.dao.GrupoDAO;
+import chasqui.dao.PedidoDAO;
 import chasqui.dao.MiembroDeGCCDAO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
@@ -309,6 +310,7 @@ public class GrupoServiceImpl implements GrupoService {
 	@Override
 	 * @see chasqui.services.interfaces.GrupoService#confirmarPedidoColectivo(java.lang.Integer)
 	 */
+	@Override
 	@Dateable
 	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest>opcionesSeleccionadas, Integer idZona) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
@@ -319,7 +321,7 @@ public class GrupoServiceImpl implements GrupoService {
 		PuntoDeRetiro puntoderetiro = buscarpuntoderetiro(grupo.getVendedor(), idPuntoDeRetiro);
 		Zona zona=null;
 		if(idZona != null){
-			zona = zonaService.obtenerZonaPorId(idZona);
+			zona = buscarZona(grupo.getVendedor(),idZona);
 		}
 		if(!(direccion == null ^ puntoderetiro == null)){
 			throw new DireccionesInexistentes("El punto de retiro o direccion seleccionada no existe"); 
@@ -331,11 +333,13 @@ public class GrupoServiceImpl implements GrupoService {
 			List<MiembroDeGCC> miembros = grupo.getCache();
 			for (MiembroDeGCC miembroDeGCC : miembros) {
 				actualizarMiembroGCC(miembroDeGCC);
+			}
+			grupoDao.guardarGrupo(grupo);
+			for (MiembroDeGCC miembroDeGCC : miembros) {
 				if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
 					notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
 				}
 			}
-			grupoDao.guardarGrupo(grupo);
 			
 		}
 		else{
@@ -371,6 +375,16 @@ public class GrupoServiceImpl implements GrupoService {
 		}
 		return ret;
 	}
+	
+	private Zona buscarZona(Vendedor vendedor, Integer idZona) {
+		Zona ret = null;
+		for(Zona pr: vendedor.getZonas()) {
+			if(pr.getId()==idZona) {
+				ret = pr;
+			}
+		}
+		return ret;
+	}
 
 	@Override
 	public void editarGrupo(Integer idGrupo, String emailAdministrador, String alias, String descripcion) throws RequestIncorrectoException {
@@ -393,23 +407,21 @@ public class GrupoServiceImpl implements GrupoService {
 		validarRequest(request.getIdPedido());
 		
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
-		usuarioService.inicializarPedidos(cliente);
-		//usuarioService.inicializarHistorial(cliente);
-		//suarioService.inicializarColecciones(cliente);
-
-		validarConfirmacionDePedidoSinDireccionPara(cliente, request); //TODO fusionar este metodo con cliente.encontrarPedidoConId
-		
-		Pedido pedido = cliente.encontrarPedidoConId(request.getIdPedido());
+		Pedido pedido = pedidoService.obtenerPedidosporId(request.getIdPedido());
+		validarConfirmacionDePedidoSinDireccionPara(pedido, request); 
 		
 		validarQueContengaProductos(pedido);
 		
 		Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(pedido.getIdVendedor());
 		usuarioService.inicializarListasDe(vendedor);
-		
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+		pedido.confirmarte();
+		}else {
+			throw new EstadoPedidoIncorrectoException("El pedido no esta abierto");
+		}
 		vendedor.descontarStockYReserva(pedido);
-		cliente.confirmarPedidoSinDireccion(pedido.getId());
-		
-		usuarioService.guardarUsuario(cliente);
+
+		pedidoService.guardar(pedido);
 		usuarioService.guardarUsuario(vendedor);
 		
 		//Notificar al cliente y a sus compañeros
@@ -445,11 +457,11 @@ public class GrupoServiceImpl implements GrupoService {
 	}
 	
 
-	private void validarConfirmacionDePedidoSinDireccionPara(Cliente c, ConfirmarPedidoSinDireccionRequest request)
+	private void validarConfirmacionDePedidoSinDireccionPara(Pedido p, ConfirmarPedidoSinDireccionRequest request)
 			throws PedidoInexistenteException {
-		if (!c.contienePedido(request.getIdPedido())) {
+		if (p == null) {
 			throw new PedidoInexistenteException(
-					"El usuario: " + c.getUsername() + " no posee un pedido vigente con el ID otorgado");
+					"El usuario no posee un pedido vigente con el ID otorgado");
 		}
 	}
 

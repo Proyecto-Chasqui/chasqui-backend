@@ -26,6 +26,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
+import chasqui.model.ProductoPedido;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
@@ -202,17 +203,18 @@ public class PedidoServiceImpl implements PedidoService {
 			RequestIncorrectoException, EstadoPedidoIncorrectoException {
 		
 		validarRequest(request);
-
-		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
-		usuarioService.inicializarPedidos(cliente);
+		Pedido p = pedidoDAO.obtenerPedidoPorId(request.getIdPedido());
 		Variante variante = productoService.obtenerVariantePor(request.getIdVariante());
 		
-		validar(variante, cliente, request);
+		validar(variante, null, request);
 		
-		cliente.agregarProductoAPedido(variante, request.getIdPedido(), request.getCantidad(), nuevaFechaVencimiento());
-		usuarioService.guardarUsuario(cliente);
-		
+		ProductoPedido pp = new ProductoPedido(variante, request.getCantidad(),variante.getProducto().getFabricante().getNombre());
+		p.agregarProductoPedido(pp, nuevaFechaVencimiento());
+		p.sumarAlMontoActual(variante.getPrecio(), request.getCantidad());
 		variante.reservarCantidad(request.getCantidad());
+		
+		
+		pedidoDAO.guardar(p);
 		productoService.modificarVariante(variante);
 	}
 
@@ -275,22 +277,30 @@ public class PedidoServiceImpl implements PedidoService {
 			throws ProductoInexistenteException, RequestIncorrectoException, PedidoVigenteException, UsuarioInexistenteException {
 
 		validarRequest(request);
-
-		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
-		usuarioService.inicializarPedidos(cliente);
+		Pedido pedido = pedidoDAO.obtenerPedidoPorId(request.getIdPedido());
 		
 		Variante variante = productoService.obtenerVariantePor(request.getIdVariante());
-		validarParaEliminar(variante, cliente, request);
+		validarParaEliminar(variante, pedido, request);
 		
-		cliente.eliminarProductoEnPedido(request.getIdVariante(), variante.getPrecio(), request.getIdPedido(),
+		this.eliminarProductoEnPedido(request.getIdVariante(), variante.getPrecio(), pedido,
 				request.getCantidad());
 		
 		variante.eliminarReserva(request.getCantidad());
 		
-		usuarioService.guardarUsuario(cliente);
+		pedidoDAO.guardar(pedido);
 		
 		
 		productoService.modificarVariante(variante);
+	}
+	
+	public void eliminarProductoEnPedido(Integer idVariante, Double precio, Pedido p, Integer cantidad) {
+		ProductoPedido pp = p.encontrarProductoPedido(idVariante);
+		if (cantidad < pp.getCantidad()) {
+			pp.restar(cantidad);
+		} else {
+			p.eliminar(pp);
+		}
+		p.restarAlMontoActual(precio, cantidad);
 	}
 	
 
@@ -386,9 +396,9 @@ public class PedidoServiceImpl implements PedidoService {
 
 	}
 
-	private void validarParaEliminar(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request)
+	private void validarParaEliminar(Variante v, Pedido p, AgregarQuitarProductoAPedidoRequest request)
 			throws ProductoInexistenteException, RequestIncorrectoException, PedidoVigenteException {
-		validacionesGenerales(v, c, request);
+		validacionesGenerales(v, request);
 		
 		Pedido pedido = this.obtenerPedidosporId(request.getIdPedido());
 		
@@ -396,19 +406,35 @@ public class PedidoServiceImpl implements PedidoService {
 			throw new PedidoVigenteException("El pedido se encuentra vencido y no es posible modificarlo");
 		}
 		
-		if (!c.contieneProductoEnPedido(v, request.getIdPedido())) {
+		if (!this.contieneProductoEnPedido(v, p)) {
 			throw new ProductoInexistenteException(
 					"El usuario no tiene el producto con ID " + request.getIdVariante() + " en el pedido");
 		}
-		if (!c.contieneCantidadDeProductoEnPedido(v, request.getIdPedido(), request.getCantidad())) {
+		if (!this.contieneCantidadDeProductoEnPedido(v, p, request.getCantidad())) {
 			throw new ProductoInexistenteException(
 					"No se puede quitar mas cantidad de un producto de la que el usuario posee en su pedido");
 		}
 	}
+	
+	private boolean contieneProductoEnPedido(Variante v, Pedido p) {
+		ProductoPedido pp = p.encontrarProductoPedido(v.getId());
+		if (pp != null && pp.getIdVariante().equals(v.getId())) {
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean contieneCantidadDeProductoEnPedido(Variante v, Pedido p, Integer cantidad) {
+		ProductoPedido pp = p.encontrarProductoPedido(v.getId());
+		if (pp.getIdVariante().equals(v.getId()) && cantidad <= pp.getCantidad()) {
+			return true;
+		}
+		return false;
+	}
 
 	private void validar(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request)
 			throws ProductoInexistenteException, PedidoVigenteException, RequestIncorrectoException {
-		validacionesGenerales(v, c, request);
+		//validacionesGenerales(v, c, request);
 		if (!v.tieneStockParaReservar(request.getCantidad())) {
 			throw new ProductoInexistenteException("El producto no posee más Stock");
 		}
@@ -461,7 +487,7 @@ public class PedidoServiceImpl implements PedidoService {
 //		}
 	}
 	
-	private void validacionesGenerales(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request)
+	private void validacionesGenerales(Variante v, AgregarQuitarProductoAPedidoRequest request)
 			throws ProductoInexistenteException, PedidoVigenteException, RequestIncorrectoException {
 		if (v == null) {
 			throw new ProductoInexistenteException("No existe el producto con ID: " + request.getIdVariante());
@@ -470,16 +496,16 @@ public class PedidoServiceImpl implements PedidoService {
 		// mejorar
 		// (Hackaso)
 		//!c.contienePedido(request.getIdPedido()) &&
-		if (p == null || !c.contienePedidoAbiertoOCanceladoParaVendedor(p.getIdVendedor())) {
+		if (p == null) {
 			throw new PedidoVigenteException("El usuario no posee el pedido con ID:" + request.getIdPedido()
 			+ " o el mismo no se encuentra vigente ni cancelado");
 		}
 
-		if (!c.tienePedidoDeVendedor(p.getIdVendedor(), request.getIdPedido())) {
-			throw new RequestIncorrectoException(
-					"El producto no corresponde con el vendedor al que se le hizo el pedido con ID: "
-							+ request.getIdPedido());
-		}
+//		if (!c.tienePedidoDeVendedor(p.getIdVendedor(), request.getIdPedido())) {
+//			throw new RequestIncorrectoException(
+//					"El producto no corresponde con el vendedor al que se le hizo el pedido con ID: "
+//							+ request.getIdPedido());
+//		}
 	}
 	
 

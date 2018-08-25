@@ -39,6 +39,8 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 	private ZonaService zonaService;
 
 	private Vendedor usuarioLogueado;
+	
+	private GrupoService grupoService;
     
 	public PedidoDTO getPedidoMostrado() {
 		return pedidoMostrado;
@@ -79,10 +81,11 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 		comp = (HistorialPedidosColectivosComposer) Executions.getCurrent().getSession().getAttribute("historialPedidosColectivosComposer");
 		binder = new AnnotateDataBinder(c);
 		pedidoColectivoService = (PedidoColectivoService) SpringUtil.getBean("pedidoColectivoService");
+		grupoService = (GrupoService) SpringUtil.getBean("grupoService");
 		zonaService = (ZonaService) SpringUtil.getBean("zonaService");
-		this.zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 		
 		pedido = (PedidoColectivo) Executions.getCurrent().getArg().get("pedidoColectivo");
+		this.zonas = pedido.getColectivo().getVendedor().getZonas();
 		grupo = (GrupoCC) Executions.getCurrent().getArg().get("grupo");
 		this.pedidoMostrado = buildPedidoDTO(pedido,grupo);
 		
@@ -99,11 +102,19 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 
 	public void onClick$confirmarEdicionbtn(){
 		this.pedido.setZona(zonaSeleccionada);
-		pedidoColectivoService.guardarPedidoColectivo(pedido);
+		grupoService.guardarGrupo(grupo);
 		Events.sendEvent(Events.ON_RENDER,this.self.getParent(),null);
 		comp.binder.loadAll();
 		this.self.detach();
 		
+	}
+	
+	private void cambiarZonaAPedido(Integer id, Zona zona) {
+		for(PedidoColectivo pc : this.grupo.getHistorial().getPedidosGrupales()) {
+			if(pc.getId() == id) {
+				pc.setZona(zona);
+			}
+		}
 	}
 
 	public void onClick$cancelarEdicionbtn(){
