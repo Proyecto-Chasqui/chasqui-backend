@@ -184,10 +184,11 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		}
 	}
 	
-	//a falta de una referencia de pedidoColectivo a Grupo es necesario hacer esta
+	//A falta de una referencia de pedidoColectivo a Grupo es necesario hacer esta
 	//Funcionalidad de "weaving" en memoria. Evaluar costos de eficiencia.
-	private PedidosGrupalesDTO obtenerPedidosColectivosDeVendedor(Integer id, String estadoPedido,
-			Integer idPuntoRetiro) throws VendedorInexistenteException {
+	//(25/08/2018) Ahora los pedidos colectivos tienen relación con los grupos refactorizar si esta
+	// solución genera un problema de eficiencia.
+	private PedidosGrupalesDTO obtenerPedidosColectivosDeVendedor(Integer id, String estadoPedido,Integer idPuntoRetiro) throws VendedorInexistenteException {
 		PedidosGrupalesDTO pedidos = null;
 		List<GrupoCC> grupos = grupoService.obtenerGruposDe(usuario.getId());
 		List<PedidoColectivo> lpedidos = new ArrayList<PedidoColectivo>();

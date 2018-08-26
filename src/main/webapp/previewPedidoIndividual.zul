@@ -17,13 +17,14 @@
         vertical-align:middle;
     }</style>
 <separator spacing="15px"/>
-	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{previewPedidosIndividualesWindow$composer.pedidos}" mold="paging" pageSize="10" rows="10">
+	<listbox multiple="false" checkmark="false" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{previewPedidosIndividualesWindow$composer.pedidos}" mold="paging" pageSize="10" rows="10">
 		<listhead>
 			<listheader label="ID Pedido" align="center" visible="true"/>
 			<listheader label="Cliente Creador" align="center" />
 			<listheader label="Fecha Creación" align="center" />
+			<listheader label="Fecha Cierre" align="center"/>
 			<listheader label="Zona" align="center" visible="false"/>
-			<listheader label="Monto Minimo" align="center"/>
+			<listheader label="Monto Minimo" align="center" visible="false"/>
 			<listheader label="Monto Actual" align="center"/>
 			<listheader label="Estado" align="center"/>
 			<listheader label="Direccion de Entrega" align="center"/>

@@ -18,7 +18,11 @@ import chasqui.model.Zona;
 import chasqui.view.composer.Constantes;
 import chasqui.view.composer.PedidosColectivosComposer;
 import chasqui.view.composer.PedidosComposer;
-
+//Esta clase es usuada en todas las areas en las que se muestra un pedido individual:
+//Area de pedidos individuales.
+//Area de pedidos individuales dentro de un grupo.
+//Pop up de advertencia al tratar de eliminar un punto de retiro asociado a uno o varios pedidos.
+//Si se desea cambiar algo revisar todas las areas afectadas para mantener la coherencia.
 public class PedidoRenderer implements ListitemRenderer<Pedido> {
 
 	private Window pedidoWindow;

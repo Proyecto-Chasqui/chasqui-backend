@@ -41,6 +41,9 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		if(pedidoColectivo.getColectivo() !=null) {
 			celdaUsr = new Listcell(pedidoColectivo.getColectivo().getAlias());
 			celdaAdmn = new Listcell(pedidoColectivo.getColectivo().getAdministrador().getEmail());
+		}else {
+			celdaUsr = new Listcell("N/D");
+			celdaAdmn = new Listcell("N/D");
 		}
 		
 		if(pedidoColectivo.estaAbierto() || 
