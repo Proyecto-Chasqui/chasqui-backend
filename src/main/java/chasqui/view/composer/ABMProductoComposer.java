@@ -234,18 +234,10 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			model.setVariantes(variantes);
 		}
 		usuarioService.guardarUsuario(usuario);
-		actualizarUsuarioEnMemoria();
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("accion", "productoGuardado");		
 		Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
 		this.self.detach();
-	}
-	
-	private void actualizarUsuarioEnMemoria() {
-		Vendedor user =(Vendedor) usuarioService.obtenerUsuarioPorID(usuario.getId());
-		usuarioService.inicializarListasDe(user);
-		Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
-		usuario = user;
 	}
 	
 	private void guardarImagenNoDisponible() throws IOException {

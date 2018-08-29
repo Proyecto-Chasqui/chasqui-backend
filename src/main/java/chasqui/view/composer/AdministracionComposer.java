@@ -241,7 +241,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		binder.loadAll();
 	}
 
-	public void onClick$radioProductos(){
+	public void onClick$radioProductos() throws VendedorInexistenteException{
+		sincWithBD();
+		onClick$buscarProducto();
 		agregarButton.setVisible(false);
 		agregarProductorButton.setVisible(false);
 		divCategoria.setVisible(false);
@@ -312,7 +314,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		binder.loadAll();
 	}
 	
-	public void onClick$radioProductores(){
+	public void onClick$radioProductores() throws VendedorInexistenteException{
+		sincWithBD();
+		onBuscarProductor();
 		divProducto.setVisible(false);
 		divCategoria.setVisible(false);
 		agregarButton.setVisible(false);
@@ -399,6 +403,13 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divPedidosColectivos.setVisible(false);
 
 		binder.loadAll();
+	}
+
+	public void sincWithBD() throws VendedorInexistenteException {
+		Vendedor user =(Vendedor) usuarioService.obtenerUsuarioPorID(usuarioLogueado.getId());
+		usuarioService.inicializarListasDe(user);
+		Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
+		usuarioLogueado = user;
 	}
 	
 	public void refresh(){
