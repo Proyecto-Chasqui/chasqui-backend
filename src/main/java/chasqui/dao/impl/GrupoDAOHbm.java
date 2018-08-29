@@ -17,6 +17,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import chasqui.dao.GrupoDAO;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
+import chasqui.view.composer.Constantes;
 
 public class GrupoDAOHbm extends HibernateDaoSupport implements GrupoDAO {
 
@@ -95,7 +96,8 @@ public class GrupoDAOHbm extends HibernateDaoSupport implements GrupoDAO {
 			   public List<GrupoCC> doInHibernate(Session session) throws HibernateException, SQLException {
 			    Criteria criteria = session.createCriteria(GrupoCC.class)
 			    		.add(Restrictions.eq("vendedor.id", idVendedor))     
-			    		.createCriteria("cache").add(Restrictions.eq("email", email));
+			    		.createCriteria("cache").add(Restrictions.eq("email", email))
+			    		.add(Restrictions.eq("estadoInvitacion",Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA));
 			    
 			    List<GrupoCC> resultado = (List<GrupoCC>) criteria.list();
 			    
