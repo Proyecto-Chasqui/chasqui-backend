@@ -38,6 +38,7 @@ import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
 import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
@@ -329,6 +330,7 @@ public class GrupoServiceImpl implements GrupoService {
 		
 		
 		if (grupo.getAdministrador().getEmail().equals(emailSolicitante)) {
+			PedidoColectivo pc = grupo.getPedidoActual();
 			grupo.confirmarPedidoColectivo(puntoderetiro, direccion, comentario,opcionesSeleccionadas,zona);
 			List<MiembroDeGCC> miembros = grupo.getCache();
 			for (MiembroDeGCC miembroDeGCC : miembros) {
@@ -337,7 +339,10 @@ public class GrupoServiceImpl implements GrupoService {
 			grupoDao.guardarGrupo(grupo);
 			for (MiembroDeGCC miembroDeGCC : miembros) {
 				if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
-					notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+					Pedido p = pc.buscarPedidoParaCliente(miembroDeGCC.getEmail());
+					if(p != null && p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+						notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+					}
 				}
 			}
 			

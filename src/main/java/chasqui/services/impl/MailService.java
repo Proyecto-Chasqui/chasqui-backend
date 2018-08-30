@@ -246,11 +246,11 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedido.getDireccionEntrega() != null) {
 			direccion = pedido.getDireccionEntrega();
-			textoEnEmail = "Su pedido esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido de" + pedido.getNombreVendedor() +" esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedido.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Su pedido esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido de" + pedido.getNombreVendedor() +" esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar su pedido";
 		}
 		
@@ -274,11 +274,11 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
-			textoEnEmail = "Su pedido colectivo ha sido confirmado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>ha sido confirmado. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "La dirección elegida es la siguiente:";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Su pedido colectivo ha sido confirmado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() + " </b>ha sido confirmado. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="El punto de retiro elegido es el siguiente:";
 		}
 		//Genero tabla de contenido de pedido de cada persona
@@ -306,11 +306,11 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
-			textoEnEmail = "El pedido esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido colectivo hecho en <b>" + pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Su pedido esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar su pedido";
 		}
 		//Genero tabla de contenido de pedido de cada persona
@@ -332,8 +332,13 @@ public class MailService {
 	}
 	
 	private List<String> obtenerEmails(PedidoColectivo pedidoColectivo) {
-		List<String> emails = new ArrayList<>(pedidoColectivo.getPedidosIndividuales().keySet());
-		
+		List<String> emails = new ArrayList<>();
+		for(String e: pedidoColectivo.getPedidosIndividuales().keySet()) {
+			if (pedidoColectivo.getPedidosIndividuales().get(e).getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+				emails.add(e);
+			}
+		}
+		emails.add(pedidoColectivo.getColectivo().getAdministrador().getEmail());
 		return emails;
 	}
 
@@ -345,8 +350,10 @@ public class MailService {
 		while (it.hasNext()) {
 		    Entry<String, Pedido> pair = it.next();
 		    Pedido pedido = pair.getValue();
-		    tablaContenidoDePedidoColectivo += armarInformacionDelCliente(pedido.getCliente());
-		    tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido);
+		    if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+		    	tablaContenidoDePedidoColectivo += armarInformacionDelCliente(pedido.getCliente());
+		    	tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido);
+		    }
 		}
 		
 		return tablaContenidoDePedidoColectivo;
@@ -355,7 +362,7 @@ public class MailService {
 
 	private String armarInformacionDelCliente(Cliente cliente) {
 		String informacionDelCliente = "";
-		informacionDelCliente += cliente.getNombre() + cliente.getApellido();
+		informacionDelCliente += cliente.getNombre() + " " + cliente.getApellido();
 		
 		
 		return informacionDelCliente;
@@ -503,6 +510,8 @@ public class MailService {
 	private String armarTablaDireccionDeEntrega(Direccion d,String texto){
 		if (d!=null) {
 			String departamento =  d.getDepartamento() != null ? d.getDepartamento() : "---";
+			String codigoPostal = d.getCodigoPostal() == null ?  "---" : d.getCodigoPostal();
+			String localidad = d.getLocalidad() == null ? "---": d.getLocalidad();
 			
 			String tabla=
 					"<br><br>"
@@ -527,11 +536,11 @@ public class MailService {
 					       +"</tr>"
 					      +"<tr>"
 					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Cod.Postal</td>"
-					           +"<td>"+d.getCodigoPostal()+"</td>"
+					           +"<td>"+ codigoPostal +"</td>"
 					       +"</tr>"
 					      +"<tr>"
 					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Localidad</td>"
-					           +"<td>"+d.getLocalidad()+"</td>"
+					           +"<td>"+ localidad +"</td>"
 					       +"</tr>"	   
 					   +"</tbody>"
 					+"</table>"
