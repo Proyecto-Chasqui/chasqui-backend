@@ -340,8 +340,10 @@ public class GrupoServiceImpl implements GrupoService {
 			for (MiembroDeGCC miembroDeGCC : miembros) {
 				if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
 					Pedido p = pc.buscarPedidoParaCliente(miembroDeGCC.getEmail());
-					if(p != null && p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
-						notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+					if(p != null) {
+						if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
+							notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+						}
 					}
 				}
 			}
