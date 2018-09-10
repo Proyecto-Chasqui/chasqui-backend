@@ -10,10 +10,10 @@ style="overflow:auto">
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" />
-		<datebox id="desde" forward="onChange=pedidosWindow.composer.onBuscar"/>
+		<datebox id="desde" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
-		<label value="Fecha Hasta:" forward="onChange=pedidosWindow.composer.onBuscar"/>
-		<datebox id="hasta"/>
+		<label value="Fecha Hasta:"/>
+		<datebox id="hasta" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
 		<textbox id="buscadorPorUsuario" placeholder="Buscar por email admin"  forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
 	</hbox>
 	<hbox>
