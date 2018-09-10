@@ -111,7 +111,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonaService = (ZonaService)SpringUtil.getBean("zonaService");
 			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
-			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO);
+			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO, Constantes.ESTADO_PEDIDO_VENCIDO);
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 			binder = new AnnotateDataBinder(component);
 			window = (Window) component;
