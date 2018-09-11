@@ -1,12 +1,14 @@
 package chasqui.dtos;
 
+import java.text.DecimalFormat;
+
 public class VarianteDTO {
 	
 	 private String nombreProducto;
 	 private String nombreVariante;
 	 private Integer cantidad;
 	 private Double precio;
-	
+	 DecimalFormat df = new DecimalFormat("#.##");
 	 
 	 public VarianteDTO(String nombreProducto, String nombreVariante, Integer cantidad, Double precio) {
 		 super();
@@ -48,8 +50,14 @@ public class VarianteDTO {
 		return this.precio;
 	}
 	
+	private Double trim2decimals(Double d) {
+		String trim = df.format(d); 
+		Double value = Double.parseDouble(trim.replace(",","."));
+		return value;
+	}
+	
 	public Double getSubTotal(){
-		return this.precio * this.cantidad;
+		return trim2decimals(this.precio * this.cantidad);
 	}
 
 }
