@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
 import chasqui.services.interfaces.GrupoService;
 
@@ -153,7 +154,24 @@ public class PedidoResponse implements Serializable {
 				productosResponse.add(new ProductoPedidoResponse(pp));
 			}
 		}
+
 		
+		
+	}
+
+
+	private void cargarDireccionYZonaSeleccionadaDePedidoColectivo(PedidoColectivo p) {
+		if(p.getDireccionEntrega() != null) {
+			direccion = new DireccionResponse(p.getDireccionEntrega());
+		}
+		
+		if(p.getPuntoDeRetiro() != null) {	
+			setPuntoDeRetiro(new PuntoDeRetiroResponse(p.getPuntoDeRetiro()));
+		}
+		
+		if(p.getZona() != null) {
+			zona = new ZonaResponse(p.getZona());
+		}
 		
 	}
 
@@ -202,7 +220,10 @@ public class PedidoResponse implements Serializable {
 				productosResponse.add(new ProductoPedidoResponse(pp));
 			}
 		}
-		this.cargarDireccionYZonaSeleccionada(p);
+		cargarDireccionYZonaSeleccionada(p);
+		if(p.getPedidoColectivo() != null) {
+			cargarDireccionYZonaSeleccionadaDePedidoColectivo(p.getPedidoColectivo());
+		}
 	}
 
 
