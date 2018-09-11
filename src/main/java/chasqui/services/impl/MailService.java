@@ -96,12 +96,13 @@ public class MailService {
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO, destino, Constantes.SUBJECT_INVITACION_NO_REGISTRADO, params);
 	}
 			
-	public void enviarEmailInvitadoRegistrado(Cliente clienteOrigen, String destino, String urlVendedor, String nombreVendedor) throws IOException, MessagingException, TemplateException  {		
+	public void enviarEmailInvitadoRegistrado(Cliente clienteOrigen, String destino, String urlVendedor, String nombreCorto, String nombreVendedor) throws IOException, MessagingException, TemplateException  {		
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("usuarioOrigen", clienteOrigen.getUsername());
 		params.put("mailOrigen",clienteOrigen.getEmail());
 		params.put("vendedor", nombreVendedor);	
-		params.put("urlRegistracion", urlVendedor );//TODO revisar
+		String slash = (urlVendedor.endsWith("/"))?"":"/";
+		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro" );//TODO revisar que se forme correctamente 11/09
 		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_REGISTRADO, destino,Constantes.SUBJECT_INVITACION_REGISTRADO, params);
 		
