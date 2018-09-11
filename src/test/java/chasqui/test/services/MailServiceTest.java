@@ -111,8 +111,9 @@ public class MailServiceTest extends GenericSetUp {
 		
 		this.vendedor.setNombre("nombre del vendedor");
 		this.vendedor.setUrl("urlVendedor");
+		this.vendedor.setNombreCorto("nombreCorto");
 		
-		mailService.enviarEmailInvitadoRegistrado(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombre());
+		mailService.enviarEmailInvitadoRegistrado(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre());
 		assertEquals(true , true);
 	}
 
