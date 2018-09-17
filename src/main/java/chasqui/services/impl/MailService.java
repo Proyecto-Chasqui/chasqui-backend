@@ -204,7 +204,7 @@ public class MailService {
 		params.put("agradecimiento",Constantes.AGRADECIMIENTO);
 		params.put("textoDetalle", textoEnEmail);
 
-		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailCliente, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, params);
+		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailCliente,formarTag(p) + Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, params);
 		
 		Map<String,Object> paramsVendedor = new HashMap<String,Object>();
 		paramsVendedor.put("cuerpo", cuerpoVendedor);
@@ -213,7 +213,7 @@ public class MailService {
 		paramsVendedor.put("agradecimiento",Constantes.AGRADECIMIENTO);
 		params.put("textoDetalle", textoEnEmail);
 
-		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailVendedor, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, paramsVendedor);
+		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailVendedor, formarTag(p) + Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, paramsVendedor);
 		
 	}
 	
@@ -236,7 +236,7 @@ public class MailService {
 			params.put("aliasColectivo", "");
 		}
 		
-		this.enviarMailEnThreadAparte(Constantes.VENCIMIENTO_PEDIDO_TEMPLATE, cliente.getEmail(), Constantes.VENCIMIENTO_DE_PEDIDO_SUBJECT, params);
+		this.enviarMailEnThreadAparte(Constantes.VENCIMIENTO_PEDIDO_TEMPLATE, cliente.getEmail(), formarTag(pedido) + Constantes.VENCIMIENTO_DE_PEDIDO_SUBJECT, params);
 		
 	}
 	
@@ -264,7 +264,7 @@ public class MailService {
 		params.put("textoDeDireccionDeEntrega", textoDeDireccionDeEntrega);
 		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
 		
-		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), Constantes.PEDIDO_PREPARADO_SUBJECT, params);
+		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), formarTag(pedido) +Constantes.PEDIDO_PREPARADO_SUBJECT, params);
 		
 	}
 	
@@ -294,9 +294,8 @@ public class MailService {
 		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
 		params.put("textoDetalle", textoEnEmail);
 		
-		
 		//se envia todo a todos los integrantes del grupo
-		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
+		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) + Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
 		
 	}
 	
@@ -328,7 +327,7 @@ public class MailService {
 		
 		
 		//se envia todo a todos los integrantes del grupo
-		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
+		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) +Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
 		
 	}
 	
@@ -599,6 +598,14 @@ public class MailService {
 				 +"</tr>"
 				 + "</tfoot>"
 				 + "</table>";
+	}
+	
+	private String formarTag(PedidoColectivo p) {
+		return "[ ID Pedido "+ p.getId()+" ] ";
+	}
+	
+	private String formarTag(Pedido p) {
+		return "[ ID Pedido "+ p.getId()+" ] ";
 	}
 	
 
