@@ -137,6 +137,7 @@ public class PedidoColectivo implements IPedido{
 	public void entregarte() throws EstadoPedidoIncorrectoException {
 		if (this.estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO)) {
 			this.estado = Constantes.ESTADO_PEDIDO_ENTREGADO;
+			this.cambiarEstadoDePedidosIndividuales(Constantes.ESTADO_PEDIDO_PREPARADO, Constantes.ESTADO_PEDIDO_ENTREGADO);
 		}
 		else{
 			throw new EstadoPedidoIncorrectoException("El pedido no estaba confirmado");
@@ -211,6 +212,7 @@ public class PedidoColectivo implements IPedido{
 		if (this.estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
 			this.estado = Constantes.ESTADO_PEDIDO_PREPARADO;	
 			this.grabarPuntoDeRetiro();
+			this.cambiarEstadoDePedidosIndividuales(Constantes.ESTADO_PEDIDO_CONFIRMADO, Constantes.ESTADO_PEDIDO_PREPARADO);
 		}
 		else{
 			throw new EstadoPedidoIncorrectoException("El pedido no estaba confirmado");
@@ -223,6 +225,20 @@ public class PedidoColectivo implements IPedido{
 		}
 	}
 
+	/**
+	 * Cambia el estado de los pedidos individuales dentro del
+	 * pedido colectivo.
+	 * 
+	 * @param estadoRequerido Estado de los pedidos a cambiar. 
+	 * @param estado Estado por el que se cambiara.
+	 */
+	private void cambiarEstadoDePedidosIndividuales(String estadoRequerido, String estado) {
+		for(Pedido pedido: pedidosIndividuales.values()){
+			if(pedido.getEstado().equals(estadoRequerido)){
+				pedido.setEstado(estado);
+			}
+		}
+	}
 
 	public PuntoDeRetiro getPuntoDeRetiro() {
 		return puntoDeRetiro;
