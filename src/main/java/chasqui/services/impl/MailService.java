@@ -601,11 +601,11 @@ public class MailService {
 	}
 	
 	private String formarTag(PedidoColectivo p) {
-		return "[ ID Pedido "+ p.getId()+" ] ";
+		return "[ Pedido N° "+ p.getId()+" ] ";
 	}
 	
 	private String formarTag(Pedido p) {
-		return "[ ID Pedido "+ p.getId()+" ] ";
+		return "[ Pedido N° "+ p.getId()+" ] ";
 	}
 	
 

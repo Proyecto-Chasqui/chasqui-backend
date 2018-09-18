@@ -568,6 +568,20 @@ public class GrupoServiceImpl implements GrupoService {
 		
 	}
 
+	@Override
+	public void vaciarGrupoCC(Integer idGrupo) throws EstadoPedidoIncorrectoException {
+		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
+		if(grupo.sePuedeEliminar()){
+			grupo.vaciarGrupo();
+			grupoDao.guardarGrupo(grupo);
+		}else {
+			throw new EstadoPedidoIncorrectoException("El grupo no puede ser eliminado, por que hay pedidos abiertos o confirmados");
+		}
+		
+	}
+	
+	
+
 
 
 }

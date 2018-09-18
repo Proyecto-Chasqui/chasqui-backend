@@ -45,6 +45,7 @@ import chasqui.service.rest.request.ActualizarDomicilioRequest;
 import chasqui.service.rest.request.CederAdministracionRequest;
 import chasqui.service.rest.request.ConfirmarPedidoColectivoRequest;
 import chasqui.service.rest.request.EditarGCCRequest;
+import chasqui.service.rest.request.EliminarGrupoRequest;
 import chasqui.service.rest.request.GrupoRequest;
 import chasqui.service.rest.request.InvitacionRequest;
 import chasqui.service.rest.request.NuevoPedidoIndividualRequest;
@@ -169,6 +170,34 @@ public class GrupoListener {
 
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
+	}
+	
+	@POST
+	@Path("/eliminarGrupo")
+	@Produces("application/json")
+	public Response eliminarGrupo(
+			@Multipart(value = "eliminarGrupoRequest", type = "application/json") final String eliminarGrupoRequest) {
+		EliminarGrupoRequest request;
+		
+		try {
+			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
+			request = this.toEliminarGrupoRequest(eliminarGrupoRequest);
+			grupoService.vaciarGrupoCC(request.getIdGrupo());
+			
+			return Response.ok().build();
+		} catch (IOException e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (EstadoPedidoIncorrectoException e) {
+			return Response.status(500).entity(new ChasquiError("No se puede eliminar el grupo debido a que algunos pedidos estan confirmados o abiertos")).build();
+		}
+	}
+
+	private EliminarGrupoRequest toEliminarGrupoRequest(String grupoRequest) throws JsonParseException, JsonMappingException, IOException {
+		EliminarGrupoRequest request = new EliminarGrupoRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		request = mapper.readValue(grupoRequest, EliminarGrupoRequest.class);
+		return request;
 	}
 
 	@POST
