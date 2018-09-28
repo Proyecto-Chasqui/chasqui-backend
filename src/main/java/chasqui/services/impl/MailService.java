@@ -295,7 +295,7 @@ public class MailService {
 		params.put("textoDetalle", textoEnEmail);
 		
 		//se envia todo a todos los integrantes del grupo
-		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) + Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
+		this.enviarMailEnThreadAparte(Constantes.PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE, pedidoColectivo.getColectivo().getAdministrador().getEmail(), formarTag(pedidoColectivo) + Constantes.PEDIDO_COLECTIVO_CONFIRMADO, params);
 		
 	}
 	
@@ -327,7 +327,7 @@ public class MailService {
 		
 		
 		//se envia todo a todos los integrantes del grupo
-		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) +Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
+		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) +Constantes.PEDIDO_COLECTIVO_CONFIRMADO, params);
 		
 	}
 	
@@ -469,6 +469,11 @@ public class MailService {
 				if(Constantes.VENCIMIENTO_PEDIDO_TEMPLATE.equals(template)) {
 					ClassPathResource resource = new ClassPathResource("templates/imagenes/vencimiento.png");
 					helper.addInline("vencimiento", resource);
+				}
+				
+				if(Constantes.PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/confirmacion.png");
+					helper.addInline("confirmacion", resource);
 				}
 			}
 

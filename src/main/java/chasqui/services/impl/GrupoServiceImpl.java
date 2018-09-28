@@ -83,6 +83,9 @@ public class GrupoServiceImpl implements GrupoService {
 	
 	@Autowired
 	private MiembroDeGCCDAO miembroDeGCCDao;
+	
+	@Autowired
+	private MailService mailService;
 
 	@Override
 	public void altaGrupo(Integer idVendedor, String aliasGrupo, String descripcion, String emailClienteAdministrador)
@@ -343,6 +346,7 @@ public class GrupoServiceImpl implements GrupoService {
 					if(p != null) {
 						if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
 							notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+							mailService.enviarEmailCierreDePedidoColectivo(pc);
 						}
 					}
 				}
