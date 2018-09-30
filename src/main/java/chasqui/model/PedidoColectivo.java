@@ -71,11 +71,15 @@ public class PedidoColectivo implements IPedido{
 	public Double getMontoTotal() {
 		Double total=0.0;
 		for(Pedido pedido: pedidosIndividuales.values()){
-			if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
+			if(estaConfirmado(pedido.getEstado())){
 				total=total+pedido.getMontoActual();
 			}
 		}			
 		return total;
+	}
+	
+	private boolean estaConfirmado(String estado) {
+		return estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}
 
 	public Integer getId() {

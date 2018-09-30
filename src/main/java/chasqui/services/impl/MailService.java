@@ -247,11 +247,11 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedido.getDireccionEntrega() != null) {
 			direccion = pedido.getDireccionEntrega();
-			textoEnEmail = "Su pedido de" + pedido.getNombreVendedor() +" esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido de " + pedido.getNombreVendedor() +" esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedido.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Su pedido de" + pedido.getNombreVendedor() +" esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido de " + pedido.getNombreVendedor() +" esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar su pedido";
 		}
 		
@@ -327,7 +327,7 @@ public class MailService {
 		
 		
 		//se envia todo a todos los integrantes del grupo
-		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) +Constantes.PEDIDO_COLECTIVO_CONFIRMADO, params);
+		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) +Constantes.PEDIDO_COLECTIVO_PREPARADO, params);
 		
 	}
 	

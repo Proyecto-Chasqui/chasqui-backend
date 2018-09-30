@@ -30,6 +30,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.VendedorInexistenteException;
@@ -58,6 +59,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	public static final String PEDIDO_KEY = "pedido";
 	public static final Object ACCION_ENTREGAR = "entregar";
 	public static final String ACCION_PREPARAR= "preparado";
+	public static final String ACCION_NOTIFICAR = "notificar";
 	
 	private Datebox desde;
 	private Datebox hasta;
@@ -86,6 +88,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private ZonaService zonaService;
 	private MailService mailService;
 	private Textbox buscadorPorUsuario;
+	private Component windowComponent;
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -93,6 +96,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		Executions.getCurrent().getSession().setAttribute("historialPedidosColectivosComposer",this);
 		if(usuarioLogueado != null){
 			super.doAfterCompose(component);
+			windowComponent = component;
 			grupo = (GrupoCC) Executions.getCurrent().getArg().get("Grupo");
 			component.addEventListener(Events.ON_USER, new HitorialPedidosColectivosEventListener(this,grupo));
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
@@ -207,45 +211,96 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		this.binder.loadAll();
 	}
 	
+	public void onNotificar(final PedidoColectivo p) {
+		Messagebox.show(
+				"¿Desea enviar un email de notificación de pedido preparado al email "+p.getColectivo().getAdministrador().getEmail()+" del administrador?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Aceptar","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						notificar(p);
+						Clients.showNotification("El email se envió correctamente", "info", windowComponent, "middle_center", 2000);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
+				}
+			}
+			});
+		this.notificar(p);
+	}
+	
+	private void notificar(PedidoColectivo p) {
+		//Notificar por mail que el pedido ha sido preparado
+		mailService.enviarEmailPreparacionDePedidoColectivo(p);
+	}
+	
 	public void prepararPedidoColectivo(PedidoColectivo pedidoColectivo) throws EstadoPedidoIncorrectoException{
 		pedidoColectivo.preparado();
 		pedidoColectivoService.guardarPedidoColectivo(pedidoColectivo);
-		//Notificar por mail que el pedido ha sido preparado
-		mailService.enviarEmailPreparacionDePedidoColectivo(pedidoColectivo);
 		this.binder.loadAll();
 	}
 	
 	public void onPreguntarConfirmacionEntrega(final PedidoColectivo p){
-		EventListener evt = new EventListener() {
-			public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
-				if(evt.getName().equals("onOK")){
-					entregarPedidoColectivo(p);
+		Messagebox.show(
+				"¿Esta seguro que desea confirmar la entrega para pedido colectivo del grupo " + p.getColectivo().getAlias() + " ?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Aceptar","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						entregarPedidoColectivo(p);
+						Clients.showNotification("La entrega del pedido se confirmó exitosamente", "info", windowComponent, "middle_center", 2000);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
 				}
 			}
-		};
-		Messagebox.show("¿Esta seguro que desea confirmar la entrega para este pedido colectivo?",
-				"Confirmar", 
-				Messagebox.OK|Messagebox.CANCEL,
-				Messagebox.QUESTION,
-				evt
-				);
+			});
 	}
 	
 	
 	public void onPreguntarPerpararEntrega(final PedidoColectivo p){
-		EventListener evt = new EventListener() {
-			public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
-				if(evt.getName().equals("onOK")){
-					prepararPedidoColectivo(p);
+		Messagebox.show(
+				"¿Esta seguro que desea preparar la entrega para el pedido colectivo del grupo "+p.getColectivo().getAlias()+" ?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Aceptar","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						prepararPedidoColectivo(p);
+						Clients.showNotification("El pedido colectivo se preparó exitosamente", "info", windowComponent, "middle_center", 2000);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
 				}
 			}
-		};
-		Messagebox.show("¿Esta seguro que desea preparar la entrega para este pedido colectivo? (Recuerde que se enviara un email al consumidor)",
-				"Confirmar", 
-				Messagebox.OK|Messagebox.CANCEL,
-				Messagebox.QUESTION,
-				evt
-				);
+			});
+
 	}
 	
 	public void onConfirmarEntrega(PedidoColectivo p) throws EstadoPedidoIncorrectoException {
@@ -308,6 +363,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	}
 
 
+
 }
 
 class HitorialPedidosColectivosEventListener implements EventListener<Event>{
@@ -346,7 +402,10 @@ class HitorialPedidosColectivosEventListener implements EventListener<Event>{
 		if(accion.equals(PedidosComposer.ACCION_ENTREGAR)){
 			composer.onPreguntarConfirmacionEntrega(p);				
 		}
-
+		
+		if(accion.equals(PedidosComposer.ACCION_NOTIFICAR)){
+			composer.onNotificar(p);				
+		}
 			
 	}
 }

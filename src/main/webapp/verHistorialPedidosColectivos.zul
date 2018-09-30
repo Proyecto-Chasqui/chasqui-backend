@@ -28,7 +28,7 @@ style="overflow:auto">
 <separator spacing="15px"/>
 	<listbox multiple="false" checkmark="false" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{historialPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
 		<listhead>
-			<listheader label="ID Pedido" align="center" visible="false"/>
+			<listheader label="ID" align="center" visible="true"/>
 			<listheader label="Grupo" align="center" visible="true"></listheader>
 			<listheader label="Administrador del Grupo" align="center" visible="true"></listheader>
 			<listheader label="Fecha Creación" align="center"/>
