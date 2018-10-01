@@ -86,18 +86,29 @@ public class GrupoServiceImpl implements GrupoService {
 
 	@Override
 	public void altaGrupo(Integer idVendedor, String aliasGrupo, String descripcion, String emailClienteAdministrador)
-			throws UsuarioInexistenteException, VendedorInexistenteException {
+			throws UsuarioInexistenteException, VendedorInexistenteException, RequestIncorrectoException {
 		
 		Cliente administrador = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailClienteAdministrador);
 
 		usuarioService.inicializarDirecciones(administrador);
 		
 		Vendedor vendedor = usuarioService.obtenerVendedorPorID(idVendedor);
-
+		this.validarAliasGrupo(aliasGrupo);
 		GrupoCC grupo = new GrupoCC(administrador, aliasGrupo, descripcion); 
 		grupo.setVendedor(vendedor);
 
 		grupoDao.altaGrupo(grupo);
+	}
+
+	/**
+	 * Valida que no sea null ni espacios en blanco
+	 * @param aliasGrupo nombre del grupo
+	 * @throws RequestIncorrectoException 
+	 */
+	private void validarAliasGrupo(String aliasGrupo) throws RequestIncorrectoException {
+		if(aliasGrupo == null || aliasGrupo.trim().length() == 0){
+			throw new RequestIncorrectoException("El alias no puede estar vacio");
+		}
 	}
 
 	/*

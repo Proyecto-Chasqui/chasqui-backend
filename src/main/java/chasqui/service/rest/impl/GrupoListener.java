@@ -83,6 +83,8 @@ public class GrupoListener {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (VendedorInexistenteException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (RequestIncorrectoException e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 
