@@ -89,6 +89,7 @@ public class Constantes {
 	//Mensajes de error
 	public static final String ERROR_USUARIO_MAIL_SIN_CONFIRMAR = "Para acceder debe validar la cuenta via e-mail";
 	public static final String ERROR_CREDENCIALES_INVALIDAS = "Usuario o Password incorrectos!";
+	public static final String ERROR_INVITACION_NO_ACEPTADA = "Debe aceptar la invitacion para poder realizar esta accion";
 	public static final String ERROR_CREDENCIALES_INVALIDAS_EN_MODIFICACION = "La password anterior debe ser correcta para realizar el cambio";
 	public static final String ERROR_DE_DESCENCRIPTACION = "El proceso de desencriptacion ha sido interrumpido";
 	public static final String PASSWORD_CORTO = "El password debe tener entre 10 y 26 caracteres";

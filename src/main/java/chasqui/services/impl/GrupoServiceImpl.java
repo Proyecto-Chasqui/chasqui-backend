@@ -255,8 +255,12 @@ public class GrupoServiceImpl implements GrupoService {
 		Cliente administradorAnterior = grupo.getAdministrador(); //Es necesario guardar la referencia para notificarlo luego que cedio la administracion.
 		Cliente nuevoAdministrador = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
 		
-		if(grupo.pertenece(nuevoAdministrador.getEmail()))
-		{
+		MiembroDeGCC miembro = obtenerMiembroGCC(grupo, administradorAnterior.getEmail());
+		if(!miembro.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)){
+			throw new UsuarioNoPerteneceAlGrupoDeCompras(Constantes.ERROR_INVITACION_NO_ACEPTADA);
+		}
+		
+		if(grupo.pertenece(nuevoAdministrador.getEmail())){
 			grupo.cederAdministracion(nuevoAdministrador);
 			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, grupo);
 			
@@ -266,6 +270,22 @@ public class GrupoServiceImpl implements GrupoService {
 		}
 		
 
+	}
+
+	/**
+	 * Busca el MiembroDeGCC dentro del grupo con el email igual al pedido
+	 * Precondicion: Asume que esta en el grupo.
+	 * @param grupo
+	 * @param email
+	 * @return MiembroDeGCC. Si no existe null.
+	 */
+	private MiembroDeGCC obtenerMiembroGCC(GrupoCC grupo, String email) {
+		for(MiembroDeGCC miembro : grupo.getCache()){
+			if(miembro.getEmail().equals(email)){
+				return miembro;
+			}
+		}
+		return null;
 	}
 
 	@Override
