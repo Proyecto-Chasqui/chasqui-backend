@@ -119,4 +119,6 @@ public interface GrupoService {
 			throws VendedorInexistenteException;
 
 	public void guardarGrupo(GrupoCC grupo);
+	@Transactional
+	public void vaciarGrupoCC(Integer idGrupo) throws EstadoPedidoIncorrectoException;
 }

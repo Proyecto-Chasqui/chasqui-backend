@@ -34,15 +34,20 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
+import chasqui.model.Usuario;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.service.rest.request.CrearPedidoRequest;
 import chasqui.service.rest.request.IdRequest;
+import chasqui.service.rest.request.ObtenerPedidosColectivosConEstadoRequest;
 import chasqui.service.rest.request.ObtenerPedidosConEstadoRequest;
+import chasqui.service.rest.request.PedidoColectivoResponse;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.PedidoResponse;
 import chasqui.services.interfaces.GrupoService;
+import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.UsuarioService;
@@ -58,6 +63,9 @@ public class PedidoListener {
 	
 	@Autowired
 	PedidoService pedidoService;
+	
+	@Autowired
+	PedidoColectivoService pedidoColectivoService;
 	
 	@Autowired
 	private GrupoService grupoService;
@@ -284,8 +292,36 @@ public class PedidoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
+	
+	@POST
+	@Produces("application/json")
+	@Path("/pedidosColectivosConEstados")
+	public Response obtenerPedidosColectivosConEstado(@Multipart(value="pedidosColectivosConEstados", type="application/json") final String obtenerPedidosColectivosConEstadoRequest) throws JsonParseException, JsonMappingException, IOException{
+		ObtenerPedidosColectivosConEstadoRequest request = toObtenerPedidosColectivosConEstadoRequest(obtenerPedidosColectivosConEstadoRequest);
+		String mail =  obtenerEmailDeContextoDeSeguridad();
+		try{
+			Usuario u = usuarioService.obtenerClientePorEmail(mail);
+			return Response.ok(toListPCResponse(pedidoColectivoService.obtenerPedidosColectivosDeGrupoConEstado(u.getId(),request.getIdGrupo(), request.getEstados())),MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
 
 
+	private Object toListPCResponse(List<PedidoColectivo> obtenerPedidosColectivosDeGrupoConEstado) {
+		List<PedidoColectivoResponse> resultado = new ArrayList<PedidoColectivoResponse>();
+		for(PedidoColectivo p : obtenerPedidosColectivosDeGrupoConEstado){
+			resultado.add(new PedidoColectivoResponse(p));
+		}
+		return resultado;
+	}
+
+	private ObtenerPedidosColectivosConEstadoRequest toObtenerPedidosColectivosConEstadoRequest(
+			String obtenerPedidosColectivosConEstadoRequest) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		return mapper.readValue(obtenerPedidosColectivosConEstadoRequest, ObtenerPedidosColectivosConEstadoRequest.class);
+	}
 
 	private AgregarQuitarProductoAPedidoRequest toAgregarPedidoRequest(String agregarRequest) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();

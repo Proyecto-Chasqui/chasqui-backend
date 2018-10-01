@@ -83,6 +83,9 @@ public class GrupoServiceImpl implements GrupoService {
 	
 	@Autowired
 	private MiembroDeGCCDAO miembroDeGCCDao;
+	
+	@Autowired
+	private MailService mailService;
 
 	@Override
 	public void altaGrupo(Integer idVendedor, String aliasGrupo, String descripcion, String emailClienteAdministrador)
@@ -374,6 +377,7 @@ public class GrupoServiceImpl implements GrupoService {
 					if(p != null) {
 						if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
 							notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+							mailService.enviarEmailCierreDePedidoColectivo(pc);
 						}
 					}
 				}
@@ -598,6 +602,20 @@ public class GrupoServiceImpl implements GrupoService {
 		grupoDao.guardarGrupo(grupo);
 		
 	}
+
+	@Override
+	public void vaciarGrupoCC(Integer idGrupo) throws EstadoPedidoIncorrectoException {
+		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
+		if(grupo.sePuedeEliminar()){
+			grupo.vaciarGrupo();
+			grupoDao.guardarGrupo(grupo);
+		}else {
+			throw new EstadoPedidoIncorrectoException("El grupo no puede ser eliminado, por que hay pedidos abiertos o confirmados");
+		}
+		
+	}
+	
+	
 
 
 

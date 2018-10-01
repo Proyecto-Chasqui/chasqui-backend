@@ -247,11 +247,11 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedido.getDireccionEntrega() != null) {
 			direccion = pedido.getDireccionEntrega();
-			textoEnEmail = "Su pedido de" + pedido.getNombreVendedor() +" esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido de " + pedido.getNombreVendedor() +" esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedido.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Su pedido de" + pedido.getNombreVendedor() +" esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Su pedido de " + pedido.getNombreVendedor() +" esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar su pedido";
 		}
 		
@@ -295,7 +295,7 @@ public class MailService {
 		params.put("textoDetalle", textoEnEmail);
 		
 		//se envia todo a todos los integrantes del grupo
-		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) + Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
+		this.enviarMailEnThreadAparte(Constantes.PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE, pedidoColectivo.getColectivo().getAdministrador().getEmail(), formarTag(pedidoColectivo) + Constantes.PEDIDO_COLECTIVO_CONFIRMADO, params);
 		
 	}
 	
@@ -327,7 +327,7 @@ public class MailService {
 		
 		
 		//se envia todo a todos los integrantes del grupo
-		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) +Constantes.PEDIDOS_PREPARADOS_SUBJECT, params);
+		this.enviarMailsEnThreadAparte(Constantes.PEDIDOS_PREPARADOS_TEMPLATE, emailsClientesDestino, formarTag(pedidoColectivo) +Constantes.PEDIDO_COLECTIVO_PREPARADO, params);
 		
 	}
 	
@@ -470,6 +470,11 @@ public class MailService {
 					ClassPathResource resource = new ClassPathResource("templates/imagenes/vencimiento.png");
 					helper.addInline("vencimiento", resource);
 				}
+				
+				if(Constantes.PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/confirmacion.png");
+					helper.addInline("confirmacion", resource);
+				}
 			}
 
 			private Template obtenerTemplate(String nombreTemplate) throws IOException{
@@ -601,11 +606,11 @@ public class MailService {
 	}
 	
 	private String formarTag(PedidoColectivo p) {
-		return "[ ID Pedido "+ p.getId()+" ] ";
+		return "[ Pedido N° "+ p.getId()+" ] ";
 	}
 	
 	private String formarTag(Pedido p) {
-		return "[ ID Pedido "+ p.getId()+" ] ";
+		return "[ Pedido N° "+ p.getId()+" ] ";
 	}
 	
 
