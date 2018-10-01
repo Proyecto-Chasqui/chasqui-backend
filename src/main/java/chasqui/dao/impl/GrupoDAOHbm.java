@@ -15,7 +15,6 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import com.vividsolutions.jts.geom.Geometry;
 
 import chasqui.dao.GrupoDAO;
-import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.view.composer.Constantes;
 

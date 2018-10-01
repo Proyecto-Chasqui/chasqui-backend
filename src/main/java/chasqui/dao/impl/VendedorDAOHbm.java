@@ -14,7 +14,6 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import chasqui.dao.VendedorDAO;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.PuntoDeRetiro;
-import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 
 @SuppressWarnings("unchecked")

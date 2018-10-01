@@ -1,7 +1,6 @@
 package chasqui.dao.impl;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 

@@ -11,11 +11,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.NodoDAO;
-import chasqui.model.Caracteristica;
 import chasqui.model.Nodo;
-import chasqui.model.Usuario;
-import chasqui.model.Variante;
-import chasqui.model.Vendedor;
 import chasqui.view.composer.Constantes;
 
 public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {

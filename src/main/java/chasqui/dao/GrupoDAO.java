@@ -6,7 +6,6 @@ import java.util.List;
 import com.vividsolutions.jts.geom.Geometry;
 
 import chasqui.model.GrupoCC;
-import chasqui.model.Usuario;
 
 public interface GrupoDAO {
 	public void altaGrupo(GrupoCC grupo);

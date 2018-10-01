@@ -19,9 +19,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.PedidoColectivoDAO;
 import chasqui.model.GrupoCC;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
-import chasqui.model.Usuario;
 
 public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements PedidoColectivoDAO{
 

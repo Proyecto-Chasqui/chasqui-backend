@@ -18,7 +18,6 @@ import chasqui.exceptions.ProductoInexistenteException;
 import chasqui.model.Caracteristica;
 import chasqui.model.Imagen;
 import chasqui.model.Variante;
-import chasqui.model.Vendedor;
 
 @SuppressWarnings("unchecked")
 public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
