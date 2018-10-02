@@ -10,11 +10,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Nodo;
 import chasqui.service.rest.response.ChasquiError;

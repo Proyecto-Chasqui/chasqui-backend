@@ -2,7 +2,6 @@ package chasqui.service.rest.response;
 
 import java.io.Serializable;
 
-import chasqui.model.Cliente;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Pedido;
 

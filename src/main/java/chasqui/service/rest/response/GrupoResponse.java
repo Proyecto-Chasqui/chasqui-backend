@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
-import chasqui.model.Cliente;
-import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Pedido;
-import chasqui.view.composer.Constantes;
 
 public class GrupoResponse implements Serializable{
 

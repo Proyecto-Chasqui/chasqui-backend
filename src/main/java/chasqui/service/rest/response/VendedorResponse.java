@@ -1,13 +1,9 @@
 package chasqui.service.rest.response;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import chasqui.dtos.PuntoDeRetiroDTO;
 import chasqui.model.EstrategiaDeComercializacionGenerica;
 import chasqui.model.EstrategiasDeComercializacion;
-import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 
 public class VendedorResponse implements Serializable{
