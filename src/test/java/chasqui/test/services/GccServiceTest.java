@@ -3,14 +3,9 @@ package chasqui.test.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.validation.constraints.AssertFalse;
-
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,11 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
-import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.GrupoCCInexistenteException;
-import chasqui.exceptions.NoAlcanzaMontoMinimoException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoSinProductosException;
 import chasqui.exceptions.PedidoVigenteException;
@@ -38,7 +31,6 @@ import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
 import chasqui.model.MiembroDeGCC;
-import chasqui.model.Nodo;
 import chasqui.model.Notificacion;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
@@ -46,13 +38,11 @@ import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
-import chasqui.services.impl.PedidoServiceImpl;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.view.composer.Constantes;
-import freemarker.template.TemplateException;
 
 @ContextConfiguration(locations = { "file:src/test/java/dataSource-Test.xml",
 		"file:src/main/resources/beans/service-beans.xml" })

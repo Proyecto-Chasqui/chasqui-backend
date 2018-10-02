@@ -3,7 +3,6 @@ package chasqui.test.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -17,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import chasqui.exceptions.CaracteristicaInexistenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.model.Caracteristica;
-import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.service.rest.request.ByCategoriaRequest;
 import chasqui.service.rest.request.ByMedallaRequest;
