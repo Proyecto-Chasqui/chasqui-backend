@@ -53,7 +53,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 				Date d1 = new Date(pedidoColectivo.getFechaModificacion().getMillis());
 				celdaFechaCierre = new Listcell(format.format(d1));
 			}else {
-				celdaFechaCierre = new Listcell("N/D(error 68)");
+				celdaFechaCierre = new Listcell("N/D");
 			}
 		}
 		if(pedidoColectivo.getFechaCreacion() != null){
@@ -61,7 +61,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			Date d = new Date(pedidoColectivo.getFechaCreacion().getMillis());
 			celdaFechaCreacion = new Listcell(format.format(d));
 		}else{
-			celdaFechaCreacion = new Listcell("Sin Fecha");
+			celdaFechaCreacion = new Listcell("N/D");
 		}
 
 		// -----------------Mostrar la zona
@@ -162,7 +162,14 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		params.put(PedidosComposer.ACCION_KEY, PedidosComposer.ACCION_VER);
 		botonVerPedido.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, params);
 		
-		
+		// ------------------------------Botón para notificar via email
+		Toolbarbutton botonNotificarPedidoPreparado = new Toolbarbutton("Notificar");
+		botonNotificarPedidoPreparado.setTooltiptext("Notifica con un email predefinido al usuario");
+		botonNotificarPedidoPreparado.setImage("/imagenes/envelope.png");
+		HashMap<String, Object> paramsemail = new HashMap<String, Object>();
+		paramsemail.put(PedidosComposer.PEDIDO_KEY, pedidoColectivo);
+		paramsemail.put(PedidosComposer.ACCION_KEY, PedidosComposer.ACCION_NOTIFICAR);
+		botonNotificarPedidoPreparado.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsemail);
 
 
 		// ------------------------------Botón para editar la zona
@@ -260,7 +267,14 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		}
 		botonEntregar.setParent(hbox);
 		espacio.setParent(hbox);
+		if(estaPostConfirmado(pedidoColectivo.getEstado())) {
+			botonNotificarPedidoPreparado.setParent(hbox);
+		}
 		hbox.setParent(celdaBotones);
+	}
+	
+	private boolean estaPostConfirmado(String estado) {
+		return estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}
 
 	public Map<Integer,GrupoCC> getDatagrupo() {

@@ -72,6 +72,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	public static final String PEDIDO_KEY = "pedido";
 	public static final Object ACCION_ENTREGAR = "entregar";
 	public static final String ACCION_PREPARAR = "preparado";
+	public static final String ACCION_NOTIFICAR = "notificar";
 	
 	private Datebox desde;
 	private Datebox hasta;
@@ -111,7 +112,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonaService = (ZonaService)SpringUtil.getBean("zonaService");
 			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
-			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO);
+			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO, Constantes.ESTADO_PEDIDO_VENCIDO);
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 			binder = new AnnotateDataBinder(component);
 			window = (Window) component;
@@ -203,46 +204,96 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	//onPreguntarPreparacionDeEntrega
 	
 	public void onPreguntarPreparacionDeEntrega(final Pedido p){
-		EventListener evt = new EventListener() {
-			public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
-				if(evt.getName().equals("onOK")){
-					onPrepararEntrega(p);
+		Messagebox.show(
+				"¿Esta seguro que desea marcar el pedido de " + p.getCliente().getEmail() + " a preparado?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Aceptar","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						onPrepararEntrega(p);
+						Clients.showNotification("El pedido se preparó exitosamente", "info", window, "middle_center", 2000);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido", "error", window, "middle_center", 3000);
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
 				}
 			}
-		};
-		Messagebox.show("¿Esta seguro que desea marcar este pedido a preparado? (Recuerde que se enviara un email al consumidor)",
-				"Confirmar", 
-				Messagebox.OK|Messagebox.CANCEL,
-				Messagebox.QUESTION,
-				evt
-				);
+			});
 	}
 	
 	public void onPreguntarConfirmacionEntrega(final Pedido p){
-		EventListener evt = new EventListener() {
-			public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
-				if(evt.getName().equals("onOK")){
-					onConfirmarEntrega(p);
+		Messagebox.show(
+				"¿Esta seguro que desea confirmar la entrega para el pedido de " + p.getCliente().getEmail() + " ?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Aceptar","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						onConfirmarEntrega(p);
+						Clients.showNotification("El pedido se confirmó exitosamente", "info", window, "middle_center", 2000);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido", "error", window, "middle_center", 3000);
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
 				}
 			}
-		};
-		Messagebox.show("¿Esta seguro que desea confirmar la entrega para este pedido?",
-				"Confirmar", 
-				Messagebox.OK|Messagebox.CANCEL,
-				Messagebox.QUESTION,
-				evt
-				);
+			});
+		
 	}
 	
 	
 	public void onPrepararEntrega(Pedido pedido) throws EstadoPedidoIncorrectoException {
 		pedido.preparado();
 		pedidoService.guardar(pedido);
+		this.binder.loadAll();
+	}
+	
+	public void onNotificar(final Pedido p) {
+		Messagebox.show(
+				"¿Desea enviar un email de notificación de que pedido esta listo a " + p.getCliente().getEmail() + " ?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Aceptar","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						notificar(p);
+						Clients.showNotification("El email se envió correctamente", "info", window, "middle_center", 2000);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido", "error", window, "middle_center", 3000);
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
+				}
+			}
+			});
+	}
+	
+	public void notificar(Pedido p) {
 		////////////////////
 		//Notificar por mail que el pedido ha sido preparado
-		mailService.enviarEmailPreparacionDePedido(pedido);
+		mailService.enviarEmailPreparacionDePedido(p);
 		///////////////////
-		this.binder.loadAll();
 	}
 	
 	
@@ -425,6 +476,11 @@ class PedidoEventListener implements EventListener<Event>{
 		
 		if(accion.equals(PedidosComposer.ACCION_ENTREGAR)){
 			composer.onPreguntarConfirmacionEntrega(p);
+				
+		}
+		
+		if(accion.equals(PedidosComposer.ACCION_NOTIFICAR)){
+			composer.onNotificar(p);
 				
 		}
 			

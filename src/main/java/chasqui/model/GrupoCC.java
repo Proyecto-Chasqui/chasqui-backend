@@ -336,4 +336,19 @@ public class GrupoCC {
 		return (null != this.findMiembro(emailCliente));
 	}
 
+	public boolean sePuedeEliminar() {
+		boolean sePuedeEliminar = true;
+		for(Pedido p : pedidoActual.getPedidosIndividuales().values()) {
+			if(sePuedeEliminar) {
+				sePuedeEliminar = !(p.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO) || p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO));
+			}
+		}
+		return sePuedeEliminar;
+	}
+
+	public void vaciarGrupo() throws EstadoPedidoIncorrectoException {
+		this.cache.clear();
+		this.pedidoActual.cancelar();
+	}
+
 }

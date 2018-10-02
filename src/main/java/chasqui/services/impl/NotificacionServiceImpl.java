@@ -140,7 +140,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 		//--------------Notificación interna
 		this.notificar(emailAdministrador,emailClienteDestino,mensaje, null);
 		//--------------Mail de respaldo (Deprecado, queda comentado para en un futuro habilitarlo segun opcion del usuario)
-		mailService.enviarEmailNotificacionChasqui(emailAdministrador,nombreUsuario,emailClienteDestino, mensaje, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT);
+		
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
 		
 		this.invitar(adminGCC.getEmail(), emailInvitado, mensaje, idDispositivo,grupo.getId());
-		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getVendedor().getUrl(),grupo.getVendedor().getNombre());
+		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre());
 	}
 
 

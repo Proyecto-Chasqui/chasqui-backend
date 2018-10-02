@@ -147,6 +147,15 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		params.put(PedidosComposer.PEDIDO_KEY, pedido);
 		params.put(PedidosComposer.ACCION_KEY, PedidosComposer.ACCION_VER);
 		botonVerPedido.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, params);
+		
+		// ------------------------------Botón para notificar via email
+		Toolbarbutton botonNotificarPedidoPreparado = new Toolbarbutton("Notificar");
+		botonNotificarPedidoPreparado.setTooltiptext("Notifica con un email predefinido al usuario");
+		botonNotificarPedidoPreparado.setImage("/imagenes/envelope.png");
+		HashMap<String, Object> paramsemail = new HashMap<String, Object>();
+		paramsemail.put(PedidosComposer.PEDIDO_KEY, pedido);
+		paramsemail.put(PedidosComposer.ACCION_KEY, PedidosComposer.ACCION_NOTIFICAR);
+		botonNotificarPedidoPreparado.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsemail);
 
 
 		// ------------------------------Botón para editar la zona
@@ -246,8 +255,15 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			}
 			botonEntregar.setParent(hbox);
 		}
+		if(estaPostConfirmado(pedido.getEstado())) {
+			botonNotificarPedidoPreparado.setParent(hbox);
+		}
 		espacio.setParent(hbox);
 		hbox.setParent(celdaBotones);
+	}
+
+	private boolean estaPostConfirmado(String estado) {
+		return estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}
 
 	public Listcell getCeldaFechaCierre() {

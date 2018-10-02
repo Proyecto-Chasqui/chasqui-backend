@@ -42,5 +42,10 @@ public class PedidoColectivoServiceImpl implements PedidoColectivoService{
 	public List<PedidoColectivo> obtenerPedidosColectivosDeGrupo(Integer grupoid) {
 		return this.pedidoColectivoDao.obtenerPedidosColectivosDeGrupo(grupoid);
 	}
+	
+	@Override
+	public List<PedidoColectivo> obtenerPedidosColectivosDeGrupoConEstado(Integer idUsuario, Integer idGrupo, List<String> estados){
+		return this.pedidoColectivoDao.obtenerPedidosColectivosDeConEstado(idUsuario,idGrupo, estados);
+	}
 
 }

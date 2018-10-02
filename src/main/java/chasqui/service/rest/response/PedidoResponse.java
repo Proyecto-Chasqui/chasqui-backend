@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
 import chasqui.services.interfaces.GrupoService;
 
@@ -34,6 +35,9 @@ public class PedidoResponse implements Serializable {
 	private Double montoMinimo;
 	private Double montoActual;
 	private String nombreVendedor;
+	private ZonaResponse zona;
+	private DireccionResponse direccion;
+	private PuntoDeRetiroResponse puntoDeRetiro;
 	private List<ProductoPedidoResponse> productosResponse;	
 	
 	
@@ -150,6 +154,41 @@ public class PedidoResponse implements Serializable {
 				productosResponse.add(new ProductoPedidoResponse(pp));
 			}
 		}
+
+		
+		
+	}
+
+
+	private void cargarDireccionYZonaSeleccionadaDePedidoColectivo(PedidoColectivo p) {
+		if(p.getDireccionEntrega() != null) {
+			direccion = new DireccionResponse(p.getDireccionEntrega());
+		}
+		
+		if(p.getPuntoDeRetiro() != null) {	
+			setPuntoDeRetiro(new PuntoDeRetiroResponse(p.getPuntoDeRetiro()));
+		}
+		
+		if(p.getZona() != null) {
+			zona = new ZonaResponse(p.getZona());
+		}
+		
+	}
+
+
+	private void cargarDireccionYZonaSeleccionada(Pedido p) {
+		if(p.getDireccionEntrega() != null) {
+			direccion = new DireccionResponse(p.getDireccionEntrega());
+		}
+		
+		if(p.getPuntoDeRetiro() != null) {	
+			setPuntoDeRetiro(new PuntoDeRetiroResponse(p.getPuntoDeRetiro()));
+		}
+		
+		if(p.getZona() != null) {
+			zona = new ZonaResponse(p.getZona());
+		}
+		
 	}
 
 
@@ -181,6 +220,10 @@ public class PedidoResponse implements Serializable {
 				productosResponse.add(new ProductoPedidoResponse(pp));
 			}
 		}
+		cargarDireccionYZonaSeleccionada(p);
+		if(p.getPedidoColectivo() != null) {
+			cargarDireccionYZonaSeleccionadaDePedidoColectivo(p.getPedidoColectivo());
+		}
 	}
 
 
@@ -201,6 +244,36 @@ public class PedidoResponse implements Serializable {
 
 	public void setAliasGrupo(String aliasGrupo) {
 		this.aliasGrupo = aliasGrupo;
+	}
+
+
+	public ZonaResponse getZona() {
+		return zona;
+	}
+
+
+	public void setZona(ZonaResponse zona) {
+		this.zona = zona;
+	}
+
+
+	public DireccionResponse getDireccion() {
+		return direccion;
+	}
+
+
+	public void setDireccion(DireccionResponse direccion) {
+		this.direccion = direccion;
+	}
+
+
+	public PuntoDeRetiroResponse getPuntoDeRetiro() {
+		return puntoDeRetiro;
+	}
+
+
+	public void setPuntoDeRetiro(PuntoDeRetiroResponse puntoDeRetiro) {
+		this.puntoDeRetiro = puntoDeRetiro;
 	}
 	
 

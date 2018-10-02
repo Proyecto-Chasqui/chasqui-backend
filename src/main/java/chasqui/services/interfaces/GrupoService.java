@@ -34,7 +34,7 @@ import freemarker.template.TemplateException;
 public interface GrupoService {
 
 	public void altaGrupo(Integer idVendedor, String aliasGrupo, String descripcion, String emailClienteAdministrador)
-			throws UsuarioInexistenteException, VendedorInexistenteException;
+			throws UsuarioInexistenteException, VendedorInexistenteException, RequestIncorrectoException;
 
 	/**
 	 * Obtiene los grupos del Vendedor.
@@ -118,4 +118,6 @@ public interface GrupoService {
 			throws VendedorInexistenteException;
 
 	public void guardarGrupo(GrupoCC grupo);
+	@Transactional
+	public void vaciarGrupoCC(Integer idGrupo) throws EstadoPedidoIncorrectoException;
 }

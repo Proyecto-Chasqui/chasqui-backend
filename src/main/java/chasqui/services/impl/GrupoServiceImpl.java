@@ -76,21 +76,35 @@ public class GrupoServiceImpl implements GrupoService {
 	
 	@Autowired
 	private MiembroDeGCCDAO miembroDeGCCDao;
+	
+	@Autowired
+	private MailService mailService;
 
 	@Override
 	public void altaGrupo(Integer idVendedor, String aliasGrupo, String descripcion, String emailClienteAdministrador)
-			throws UsuarioInexistenteException, VendedorInexistenteException {
+			throws UsuarioInexistenteException, VendedorInexistenteException, RequestIncorrectoException {
 		
 		Cliente administrador = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailClienteAdministrador);
 
 		usuarioService.inicializarDirecciones(administrador);
 		
 		Vendedor vendedor = usuarioService.obtenerVendedorPorID(idVendedor);
-
+		this.validarAliasGrupo(aliasGrupo);
 		GrupoCC grupo = new GrupoCC(administrador, aliasGrupo, descripcion); 
 		grupo.setVendedor(vendedor);
 
 		grupoDao.altaGrupo(grupo);
+	}
+
+	/**
+	 * Valida que no sea null ni espacios en blanco
+	 * @param aliasGrupo nombre del grupo
+	 * @throws RequestIncorrectoException 
+	 */
+	private void validarAliasGrupo(String aliasGrupo) throws RequestIncorrectoException {
+		if(aliasGrupo == null || aliasGrupo.trim().length() == 0){
+			throw new RequestIncorrectoException("El alias no puede estar vacio");
+		}
 	}
 
 	/*
@@ -237,8 +251,12 @@ public class GrupoServiceImpl implements GrupoService {
 		Cliente administradorAnterior = grupo.getAdministrador(); //Es necesario guardar la referencia para notificarlo luego que cedio la administracion.
 		Cliente nuevoAdministrador = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
 		
-		if(grupo.pertenece(nuevoAdministrador.getEmail()))
-		{
+		MiembroDeGCC miembro = obtenerMiembroGCC(grupo, administradorAnterior.getEmail());
+		if(!miembro.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)){
+			throw new UsuarioNoPerteneceAlGrupoDeCompras(Constantes.ERROR_INVITACION_NO_ACEPTADA);
+		}
+		
+		if(grupo.pertenece(nuevoAdministrador.getEmail())){
 			grupo.cederAdministracion(nuevoAdministrador);
 			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, grupo);
 			
@@ -248,6 +266,22 @@ public class GrupoServiceImpl implements GrupoService {
 		}
 		
 
+	}
+
+	/**
+	 * Busca el MiembroDeGCC dentro del grupo con el email igual al pedido
+	 * Precondicion: Asume que esta en el grupo.
+	 * @param grupo
+	 * @param email
+	 * @return MiembroDeGCC. Si no existe null.
+	 */
+	private MiembroDeGCC obtenerMiembroGCC(GrupoCC grupo, String email) {
+		for(MiembroDeGCC miembro : grupo.getCache()){
+			if(miembro.getEmail().equals(email)){
+				return miembro;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -336,6 +370,7 @@ public class GrupoServiceImpl implements GrupoService {
 					if(p != null) {
 						if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
 							notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+							mailService.enviarEmailCierreDePedidoColectivo(pc);
 						}
 					}
 				}
@@ -560,6 +595,20 @@ public class GrupoServiceImpl implements GrupoService {
 		grupoDao.guardarGrupo(grupo);
 		
 	}
+
+	@Override
+	public void vaciarGrupoCC(Integer idGrupo) throws EstadoPedidoIncorrectoException {
+		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
+		if(grupo.sePuedeEliminar()){
+			grupo.vaciarGrupo();
+			grupoDao.guardarGrupo(grupo);
+		}else {
+			throw new EstadoPedidoIncorrectoException("El grupo no puede ser eliminado, por que hay pedidos abiertos o confirmados");
+		}
+		
+	}
+	
+	
 
 
 

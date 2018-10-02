@@ -1,5 +1,6 @@
 package chasqui.model;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class Variante {
 	private Producto producto;
 	private Boolean destacado;
 	private String codigo;
-	
+	DecimalFormat df = new DecimalFormat("#.##");
 	
 	//GETs & SETs
 	
@@ -56,7 +57,13 @@ public class Variante {
 	}
 	
 	public Double getPrecio() {
-		return precio;
+		return trim2decimals(precio);
+	}
+	
+	private Double trim2decimals(Double d) {
+		String trim = df.format(d); 
+		Double value = Double.parseDouble(trim.replace(",","."));
+		return value;
 	}
 	
 	public void setPrecio(Double precio) {

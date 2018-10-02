@@ -1,5 +1,7 @@
 package chasqui.model;
 
+import java.text.DecimalFormat;
+
 public class ProductoPedido {
 
 	private Integer id;
@@ -10,7 +12,7 @@ public class ProductoPedido {
 	private Integer cantidad;
 	private String imagen;//TODO analizar
 	private String nombreProductor;
-	
+	DecimalFormat df = new DecimalFormat("#.##");
 	
 	public ProductoPedido (){}
 	
@@ -34,11 +36,17 @@ public class ProductoPedido {
 	}
 	
 	public Double getPrecio() {
-		return precio;
+		return trim2decimals(precio);
 	}
 
 	public void setPrecio(Double precio) {
 		this.precio = precio;
+	}
+	
+	private Double trim2decimals(Double d) {
+		String trim = df.format(d); 
+		Double value = Double.parseDouble(trim.replace(",","."));
+		return value;
 	}
 
 	public Integer getCantidad() {

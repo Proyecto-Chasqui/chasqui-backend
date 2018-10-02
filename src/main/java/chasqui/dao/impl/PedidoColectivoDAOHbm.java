@@ -41,6 +41,22 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 		});
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<PedidoColectivo> obtenerPedidosColectivosDeConEstado(final Integer idUsuario, final Integer idGrupo, final List<String> estados) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<PedidoColectivo>>() {
+
+			@Override
+			public List<PedidoColectivo> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(PedidoColectivo.class, "pedido");
+				criteria.createAlias("pedido.colectivo", "colectivo");
+				criteria.add(Restrictions.eq("colectivo.id", idGrupo))				
+						.add(Restrictions.in("pedido.estado", estados));
+				return (List<PedidoColectivo>) criteria.list();
+			}
+		});
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedor(final Integer vendedorid, final Date d, final Date h, final String estadoSeleccionado, final Integer zonaId,
