@@ -1,7 +1,6 @@
 package chasqui.view.composer;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,6 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
-import chasqui.dao.FabricanteDAO;
-import chasqui.dao.ProductoDAO;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Categoria;
 import chasqui.model.EstrategiasDeComercializacion;

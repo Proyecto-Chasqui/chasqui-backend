@@ -1,7 +1,5 @@
 package chasqui.view.composer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -10,26 +8,20 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.SelectEvent;
-import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.model.EstrategiasDeComercializacion;
-import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
-import chasqui.view.renders.UsuarioRenderer;
 
 @SuppressWarnings("serial")
 public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Component>{

@@ -8,17 +8,14 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Window;
 
 import chasqui.dtos.PedidosGrupalesDTO;
 import chasqui.model.IPedido;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.Vendedor;
-import chasqui.model.Zona;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.view.renders.PedidoColectivoRenderer;
 import chasqui.view.renders.PedidoRenderer;

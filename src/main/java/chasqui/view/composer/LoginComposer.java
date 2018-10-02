@@ -1,9 +1,7 @@
 package chasqui.view.composer;
 
-
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.cxf.common.util.StringUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -22,7 +20,6 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
-import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.services.impl.MailService;

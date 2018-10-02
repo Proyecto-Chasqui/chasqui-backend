@@ -1,29 +1,14 @@
 package chasqui.view.composer;
 
-import java.util.ArrayList;
-
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 
-import com.vividsolutions.jts.geom.Point;
-
 import chasqui.model.Direccion;
-import chasqui.model.Imagen;
-import chasqui.model.Producto;
-import chasqui.model.Variante;
-import chasqui.model.Vendedor;
-import chasqui.services.impl.FileSaver;
-import chasqui.view.genericEvents.RefreshListener;
 import chasqui.view.genericEvents.Refresher;
-import chasqui.view.renders.ImagenesRender;
 
 
 public class NuevaDireccionComposer extends GenericForwardComposer<Component> implements Refresher{

@@ -1,6 +1,5 @@
 package chasqui.view.composer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.spring.SpringUtil;
@@ -12,7 +11,6 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 
 import chasqui.dtos.PedidoDTO;
 import chasqui.model.Pedido;
-import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.services.interfaces.PedidoService;

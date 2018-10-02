@@ -1,10 +1,8 @@
 package chasqui.view.renders;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.zkoss.zk.ui.event.Events;
@@ -17,7 +15,6 @@ import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
 import chasqui.model.GrupoCC;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.Zona;
 import chasqui.view.composer.Constantes;

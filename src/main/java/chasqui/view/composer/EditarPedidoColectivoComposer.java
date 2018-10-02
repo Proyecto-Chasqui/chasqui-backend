@@ -1,6 +1,5 @@
 package chasqui.view.composer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.spring.SpringUtil;
@@ -10,17 +9,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 
-import chasqui.dao.GrupoDAO;
 import chasqui.dtos.PedidoDTO;
 import chasqui.model.GrupoCC;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
-import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.PedidoColectivoService;
-import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ZonaService;
 
 public class EditarPedidoColectivoComposer extends GenericForwardComposer<Component> {

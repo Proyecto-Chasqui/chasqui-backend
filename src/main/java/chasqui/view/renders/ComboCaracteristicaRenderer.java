@@ -1,9 +1,7 @@
 package chasqui.view.renders;
 
-
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
-import org.zkoss.zul.Image;
 
 import chasqui.services.interfaces.ICaracteristica;
 
