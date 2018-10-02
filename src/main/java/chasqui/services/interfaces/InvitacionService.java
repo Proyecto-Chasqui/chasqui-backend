@@ -1,16 +1,12 @@
 package chasqui.services.interfaces;
 
-import java.io.IOException;
 import java.util.List;
-
-import javax.mail.MessagingException;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import chasqui.model.Cliente;
 import chasqui.model.InvitacionAGCC;
 import chasqui.model.Notificacion;
-import freemarker.template.TemplateException;
 
 @Deprecated
 public interface InvitacionService {

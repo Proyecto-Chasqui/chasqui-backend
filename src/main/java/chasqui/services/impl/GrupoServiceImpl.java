@@ -1,6 +1,5 @@
 package chasqui.services.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -8,15 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-
 import org.apache.cxf.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zkoss.zkplus.spring.SpringUtil;
 
 import chasqui.aspect.Dateable;
 import chasqui.dao.GrupoDAO;
-import chasqui.dao.PedidoDAO;
 import chasqui.dao.MiembroDeGCCDAO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
@@ -27,7 +22,6 @@ import chasqui.exceptions.NoAlcanzaMontoMinimoException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoSinProductosException;
 import chasqui.exceptions.PedidoVigenteException;
-import chasqui.exceptions.PuntoDeRetiroInexistenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
@@ -54,7 +48,6 @@ import chasqui.services.interfaces.PuntoDeRetiroService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.ZonaService;
 import chasqui.view.composer.Constantes;
-import freemarker.template.TemplateException;
 
 public class GrupoServiceImpl implements GrupoService {
 

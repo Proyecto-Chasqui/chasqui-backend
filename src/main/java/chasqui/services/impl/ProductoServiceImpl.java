@@ -12,7 +12,6 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.model.Caracteristica;
 import chasqui.model.Imagen;
 import chasqui.model.Pedido;
-import chasqui.model.Producto;
 import chasqui.model.ProductoPedido;
 import chasqui.model.Variante;
 import chasqui.service.rest.request.ByCategoriaRequest;

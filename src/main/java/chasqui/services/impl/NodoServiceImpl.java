@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import chasqui.dao.NodoDAO;
 import chasqui.dao.impl.NodoDAOHbm;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
@@ -13,7 +12,6 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Nodo;
-import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.UsuarioService;

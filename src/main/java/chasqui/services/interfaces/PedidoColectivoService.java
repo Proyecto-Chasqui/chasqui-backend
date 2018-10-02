@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 
 public interface PedidoColectivoService {

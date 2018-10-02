@@ -1,14 +1,11 @@
 package chasqui.services.impl;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.android.gcm.server.Message;

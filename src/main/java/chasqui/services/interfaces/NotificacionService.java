@@ -1,7 +1,6 @@
 package chasqui.services.interfaces;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;

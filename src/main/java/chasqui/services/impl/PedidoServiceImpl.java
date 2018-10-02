@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import chasqui.aspect.Auditada;
 import chasqui.aspect.Dateable;
 import chasqui.dao.PedidoDAO;
-import chasqui.dao.UsuarioDAO;
 import chasqui.dao.ZonaDAO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;

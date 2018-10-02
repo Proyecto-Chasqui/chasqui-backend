@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.dao.PedidoColectivoDAO;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.services.interfaces.PedidoColectivoService;
 

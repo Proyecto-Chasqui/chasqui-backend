@@ -3,7 +3,6 @@ package chasqui.services.interfaces;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.zul.Textbox;
 
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Fabricante;

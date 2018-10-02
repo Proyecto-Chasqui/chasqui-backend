@@ -3,7 +3,6 @@ package chasqui.services.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zkoss.zul.Textbox;
 
 import chasqui.aspect.Auditada;
 import chasqui.dao.FabricanteDAO;
