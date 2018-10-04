@@ -4,29 +4,16 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
-import chasqui.exceptions.DomicilioInexistenteException;
-import chasqui.exceptions.EstadoPedidoIncorrectoException;
-import chasqui.exceptions.PedidoInexistenteException;
-import chasqui.exceptions.PedidoVigenteException;
-import chasqui.exceptions.ProductoInexistenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
-import chasqui.model.GrupoCC;
 import chasqui.model.Notificacion;
-import chasqui.model.Pedido;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
-import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
-import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.DireccionRequest;
 import chasqui.service.rest.request.EditarPasswordRequest;
 import chasqui.service.rest.request.EditarPerfilRequest;

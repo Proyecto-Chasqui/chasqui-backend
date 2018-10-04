@@ -214,7 +214,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 	
 	private List<Pedido> pedidoColectivoMerge(List<Pedido> pedidosgenerados, PedidoColectivo pedidoColectivo) throws EstadoPedidoIncorrectoException {
 		List<Pedido>pedidoGrupalCompleto = new ArrayList<Pedido>();
-		Pedido pedidogeneralgrupal = new Pedido(usuarioLogueado,grupo.getAdministrador(),false, new DateTime());
+		Pedido pedidogeneralgrupal = new Pedido(usuarioLogueado,pedidoColectivo.getColectivo().getAdministrador(),false, new DateTime());
 		pedidogeneralgrupal.setDireccionEntrega(pedidoColectivo.getDireccionEntrega());
 		pedidogeneralgrupal.setPuntoDeRetiro(pedidoColectivo.getPuntoDeRetiro());
 		pedidogeneralgrupal.setComentario(pedidoColectivo.getComentario());

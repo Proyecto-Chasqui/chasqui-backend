@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -28,7 +29,7 @@ import freemarker.template.TemplateException;
 @ContextConfiguration(locations = { "file:src/test/java/dataSource-Test.xml",
 "file:src/main/resources/beans/service-beans.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
-
+@Component
 public class MailServiceTest extends GenericSetUp {
 
 	@Autowired
@@ -74,7 +75,7 @@ public class MailServiceTest extends GenericSetUp {
 		
 		DateTime fechaVencimiento = new DateTime();
 		Pedido pedido= new Pedido(vendedor, clienteFulano, false, fechaVencimiento.plusHours(24));
-		ProductoPedido prodPed = new ProductoPedido(variante, 5);
+		ProductoPedido prodPed = new ProductoPedido(variante, 5,"N/D");
 		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
 		pedido.setDireccionEntrega(direccionCasa);
@@ -110,8 +111,9 @@ public class MailServiceTest extends GenericSetUp {
 		
 		this.vendedor.setNombre("nombre del vendedor");
 		this.vendedor.setUrl("urlVendedor");
+		this.vendedor.setNombreCorto("nombreCorto");
 		
-		mailService.enviarEmailInvitadoRegistrado(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombre());
+		mailService.enviarEmailInvitadoRegistrado(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre());
 		assertEquals(true , true);
 	}
 
@@ -147,7 +149,7 @@ public class MailServiceTest extends GenericSetUp {
 		
 		DateTime fechaVencimiento = new DateTime().plusHours(24);
 		Pedido pedido = new Pedido(this.vendedor, this.clienteFulano, false, fechaVencimiento);
-		ProductoPedido prodPed = new ProductoPedido(variante, 5);
+		ProductoPedido prodPed = new ProductoPedido(variante, 5,"N/D");
 		pedido.setDireccionEntrega(direccionCasa);
 		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
@@ -170,8 +172,8 @@ public class MailServiceTest extends GenericSetUp {
 		Pedido pedidoFulano = new Pedido(this.vendedor, this.clienteFulano, true, fechaVencimiento);
 		Pedido pedidoPerez = new Pedido(this.vendedor, this.clienteJuanPerez, true, fechaVencimiento);
 		
-		ProductoPedido prodPedidoCincoUnidades = new ProductoPedido(variante, 5);
-		ProductoPedido prodPedidoVeintiCuatroUnidades = new ProductoPedido(variante, 24);
+		ProductoPedido prodPedidoCincoUnidades = new ProductoPedido(variante, 5,"N/D");
+		ProductoPedido prodPedidoVeintiCuatroUnidades = new ProductoPedido(variante, 24,"N/D");
 
 		pedidoFulano.agregarProductoPedido(prodPedidoCincoUnidades, fechaVencimiento.plusHours(48));
 		pedidoFulano.sumarAlMontoActual(prodPedidoCincoUnidades.getPrecio(), prodPedidoCincoUnidades.getCantidad());
@@ -210,15 +212,39 @@ public class MailServiceTest extends GenericSetUp {
 	}
 	
 	@Test
-	public void testEnviarEmailDeVencimientoDePedido() throws IOException, MessagingException, TemplateException {
+	public void testEnviarEmailDeVencimientoDePedido() throws IOException, MessagingException, TemplateException, EstadoPedidoIncorrectoException {
 		//Se envia el email del template emailVencimientoAutomatico.ftl
+		//En Grupo e Individual.
 		
 		this.clienteFulano.setEmail(this.destinatario);
 		DateTime fechaCreacionPedido = new DateTime();
 		fechaCreacionPedido.minusHours(24);
 
+		DateTime fechaVencimiento = new DateTime().plusHours(24);
+		Pedido pedido= new Pedido(vendedor, clienteFulano, false, fechaVencimiento.plusHours(24));
+		ProductoPedido prodPed = new ProductoPedido(variante, 5,"N/D");
+		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
+		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
+		pedido.setDireccionEntrega(direccionCasa);
 		
-		mailService.enviarEmailVencimientoPedido("nombreVendedor", this.clienteFulano, this.dateTimeToString(fechaCreacionPedido), "15");;
+		mailService.enviarEmailVencimientoPedido("nombreVendedor", this.clienteFulano, pedido, this.dateTimeToString(fechaCreacionPedido), "15");;
+
+		clienteFulano.setEmail(this.destinatario);
+		clienteJuanPerez.setEmail(this.destinatario);
+		vendedor.setEmail(this.destinatario);
+		GrupoCC grupoDeCompras = new GrupoCC(clienteFulano, "La casita de beltran", "El equipo de desarrollo tiene hambre y se organiza!");
+		grupoDeCompras.setVendedor(vendedor);
+
+		PedidoColectivo pedidoColectivo = new PedidoColectivo();
+		pedidoColectivo.setDireccionEntrega(direccionCasa);
+		pedidoColectivo.setColectivo(grupoDeCompras);
+		pedidoColectivo.agregarPedidoIndividual(pedido);
+		
+		pedido.setPerteneceAPedidoGrupal(true);
+		pedido.setPedidoColectivo(pedidoColectivo);
+
+		mailService.enviarEmailVencimientoPedido("nombreVendedor", this.clienteFulano, pedido, this.dateTimeToString(fechaCreacionPedido), "15");;
+		
 		assertEquals(true , true);
 	}
 	

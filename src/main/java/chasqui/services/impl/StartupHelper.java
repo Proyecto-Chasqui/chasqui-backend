@@ -2,20 +2,11 @@ package chasqui.services.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-
-import javax.servlet.ServletContext;
 
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zkoss.zk.ui.Sessions;
 
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.model.Caracteristica;
@@ -27,7 +18,6 @@ import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
-import chasqui.service.rest.response.FabricanteResponse;
 import chasqui.services.interfaces.CaracteristicaService;
 import chasqui.services.interfaces.UsuarioService;
 

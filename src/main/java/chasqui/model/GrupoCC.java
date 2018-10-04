@@ -53,6 +53,7 @@ public class GrupoCC {
 		this.invitarAlGrupo(administrador);
 		this.registrarInvitacionAceptada(administrador);
 		this.pedidoActual = new PedidoColectivo();
+		this.pedidoActual.setColectivo(this);
 		this.historial = new HistorialGCC(this.id);
 	}
 
@@ -206,13 +207,8 @@ public class GrupoCC {
 
 	public void registrarInvitacionAceptada(Cliente c) {
 		MiembroDeGCC miembro = this.findMiembro(c.getEmail());
-		if (miembro == null || !miembro.tieneInvitacionPendiente()) { // se
-																		// chequea
-																		// si el
-																		// miembro
-																		// ya ha
-																		// sido
-																		// invitado
+		if (miembro == null || !miembro.tieneInvitacionPendiente()) {
+			// se chequea si el miembro ya ha sido invitado
 			throw new InvitacionInexistenteException("El cliente ( " + c.getEmail()
 					+ ") no había sido invitado o la invitacion ya había sido confirmada");
 		}
@@ -278,6 +274,7 @@ public class GrupoCC {
 			this.historial.agregarAHistorial(this.pedidoActual);
 			this.historial.setId(this.id);
 			this.pedidoActual = new PedidoColectivo();
+			this.pedidoActual.setColectivo(this);
 		} else {
 			throw new NoAlcanzaMontoMinimoException();
 		}
@@ -337,6 +334,21 @@ public class GrupoCC {
 
 	public boolean pertenece(String emailCliente) {
 		return (null != this.findMiembro(emailCliente));
+	}
+
+	public boolean sePuedeEliminar() {
+		boolean sePuedeEliminar = true;
+		for(Pedido p : pedidoActual.getPedidosIndividuales().values()) {
+			if(sePuedeEliminar) {
+				sePuedeEliminar = !(p.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO) || p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO));
+			}
+		}
+		return sePuedeEliminar;
+	}
+
+	public void vaciarGrupo() throws EstadoPedidoIncorrectoException {
+		this.cache.clear();
+		this.pedidoActual.cancelar();
 	}
 
 }

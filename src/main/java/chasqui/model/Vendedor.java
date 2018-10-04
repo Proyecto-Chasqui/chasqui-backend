@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.joda.time.DateTime;
-
 public class Vendedor extends Usuario{
 
 	
@@ -219,12 +217,35 @@ public class Vendedor extends Usuario{
 		this.zonas = zonas;
 	}
 
-	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId) {
+	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId, String codigoProducto) {
 		List<Producto>p = new ArrayList<Producto>();
 		for(Fabricante f :fabricantes){
-			if(f.getId() == fabricanteSeleccionadoId){
-				p.addAll(f.getProductos());
+			if(fabricanteSeleccionadoId != null) {
+				if(!codigoProducto.equals("")) {
+					if(f.getId().equals(fabricanteSeleccionadoId)){
+						for(Producto producto: f.getProductos()) {
+							if(producto.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
+								p.add(producto);
+							}
+						}						
+					}
+				}else {
+					if(f.getId().equals(fabricanteSeleccionadoId)){
+						p.addAll(f.getProductos());
+					}
+				}
+			}else {
+				if(!codigoProducto.equals("")) {
+					for(Producto producto: f.getProductos()) {
+						if(producto.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
+							p.add(producto);
+						}
+					}	
+				}else {
+					p.addAll(f.getProductos());
+				}
 			}
+
 		}
 		return p;
 	}

@@ -1,14 +1,11 @@
 package chasqui.services.impl;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.android.gcm.server.Message;
@@ -142,8 +139,8 @@ public class NotificacionServiceImpl implements NotificacionService{
 		
 		//--------------Notificación interna
 		this.notificar(emailAdministrador,emailClienteDestino,mensaje, null);
-		//--------------Mail de respaldo
-		mailService.enviarEmailNotificacionChasqui(emailAdministrador,nombreUsuario,emailClienteDestino, mensaje, Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT);
+		//--------------Mail de respaldo (Deprecado, queda comentado para en un futuro habilitarlo segun opcion del usuario)
+		
 	}
 
 	/**
@@ -161,8 +158,8 @@ public class NotificacionServiceImpl implements NotificacionService{
 				
 		//--------------Notificación interna
 		this.notificar(emailOriginante,emailDestinatario,mensaje, null);
-		//--------------Mail de respaldo
-		mailService.enviarEmailNotificacionChasqui(emailOriginante,nicknameDestinatario,emailDestinatario, mensaje , Constantes.NUEVO_PEDIDO_EN_GCC_SUBJECT);
+		//--------------Mail de respaldo (Desestimado, queda comentado para futura opcion de mandar mail si lo desea el usuario)
+		//mailService.enviarEmailNotificacionChasqui(emailOriginante,nicknameDestinatario,emailDestinatario, mensaje , Constantes.NUEVO_PEDIDO_EN_GCC_SUBJECT);
 	}
 
 	@Override
@@ -173,7 +170,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
 		
 		this.invitar(adminGCC.getEmail(), emailInvitado, mensaje, idDispositivo,grupo.getId());
-		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getVendedor().getUrl(),grupo.getVendedor().getNombre());
+		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre());
 	}
 
 
@@ -235,15 +232,15 @@ public class NotificacionServiceImpl implements NotificacionService{
 	}
 
 	@Override
-	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, String emailVendedor, String nombreVendedor) {
+	public void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, Pedido pedido, String emailVendedor, String nombreVendedor) {
 		String mensaje = Constantes.PEDIDO_VENCIDO_NOTIFICACION;
 		
 		mensaje = mensaje.replaceAll("<timestamp>", this.dateTimeToString(fechaCreacion));
 		mensaje = mensaje.replaceAll("<vendedor>", nombreVendedor);
 		
 		this.notificar(emailVendedor, cliente.getEmail(), mensaje, null);
-		//TODO hace falta enviar mail de respaldo? mailService.env(grupo, invitado);
-		mailService.enviarEmailVencimientoPedido(nombreVendedor, cliente, this.dateTimeToString(fechaCreacion), cantidadDeMinutosParaExpiracion.toString());
+		//TODO desestimado hasta que se defina si es correcto mandarlo, o va a ser parte de una configuracion opcional
+		//mailService.enviarEmailVencimientoPedido(nombreVendedor, cliente, this.dateTimeToString(fechaCreacion), cantidadDeMinutosParaExpiracion.toString());
 	}
 
 	private String dateTimeToString(DateTime fecha){

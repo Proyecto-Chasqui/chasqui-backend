@@ -1,10 +1,8 @@
 package chasqui.view.renders;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.zkoss.zk.ui.event.Events;
@@ -17,7 +15,6 @@ import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
 import chasqui.model.GrupoCC;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.Zona;
 import chasqui.view.composer.Constantes;
@@ -27,7 +24,7 @@ import chasqui.view.composer.PedidosComposer;
 public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo>{
 	private Window pedidoWindow;
 	private Map<Integer,GrupoCC> datagrupo;
-	private Listcell celdaId,celdaUsr, celdaAdmn, celdaFechaCreacion, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
+	private Listcell celdaId,celdaUsr, celdaAdmn, celdaFechaCreacion, celdaFechaCierre, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
 			celdaDireccion, celdaBotones;
 
 	public PedidoColectivoRenderer(Window w) {
@@ -37,32 +34,46 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 	public void render(Listitem item, final PedidoColectivo pedidoColectivo, int arg2) throws Exception {
 
 		celdaId = new Listcell(String.valueOf(pedidoColectivo.getId()));
-		if(datagrupo != null) {
-			GrupoCC grupo = this.datagrupo.get(pedidoColectivo.getId());
-			if(grupo!=null) {
-				celdaUsr = new Listcell(grupo.getAlias());
-				celdaAdmn = new Listcell(grupo.getAdministrador().getEmail());
-			}else {
-				celdaUsr = new Listcell("sin nombre grupo");
-				celdaAdmn = new Listcell("sin nombre admin");
-			}
+		
+		if(pedidoColectivo.getColectivo() !=null) {
+			celdaUsr = new Listcell(pedidoColectivo.getColectivo().getAlias());
+			celdaAdmn = new Listcell(pedidoColectivo.getColectivo().getAdministrador().getEmail());
 		}else {
-			celdaUsr = new Listcell("sin nombre grupo");
-			celdaAdmn = new Listcell("sin nombre admin");
+			celdaUsr = new Listcell("N/D");
+			celdaAdmn = new Listcell("N/D");
+		}
+		
+		if(pedidoColectivo.estaAbierto() || 
+				 pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) || 
+				 pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)) {
+			celdaFechaCierre = new Listcell("N/D");
+		}else {
+			if(pedidoColectivo.getFechaModificacion() != null) {
+				SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+				Date d1 = new Date(pedidoColectivo.getFechaModificacion().getMillis());
+				celdaFechaCierre = new Listcell(format.format(d1));
+			}else {
+				celdaFechaCierre = new Listcell("N/D");
+			}
 		}
 		if(pedidoColectivo.getFechaCreacion() != null){
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 			Date d = new Date(pedidoColectivo.getFechaCreacion().getMillis());
 			celdaFechaCreacion = new Listcell(format.format(d));
 		}else{
-			celdaFechaCreacion = new Listcell("Sin Fecha");
+			celdaFechaCreacion = new Listcell("N/D");
 		}
 
 		// -----------------Mostrar la zona
 		Zona zonaPedido = pedidoColectivo.getZona();
 		if (zonaPedido == null) {
-			celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
-			celdaZona.setStyle("color:red;");
+			if(pedidoColectivo.getPuntoDeRetiro() != null) {
+				celdaZona = new Listcell(Constantes.ZONA_NO_NECESARIA);
+				celdaZona.setStyle("color:green;");
+			}else {
+				celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
+				celdaZona.setStyle("color:red;");
+			}
 		} else {
 			celdaZona = new Listcell(zonaPedido.getNombre());
 		}
@@ -99,10 +110,15 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		if(pedidoColectivo.getPuntoDeRetiro() != null){
 			direccion = "Punto de Retiro: " + pedidoColectivo.getPuntoDeRetiro().getNombre();
 		}
+		if(direccion.equals("")) {
+			direccion = "N/D";
+		}
 		celdaDireccion = new Listcell(direccion);
 		if(pedidoColectivo.getPuntoDeRetiro() != null){
 			celdaDireccion.setStyle("color:blue; font-family:Courier Black;");
 		}
+		
+
 		celdaBotones = new Listcell();
 
 		this.configurarAcciones(pedidoColectivo);
@@ -111,6 +127,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		celdaUsr.setParent(item);
 		celdaAdmn.setParent(item);
 		celdaFechaCreacion.setParent(item);
+		celdaFechaCierre.setParent(item);
 		celdaZona.setParent(item);
 		celdaMontoMinimo.setParent(item);
 		celdaMontoActual.setParent(item);
@@ -137,7 +154,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 
 		// ------------------------------Botón para abrir el pedido en una
 		// pantalla
-		Toolbarbutton botonVerPedido = new Toolbarbutton("Ver en detalle los pedidos");
+		Toolbarbutton botonVerPedido = new Toolbarbutton("Ver detalle");
 		botonVerPedido.setTooltiptext("Muestra los pedidos de los integrantes del pedido colectivo");
 		botonVerPedido.setImage("/imagenes/eye.png");
 		HashMap<String, Object> params = new HashMap<String, Object>();
@@ -145,7 +162,14 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		params.put(PedidosComposer.ACCION_KEY, PedidosComposer.ACCION_VER);
 		botonVerPedido.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, params);
 		
-		
+		// ------------------------------Botón para notificar via email
+		Toolbarbutton botonNotificarPedidoPreparado = new Toolbarbutton("Notificar");
+		botonNotificarPedidoPreparado.setTooltiptext("Notifica con un email predefinido al usuario");
+		botonNotificarPedidoPreparado.setImage("/imagenes/envelope.png");
+		HashMap<String, Object> paramsemail = new HashMap<String, Object>();
+		paramsemail.put(PedidosComposer.PEDIDO_KEY, pedidoColectivo);
+		paramsemail.put(PedidosComposer.ACCION_KEY, PedidosComposer.ACCION_NOTIFICAR);
+		botonNotificarPedidoPreparado.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsemail);
 
 
 		// ------------------------------Botón para editar la zona
@@ -174,6 +198,12 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			paramsZona.put(PedidosColectivosComposer.ACCION_KEY, PedidosComposer.ACCION_EDITAR);
 			botonEditarZona.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsZona);
 		}
+		if(pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO)){
+			botonEditarZona.setTooltiptext("El pedido esta entregado");
+			botonEditarZona.setDisabled(true);
+			botonEditarZona.setStyle("color:gray");
+		}
+		
 		if(pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)){
 			botonEditarZona.setTooltiptext("El pedido esta entregado");
 			botonEditarZona.setDisabled(true);
@@ -237,7 +267,14 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		}
 		botonEntregar.setParent(hbox);
 		espacio.setParent(hbox);
+		if(estaPostConfirmado(pedidoColectivo.getEstado())) {
+			botonNotificarPedidoPreparado.setParent(hbox);
+		}
 		hbox.setParent(celdaBotones);
+	}
+	
+	private boolean estaPostConfirmado(String estado) {
+		return estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}
 
 	public Map<Integer,GrupoCC> getDatagrupo() {

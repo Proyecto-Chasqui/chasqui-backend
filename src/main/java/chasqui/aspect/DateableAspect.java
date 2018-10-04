@@ -3,8 +3,6 @@ package chasqui.aspect;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.CodeSignature;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,9 +13,6 @@ import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
-import chasqui.service.rest.response.PedidoResponse;
-import chasqui.services.impl.GrupoServiceImpl;
-import chasqui.services.interfaces.GrupoService;
 
 @Aspect
 public class DateableAspect {

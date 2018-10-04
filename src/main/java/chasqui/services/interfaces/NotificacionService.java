@@ -1,7 +1,6 @@
 package chasqui.services.interfaces;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -123,9 +122,13 @@ public interface NotificacionService {
 	 * Notificar al Cliente de que su pedido ha expirado y por eso se liberó la
 	 * reserva de productos
 	 * 
+	 * @param cliente
+	 * @param fechaCreacion
 	 * @param pedido
+	 * @param emailVendedor
+	 * @param nombreVendedor
 	 */
-	void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, String emailVendedor, String nombreVendedor);
+	void notificarPedidoVencido(Cliente cliente, DateTime fechaCreacion, Pedido pedido, String emailVendedor, String nombreVendedor);
 
 	public List<InvitacionAGCC> obtenerInvitacionPendientePorIDdeGrupo(String emailCliente,	Integer idGrupo);
 

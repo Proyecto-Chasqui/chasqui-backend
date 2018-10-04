@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
+import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.ProductoInexistenteException;
@@ -33,14 +34,20 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
+import chasqui.model.Usuario;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.service.rest.request.CrearPedidoRequest;
+import chasqui.service.rest.request.IdRequest;
+import chasqui.service.rest.request.ObtenerPedidosColectivosConEstadoRequest;
 import chasqui.service.rest.request.ObtenerPedidosConEstadoRequest;
+import chasqui.service.rest.request.PedidoColectivoResponse;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.PedidoResponse;
 import chasqui.services.interfaces.GrupoService;
+import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.UsuarioService;
@@ -56,6 +63,9 @@ public class PedidoListener {
 	
 	@Autowired
 	PedidoService pedidoService;
+	
+	@Autowired
+	PedidoColectivoService pedidoColectivoService;
 	
 	@Autowired
 	private GrupoService grupoService;
@@ -89,10 +99,42 @@ public class PedidoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
+	
+	@POST
+	/**
+	 * Refresca la fecha de vencimiento del pedido
+	 * con el id que recibe en el idRequest.
+	 * Precondiciones:
+	 * 	El pedido pertenece al usuario logeado.
+	 * 	El pedido tiene que estar con estado ABIERTO.
+	 * 
+	 */
+	@Produces("application/json")
+	@Path("/refrescarVencimiento")
+	public Response refrescarVencimiento(@Multipart(value="idRequest", type="application/json") final String idRequest){
+		//TODO Provar que funcione correctamente, tambien ver que levante excepciones.
+		String email = obtenerEmailDeContextoDeSeguridad();
+		Integer idPedido = null;
+
+		try {
+			IdRequest request = toIdRequest(idRequest);
+			idPedido = request.getId();
+				pedidoService.refrescarVencimiento(idPedido, email);
+			} catch (UsuarioInexistenteException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (PedidoInexistenteException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (JsonParseException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (JsonMappingException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (IOException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (EstadoPedidoIncorrectoException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			}
+			return Response.ok().build();
+	}
 
 	@POST
 	@Produces("application/json")
@@ -171,10 +213,6 @@ public class PedidoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
-///////////////WORK IN PROGRESS////////////////////	
 	
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -254,8 +292,36 @@ public class PedidoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
+	
+	@POST
+	@Produces("application/json")
+	@Path("/pedidosColectivosConEstados")
+	public Response obtenerPedidosColectivosConEstado(@Multipart(value="pedidosColectivosConEstados", type="application/json") final String obtenerPedidosColectivosConEstadoRequest) throws JsonParseException, JsonMappingException, IOException{
+		ObtenerPedidosColectivosConEstadoRequest request = toObtenerPedidosColectivosConEstadoRequest(obtenerPedidosColectivosConEstadoRequest);
+		String mail =  obtenerEmailDeContextoDeSeguridad();
+		try{
+			Usuario u = usuarioService.obtenerClientePorEmail(mail);
+			return Response.ok(toListPCResponse(pedidoColectivoService.obtenerPedidosColectivosDeGrupoConEstado(u.getId(),request.getIdGrupo(), request.getEstados())),MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
 
 
+	private Object toListPCResponse(List<PedidoColectivo> obtenerPedidosColectivosDeGrupoConEstado) {
+		List<PedidoColectivoResponse> resultado = new ArrayList<PedidoColectivoResponse>();
+		for(PedidoColectivo p : obtenerPedidosColectivosDeGrupoConEstado){
+			resultado.add(new PedidoColectivoResponse(p));
+		}
+		return resultado;
+	}
+
+	private ObtenerPedidosColectivosConEstadoRequest toObtenerPedidosColectivosConEstadoRequest(
+			String obtenerPedidosColectivosConEstadoRequest) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		return mapper.readValue(obtenerPedidosColectivosConEstadoRequest, ObtenerPedidosColectivosConEstadoRequest.class);
+	}
 
 	private AgregarQuitarProductoAPedidoRequest toAgregarPedidoRequest(String agregarRequest) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
@@ -263,6 +329,12 @@ public class PedidoListener {
 		return mapper.readValue(agregarRequest, AgregarQuitarProductoAPedidoRequest.class);
 	}
 
+	private IdRequest toIdRequest(String idRequest) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		return mapper.readValue(idRequest, IdRequest.class);
+	}
+	
 	private PedidoResponse toResponse(Pedido pedido) {
 		return new PedidoResponse( pedido);
 	}

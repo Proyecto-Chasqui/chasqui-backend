@@ -103,7 +103,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	}
 
 	public void onEliminarPuntoDeRetiro(Event e) throws VendedorInexistenteException{
-		final List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId());
+		final List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId(),null);
 		final PedidosGrupalesDTO pedidosColectivos = this.obtenerPedidosColectivosDeVendedor(usuario.getId(),Constantes.ESTADO_PEDIDO_CONFIRMADO,puntoDeRetiroSeleccionado.getId());
 		final Component c = this.self;
 		if(pedidosIndividuales.isEmpty()) {
@@ -184,10 +184,11 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 		}
 	}
 	
-	//a falta de una referencia de pedidoColectivo a Grupo es necesario hacer esta
+	//A falta de una referencia de pedidoColectivo a Grupo es necesario hacer esta
 	//Funcionalidad de "weaving" en memoria. Evaluar costos de eficiencia.
-	private PedidosGrupalesDTO obtenerPedidosColectivosDeVendedor(Integer id, String estadoPedido,
-			Integer idPuntoRetiro) throws VendedorInexistenteException {
+	//(25/08/2018) Ahora los pedidos colectivos tienen relación con los grupos refactorizar si esta
+	// solución genera un problema de eficiencia.
+	private PedidosGrupalesDTO obtenerPedidosColectivosDeVendedor(Integer id, String estadoPedido,Integer idPuntoRetiro) throws VendedorInexistenteException {
 		PedidosGrupalesDTO pedidos = null;
 		List<GrupoCC> grupos = grupoService.obtenerGruposDe(usuario.getId());
 		List<PedidoColectivo> lpedidos = new ArrayList<PedidoColectivo>();
@@ -347,7 +348,7 @@ public class PuntosDeRetiroComposer extends GenericForwardComposer<Component>{
 	//TODO:
 	public void onHabilitarPuntoDeRetiro() throws VendedorInexistenteException{
 		if(this.puntoDeRetiroSeleccionado.getDisponible()) {
-		List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId());
+		List<Pedido> pedidosIndividuales = (List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedor(usuario.getId(),null,null,Constantes.ESTADO_PEDIDO_CONFIRMADO,null,puntoDeRetiroSeleccionado.getId(),null);
 		PedidosGrupalesDTO pedidosColectivos = this.obtenerPedidosColectivosDeVendedor(usuario.getId(),Constantes.ESTADO_PEDIDO_CONFIRMADO,puntoDeRetiroSeleccionado.getId());	
 			this.generarMensajesSegunContexto(pedidosIndividuales, pedidosColectivos);
 		}else {

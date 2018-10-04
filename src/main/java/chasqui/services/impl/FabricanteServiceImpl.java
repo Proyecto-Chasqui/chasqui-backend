@@ -31,4 +31,30 @@ public class FabricanteServiceImpl implements ProductorService{
 		return fabricanteDAO.obtenerProductoresDe(idVendedor);
 	}
 
+
+	@Override
+	public List<Fabricante> obtenerProductoresPorNombre(Integer idVendedor, String busquedaPorNombreProductor) throws VendedorInexistenteException {
+		List<Fabricante> productores = fabricanteDAO.obtenerProductoresDeConNombre(idVendedor,busquedaPorNombreProductor);
+		return productores;
+	}
+	
+	@Override
+	public void guardar(Fabricante fabricante) {
+		fabricanteDAO.guardar(fabricante);
+	}
+
+
+	@Override
+	public void inicializarListasDeProducto(Fabricante fabricante) {
+		fabricanteDAO.inicializarlistasDeProductos(fabricante);
+		
+	}
+
+
+	@Override
+	public void eliminar(Fabricante fabricante) {
+		fabricanteDAO.delete(fabricante);
+		
+	}
+
 }

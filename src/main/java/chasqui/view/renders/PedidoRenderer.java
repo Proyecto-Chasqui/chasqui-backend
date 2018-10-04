@@ -18,11 +18,15 @@ import chasqui.model.Zona;
 import chasqui.view.composer.Constantes;
 import chasqui.view.composer.PedidosColectivosComposer;
 import chasqui.view.composer.PedidosComposer;
-
+//Esta clase es usuada en todas las areas en las que se muestra un pedido individual:
+//Area de pedidos individuales.
+//Area de pedidos individuales dentro de un grupo.
+//Pop up de advertencia al tratar de eliminar un punto de retiro asociado a uno o varios pedidos.
+//Si se desea cambiar algo revisar todas las areas afectadas para mantener la coherencia.
 public class PedidoRenderer implements ListitemRenderer<Pedido> {
 
 	private Window pedidoWindow;
-	private Listcell celdaId, celdaUsr, celdaFechaCreacion, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
+	private Listcell celdaId, celdaUsr, celdaFechaCreacion, celdaFechaCierre, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
 			celdaDireccion, celdaBotones;
 
 	public PedidoRenderer(Window w) {
@@ -38,12 +42,25 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		Date d = new Date(pedido.getFechaCreacion().getMillis());
 		celdaFechaCreacion = new Listcell(format.format(d));
-
+		Date d2 = null;
+		if(pedido.getFechaModificacion()!=null) {
+			d2 = new Date(pedido.getFechaModificacion().getMillis());
+		}
+		if(d2 == null || pedido.estaAbierto() ||pedido.estaCancelado()|| pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)) {
+			celdaFechaCierre = new Listcell("N/D");
+		}else {
+			celdaFechaCierre = new Listcell(format.format(d2));
+		}
 		// -----------------Mostrar la zona
 		Zona zonaPedido = pedido.getZona();
 		if (zonaPedido == null) {
-			celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
-			celdaZona.setStyle("color:red;");
+			if(pedido.getPuntoDeRetiro() != null) {
+				celdaZona = new Listcell(Constantes.ZONA_NO_NECESARIA);
+				celdaZona.setStyle("color:green;");
+			}else {
+				celdaZona = new Listcell(Constantes.ZONA_NO_DEFINIDA);
+				celdaZona.setStyle("color:red;");
+			}
 		} else {
 			celdaZona = new Listcell(zonaPedido.getNombre());
 		}
@@ -93,10 +110,11 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		celdaBotones = new Listcell();
 
 		this.configurarAcciones(pedido);
-
+		
 		celdaId.setParent(item);
 		celdaUsr.setParent(item);
 		celdaFechaCreacion.setParent(item);
+		celdaFechaCierre.setParent(item);
 		celdaZona.setParent(item);
 		celdaMontoMinimo.setParent(item);
 		celdaMontoActual.setParent(item);
@@ -129,6 +147,15 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		params.put(PedidosComposer.PEDIDO_KEY, pedido);
 		params.put(PedidosComposer.ACCION_KEY, PedidosComposer.ACCION_VER);
 		botonVerPedido.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, params);
+		
+		// ------------------------------Botón para notificar via email
+		Toolbarbutton botonNotificarPedidoPreparado = new Toolbarbutton("Notificar");
+		botonNotificarPedidoPreparado.setTooltiptext("Notifica con un email predefinido al usuario");
+		botonNotificarPedidoPreparado.setImage("/imagenes/envelope.png");
+		HashMap<String, Object> paramsemail = new HashMap<String, Object>();
+		paramsemail.put(PedidosComposer.PEDIDO_KEY, pedido);
+		paramsemail.put(PedidosComposer.ACCION_KEY, PedidosComposer.ACCION_NOTIFICAR);
+		botonNotificarPedidoPreparado.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsemail);
 
 
 		// ------------------------------Botón para editar la zona
@@ -156,6 +183,13 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			paramsZona.put(PedidosColectivosComposer.ACCION_KEY, PedidosComposer.ACCION_EDITAR);
 			botonEditarZona.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsZona);
 		}
+		
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO)){
+			botonEditarZona.setTooltiptext("El pedido esta preparado");
+			botonEditarZona.setDisabled(true);
+			botonEditarZona.setStyle("color:gray");
+		}
+		
 		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)){
 			botonEditarZona.setTooltiptext("El pedido esta entregado");
 			botonEditarZona.setDisabled(true);
@@ -221,8 +255,23 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			}
 			botonEntregar.setParent(hbox);
 		}
+		if(estaPostConfirmado(pedido.getEstado())) {
+			botonNotificarPedidoPreparado.setParent(hbox);
+		}
 		espacio.setParent(hbox);
 		hbox.setParent(celdaBotones);
+	}
+
+	private boolean estaPostConfirmado(String estado) {
+		return estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
+	}
+
+	public Listcell getCeldaFechaCierre() {
+		return celdaFechaCierre;
+	}
+
+	public void setCeldaFechaCierre(Listcell celdaFechaCierre) {
+		this.celdaFechaCierre = celdaFechaCierre;
 	}
 
 }

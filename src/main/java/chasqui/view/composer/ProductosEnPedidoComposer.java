@@ -1,12 +1,8 @@
 package chasqui.view.composer;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -16,9 +12,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 
 import chasqui.dtos.PedidoDTO;
-import chasqui.dtos.PedidoIndividualDTO;
 import chasqui.dtos.VarianteDTO;
-import chasqui.model.Direccion;
 import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
 

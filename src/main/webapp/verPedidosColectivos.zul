@@ -33,8 +33,9 @@
 	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listBoxPedidosColectivos"  model="@{verPedidosColectivosWindow$composer.pedidosDentroDeColectivo}" mold="paging" pageSize="10" rows="10">
 		<listhead>
 			<listheader label="ID Pedido" align="center" visible="false"/>
-			<listheader label="Cliente Creador" align="center" />
+			<listheader label="Cliente Creador" align="center" visible="true"/>
 			<listheader label="Fecha Creación" align="center" />
+			<listheader label="Fecha de Cierre" align="center" />
 			<listheader label="Zona" align="center" visible="false"/>
 			<listheader label="Monto Minimo" align="center" visible="false"/>
 			<listheader label="Monto Actual" align="center"/>

@@ -111,5 +111,7 @@ public interface PedidoService {
 	public List<Pedido> obtenerPedidosIndividualesDeVendedor(Integer id);
 
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedor(Integer id, Date d, Date h,
-			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro);
+			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro, String email);
+
+	public void refrescarVencimiento(Integer idPedido, String email) throws UsuarioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException;
 }

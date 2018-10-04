@@ -16,4 +16,12 @@ public interface ProductorService {
 //	public void eliminarProductor(Fabricante f);
 
 	List<Fabricante> obtenerProductores(Integer idVendedor);
+
+	public List<Fabricante> obtenerProductoresPorNombre(Integer id, String busquedaPorNombreProductor) throws VendedorInexistenteException;
+	
+	public void guardar(Fabricante fabricante);
+	
+	public void inicializarListasDeProducto(Fabricante fabricante);
+	
+	public void eliminar(Fabricante fabricante);
 }

@@ -46,6 +46,20 @@ public class VendedorDAOHbm  extends HibernateDaoSupport implements VendedorDAO{
 		});
 	}
 	
+	public Vendedor obtenerVendedorRoot(final String username) {
+		Vendedor u = this.getHibernateTemplate().execute(new HibernateCallback<Vendedor>() {
+
+			public Vendedor doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Vendedor.class);
+				criteria.add(Restrictions.eq("username", username))
+				.add(Restrictions.eq("isRoot", true));
+				return (Vendedor) criteria.uniqueResult();
+			}
+
+		});
+		return u;
+	}
+	
 	@Override
 	public Vendedor obtenerVendedorPorNombreCorto(final String nombreCorto) {
 		return (Vendedor) this.getHibernateTemplate().execute(new HibernateCallback<Vendedor>() {

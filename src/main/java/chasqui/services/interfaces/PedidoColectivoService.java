@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 
 public interface PedidoColectivoService {
@@ -21,5 +20,11 @@ public interface PedidoColectivoService {
 	public List<PedidoColectivo> obtenerPedidosColectivosDeGrupo(Integer id);
 
 	PedidoColectivo obtenerPedidoColectivoPorID(Integer id);
+
+	Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedor(Integer vendedorid, Date d, Date h,
+			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro, String emailAdmin);
+
+	List<PedidoColectivo> obtenerPedidosColectivosDeGrupoConEstado(Integer idUsuario, Integer idVendedor,
+			List<String> estados);
 	
 }

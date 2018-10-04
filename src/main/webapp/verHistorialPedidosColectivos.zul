@@ -4,16 +4,17 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window width="65%" title="Pedidos colectivos confirmados" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="true"
+<window width="100%" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="false"
 style="overflow:auto">
 
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" />
-		<datebox id="desde" forward="onChange=pedidosWindow.composer.onBuscar"/>
+		<datebox id="desde" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
-		<label value="Fecha Hasta:" forward="onChange=pedidosWindow.composer.onBuscar"/>
-		<datebox id="hasta"/>	
+		<label value="Fecha Hasta:"/>
+		<datebox id="hasta" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
+		<textbox id="buscadorPorUsuario" placeholder="Buscar por email admin"  forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>
@@ -25,12 +26,13 @@ style="overflow:auto">
 	</hbox>
 </div>
 <separator spacing="15px"/>
-	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{historialPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
+	<listbox multiple="false" checkmark="false" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{historialPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
 		<listhead>
-			<listheader label="ID Pedido" align="center" visible="false"/>
-			<listheader label="Grupo" align="center" visible="false"></listheader>
-			<listheader label="Administrador del Grupo" align="center" visible="false"></listheader>
+			<listheader label="ID" align="center" visible="true"/>
+			<listheader label="Grupo" align="center" visible="true"></listheader>
+			<listheader label="Administrador del Grupo" align="center" visible="true"></listheader>
 			<listheader label="Fecha Creación" align="center"/>
+			<listheader label="Fecha Cierre" align="center"/>
 			<listheader label="Zona" align="center"/>
 			<listheader label="Monto Minimo" align="center" visible="false"/>
 			<listheader label="Monto Final" align="center"/>

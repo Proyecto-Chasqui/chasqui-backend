@@ -35,6 +35,7 @@ import chasqui.model.Imagen;
 import chasqui.model.Vendedor;
 import chasqui.services.impl.FileSaver;
 import chasqui.services.interfaces.CaracteristicaService;
+import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.genericEvents.RefreshListener;
 import chasqui.view.genericEvents.Refresher;
@@ -57,6 +58,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	private Toolbarbutton buttonGuardar;
 	private Image imagenProductor;
 	private Fileupload uploadImagen;
+	private ProductorService productorService;
 	
 	
 	
@@ -72,12 +74,15 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
+		//hotfix (Ver de limitar desde panel);
+		//textboxNombreProductor.setMaxlength(64);
 		usuario = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		comp.addEventListener(Events.ON_NOTIFY, new SubirArchivo(this));
 		model = (Fabricante) Executions.getCurrent().getArg().get("productor");
 		Integer edicion = (Integer) Executions.getCurrent().getArg().get("accion");
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		service = (CaracteristicaService) SpringUtil.getBean("caracteristicaService");
+		productorService = (ProductorService) SpringUtil.getBean("productorService");
 		fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
 		comp.addEventListener(Events.ON_NOTIFY, new RefreshListener<Refresher>(this));
 		caracteristicas = service.buscarCaracteristicasProductor();
@@ -160,13 +165,23 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		model.setIdVendedor(usuario.getId());
 		if(!existe){
 			usuario.agregarProductor(model);
+			usuarioService.guardarUsuario(usuario);
+		}else {
+			productorService.guardar(model);
+			actualizarUsuarioEnMemoria();
 		}
-		usuarioService.guardarUsuario(usuario);
 		Events.sendEvent(Events.ON_RENDER,this.self.getParent(),null);
 		this.self.detach();
 	}
 	
 	
+	private void actualizarUsuarioEnMemoria() {
+		Vendedor user =(Vendedor) usuarioService.obtenerUsuarioPorID(usuario.getId());
+		usuarioService.inicializarListasDe(user);
+		Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
+		usuario = user;
+	}
+
 	public void onUpload$uploadImagen(UploadEvent evt){
 		Clients.showBusy("Procesando...");
 		Events.echoEvent(Events.ON_NOTIFY,this.self,evt);
@@ -231,10 +246,10 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 			throw new WrongValueException("El usuario: " + usuario.getUsername() + " ya tiene el productor: " + productor );
 		}
 		
-		if(productor.matches(".*[0-9].*")){
-			throw new WrongValueException(textboxNombreProductor,"El productor debe ser un nombre sin numeros");
-		}
-		
+//		if(productor.matches(".*[0-9].*")){
+//			throw new WrongValueException(textboxNombreProductor,"El productor debe ser un nombre sin numeros");
+//		}
+//		
 //		if(StringUtils.isEmpty(pais)){
 //			throw new WrongValueException(txtPais,"El pais no debe ser vacio!");
 //		}

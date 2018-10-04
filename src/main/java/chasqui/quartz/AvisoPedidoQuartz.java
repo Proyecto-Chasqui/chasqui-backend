@@ -49,14 +49,14 @@ public class AvisoPedidoQuartz {
 	NotificacionService notificacionService;
 	@Autowired
 	MailService mailService;
-
+	//Deprecado hasta que se desarrolle la consulta espacial
 	public void execute() {
-		if (obtenerHostname().equals(nombreServidor)) {
-			List<Vendedor> vendedores = vendedorService.obtenerVendedores();
-			for (Vendedor v : vendedores) {
-				enviarNotificacionesDePedidos(v);
-			}
-		}
+//		if (obtenerHostname().equals(nombreServidor)) {
+//			List<Vendedor> vendedores = vendedorService.obtenerVendedores();
+//			for (Vendedor v : vendedores) {
+//				enviarNotificacionesDePedidos(v);
+//			}
+//		}
 
 	}
 

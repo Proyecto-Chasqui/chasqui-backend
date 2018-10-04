@@ -79,7 +79,7 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 		</listcell>
 	</listitem>
 	<listitem>
-		<listcell label="Caracteristica:"/>
+		<listcell label="Sello:"/>
 		<listcell>
 			<hbox>
 			<combobox readonly="true" id="comboCaracteristica" model="@{productorWindow$composer.caracteristicas}"

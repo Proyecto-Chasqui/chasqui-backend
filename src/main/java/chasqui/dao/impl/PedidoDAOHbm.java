@@ -1,7 +1,6 @@
 package chasqui.dao.impl;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -270,7 +269,7 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pedido> obtenerPedidosIndividualesDeVendedor(final Integer idVendedor, final Date desde, final Date hasta,
-			final String estadoSeleccionado, final Integer zonaId, final Integer idPuntoRetiro) {
+			final String estadoSeleccionado, final Integer zonaId, final Integer idPuntoRetiro, final String email) {
 		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<Pedido>>() {
 
 			@Override
@@ -306,6 +305,11 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				
 				if(idPuntoRetiro!=null) {
 					c.add(Restrictions.eq("puntoDeRetiro.id",idPuntoRetiro));
+				}
+				
+				if(email!=null) {
+					c.createAlias("pedido.cliente", "cliente");
+					c.add(Restrictions.like("cliente.email", "%"+email+"%"));
 				}
 				
 

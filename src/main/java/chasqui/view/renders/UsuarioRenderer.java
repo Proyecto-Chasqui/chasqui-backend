@@ -34,7 +34,7 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 		editar.setTooltiptext(Labels.getLabel("zk.toolbarbutton.administracion.tooltip.editar"));
 		editar.setImage("/imagenes/editar.png");
 		editarEstrategias.setTooltiptext("Editar estrategias");
-		editarEstrategias.setImage("/imagenes/editar.png");
+		editarEstrategias.setImage("/imagenes/bookedit.png");
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("accion", "editar");
 		map.put("usuario", u);

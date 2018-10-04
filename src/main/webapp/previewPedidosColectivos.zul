@@ -18,10 +18,11 @@
 <separator spacing="15px"/>
 	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{previewPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
 		<listhead>
-			<listheader label="ID Pedido" align="center" visible="False"/>
+			<listheader label="ID Pedido" align="center" visible="false"/>
 			<listheader label="Grupo" align="center"></listheader>
 			<listheader label="Administrador del Grupo" align="center"></listheader>
 			<listheader label="Fecha Creación" align="center"/>
+			<listheader label="Fecha Cierre" align="center"/>
 			<listheader label="Zona" align="center" visible="false"/>
 			<listheader label="Monto Minimo" align="center" visible="false"/>
 			<listheader label="Monto Final" align="center"/>

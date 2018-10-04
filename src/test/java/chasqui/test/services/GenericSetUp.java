@@ -19,9 +19,7 @@ import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
-import chasqui.service.rest.request.DireccionRequest;
 import chasqui.service.rest.request.SingUpRequest;
-import chasqui.service.rest.response.NodoResponse;
 import chasqui.services.interfaces.CaracteristicaService;
 import chasqui.services.interfaces.UsuarioService;
 

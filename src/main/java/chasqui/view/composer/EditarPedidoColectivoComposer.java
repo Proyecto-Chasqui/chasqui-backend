@@ -1,6 +1,5 @@
 package chasqui.view.composer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.spring.SpringUtil;
@@ -10,17 +9,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 
-import chasqui.dao.GrupoDAO;
 import chasqui.dtos.PedidoDTO;
 import chasqui.model.GrupoCC;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
-import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.PedidoColectivoService;
-import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ZonaService;
 
 public class EditarPedidoColectivoComposer extends GenericForwardComposer<Component> {
@@ -39,6 +34,8 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 	private ZonaService zonaService;
 
 	private Vendedor usuarioLogueado;
+	
+	private GrupoService grupoService;
     
 	public PedidoDTO getPedidoMostrado() {
 		return pedidoMostrado;
@@ -79,10 +76,11 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 		comp = (HistorialPedidosColectivosComposer) Executions.getCurrent().getSession().getAttribute("historialPedidosColectivosComposer");
 		binder = new AnnotateDataBinder(c);
 		pedidoColectivoService = (PedidoColectivoService) SpringUtil.getBean("pedidoColectivoService");
+		grupoService = (GrupoService) SpringUtil.getBean("grupoService");
 		zonaService = (ZonaService) SpringUtil.getBean("zonaService");
-		this.zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 		
 		pedido = (PedidoColectivo) Executions.getCurrent().getArg().get("pedidoColectivo");
+		this.zonas = pedido.getColectivo().getVendedor().getZonas();
 		grupo = (GrupoCC) Executions.getCurrent().getArg().get("grupo");
 		this.pedidoMostrado = buildPedidoDTO(pedido,grupo);
 		
@@ -99,11 +97,19 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 
 	public void onClick$confirmarEdicionbtn(){
 		this.pedido.setZona(zonaSeleccionada);
-		pedidoColectivoService.guardarPedidoColectivo(pedido);
+		grupoService.guardarGrupo(grupo);
 		Events.sendEvent(Events.ON_RENDER,this.self.getParent(),null);
 		comp.binder.loadAll();
 		this.self.detach();
 		
+	}
+	
+	private void cambiarZonaAPedido(Integer id, Zona zona) {
+		for(PedidoColectivo pc : this.grupo.getHistorial().getPedidosGrupales()) {
+			if(pc.getId() == id) {
+				pc.setZona(zona);
+			}
+		}
 	}
 
 	public void onClick$cancelarEdicionbtn(){

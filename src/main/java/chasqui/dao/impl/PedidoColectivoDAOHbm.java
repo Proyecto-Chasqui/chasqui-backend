@@ -19,9 +19,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.PedidoColectivoDAO;
 import chasqui.model.GrupoCC;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
-import chasqui.model.Usuario;
 
 public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements PedidoColectivoDAO{
 
@@ -40,6 +38,71 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 				return (PedidoColectivo) criteria.uniqueResult();
 			}
 
+		});
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<PedidoColectivo> obtenerPedidosColectivosDeConEstado(final Integer idUsuario, final Integer idGrupo, final List<String> estados) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<PedidoColectivo>>() {
+
+			@Override
+			public List<PedidoColectivo> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(PedidoColectivo.class, "pedido");
+				criteria.createAlias("pedido.colectivo", "colectivo");
+				criteria.add(Restrictions.eq("colectivo.id", idGrupo))				
+						.add(Restrictions.in("pedido.estado", estados));
+				return (List<PedidoColectivo>) criteria.list();
+			}
+		});
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedor(final Integer vendedorid, final Date d, final Date h, final String estadoSeleccionado, final Integer zonaId,
+			final Integer idPuntoRetiro, final String emailAdmin) {
+		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<PedidoColectivo>>() {
+
+			@Override
+			public List<PedidoColectivo> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(PedidoColectivo.class, "pedidoColectivo")
+				.createAlias("pedidoColectivo.colectivo", "grupoCC")
+				.createAlias("grupoCC.vendedor", "vendedor")
+				.add(Restrictions.eq("vendedor.id", vendedorid))
+				.addOrder(Order.desc("pedidoColectivo.id"));
+				if (!StringUtils.isEmpty(estadoSeleccionado)) {
+					c.add(Restrictions.eq("pedidoColectivo.estado", estadoSeleccionado));
+				}
+				if (d != null && h != null) {
+					DateTime desde = new DateTime(d.getTime());
+					DateTime hasta = new DateTime(h.getTime());
+					c.add(Restrictions.between("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
+				}else{
+					if(d!=null){
+						DateTime desde = new DateTime(d.getTime());
+						c.add(Restrictions.ge("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0)));
+					}else{
+						if(h!=null){
+							DateTime hasta = new DateTime(h.getTime());
+							c.add(Restrictions.le("pedidoColectivo.fechaCreacion", hasta.plusDays(1).withHourOfDay(0)));
+						}
+					}
+				}
+				if(idPuntoRetiro!=null) {
+					c.add(Restrictions.eq("puntoDeRetiro.id",idPuntoRetiro));
+				}
+				if(zonaId != null) {
+					c.createAlias("pedidoColectivo.zona", "zona");
+					c.add(Restrictions.eq("zona.id",zonaId));
+				}
+				if(emailAdmin!=null) {
+					if(!emailAdmin.equals("")){
+						c.createAlias("grupoCC.administrador", "administrador");
+						c.add(Restrictions.like("administrador.email", "%"+emailAdmin+"%"));
+					}
+				}
+				return c.list();
+			}
 		});
 	}
 

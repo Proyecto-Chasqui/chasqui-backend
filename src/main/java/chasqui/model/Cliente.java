@@ -6,9 +6,6 @@ import java.util.List;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.joda.time.DateTime;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.zkoss.zkplus.spring.SpringUtil;
 
 import chasqui.dao.PuntoDeRetiroDAO;
 import chasqui.dao.VendedorDAO;
@@ -18,8 +15,6 @@ import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.service.rest.request.DireccionRequest;
 import chasqui.service.rest.request.EditarPerfilRequest;
 import chasqui.service.rest.request.SingUpRequest;
-import chasqui.services.impl.UsuarioServiceImpl;
-import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.composer.Constantes;
 
 public class Cliente extends Usuario {
@@ -302,7 +297,7 @@ public class Cliente extends Usuario {
 
 	public void agregarProductoAPedido(Variante v, Integer idPedido, Integer cantidad, DateTime nuevoVencimiento) throws EstadoPedidoIncorrectoException {
 		Pedido p = encontrarPedidoConId(idPedido);
-		ProductoPedido pp = new ProductoPedido(v, cantidad);
+		ProductoPedido pp = new ProductoPedido(v, cantidad,v.getProducto().getFabricante().getNombre());
 		p.agregarProductoPedido(pp, nuevoVencimiento);
 		p.sumarAlMontoActual(v.getPrecio(), cantidad);
 	}

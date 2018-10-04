@@ -212,7 +212,7 @@ public class Direccion{
 		this.geoUbicacion = geoUbicacion;
 	}
 	public String toString(){
-		return calle+" "+altura+" "+((departamento!=null)? departamento: "")+" - CP:"+codigoPostal+" - Localidad: "+localidad;
+		return calle+" "+altura+" "+((departamento!=null)? departamento: "")+((codigoPostal!=null)? " - CP:" +codigoPostal : "")+" - Localidad: "+localidad;
 	}
 
 	public String getCalleAdyacente1() {

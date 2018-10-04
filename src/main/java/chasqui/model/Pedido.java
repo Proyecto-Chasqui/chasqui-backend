@@ -1,5 +1,6 @@
 package chasqui.model;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,6 +39,7 @@ public class Pedido implements IPedido {
 	private String comentario;
 	private String tipoDeAjuste;
 	private Map<String,String> respuestasAPreguntas;
+	DecimalFormat df = new DecimalFormat("#.##");
 
 	public Pedido(Vendedor v, Cliente c, Boolean esPedidoGrupal, DateTime vencimiento) {
 		idVendedor = v.getId();
@@ -114,7 +116,7 @@ public class Pedido implements IPedido {
 	}
 
 	public Double getMontoMinimo() {
-		return montoMinimo;
+		return trim2decimals(montoMinimo);
 	}
 
 	public void setMontoMinimo(Double montoMinimo) {
@@ -122,7 +124,13 @@ public class Pedido implements IPedido {
 	}
 
 	public Double getMontoActual() {
-		return montoActual;
+		return trim2decimals(montoActual);
+	}
+	
+	private Double trim2decimals(Double d) {
+		String trim = df.format(d); 
+		Double value = Double.parseDouble(trim.replace(",","."));
+		return value;
 	}
 
 	public void setMontoActual(Double montoActual) {
@@ -280,6 +288,7 @@ public class Pedido implements IPedido {
 		if (this.getPerteneceAPedidoGrupal() || this.getMontoActual() >= this.getMontoMinimo()) {
 			this.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
 			this.alterable = false;
+			this.fechaModificacion = new DateTime();
 		} else
 			throw new EstadoPedidoIncorrectoException(
 					"El monto de compra no supera el mínimo (" + this.getMontoMinimo().toString() + ")");

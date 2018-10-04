@@ -31,6 +31,7 @@ public class PedidoColectivo implements IPedido{
 	private DateTime fechaModificacion;
 	private String comentario;
 	private Map<String,String> respuestasAPreguntas;
+	private GrupoCC colectivo;
 	
 	public PedidoColectivo() {
 		pedidosIndividuales = new HashMap<String,Pedido>();
@@ -70,11 +71,15 @@ public class PedidoColectivo implements IPedido{
 	public Double getMontoTotal() {
 		Double total=0.0;
 		for(Pedido pedido: pedidosIndividuales.values()){
-			if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
+			if(estaConfirmado(pedido.getEstado())){
 				total=total+pedido.getMontoActual();
 			}
 		}			
 		return total;
+	}
+	
+	private boolean estaConfirmado(String estado) {
+		return estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}
 
 	public Integer getId() {
@@ -83,6 +88,14 @@ public class PedidoColectivo implements IPedido{
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public GrupoCC getColectivo() {
+		return colectivo;
+	}
+
+	public void setColectivo(GrupoCC colectivo) {
+		this.colectivo = colectivo;
 	}
 
 	@Override
@@ -128,6 +141,7 @@ public class PedidoColectivo implements IPedido{
 	public void entregarte() throws EstadoPedidoIncorrectoException {
 		if (this.estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO)) {
 			this.estado = Constantes.ESTADO_PEDIDO_ENTREGADO;
+			this.cambiarEstadoDePedidosIndividuales(Constantes.ESTADO_PEDIDO_PREPARADO, Constantes.ESTADO_PEDIDO_ENTREGADO);
 		}
 		else{
 			throw new EstadoPedidoIncorrectoException("El pedido no estaba confirmado");
@@ -202,6 +216,7 @@ public class PedidoColectivo implements IPedido{
 		if (this.estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
 			this.estado = Constantes.ESTADO_PEDIDO_PREPARADO;	
 			this.grabarPuntoDeRetiro();
+			this.cambiarEstadoDePedidosIndividuales(Constantes.ESTADO_PEDIDO_CONFIRMADO, Constantes.ESTADO_PEDIDO_PREPARADO);
 		}
 		else{
 			throw new EstadoPedidoIncorrectoException("El pedido no estaba confirmado");
@@ -214,6 +229,20 @@ public class PedidoColectivo implements IPedido{
 		}
 	}
 
+	/**
+	 * Cambia el estado de los pedidos individuales dentro del
+	 * pedido colectivo.
+	 * 
+	 * @param estadoRequerido Estado de los pedidos a cambiar. 
+	 * @param estado Estado por el que se cambiara.
+	 */
+	private void cambiarEstadoDePedidosIndividuales(String estadoRequerido, String estado) {
+		for(Pedido pedido: pedidosIndividuales.values()){
+			if(pedido.getEstado().equals(estadoRequerido)){
+				pedido.setEstado(estado);
+			}
+		}
+	}
 
 	public PuntoDeRetiro getPuntoDeRetiro() {
 		return puntoDeRetiro;

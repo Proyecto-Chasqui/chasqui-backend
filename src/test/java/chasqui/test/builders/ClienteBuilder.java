@@ -3,8 +3,6 @@ package chasqui.test.builders;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Historial;

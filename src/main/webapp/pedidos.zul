@@ -84,7 +84,8 @@ style="overflow:auto">
 		<datebox id="desde" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
 		<label value="Fecha Hasta:"/>
-		<datebox id="hasta" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>	
+		<datebox id="hasta" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
+		<textbox id="buscadorPorCliente" placeholder="Buscar por email cliente"  forward="onOK=pedidosWindow$composer.onBuscar"/>	
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>
@@ -101,8 +102,9 @@ style="overflow:auto">
 			<listheader label="ID Pedido" align="center" visible="true"/>
 			<listheader label="Cliente Creador" align="center" />
 			<listheader label="Fecha Creación" align="center" />
+			<listheader label="Fecha de Cierre" align="center" />
 			<listheader label="Zona" align="center"/>
-			<listheader label="Monto Minimo" align="center"/>
+			<listheader label="Monto Minimo" align="center" visible="false"/>
 			<listheader label="Monto Actual" align="center"/>
 			<listheader label="Estado" align="center"/>
 			<listheader label="Direccion de Entrega" align="center"/>

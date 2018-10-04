@@ -9,12 +9,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import chasqui.dao.MiembroDeGCCDAO;
-import chasqui.model.GrupoCC;
 import chasqui.model.MiembroDeGCC;
-import chasqui.model.Usuario;
 
 public class MiembroDeGCCDAOHbm extends HibernateDaoSupport implements MiembroDeGCCDAO {
 

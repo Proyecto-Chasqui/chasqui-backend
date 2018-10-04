@@ -1,170 +1,43 @@
-# chasqui-backend
+![](http://proyectochasqui.org/images/logo_chasqui_400.png)
 
-##Requerimientos: 
+1. [¿Qué es Chasqui?](#qué-es-chasqui)
+2. [Información técnica](#información-técnica)
+3. [Notas de las diferentes versiones](#notas-de-las-diferentes-versiones)
+4. [Autoría](#autoría)
+5. [Licencia](#licencia)
 
-* Tomcat
-* JDK 1.7
-* Maven2
+## ¿Qué es Chasqui?
 
+Este proyecto (*Plataforma Chasqui Multicatálogo*) es el resultado de un proceso participativo dirigido por la [Cooperativa Código Libre](http://codigolibrecoop.com/)
 
-# Development stack para Linux
+El desarrollo de software se basó en la versión alpha de la herramienta Chasqui disponible en:
+- [Backend](https://github.com/dgonzalia/chasqui-backend)
+- [Frontend mobile](https://github.com/dgonzalia/chasqui-mobile)
+- [Frontend web](https://github.com/leonardopa/tip)
 
-##Instalacion Java
+**Chasqui** es una herramienta de licencia libre que está especialmente diseñada para promover y gestionar la comercialización electrónica de productos de la **Economía Social y Solidaria**.
 
-[Link] (http://askubuntu.com/questions/56104/how-can-i-install-sun-oracles-proprietary-java-jdk-6-7-8-or-jre) (The easy way)
+Consta de una _aplicación móvil_ y una _aplicación web_, que permiten realizar pedidos en las diversas modalidades que proveen identidad, pero también sostenibilidad a la comercialización de la economía social: _compras individuales_, _colectivas_ y por _nodos de consumo_.
 
-> sudo apt-get install python-software-properties
+La herramienta busca visibilizar y poner en valor las características del comercio justo y la Economía Social y Solidaria, promoviendo el consumo responsable y teniendo en cuenta la accesibilidad. Además, se asegurará que la herramienta tenga una **licencia libre**, que permita la potencial extensión de este desarrollo o su adaptación a nuevos contextos, nacionales o internacionales.
 
-> sudo add-apt-repository ppa:webupd8team/java
+Para más información ir al [sitio del proyecto](http://proyectochasqui.org/)
 
-> sudo apt-get update
+## Información técnica
+Para detalles de la instalación y arquitectura ir a [CONFIGURATIONS](../master/CONFIGURATIONS.md)
 
-> sudo apt-get install oracle-java7-installer
+## Notas de las diferentes versiones
+Ver detalles en [RELEASE_NOTES](../master/RELEASE_NOTES.md)
 
+## Autoría
+Las diferentes personas que participaron del proyecto se encuentran mencionadas en [AUTHORS](../master/AUTHORS.md)
 
+## Licencia
+*Chasqui* es software libre: usted puede redistribuirlo y/o modificarlo bajo los términos de la **Licencia Pública General GNU** publicada por la **Free Software Foundation**, bien sea de la versión 3 de la Licencia, o (a su elección) cualquier versión posterior.
 
-##Instalar Apache Tomcat
+*Chasqui* es distribuido con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; incluso sin la garantía implícita de
+COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. *Ver la Licencia Pública General de GNU para más detalles.*
 
-[Link] (https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-7-on-ubuntu-14-04-via-apt-get)
+Usted debe haber recibido una copia de la Licencia Pública General de GNU junto con *Chasqui*. Si no, vea <https://www.gnu.org/licenses/>.
 
-##Instalar Mysql
-
-> sudo apt-get install mysql-server-5.5 mysql-client-5.5
-
-Por consola, conectarse a mysql para crear base de datos CHASQUI: 
-
->
->mysql -u root - p
->
->mysql > CREATE DATABASE CHASQUI;
->mysql > exit
->
-
-##Instalar Maven
-
-> apt-get install maven2
-
-## Descargar eclipse
-
->https://eclipse.org/downloads/
-
-###Configurar eclipse
-
-* Copiar el archivo chasqui.properties.example (con nombre chasqui.properties) ubicado en la carpeta "/src/test/java" y completar las propiedades
-* Definir un nuevo server (tomcat 7) con el path de la carpeta donde se descomprimió el tomcat
-* Incluir webapp en dicho server: con botón derecho sobre el server, elegir add and remove y luego elegir la aplicación chasqui
-
-## Configurar la BD para que no se blanquee con cada arranque del servidor
-
-* Con el backend levantado, hacer un dump de la base de datos: 
-
->mysqldump --user root CHASQUI -p > dumpdechasqui
-
-* Bajar el servidor
-
-* Editar el archivo datasources.xml reemplazando: 
-
-```
-<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-```
-
-**por**
-
-
-```
-<prop key="hibernate.hbm2ddl.auto">validate</prop> 
-```
-
-* Restituir el dump de la base de datos: 
-
-> mysql -u root -p CHASQUI < dumpchasquidb 
-
-## Para levantar el backend (y backoffice) por fuera del eclipse
-
-El siguiente es un script para deploy de backend en apache tomcat. Lo ideal es editar uno para cada colaborador del 
-proyecto e ignorar el mismo en el versionado de git. 
-Observar que $TOMCAT_PATH y $BACKEND_ROOT_PATH estén correctos según tu file system.
-
-```
-#!/bin/bash
-```
->BACKEND_ROOT_PATH="/directorio_de_repositorio/chasqui-backend"
->
->TOMCAT_PATH="/directorio_de_tomcat/apache-tomcat-7.0.70"
->
->echo "### STOP TOMCAT  ###"
->
->cd $TOMCAT_PATH
->
->cd bin
->
->./catalina.sh stop
->
->cd ../webapps
->
->echo "### REMOVING OLD FILES  ###"
->
->rm -f -r chasqui/
->
->rm -f chasqui.war
->
->echo “### MAKING THE .WAR AND COPY IN TOMCAT ###”
->
->cd $BACKEND_ROOT_PATH
->
->mvn clean install
->
->cd target
->
->cp chasqui.war  $TOMCAT_PATH/webapps
->
->echo "### START TOMCAT  ###"
->
->cd $TOMCAT_PATH
->
->cd bin
->
->./catalina.sh start
->
->echo "### DEPLOY FINISHED  ###"
-
-
-Guardar como deploy.sh y darle permisos de ejecución. Correr cada vez que  se quieran probar cambios del backend o backoffice
-
-#Development stack para Windows
-
-[Java Jdk] (http://docs.oracle.com/javase/7/docs/webnotes/install/windows/jdk-installation-windows.html)
-
-[Java Jre] (http://docs.oracle.com/javase/7/docs/webnotes/install/windows/jre-installation-windows.html)
-
-###Apache Tomcat
-[**Opcion 1**] (https://tomcat.apache.org/tomcat-7.0-doc/setup.html#Windows)
-[**Opcion 2**] (http://www.c-sharpcorner.com/UploadFile/fd0172/how-to-configure-and-install-apache-tomcat-server-in-windows/)
-[**Opcion 3**] (http://www.coreservlets.com/Apache-Tomcat-Tutorial/tomcat-7-with-eclipse.html)
-
-###Mysql
-[**Opcion 1**] (https://dev.mysql.com/downloads/mysql/)
-[**Opcion 1**] (http://corlewsolutions.com/articles/article-21-how-to-install-mysql-server-5-6-on-windows-7-development-machine)
-
-###Maven
-[**Recomendado**] (https://www.mkyong.com/maven/how-to-install-maven-in-windows/)
-[**Opcion 1**] (https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html)
-[**Opcion 2**] (https://maven.apache.org/install.html)
-[**Opcion 3**] (http://www.avajava.com/tutorials/lessons/what-is-maven-and-how-do-i-install-it.html)
-[**Opcion 4**] (https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project/set-up-the-eclipse-ide-for-windows)
-
-[Git for  windows] (https://git-for-windows.github.io/)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Se pueden ver los detalles de esa licencia en [COPYING](../master/COPYING)

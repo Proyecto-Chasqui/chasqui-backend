@@ -38,7 +38,7 @@ Bienvenido a Chasqui
 </tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">La invitacion al grupo de compras colectivas <span style="font-weight: bold; color: #00adee;">${aliasGrupo}</span> del usuario <span style="font-weight: bold; color: #00adee;">${usuarioInvitado}</span>para el vendedor <span style="font-weight: bold; color: #00adee;">${vendedor}</span>ha sido aceptada. </td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">La invitacion al grupo de compras colectivas <span style="font-weight: bold; color: #00adee;">${aliasGrupo}</span> del usuario <span style="font-weight: bold; color: #00adee;">${usuarioInvitado}</span> para el vendedor <span style="font-weight: bold; color: #00adee;">${vendedor}</span> ha sido aceptada. </td>
 </tr>
 
 <tr style="height: 40px;">

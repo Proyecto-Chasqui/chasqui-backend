@@ -47,7 +47,7 @@ Bienvenido a Chasqui
 					<br><br>
 					Usuario: <span style="font-weight: bold; color: #00adee;">${nombreUsuario}</span>
 					<br><br>		
-					Contraseña: <span style="font-weight: bold; color: #00adee;">${passwordUsuario}</span>
+					Contraseña: <div style="font-weight: bold; color: #00adee; display: inline; padding-left: 8px;">${passwordUsuario}</div>
 					  <br>				
 					
 </td>

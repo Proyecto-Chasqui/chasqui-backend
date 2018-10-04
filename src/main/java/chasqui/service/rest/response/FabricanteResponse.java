@@ -1,11 +1,7 @@
 package chasqui.service.rest.response;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import chasqui.model.Caracteristica;
-import chasqui.model.CaracteristicaProductor;
 import chasqui.model.Fabricante;
 
 public class FabricanteResponse implements Serializable{

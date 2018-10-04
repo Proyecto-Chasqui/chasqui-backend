@@ -3,7 +3,6 @@ package chasqui.test.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.After;
@@ -15,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import chasqui.exceptions.NodoYaExistenteException;
-import chasqui.exceptions.UsuarioExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Nodo;

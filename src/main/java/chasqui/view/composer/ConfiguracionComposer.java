@@ -1,6 +1,5 @@
 package chasqui.view.composer;
 
-
 import java.util.Arrays;
 import java.util.List;
 
