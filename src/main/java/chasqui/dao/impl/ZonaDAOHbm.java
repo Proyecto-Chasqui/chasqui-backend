@@ -111,12 +111,13 @@ public class ZonaDAOHbm extends HibernateDaoSupport implements ZonaDAO{
 	}
 	
 	@Override
-	public Zona obtenerZonaPorNombre(final String nombre) {
+	public Zona obtenerZonaPorNombre(final String nombre, final Integer idVendedor) {
 		Zona zona = this.getHibernateTemplate().execute(new HibernateCallback<Zona>() {
 
 			public Zona doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria c = session.createCriteria(Zona.class);
 				c.add(Restrictions.eq("nombre", nombre));
+				c.add(Restrictions.eq("idVendedor", idVendedor));
 				return (Zona) c.uniqueResult();
 			}
 		});

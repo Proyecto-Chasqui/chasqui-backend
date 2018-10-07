@@ -35,6 +35,7 @@ import chasqui.dao.VendedorDAO;
 import chasqui.dao.ZonaDAO;
 import chasqui.exceptions.ArchivoConFormatoIncorrectoException;
 import chasqui.exceptions.ErrorDeParseoDeCoordenadasException;
+import chasqui.exceptions.ErrorZona;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
@@ -102,7 +103,7 @@ public class GeoServiceImpl implements GeoService{
 			if(!seSolapaCon(z,z.getId(),zonaDAO.obtenerZonas(request.getIdVendedor()))) {
 				zonaDAO.guardar(z);				
 			}else {
-				throw new Exception("La Zona se solapa");
+				throw new ErrorZona("La Zona se solapa");
 			}
 			request.setId(z.getId());
 			
@@ -115,37 +116,37 @@ public class GeoServiceImpl implements GeoService{
 
 	private void validar(ZonaRequest request) {
 		
-		if(tokenGenerator.tokenActivo(request.getToken())) {
-			new Exception("el token es invalido");
+		if(! tokenGenerator.tokenActivo(request.getToken())) {
+			throw new ErrorZona("el token es invalido");
 		}
 		
 		if(request.getCoordenadas() == null) {
-			new Exception("Las coordenadas estan vacias");
+			throw new ErrorZona("Las coordenadas estan vacias");
 		}
 		
-		if(request.getFechaCierre().isAfterNow()) {
-			new Exception("La fecha de cierre es invalida");
+		if(request.getFechaCierre().isBeforeNow()) {
+			throw new ErrorZona("La fecha de cierre es invalida");
 		}
 		
 		if(request.getIdVendedor() == null) {
-			new Exception("El idVendedor es invalido");
+			throw new ErrorZona("El idVendedor es invalido");
 		}
 		
 		if(request.getMensaje().isEmpty()) {
-			new Exception("El mensaje esta vacio");
+			throw new ErrorZona("El mensaje esta vacio");
 		}
 		
 		if(request.getNombre().isEmpty()) {
-			new Exception("El nombre esta vacio");
+			throw new ErrorZona("El nombre esta vacio");
 		}
-		
+		//verifica que ante una zona nueva no exista el nombre en las zonas existentes.
 		if( request.getId() == null && existeZonaConNombre(request) ) {
-			new Exception("Ya existe una zona con el nombre" + request.getNombre());
+			throw new ErrorZona("Ya existe una zona con el nombre" + request.getNombre());
 		}
-		
+		//verifica que en caso de cambio de nombre a una zona existente, ese cambio de nombre no este asignado a otra zona.
 		if(!laZonaConIdTieneElNombre(request)) {
 			if(existeZonaConNombre(request)){
-				new Exception("Ya existe una zona con el nombre" + request.getNombre());
+				throw new ErrorZona("Ya existe una zona con el nombre" + request.getNombre());
 			}
 		}
 		
@@ -154,13 +155,13 @@ public class GeoServiceImpl implements GeoService{
 	private boolean laZonaConIdTieneElNombre(ZonaRequest request) {
 		boolean ret=false;
 		if(request.getId() != null) {
-			ret = zonaDAO.obtenerZonaPorId(request.getId()).getNombre() == request.getNombre();
+			ret = zonaDAO.obtenerZonaPorId(request.getId()).getNombre().equals(request.getNombre());
 		}
 		return ret;
 	}
 
 	private boolean existeZonaConNombre(ZonaRequest request) {
-		return zonaDAO.obtenerZonaPorNombre(request.getNombre()) != null;
+		return zonaDAO.obtenerZonaPorNombre(request.getNombre(), request.getIdVendedor()) != null;
 	}
 
 	private Polygon crearPolygon(ArrayList<ArrayList<Double>> coordinates) throws ParseException {

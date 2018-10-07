@@ -20,6 +20,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import chasqui.exceptions.ErrorZona;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Zona;
@@ -30,6 +31,7 @@ import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.ZonaGeoJsonResponse;
 import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.ZonaService;
+import chasqui.utils.TokenGenerator;
 
 @Service
 @Path("/zona")
@@ -38,6 +40,8 @@ public class ZonaListener {
 	ZonaService zonaService;
 	@Autowired
 	GeoService geoService;
+	@Autowired
+	TokenGenerator tokenGenerator;
 	
 	@GET
 	@Path("/all/{idVendedor}")
@@ -62,9 +66,11 @@ public class ZonaListener {
 			ZonaGeoJsonResponse returnZona = toEchoZona(zonaService.obtenerZonaPorId(request.getId()));
 			return Response.ok(returnZona).build();
 		} catch (IOException e) {
-			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			return Response.ok(new ZonaGeoJsonResponse()).build();
+		} catch (ErrorZona e) {
+			return Response.ok(new ZonaGeoJsonResponse()).build();
 		} catch (Exception e) {
-			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			return Response.ok(new ZonaGeoJsonResponse()).build();
 		}
 	}
 	
@@ -76,10 +82,14 @@ public class ZonaListener {
 		EliminarZonaRequest request;
 		try {
 			request = this.toEliminarZonaRequest(eliminarZonaRequest);
-			geoService.eliminarZona(request);
-			return Response.ok("{\"STATUS\":\"OK\"}").build();
+			if(tokenGenerator.tokenActivo(request.getToken())) {
+				geoService.eliminarZona(request);
+				return Response.ok("{\"STATUS\":\"OK\"}").build();
+			}else {
+				return Response.ok("{\"STATUS\":\"ERROR\"}").build();
+			}
 		} catch (IOException e) {
-			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			return Response.ok("{\"STATUS\":\"ERROR\"}").build();
 		} 
 	}
 	
