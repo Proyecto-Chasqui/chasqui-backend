@@ -17,6 +17,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +63,8 @@ public class ZonaListener {
 		ZonaRequest request;
 		try {
 			request = this.toZonaRequest(zonaRequest);
+			DateTime d = request.getFechaCierre().plusDays(1);
+			request.setFechaCierre(d);
 			geoService.crearGuardarZona(request);
 			ZonaGeoJsonResponse returnZona = toEchoZona(zonaService.obtenerZonaPorId(request.getId()));
 			return Response.ok(returnZona).build();
