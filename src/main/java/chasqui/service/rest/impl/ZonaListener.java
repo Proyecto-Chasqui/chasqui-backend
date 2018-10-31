@@ -1,6 +1,7 @@
 package chasqui.service.rest.impl;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +27,16 @@ import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Zona;
 import chasqui.service.rest.request.EliminarZonaRequest;
+import chasqui.service.rest.request.ErrorCodesRequest;
 import chasqui.service.rest.request.GrupoRequest;
 import chasqui.service.rest.request.ZonaRequest;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.ZonaGeoJsonResponse;
 import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.ZonaService;
+import chasqui.utils.ErrorCodes;
 import chasqui.utils.TokenGenerator;
+import chasqui.view.composer.Constantes;
 
 @Service
 @Path("/zona")
@@ -56,10 +60,41 @@ public class ZonaListener {
 	}
 	
 	@POST
+	@Path("/getErrorCodes")
+	@Produces("application/json")
+	public Response codigosDeError(
+			@Multipart(value = "errorCodesRequest", type = "application/json") final String errorCodesRequest) {
+		ErrorCodesRequest request;
+		try {
+			request = this.ErrorCodesRequest(errorCodesRequest);
+			if(tokenGenerator.tokenActivo(request.getToken())){
+				return Response.ok(new ErrorCodes()).build();
+			}else {
+				return Response.ok("{\"STATUS\":\"ERROR\"}").build();
+			}
+
+		} catch (IOException e) {
+			return Response.ok(new ZonaGeoJsonResponse()).build();
+		} catch (ErrorZona e) {
+			return Response.ok(new ZonaGeoJsonResponse()).build();
+		} catch (Exception e) {
+			return Response.ok(new ZonaGeoJsonResponse()).build();
+		}
+	}
+	
+	private ErrorCodesRequest ErrorCodesRequest(String errorCodesRequest) throws JsonParseException, JsonMappingException, IOException {
+		ErrorCodesRequest request = new ErrorCodesRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		request = mapper.readValue(errorCodesRequest, ErrorCodesRequest.class);
+		return request;
+	}
+
+	@POST
 	@Path("/altaZona")
 	@Produces("application/json")
 	public Response guardarZona(
-			@Multipart(value = "grupoRequest", type = "application/json") final String zonaRequest) {
+			@Multipart(value = "zonaRequest", type = "application/json") final String zonaRequest) {
 		ZonaRequest request;
 		try {
 			request = this.toZonaRequest(zonaRequest);
@@ -85,14 +120,15 @@ public class ZonaListener {
 		EliminarZonaRequest request;
 		try {
 			request = this.toEliminarZonaRequest(eliminarZonaRequest);
-			if(tokenGenerator.tokenActivo(request.getToken())) {
+			//sacar el ! cuando se terminen las pruebas de codigos de error
+			if(!tokenGenerator.tokenActivo(request.getToken())) {
 				geoService.eliminarZona(request);
 				return Response.ok("{\"STATUS\":\"OK\"}").build();
 			}else {
-				return Response.ok("{\"STATUS\":\"ERROR\"}").build();
+				return Response.ok("{\"STATUS\":\"ERROR\", \"CODE\":\"ez001\"}").build();
 			}
 		} catch (IOException e) {
-			return Response.ok("{\"STATUS\":\"ERROR\"}").build();
+			return Response.ok("{\"STATUS\":\"ERROR\", \"CODE\":\""+e+"\"}").build();
 		} 
 	}
 	

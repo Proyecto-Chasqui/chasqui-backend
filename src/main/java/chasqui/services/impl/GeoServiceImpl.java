@@ -47,6 +47,7 @@ import chasqui.service.rest.request.ZonaRequest;
 import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
+import chasqui.utils.ErrorCodes;
 import chasqui.utils.SphericalMercator;
 import chasqui.utils.TokenGenerator;
 
@@ -103,7 +104,7 @@ public class GeoServiceImpl implements GeoService{
 			if(!seSolapaCon(z,z.getId(),zonaDAO.obtenerZonas(request.getIdVendedor()))) {
 				zonaDAO.guardar(z);				
 			}else {
-				throw new ErrorZona("La Zona se solapa");
+				throw new ErrorZona(new ErrorCodes().ez008);
 			}
 			request.setId(z.getId());
 			
@@ -117,36 +118,36 @@ public class GeoServiceImpl implements GeoService{
 	private void validar(ZonaRequest request) {
 		
 		if(! tokenGenerator.tokenActivo(request.getToken())) {
-			throw new ErrorZona("el token es invalido");
+			throw new ErrorZona("1");
 		}
 		
 		if(request.getCoordenadas() == null) {
-			throw new ErrorZona("Las coordenadas estan vacias");
+			throw new ErrorZona("2");
 		}
 		
 		if(request.getFechaCierre().isBeforeNow()) {
-			throw new ErrorZona("La fecha de cierre es invalida");
+			throw new ErrorZona("3");
 		}
 		
 		if(request.getIdVendedor() == null) {
-			throw new ErrorZona("El idVendedor es invalido");
+			throw new ErrorZona("4");
 		}
 		
 		if(request.getMensaje().isEmpty()) {
-			throw new ErrorZona("El mensaje esta vacio");
+			throw new ErrorZona("5");
 		}
 		
 		if(request.getNombre().isEmpty()) {
-			throw new ErrorZona("El nombre esta vacio");
+			throw new ErrorZona("6");
 		}
 		//verifica que ante una zona nueva no exista el nombre en las zonas existentes.
 		if( request.getId() == null && existeZonaConNombre(request) ) {
-			throw new ErrorZona("Ya existe una zona con el nombre" + request.getNombre());
+			throw new ErrorZona("7" + request.getNombre());
 		}
 		//verifica que en caso de cambio de nombre a una zona existente, ese cambio de nombre no este asignado a otra zona.
 		if(!laZonaConIdTieneElNombre(request)) {
 			if(existeZonaConNombre(request)){
-				throw new ErrorZona("Ya existe una zona con el nombre" + request.getNombre());
+				throw new ErrorZona("8" + request.getNombre());
 			}
 		}
 		
