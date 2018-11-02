@@ -104,7 +104,7 @@ public class GeoServiceImpl implements GeoService{
 			if(!seSolapaCon(z,z.getId(),zonaDAO.obtenerZonas(request.getIdVendedor()))) {
 				zonaDAO.guardar(z);				
 			}else {
-				throw new ErrorZona(new ErrorCodes().ez008);
+				throw new ErrorZona("ez008");
 			}
 			request.setId(z.getId());
 			

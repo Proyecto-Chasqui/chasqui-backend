@@ -31,6 +31,7 @@ import chasqui.service.rest.request.ErrorCodesRequest;
 import chasqui.service.rest.request.GrupoRequest;
 import chasqui.service.rest.request.ZonaRequest;
 import chasqui.service.rest.response.ChasquiError;
+import chasqui.service.rest.response.ChasquiZonaStatus;
 import chasqui.service.rest.response.ZonaGeoJsonResponse;
 import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.ZonaService;
@@ -65,18 +66,23 @@ public class ZonaListener {
 	public Response codigosDeError(
 			@Multipart(value = "errorCodesRequest", type = "application/json") final String errorCodesRequest) {
 		ErrorCodesRequest request;
+		ChasquiZonaStatus statusResponse = new ChasquiZonaStatus();
 		try {
 			request = this.ErrorCodesRequest(errorCodesRequest);
 			if(tokenGenerator.tokenActivo(request.getToken())){
 				return Response.ok(new ErrorCodes()).build();
 			}else {
-				return Response.ok("{\"STATUS\":\"ERROR\"}").build();
+				statusResponse.setStatus("ERROR");
+				statusResponse.setCode("ez001");
+				return Response.ok(statusResponse).build();
 			}
 
 		} catch (IOException e) {
 			return Response.ok(new ZonaGeoJsonResponse()).build();
 		} catch (ErrorZona e) {
-			return Response.ok(new ZonaGeoJsonResponse()).build();
+			statusResponse.setCode("ez008");
+			statusResponse.setStatus("ERROR");
+			return Response.ok(statusResponse).build();
 		} catch (Exception e) {
 			return Response.ok(new ZonaGeoJsonResponse()).build();
 		}
@@ -96,6 +102,7 @@ public class ZonaListener {
 	public Response guardarZona(
 			@Multipart(value = "zonaRequest", type = "application/json") final String zonaRequest) {
 		ZonaRequest request;
+		ChasquiZonaStatus statusResponse = new ChasquiZonaStatus();
 		try {
 			request = this.toZonaRequest(zonaRequest);
 			DateTime d = request.getFechaCierre().plusDays(1);
@@ -104,11 +111,17 @@ public class ZonaListener {
 			ZonaGeoJsonResponse returnZona = toEchoZona(zonaService.obtenerZonaPorId(request.getId()));
 			return Response.ok(returnZona).build();
 		} catch (IOException e) {
-			return Response.ok(new ZonaGeoJsonResponse()).build();
+			statusResponse.setStatus("ERROR");
+			statusResponse.setCode("");
+			return Response.ok(statusResponse).build();
 		} catch (ErrorZona e) {
-			return Response.ok(new ZonaGeoJsonResponse()).build();
+			statusResponse.setCode(e.getMessage());
+			statusResponse.setStatus("ERROR");
+			return Response.ok(statusResponse).build();
 		} catch (Exception e) {
-			return Response.ok(new ZonaGeoJsonResponse()).build();
+			statusResponse.setCode(e.getMessage());
+			statusResponse.setStatus("ERROR");
+			return Response.ok(statusResponse).build();
 		}
 	}
 	
@@ -118,17 +131,23 @@ public class ZonaListener {
 	public Response eliminarZona(
 			@Multipart(value = "grupoRequest", type = "application/json") final String eliminarZonaRequest) {
 		EliminarZonaRequest request;
+		ChasquiZonaStatus statusResponse = new ChasquiZonaStatus();
 		try {
 			request = this.toEliminarZonaRequest(eliminarZonaRequest);
-			//sacar el ! cuando se terminen las pruebas de codigos de error
-			if(!tokenGenerator.tokenActivo(request.getToken())) {
+			if(tokenGenerator.tokenActivo(request.getToken())) {
 				geoService.eliminarZona(request);
-				return Response.ok("{\"STATUS\":\"OK\"}").build();
-			}else {
-				return Response.ok("{\"STATUS\":\"ERROR\", \"CODE\":\"ez001\"}").build();
+				statusResponse.setStatus("OK");
+				statusResponse.setCode("");
+				return Response.ok(statusResponse).build();
+			}else {				
+				statusResponse.setStatus("ERROR");
+				statusResponse.setCode("ez001");
+				return Response.ok(statusResponse).build();
 			}
 		} catch (IOException e) {
-			return Response.ok("{\"STATUS\":\"ERROR\", \"CODE\":\""+e+"\"}").build();
+			statusResponse.setStatus("ERROR");
+			statusResponse.setCode("");
+			return Response.ok(statusResponse).build();
 		} 
 	}
 	
