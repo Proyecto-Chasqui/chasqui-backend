@@ -77,14 +77,10 @@ public class ZonaListener {
 				return Response.ok(statusResponse).build();
 			}
 
-		} catch (IOException e) {
-			return Response.ok(new ZonaGeoJsonResponse()).build();
-		} catch (ErrorZona e) {
-			statusResponse.setCode("ez008");
-			statusResponse.setStatus("ERROR");
-			return Response.ok(statusResponse).build();
 		} catch (Exception e) {
-			return Response.ok(new ZonaGeoJsonResponse()).build();
+			statusResponse.setStatus("ERROR");
+			statusResponse.setCode("");
+			return Response.ok(statusResponse).build();
 		}
 	}
 	
@@ -119,7 +115,7 @@ public class ZonaListener {
 			statusResponse.setStatus("ERROR");
 			return Response.ok(statusResponse).build();
 		} catch (Exception e) {
-			statusResponse.setCode(e.getMessage());
+			statusResponse.setCode("");
 			statusResponse.setStatus("ERROR");
 			return Response.ok(statusResponse).build();
 		}

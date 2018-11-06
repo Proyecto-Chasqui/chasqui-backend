@@ -118,36 +118,36 @@ public class GeoServiceImpl implements GeoService{
 	private void validar(ZonaRequest request) {
 		
 		if(! tokenGenerator.tokenActivo(request.getToken())) {
-			throw new ErrorZona("1");
+			throw new ErrorZona("ez001");
 		}
 		
 		if(request.getCoordenadas() == null) {
-			throw new ErrorZona("2");
+			throw new ErrorZona("ez002");
 		}
 		
 		if(request.getFechaCierre().isBeforeNow()) {
-			throw new ErrorZona("3");
+			throw new ErrorZona("ez003");
 		}
 		
 		if(request.getIdVendedor() == null) {
-			throw new ErrorZona("4");
+			throw new ErrorZona("ez004");
 		}
 		
 		if(request.getMensaje().isEmpty()) {
-			throw new ErrorZona("5");
+			throw new ErrorZona("ez005");
 		}
 		
 		if(request.getNombre().isEmpty()) {
-			throw new ErrorZona("6");
+			throw new ErrorZona("ez006");
 		}
 		//verifica que ante una zona nueva no exista el nombre en las zonas existentes.
 		if( request.getId() == null && existeZonaConNombre(request) ) {
-			throw new ErrorZona("7" + request.getNombre());
+			throw new ErrorZona("ez007");
 		}
 		//verifica que en caso de cambio de nombre a una zona existente, ese cambio de nombre no este asignado a otra zona.
 		if(!laZonaConIdTieneElNombre(request)) {
 			if(existeZonaConNombre(request)){
-				throw new ErrorZona("8" + request.getNombre());
+				throw new ErrorZona("ez007");
 			}
 		}
 		
