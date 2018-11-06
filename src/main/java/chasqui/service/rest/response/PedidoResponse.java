@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
+import chasqui.model.Usuario;
 import chasqui.services.interfaces.GrupoService;
 
 public class PedidoResponse implements Serializable {
@@ -28,6 +29,7 @@ public class PedidoResponse implements Serializable {
 	private Integer id;
 	private Integer idGrupo;
 	private Integer idVendedor;
+	private ClienteResponse cliente;
 	private String estado;
 	private String aliasGrupo;
 	private String fechaCreacion;
@@ -209,6 +211,7 @@ public class PedidoResponse implements Serializable {
 		idVendedor = p.getIdVendedor();
 		estado = p.getEstado();
 		nombreVendedor=p.getNombreVendedor();
+		setCliente(new ClienteResponse(p.getCliente()));
 		DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
 		fechaCreacion = f.format(p.getFechaCreacion().toDate());
 		fechaVencimiento = (p.getFechaDeVencimiento()!=null)?f.format(p.getFechaDeVencimiento().toDate()):null;
@@ -274,6 +277,16 @@ public class PedidoResponse implements Serializable {
 
 	public void setPuntoDeRetiro(PuntoDeRetiroResponse puntoDeRetiro) {
 		this.puntoDeRetiro = puntoDeRetiro;
+	}
+
+
+	public ClienteResponse getCliente() {
+		return cliente;
+	}
+
+
+	public void setCliente(ClienteResponse cliente) {
+		this.cliente = cliente;
 	}
 	
 
