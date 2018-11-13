@@ -3,6 +3,7 @@ package chasqui.view.composer;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.sl.usermodel.TextBox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -15,6 +16,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -47,7 +49,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	private Window confwindow;
 	private Component vcomp;
 	private Vendedor usuarioSeleccionado;
-	
+	private Textbox textboxTiempoVencimiento;
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -82,6 +84,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	public void editar(Vendedor vendedor) {
 		 usuarioSeleccionado = vendedor;
 		 EstrategiasDeComercializacion estrategias = usuarioSeleccionado.getEstrategiasUtilizadas();
+		 this.setTiempoVencimiento(vendedor);
 		 if(estrategias != null){
 			 completarChecks(estrategias);
 		 }else{
@@ -93,6 +96,19 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 }
 	}
 	
+	private void setTiempoVencimiento(Vendedor vendedor) {
+		 if(vendedor.getTiempoVencimientoPedidos() != null){
+			 String tiempo = vendedor.getTiempoVencimientoPedidos().toString();
+			 textboxTiempoVencimiento.setValue(tiempo);
+		 }else{
+			 if(vendedor != null){
+				 vendedor.setTiempoVencimientoPedidos(0);
+				 textboxTiempoVencimiento.setValue(vendedor.getTiempoVencimientoPedidos().toString());
+			 }
+		 }
+		
+	}
+
 	private void completarChecks(EstrategiasDeComercializacion estrategias){
 		individual.setChecked(estrategias.isCompraIndividual());
 	 	nodos.setChecked(estrategias.isNodos());
@@ -125,6 +141,8 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 	estrategias.setGcc(colectiva.isChecked());
 		 	estrategias.setPuntoDeEntrega(puntoDeEntrega.isChecked());
 		 	estrategias.setSeleccionDeDireccionDelUsuario(entregaADomicilio.isChecked());
+		 	Integer tiempo = Integer.parseInt(textboxTiempoVencimiento.getValue());
+		 	usuarioSeleccionado.setTiempoVencimientoPedidos(tiempo);
 		 	usuarioService.guardarUsuario(usuarioSeleccionado);
 		 	liberarChecks();
 			EventListener evt = new EventListener() {
@@ -222,6 +240,14 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 
 	public void setEntregaADomicilio(Checkbox entregaADomicilio) {
 		this.entregaADomicilio = entregaADomicilio;
+	}
+
+	public Textbox getTiempoVencimiento() {
+		return textboxTiempoVencimiento;
+	}
+
+	public void setTiempoVencimiento(Textbox tiempoVencimiento) {
+		this.textboxTiempoVencimiento = tiempoVencimiento;
 	}
 }
 

@@ -21,7 +21,7 @@ public interface PedidoDAO {
 
 	public List<Pedido> obtenerPedidos(Integer id, Date desde, Date hasta, String estadoSeleccionado);
 
-	public List<Pedido> obtenerPedidosAbiertosConFechaVencida();
+	public List<Pedido> obtenerPedidosAbiertosConFechaVencida(Integer idVendedor);
 	
 	public List<Pedido> obtenerPedidosProximosAVencerEnDeterminadaZona(Integer cantidadDeDias, Integer idVendedor, DateTime fechaCierrePedido,  Zona Zona);
 

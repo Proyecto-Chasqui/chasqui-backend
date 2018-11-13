@@ -59,8 +59,8 @@ public class PedidoServiceImpl implements PedidoService {
 	private Integer cantidadDeMinutosParaExpiracion;
 	
 	@Override
-	public List<Pedido> obtenerPedidosExpirados() {
-		return pedidoDAO.obtenerPedidosAbiertosConFechaVencida();
+	public List<Pedido> obtenerPedidosExpirados(Integer idVendedor) {
+		return pedidoDAO.obtenerPedidosAbiertosConFechaVencida(idVendedor);
 	}
 
 
@@ -154,27 +154,32 @@ public class PedidoServiceImpl implements PedidoService {
 		
 		
 
-		Pedido p = new Pedido(vendedor, cliente, false, nuevaFechaVencimiento());
+		Pedido p = new Pedido(vendedor, cliente, false, nuevaFechaVencimiento(vendedor.getTiempoVencimientoPedidos()));
 		cliente.agregarPedido(p);
 		usuarioService.guardarUsuario(cliente);
 	}
 	
-	private DateTime nuevaFechaVencimiento() {
+	private DateTime nuevaFechaVencimiento(Integer tiempoVencimiento) {
 		DateTime d = new DateTime();
-		d = d.plusMinutes(this.cantidadDeMinutosParaExpiracion );
+		if(tiempoVencimiento != null) {
+		d = d.plusMinutes(tiempoVencimiento);
+		}else {
+			d =d.plusMinutes(cantidadDeMinutosParaExpiracion);
+		}
 		return d;
 	}
 
 	@Override
-	public void refrescarVencimiento(Integer idPedido, String email) throws UsuarioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException {
+	public void refrescarVencimiento(Integer idPedido, String email) throws UsuarioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException, VendedorInexistenteException {
 		Pedido pedido = pedidoDAO.obtenerPedidoPorId(idPedido);
+		Integer tiempoVencimiento= usuarioService.obtenerVendedorPorID(pedido.getIdVendedor()).getTiempoVencimientoPedidos();
 		if(pedido == null || !pedido.getCliente().getEmail().equals(email)){
 			throw new PedidoInexistenteException("Id incorrecto");
 		}
 		if(!pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)){
 			throw new EstadoPedidoIncorrectoException("El pedido debe estar abierto");
 		}
-		pedido.setFechaDeVencimiento(this.nuevaFechaVencimiento());
+		pedido.setFechaDeVencimiento(this.nuevaFechaVencimiento(tiempoVencimiento));
 		pedidoDAO.guardar(pedido);
 	}
 
@@ -186,7 +191,7 @@ public class PedidoServiceImpl implements PedidoService {
 		usuarioService.inicializarPedidos(cliente);
 		validarVendedorParaCreacionDePedido(cliente, vendedor);
 
-		Pedido p = new Pedido(vendedor, cliente, true, nuevaFechaVencimiento()); 
+		Pedido p = new Pedido(vendedor, cliente, true, nuevaFechaVencimiento(vendedor.getTiempoVencimientoPedidos())); 
 		//p.setPedidoColectivo(grupo.getPedidoActual());
 		cliente.agregarPedido(p);
 		usuarioService.guardarUsuario(cliente);
@@ -199,16 +204,16 @@ public class PedidoServiceImpl implements PedidoService {
 	@Dateable
 	public synchronized void agregarProductosAPedido(AgregarQuitarProductoAPedidoRequest request, String email)
 			throws UsuarioInexistenteException, ProductoInexistenteException, PedidoVigenteException,
-			RequestIncorrectoException, EstadoPedidoIncorrectoException {
+			RequestIncorrectoException, EstadoPedidoIncorrectoException, VendedorInexistenteException {
 		
 		validarRequest(request);
 		Pedido p = pedidoDAO.obtenerPedidoPorId(request.getIdPedido());
 		Variante variante = productoService.obtenerVariantePor(request.getIdVariante());
-		
+		Integer tiempoVencimiento = usuarioService.obtenerVendedorPorID(p.getIdVendedor()).getTiempoVencimientoPedidos();
 		validar(variante, null, request);
 		
 		ProductoPedido pp = new ProductoPedido(variante, request.getCantidad(),variante.getProducto().getFabricante().getNombre());
-		p.agregarProductoPedido(pp, nuevaFechaVencimiento());
+		p.agregarProductoPedido(pp, nuevaFechaVencimiento(tiempoVencimiento));
 		p.sumarAlMontoActual(variante.getPrecio(), request.getCantidad());
 		variante.reservarCantidad(request.getCantidad());
 		

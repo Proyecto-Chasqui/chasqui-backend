@@ -22,6 +22,9 @@
         <property name="distanciaCompraColectiva" type="java.lang.Integer">
             <column name="DISTANCIA_COMPRA_COLECTIVA" />
         </property>
+        <property name="tiempoVencimientoPedidos" type="java.lang.Integer">
+            <column name="TIEMPO_VENCIMIENTO_PEDIDOS" />
+        </property>
         <property name="mapaZonas" type="java.lang.String" column="MAPA"/>
         
         <many-to-one name="estrategiasUtilizadas" class="chasqui.model.EstrategiasDeComercializacion" lazy="false" column="ESTRATEGIAS_UTILIZADAS"/>

@@ -307,7 +307,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(true);
 		usuariosActualesInclude.setVisible(true);
 		estrategiasInclude.setVisible(true);
-		
 		binder.loadAll();
 	}
 	
