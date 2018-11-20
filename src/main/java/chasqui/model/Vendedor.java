@@ -24,7 +24,7 @@ public class Vendedor extends Usuario{
 	private List<PreguntaDeConsumo> preguntasDePedidosIndividuales;
 	private List<PreguntaDeConsumo> preguntasDePedidosColectivos;
 	private Integer tiempoVencimientoPedidos;
-	
+	private DataMultimedia dataMultimedia;
 	
 	//GETs & SETs	
 	
@@ -392,6 +392,14 @@ public class Vendedor extends Usuario{
 
 	public void setTiempoVencimientoPedidos(Integer tiempoVencimientoPedidos) {
 		this.tiempoVencimientoPedidos = tiempoVencimientoPedidos;
+	}
+
+	public DataMultimedia getDataMultimedia() {
+		return dataMultimedia;
+	}
+
+	public void setDataMultimedia(DataMultimedia dataMultimedia) {
+		this.dataMultimedia = dataMultimedia;
 	}
 
 }

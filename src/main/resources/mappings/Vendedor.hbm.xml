@@ -84,6 +84,10 @@
 			<index column="SEQUENCE"></index>
 			<one-to-many class="chasqui.model.PreguntaDeConsumo"/>
 		</list>
+		
+		<many-to-one name="dataMultimedia" class="chasqui.model.DataMultimedia" lazy="false" fetch="join">
+            <column name="ID_DATA_MULTIMEDIA"/>
+        </many-to-one>
         
     </joined-subclass>
 </hibernate-mapping>

@@ -1,0 +1,105 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionPortadaWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window id="configuracionPortadaWindow" border="normal" title="Configuración de portada" position="center,top"
+apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable="true">
+
+	<tabbox>
+	<tabs>
+		<tab label="Imágenes"/>
+		<tab label="Textos"/>
+	</tabs>
+	<tabpanels>
+		<tabpanel>
+			<separator bar="true" spacing="15px"/>
+			<div align="center">
+				<auxhead sclass="category-center">
+            		<auxheader label="Banner" colspan="6" rowspan="1" />
+        		</auxhead>		
+			</div>
+			<separator bar="true" spacing="15px"/>
+			<listbox id="listImagenesBanner" width="95%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="1">
+				<listhead>
+					<listheader label="Nombre"/>
+					<listheader label="Acciones"/>
+				</listhead>
+				<listitem self="@{each=imagenbanner}">
+					<listcell label="@{imagenbanner.getNombre}"/>
+					<listcell>
+						<hbox>
+							<image src="/imagenes/trash.png"/>
+							<space spacing="10px"/>
+							<image src="/imagenes/download.png" />
+						</hbox>
+					</listcell>
+				</listitem>	
+			</listbox>
+			<separator spacing="15px"/>
+			<div	align="center">
+				<fileupload label="Agregar Imagen de Banner" id="uploadImagenBanner"  upload="true,maxsize=-1" />
+			</div>
+			<separator spacing="15px"/>
+			<separator bar="true" spacing="15px"/>
+			<div align="center">
+				<auxhead sclass="category-center">
+            		<auxheader label="Portada" colspan="6" rowspan="1" />
+        		</auxhead>	
+			</div>
+			<separator bar="true" spacing="15px"/>
+			<listbox id="listImagenesPortada" width="95%" model="@{configuracionPortadaWindow$composer.imagenesPortada}"  rows="1">
+				<listhead>
+					<listheader label="Nombre"/>
+					<listheader label="Acciones"/>
+				</listhead>
+				<listitem self="@{each=imagen}">
+					<listcell label="@{imagen.getNombre}"/>
+					<listcell>
+						<hbox>
+							<image src="/imagenes/trash.png"/>
+							<space spacing="10px"/>
+							<image src="/imagenes/download.png" />
+						</hbox>
+					</listcell>
+				</listitem>	
+			</listbox>
+			<separator spacing="15px"/>
+			<div	align="center">
+				<fileupload label="Agregar Imagen de portada" id="uploadImagenPortada"  upload="true,maxsize=-1" />
+			</div>
+			<separator bar="true" spacing="15px"/>
+				<div align="center">
+					<auxhead sclass="category-center">
+	            		<auxheader label="Logo" colspan="6" rowspan="1" />
+	        		</auxhead>	
+				</div>
+			<separator bar="true" spacing="15px"/>
+			<separator spacing="15px"/>
+				<div align="center">
+					<hlayout valign="middle" >
+						<vlayout>
+						
+						<image width="128px" height="128px" id="imagenLogo"/>
+						<fileupload label="Subir Imagen" id="uploadImagenLogo" upload="true,maxsize=-1" />
+						</vlayout> 				
+					</hlayout>
+				</div>
+			<separator spacing="15px"/>
+		</tabpanel>
+		<tabpanel>
+				<separator bar="true" spacing="15px"/>
+				<div align="center">
+					<auxhead sclass="category-center">
+            			<auxheader label="Texto Portada" colspan="6" rowspan="1" />
+        			</auxhead>		
+				</div>
+				<separator bar="true" spacing="15px"/>
+				<textbox  rows="25" id="txtPortada" width="100%"/>
+		</tabpanel>
+	</tabpanels>
+</tabbox>
+
+</window>
+</zk>

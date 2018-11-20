@@ -50,6 +50,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	private Checkbox checkUtilizarMismaFecha;
 	private Button zonaButton;
 	private Button puntoDeRetiroButton;
+	private Button configuracionDePortadaButton;
 	private Listcell puntoderetiro;
 	private Listcell puntoderetiroOptions;
 	private Encrypter encrypter ;
@@ -187,6 +188,11 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		w.doModal();
 	}
 	
+	public void onClick$configuracionDePortadaButton(){
+		Window w = (Window) Executions.createComponents("/configuracionPortada.zul", this.self, null);
+		w.doModal();
+	}
+	
 	public void onClick$buttonGuardar() throws Exception{
 		validarPassword();
 		validacionesDeCompra();
@@ -314,7 +320,6 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	public void setImagen(Imagen imagen) {
 		this.imagen = imagen;
 	}
-	
 	
 	
 	

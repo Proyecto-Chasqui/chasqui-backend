@@ -54,7 +54,43 @@ public class FileSaver {
 		}
 	}
 	
+	public Imagen guardarImagenConPathRelativeDinamico(String picturesAbsolutePath,String relativePath, String username, String fileName, byte[] bytes){
+		try{
+			//Crear directorio del vendedor
+			String barra = (picturesAbsolutePath.endsWith("/"))?"":"/";
+			String userDirPath=picturesAbsolutePath+barra+"usuarios/"+username;
+			File dir = new File(userDirPath);
+			dir.mkdir();
+			
+			//Guardando archivo en el file system
+			String fileNameConPath = userDirPath+"/"+fileName;
+			File f = new File(fileNameConPath);
+			f.setWritable(true);
+			f.getParentFile().mkdirs();
+			f.createNewFile();
+			FileOutputStream fos = new FileOutputStream(f);
+			fos.write(bytes);
+			fos.flush();
+			fos.close();
+			f.setWritable(false);
+			
+			//Creando objeto para persistir en BD
+			Imagen imagen = new Imagen();
+			String imageFilePath = relativePath+username+"/"+fileName;
+			imagen.setPath(imageFilePath);
+			imagen.setAbsolutePath(fileNameConPath);
+			//imagen.setAbsolutePath(fileNameConPath);
+			imagen.setNombre(fileName);
+			return imagen;			
+		}catch(Exception e){
+			throw new RuntimeException(e.getMessage());
+		}
+	}
 	
+	public void borrarImagenEnCarpeta(String serverAbsolutePath) {
+		File file = new File(serverAbsolutePath);
+		file.delete();
+	}
 
 	
 	public Imagen recuperarImagen(String serverAbsolutePath,String username,String fileName){
