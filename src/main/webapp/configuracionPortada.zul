@@ -14,14 +14,12 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 	</tabs>
 	<tabpanels>
 		<tabpanel>
-			<separator bar="true" spacing="15px"/>
-			<div align="center">
+			<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
 				<auxhead sclass="category-center">
-            		<auxheader label="Banner" colspan="6" rowspan="1" />
+            		<auxheader label="Banner" style="color: black" colspan="6" rowspan="1" />
         		</auxhead>		
 			</div>
-			<separator bar="true" spacing="15px"/>
-			<listbox id="listImagenesBanner" width="95%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="1">
+			<listbox id="listImagenesBanner" width="100%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="1">
 				<listhead>
 					<listheader label="Nombre"/>
 					<listheader label="Acciones"/>
@@ -39,17 +37,15 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 			</listbox>
 			<separator spacing="15px"/>
 			<div	align="center">
-				<fileupload label="Agregar Imagen de Banner" id="uploadImagenBanner"  upload="true,maxsize=-1" />
+				<fileupload style="font-weight:bold; color:black" label="Agregar Imagen de Banner" id="uploadImagenBanner"  upload="true,maxsize=-1" />
 			</div>
 			<separator spacing="15px"/>
-			<separator bar="true" spacing="15px"/>
-			<div align="center">
+			<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
 				<auxhead sclass="category-center">
-            		<auxheader label="Portada" colspan="6" rowspan="1" />
+            		<auxheader label="Portada" style="color: black" colspan="6" rowspan="1" />
         		</auxhead>	
 			</div>
-			<separator bar="true" spacing="15px"/>
-			<listbox id="listImagenesPortada" width="95%" model="@{configuracionPortadaWindow$composer.imagenesPortada}"  rows="1">
+			<listbox id="listImagenesPortada" width="100%" model="@{configuracionPortadaWindow$composer.imagenesPortada}"  rows="1">
 				<listhead>
 					<listheader label="Nombre"/>
 					<listheader label="Acciones"/>
@@ -67,36 +63,39 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 			</listbox>
 			<separator spacing="15px"/>
 			<div	align="center">
-				<fileupload label="Agregar Imagen de portada" id="uploadImagenPortada"  upload="true,maxsize=-1" />
+				<fileupload style="font-weight:bold; color:black" label="Agregar Imagen de portada" id="uploadImagenPortada"  upload="true,maxsize=-1" />
 			</div>
-			<separator bar="true" spacing="15px"/>
-				<div align="center">
+			<separator  spacing="15px"/>
+				<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
 					<auxhead sclass="category-center">
-	            		<auxheader label="Logo" colspan="6" rowspan="1" />
+	            		<auxheader style="color: black" label="Logo" colspan="6" rowspan="1" />
 	        		</auxhead>	
 				</div>
-			<separator bar="true" spacing="15px"/>
 			<separator spacing="15px"/>
 				<div align="center">
 					<hlayout valign="middle" >
 						<vlayout>
-						
-						<image width="128px" height="128px" id="imagenLogo"/>
-						<fileupload label="Subir Imagen" id="uploadImagenLogo" upload="true,maxsize=-1" />
+						<div style="border-radius: 4px; border-style:groove;">
+							<image id="imagenLogo" />
+						</div>
+						<fileupload style="font-weight:bold; color:black" label="Subir Logo" id="uploadImagenLogo" upload="true,maxsize=-1" />
 						</vlayout> 				
 					</hlayout>
 				</div>
 			<separator spacing="15px"/>
 		</tabpanel>
 		<tabpanel>
-				<separator bar="true" spacing="15px"/>
-				<div align="center">
+				<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
 					<auxhead sclass="category-center">
-            			<auxheader label="Texto Portada" colspan="6" rowspan="1" />
+            			<auxheader label="Texto Portada" style="color: black" colspan="6" rowspan="1" />
         			</auxhead>		
 				</div>
-				<separator bar="true" spacing="15px"/>
+				<separator spacing="2px"/>
 				<textbox  rows="25" id="txtPortada" width="100%"/>
+				<separator spacing="15px"></separator>
+				<div align="center">
+						<toolbarbutton id="buttonGuardarTexto" label="Guardar" style="font-weight:bold; color:black" image="/imagenes/save.png"></toolbarbutton>
+				</div>
 		</tabpanel>
 	</tabpanels>
 </tabbox>

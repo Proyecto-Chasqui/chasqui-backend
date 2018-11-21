@@ -24,6 +24,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
 import chasqui.model.DataMultimedia;
@@ -55,11 +56,12 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	private static final String BANNER = "banner";
 	private static final String IMAGEN_PORTADA = "imagenPortada";
 	private static final String LOGO = "logo";
-	private static final String DEFAULT_LOGO = "https://icon-icons.com/icons2/588/PNG/128/camera_action_cam_shot_photography_icon-icons.com_55331.png";
+	private static final String DEFAULT_LOGO = "/imagenes/chasqui_logo.png";
 	private String folder= "/imagenes/portada/";
 	private String relativePath = "/imagenes/portada/usuarios/";
 	private Component window;
 	private ImagenRenderPortada imgRender;
+	private Toolbarbutton buttonGuardarTexto;
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -106,31 +108,89 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		}
 		return vData;
 	}
+	
+	public void onClick$buttonGuardarTexto() {
+		this.dataMultimedia.getDataPortada().setTextoBienvenida(txtPortada.getValue());
+		this.vendedorLogueado.setDataMultimedia(dataMultimedia);
+		usuarioService.guardarUsuario(vendedorLogueado);
+		Clients.showNotification("El texto se guardo correctamente", "info", window, "middle_center", 3000,true);
+	}
 
 	public void onUpload$uploadImagenLogo(UploadEvent evt) {
 		Integer alto = 500;
 		Integer ancho = 500;
-		if(this.validateSizeOfImageAt(alto,ancho,evt)) {
+		Integer kb = 1024;
+		List<String> formats = new ArrayList<String>();
+		formats.add("png");
+		formats.add("jpg");
+		formats.add("jpeg");
+		if(this.validateSizeOfImageAt(alto,ancho,evt) && validateFormatAndWeigthOfImage(evt, formats,kb)) {
 			this.actualizarImagen(evt,LOGO);
 		}else {
-			Clients.showNotification("La imagen debe tener: " +alto+"px x " +ancho+"px", "info", window, "middle_center", 3000);
+			Clients.showNotification("La imagen debe tener: " +alto+"px x " +ancho+"px, debe ser formato png, jpg o jpeg y no debe pesar mas de "+ kb/1024 +"MB", "warning", window, "middle_center", 5000, true);
 		}	
 	}
 	
 	public void onUpload$uploadImagenBanner(UploadEvent evt) {
 		Integer alto = 500;
 		Integer ancho = 500;
+		Integer kb = 2048;
+		List<String> formats = new ArrayList<String>();
+		formats.add("jpg");
+		formats.add("jpeg");
+		formats.add("png");
+		formats.add("bmp");
 		if(dataMultimedia.getDataPortada().getImagenesDeBanner().size()<1) {
-			if(this.validateSizeOfImageAt(alto,ancho,evt)) {
+			if(this.validateSizeOfImageAt(alto,ancho,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
 				this.actualizarImagen(evt,BANNER);
 			}else {
-				Clients.showNotification("La imagen debe tener: " +alto+"px x " +ancho+"px", "info", window, "middle_center", 3000);
+				Clients.showNotification("La imagen debe tener: " +alto+"px x " +ancho+"px, debe ser de formato jpg, jpeg, png o bmp y no debe pesar mas de "+ kb /1024 +"MB", "warning", window, "middle_center", 5000, true);
 			}
 		}else {
-			Clients.showNotification("Por favor borre la imagen primero antes de agregar una nueva", "info", window, "middle_center", 3000);
+			Clients.showNotification("Por favor borre la imagen primero antes de agregar una nueva", "info", window, "middle_center", 3000, true);
 		}
 	}
 	
+	public void onUpload$uploadImagenPortada(UploadEvent evt) {
+		List<String> formats = new ArrayList<String>();
+		Integer alto = 500;
+		Integer ancho = 500;
+		Integer kb = 2048;
+		formats.add("jpg");
+		formats.add("jpeg");
+		formats.add("png");
+		formats.add("bmp");
+		if(dataMultimedia.getDataPortada().getImagenesDePortada().size()<1){
+			if(this.validateSizeOfImageAt(alto,ancho,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
+				this.actualizarImagen(evt,IMAGEN_PORTADA);
+			}else {
+				Clients.showNotification("La imagen debe tener: " +alto+"px x " +ancho+"px, debe ser de formato jpg, jpeg, png o bmp y no debe pesar mas de "+ kb/1024 +"MB", "warning", window, "middle_center", 5000, true);
+			}
+		}else {
+			Clients.showNotification("Por favor borre la imagen primero antes de agregar una nueva", "info", window, "middle_center", 3000, true);
+		}		
+	}
+
+	
+	private boolean validateFormatAndWeigthOfImage(UploadEvent evt,List<String> formats, Integer imageSizeInKB) {
+		boolean ret = false;
+        org.zkoss.util.media.Media media = evt.getMedia();        
+        if (media instanceof org.zkoss.image.Image && media.getByteData().length < imageSizeInKB * 1024 && hasAValidFormat(media,formats)) {
+           ret = true;
+        }
+		return ret;
+	}
+
+	private boolean hasAValidFormat(Media media, List<String> formats) {
+		boolean ret = false;
+		for(String format: formats) {
+			if(!ret) {
+				ret = media.getFormat().equals(format);
+			}
+		}
+		return ret;
+	}
+
 	private boolean validateSizeOfImageAt(int h, int w, UploadEvent evt) {
 		boolean ret = false;
         org.zkoss.util.media.Media media = evt.getMedia();
@@ -143,13 +203,6 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		return ret;
 	}
 
-	public void onUpload$uploadImagenPortada(UploadEvent evt) {
-		if(dataMultimedia.getDataPortada().getImagenesDePortada().size()<1){
-			this.actualizarImagen(evt,IMAGEN_PORTADA);
-		}else {
-			Clients.showNotification("Por favor borre la imagen primero antes de agregar una nueva", "info", window, "middle_center", 3000);
-		}		
-	}
 	
 	public void actualizarImagen(UploadEvent evt,String tipo){
 		try{
@@ -196,7 +249,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 			fileSaver.borrarImagenEnCarpeta(oldLogo.getAbsolutePath());
 		}
 		this.referenciaImagen = null;
-		Clients.showNotification("El logo fue guardado correctamente", "info", window, "middle_center", 3000);
+		Clients.showNotification("La imagen fue guardada correctamente", "info", window, "middle_center", 3000);
 	}
 
 	public Vendedor getVendedorLogueado() {
@@ -265,6 +318,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	
 	public void eliminarImagen(Imagen img) {
 		if(img!=null) {
+			//hacer pregunta al usuario antes de borrar la imagen.
 			imagenesBanner.remove(img);
 			imagenesPortada.remove(img);
 			usuarioService.guardarUsuario(vendedorLogueado);
