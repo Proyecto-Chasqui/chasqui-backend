@@ -133,8 +133,8 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	}
 	
 	public void onUpload$uploadImagenBanner(UploadEvent evt) {
-		Integer alto = 500;
-		Integer ancho = 500;
+		Integer alto = 272;
+		Integer ancho = 1280;
 		Integer kb = 2048;
 		List<String> formats = new ArrayList<String>();
 		formats.add("jpg");
@@ -206,6 +206,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 
 	
 	public void actualizarImagen(UploadEvent evt,String tipo){
+		
 		try{
 			Media media = evt.getMedia();
 			Image image = new Image();
@@ -215,10 +216,16 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 				Messagebox.show("El archivo no es una imagen o es demasiado grande","Error", Messagebox.OK, Messagebox.ERROR);
 				return;
 			}
-			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
-			String path = context.getRealPath(folder);
-			referenciaImagen = fileSaver.guardarImagenConPathRelativeDinamico(path +"/",relativePath,vendedorLogueado.getUsername(),image.getContent().getName(),image.getContent().getByteData());
-			guardarImagenEnVendedorDe(tipo);			
+			
+			if(!nombreDeImagenRepetida(image.getContent().getName())) {
+				ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
+				String path = context.getRealPath(folder);
+				referenciaImagen = fileSaver.guardarImagenConPathRelativeDinamico(path +"/",relativePath,vendedorLogueado.getUsername(),image.getContent().getName(),image.getContent().getByteData());
+				guardarImagenEnVendedorDe(tipo);
+			}else {
+				Clients.showNotification("El nombre "+ image.getContent().getName() +" de la imagen ya existe", "info", window, "middle_center", 5000, true);
+				return;
+			}
 		}catch(Exception e){
 			Messagebox.show("Ha ocurrido un error al subir la imagen","Error", Messagebox.OK, Messagebox.ERROR);
 			e.printStackTrace();
@@ -226,6 +233,24 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 			Clients.clearBusy();
 			binder.loadAll();
 		}
+	}
+
+	private boolean nombreDeImagenRepetida(String name) {
+		boolean ret = false;
+		for(Imagen imagenBanner: imagenesBanner) {
+			if(!ret) {
+				ret = name.equals(imagenBanner.getNombre());
+			}
+		}
+		for(Imagen imagenHeader: imagenesPortada) {
+			if(!ret) {
+				ret = name.equals(imagenHeader.getNombre());
+			}
+		}
+		if(!ret) {
+			ret = name.equals(vendedorLogueado.getDataMultimedia().getDataPortada().getLogo().getNombre());
+		}
+		return ret;
 	}
 
 	private void guardarImagenEnVendedorDe(String tipo) {
@@ -318,6 +343,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	}
 	
 	public void eliminarImagen(final Imagen img) {
+		
 		if(img!=null) {
 			Messagebox.show(
 					"¿Esta seguro que desea eliminar la imagen" + img.getNombre() + " ?",
