@@ -47,6 +47,12 @@ apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
 				<textbox width="100%" id="textboxTiempoVencimiento" maxlength="3" type="tel"/>
 			</listcell>
 		</listitem>
+		<listitem>
+			<listcell style="text-align: center"  label="UrlMapa "/>
+			<listcell style="text-align: center">
+				<textbox width="100%" id="urlMapa"/>
+			</listcell>
+		</listitem>
 </listbox>
 
          

@@ -50,6 +50,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	private Component vcomp;
 	private Vendedor usuarioSeleccionado;
 	private Textbox textboxTiempoVencimiento;
+	private Textbox urlMapa;
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -85,6 +86,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 usuarioSeleccionado = vendedor;
 		 EstrategiasDeComercializacion estrategias = usuarioSeleccionado.getEstrategiasUtilizadas();
 		 this.setTiempoVencimiento(vendedor);
+		 this.fillUrlMap(vendedor.getMapaZonas());
 		 if(estrategias != null){
 			 completarChecks(estrategias);
 		 }else{
@@ -96,6 +98,14 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 }
 	}
 	
+	private void fillUrlMap(String mapaZonas) {
+		if(mapaZonas != null) {
+			this.urlMapa.setValue(mapaZonas);
+		}else {
+			this.urlMapa.setValue("");
+		}
+	}
+
 	private void setTiempoVencimiento(Vendedor vendedor) {
 		 if(vendedor.getTiempoVencimientoPedidos() != null){
 			 String tiempo = vendedor.getTiempoVencimientoPedidos().toString();
@@ -143,6 +153,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 	estrategias.setSeleccionDeDireccionDelUsuario(entregaADomicilio.isChecked());
 		 	Integer tiempo = Integer.parseInt(textboxTiempoVencimiento.getValue());
 		 	usuarioSeleccionado.setTiempoVencimientoPedidos(tiempo);
+		 	usuarioSeleccionado.setMapaZonas(urlMapa.getValue());
 		 	usuarioService.guardarUsuario(usuarioSeleccionado);
 		 	liberarChecks();
 			EventListener evt = new EventListener() {
@@ -248,6 +259,14 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 
 	public void setTiempoVencimiento(Textbox tiempoVencimiento) {
 		this.textboxTiempoVencimiento = tiempoVencimiento;
+	}
+
+	public Textbox getUrlMapa() {
+		return urlMapa;
+	}
+
+	public void setUrlMapa(Textbox urlMapa) {
+		this.urlMapa = urlMapa;
 	}
 }
 
