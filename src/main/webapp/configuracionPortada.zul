@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="configuracionPortadaWindow" border="normal" title="Configuración de portada" position="center,top"
+<window id="configuracionPortadaWindow" style="text-align: center; font-weight:bold;" border="normal" title="Configuración de portada" position="center,top"
 apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable="true">
 
 	<tabbox>
@@ -87,7 +87,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 		<tabpanel>
 				<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
 					<auxhead sclass="category-center">
-            			<auxheader label="Texto Portada" style="color: black" colspan="6" rowspan="1" />
+            			<auxheader label="Texto de bienvenida" style="color: black" colspan="6" rowspan="1" />
         			</auxhead>		
 				</div>
 				<separator spacing="2px"/>
