@@ -26,6 +26,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.model.DataMultimedia;
 import chasqui.model.Imagen;
@@ -196,7 +197,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
         org.zkoss.util.media.Media media = evt.getMedia();
         if (media instanceof org.zkoss.image.Image) {
             org.zkoss.image.Image img = (org.zkoss.image.Image) media;
-            if (img.getHeight() < h && img.getWidth() < w){
+            if (img.getHeight() <= h && img.getWidth() <= w){
             	ret = true;
             }
         }
@@ -249,7 +250,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 			fileSaver.borrarImagenEnCarpeta(oldLogo.getAbsolutePath());
 		}
 		this.referenciaImagen = null;
-		Clients.showNotification("La imagen fue guardada correctamente", "info", window, "middle_center", 3000);
+		Clients.showNotification("La imagen fue guardada correctamente", "info", window, "middle_center", 3000,true);
 	}
 
 	public Vendedor getVendedorLogueado() {
@@ -316,14 +317,35 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		this.txtPortada = txtPortada;
 	}
 	
-	public void eliminarImagen(Imagen img) {
+	public void eliminarImagen(final Imagen img) {
 		if(img!=null) {
-			//hacer pregunta al usuario antes de borrar la imagen.
-			imagenesBanner.remove(img);
-			imagenesPortada.remove(img);
-			usuarioService.guardarUsuario(vendedorLogueado);
-			fileSaver.borrarImagenEnCarpeta(img.getAbsolutePath());
-			Clients.showNotification("La imagen "+ img.getNombre() + " se eliminó correctamente", "info", window, "middle_center", 3000);
+			Messagebox.show(
+					"¿Esta seguro que desea eliminar la imagen" + img.getNombre() + " ?",
+					"Pregunta",
+		    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+		    		new String[] {"Aceptar","Cancelar"},
+		    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+				public void onEvent(ClickEvent event) throws Exception {
+					String edata= event.getData().toString();
+					switch (edata){
+					case "YES":
+						try {
+							imagenesBanner.remove(img);
+							imagenesPortada.remove(img);
+							usuarioService.guardarUsuario(vendedorLogueado);
+							fileSaver.borrarImagenEnCarpeta(img.getAbsolutePath());
+							Clients.showNotification("La imagen "+ img.getNombre() + " se eliminó correctamente", "info", window, "middle_center", 3000,true);
+							refresh();
+						} catch (Exception e) {
+							Clients.showNotification("Ocurrio un error desconocido", "error", window, "middle_center", 3000, true);
+							e.printStackTrace();						
+						}
+						break;
+					case "ABORT":
+					}
+				}
+				});
 			refresh();
 		}
 	}
