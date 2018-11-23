@@ -58,6 +58,8 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	private static final String IMAGEN_PORTADA = "imagenPortada";
 	private static final String LOGO = "logo";
 	private static final String DEFAULT_LOGO = "/imagenes/chasqui_logo.png";
+	private static final String ANCHO = "ancho";
+	private static final String ALTO = "alto";
 	private String folder= "/imagenes/portada/";
 	private String relativePath = "/imagenes/portada/usuarios/";
 	private Component window;
@@ -118,34 +120,38 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	}
 
 	public void onUpload$uploadImagenLogo(UploadEvent evt) {
-		Integer alto = 500;
-		Integer ancho = 500;
+		Integer alto = 40;
+		Integer ancho = 124;
 		Integer kb = 1024;
+		Integer margen = 176;
 		List<String> formats = new ArrayList<String>();
 		formats.add("png");
 		formats.add("jpg");
 		formats.add("jpeg");
-		if(this.validateSizeOfImageAt(alto,ancho,evt) && validateFormatAndWeigthOfImage(evt, formats,kb)) {
+		if(this.validateSizeOfImageAt(alto,ancho,margen,ALTO,evt) && validateFormatAndWeigthOfImage(evt, formats,kb)) {
 			this.actualizarImagen(evt,LOGO);
 		}else {
-			Clients.showNotification("La imagen debe tener: " +alto+"px x " +ancho+"px, debe ser formato png, jpg o jpeg y no debe pesar mas de "+ kb/1024 +"MB", "warning", window, "middle_center", 5000, true);
+			String mensaje = "La imagen debe tener entre " +ancho+"px x " +alto+"px y " +(ancho + margen) +"px x " +alto+"px, debe ser de formato jpg, jpeg, png y no debe pesar mas de "+ kb /1024 +"MB";
+			Clients.showNotification(mensaje, "warning", window, "middle_center", 10000, true);
 		}	
 	}
 	
 	public void onUpload$uploadImagenBanner(UploadEvent evt) {
-		Integer alto = 272;
-		Integer ancho = 1280;
+		Integer alto = 340;
+		Integer ancho = 1600;
 		Integer kb = 2048;
+		Integer margen = 800;
 		List<String> formats = new ArrayList<String>();
 		formats.add("jpg");
 		formats.add("jpeg");
 		formats.add("png");
 		formats.add("bmp");
 		if(dataMultimedia.getDataPortada().getImagenesDeBanner().size()<1) {
-			if(this.validateSizeOfImageAt(alto,ancho,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
+			if(this.validateSizeOfImageAt(alto,ancho,margen,ALTO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
 				this.actualizarImagen(evt,BANNER);
 			}else {
-				Clients.showNotification("La imagen debe tener: " +alto+"px x " +ancho+"px, debe ser de formato jpg, jpeg, png o bmp y no debe pesar mas de "+ kb /1024 +"MB", "warning", window, "middle_center", 5000, true);
+				String mensaje = "La imagen debe tener entre " +ancho+"px x " +alto+"px y " +(ancho + margen) +"px x " +alto+"px, debe ser de formato jpg, jpeg, png o bmp y no debe pesar mas de "+ kb /1024 +"MB";
+				Clients.showNotification(mensaje, "warning", window, "middle_center", 10000, true);
 			}
 		}else {
 			Clients.showNotification("Por favor borre la imagen primero antes de agregar una nueva", "info", window, "middle_center", 3000, true);
@@ -154,18 +160,20 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	
 	public void onUpload$uploadImagenPortada(UploadEvent evt) {
 		List<String> formats = new ArrayList<String>();
-		Integer alto = 500;
-		Integer ancho = 500;
+		Integer alto = 400;
+		Integer ancho = 620;
 		Integer kb = 2048;
+		Integer margen = alto;
 		formats.add("jpg");
 		formats.add("jpeg");
 		formats.add("png");
 		formats.add("bmp");
 		if(dataMultimedia.getDataPortada().getImagenesDePortada().size()<1){
-			if(this.validateSizeOfImageAt(alto,ancho,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
+			if(this.validateSizeOfImageAt(alto,ancho,margen,ANCHO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
 				this.actualizarImagen(evt,IMAGEN_PORTADA);
 			}else {
-				Clients.showNotification("La imagen debe tener: " +alto+"px x " +ancho+"px, debe ser de formato jpg, jpeg, png o bmp y no debe pesar mas de "+ kb/1024 +"MB", "warning", window, "middle_center", 5000, true);
+				String mensaje = "La imagen debe tener entre " +ancho+"px x " +alto+"px y " +ancho +"px x " +(alto+margen)+"px,  debe ser de formato jpg, jpeg, png o bmp y no debe pesar mas de "+ kb /1024 +"MB";
+				Clients.showNotification(mensaje, "warning", window, "middle_center", 10000, true);
 			}
 		}else {
 			Clients.showNotification("Por favor borre la imagen primero antes de agregar una nueva", "info", window, "middle_center", 3000, true);
@@ -175,7 +183,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	
 	private boolean validateFormatAndWeigthOfImage(UploadEvent evt,List<String> formats, Integer imageSizeInKB) {
 		boolean ret = false;
-        org.zkoss.util.media.Media media = evt.getMedia();        
+        org.zkoss.util.media.Media media = evt.getMedia();
         if (media instanceof org.zkoss.image.Image && media.getByteData().length < imageSizeInKB * 1024 && hasAValidFormat(media,formats)) {
            ret = true;
         }
@@ -191,15 +199,23 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		}
 		return ret;
 	}
-
-	private boolean validateSizeOfImageAt(int h, int w, UploadEvent evt) {
+	
+	private boolean validateSizeOfImageAt(int h, int w, int margen, String statico,UploadEvent evt) {
 		boolean ret = false;
         org.zkoss.util.media.Media media = evt.getMedia();
         if (media instanceof org.zkoss.image.Image) {
             org.zkoss.image.Image img = (org.zkoss.image.Image) media;
-            if (img.getHeight() <= h && img.getWidth() <= w){
-            	ret = true;
+            if(statico.equals(ALTO)) {
+            	if(img.getHeight() == h && img.getWidth() <= (w+margen) && (img.getWidth() >= w)){
+            		ret = true;
+            	}
             }
+            if(statico.equals(ANCHO)) {
+            	if(img.getHeight() <= (h+margen) && img.getHeight() >= h && img.getWidth() == w){
+            		ret = true;
+            	}
+            }
+
         }
 		return ret;
 	}
