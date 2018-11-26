@@ -132,6 +132,8 @@ public class PedidoListener {
 				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 			} catch (EstadoPedidoIncorrectoException e) {
 				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (VendedorInexistenteException e) {
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 			}
 			return Response.ok().build();
 	}

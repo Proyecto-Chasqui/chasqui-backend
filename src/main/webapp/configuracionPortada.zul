@@ -1,0 +1,104 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionPortadaWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window id="configuracionPortadaWindow" style="text-align: center; font-weight:bold;" border="normal" title="Configuración de portada" position="center,top"
+apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable="true">
+
+	<tabbox>
+	<tabs>
+		<tab label="Imágenes"/>
+		<tab label="Textos"/>
+	</tabs>
+	<tabpanels>
+		<tabpanel>
+			<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
+				<auxhead sclass="category-center">
+            		<auxheader label="Banner" style="color: black" colspan="6" rowspan="1" />
+        		</auxhead>		
+			</div>
+			<listbox id="listImagenesBanner" width="100%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="1">
+				<listhead>
+					<listheader label="Nombre"/>
+					<listheader label="Acciones"/>
+				</listhead>
+				<listitem self="@{each=imagenbanner}">
+					<listcell label="@{imagenbanner.getNombre}"/>
+					<listcell>
+						<hbox>
+							<image src="/imagenes/trash.png"/>
+							<space spacing="10px"/>
+							<image src="/imagenes/download.png" />
+						</hbox>
+					</listcell>
+				</listitem>	
+			</listbox>
+			<separator spacing="15px"/>
+			<div	align="center">
+				<fileupload style="font-weight:bold; color:black" label="Agregar Imagen de Banner" id="uploadImagenBanner"  upload="true,maxsize=-1" />
+			</div>
+			<separator spacing="15px"/>
+			<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
+				<auxhead sclass="category-center">
+            		<auxheader label="Portada" style="color: black" colspan="6" rowspan="1" />
+        		</auxhead>	
+			</div>
+			<listbox id="listImagenesPortada" width="100%" model="@{configuracionPortadaWindow$composer.imagenesPortada}"  rows="1">
+				<listhead>
+					<listheader label="Nombre"/>
+					<listheader label="Acciones"/>
+				</listhead>
+				<listitem self="@{each=imagen}">
+					<listcell label="@{imagen.getNombre}"/>
+					<listcell>
+						<hbox>
+							<image src="/imagenes/trash.png"/>
+							<space spacing="10px"/>
+							<image src="/imagenes/download.png" />
+						</hbox>
+					</listcell>
+				</listitem>	
+			</listbox>
+			<separator spacing="15px"/>
+			<div	align="center">
+				<fileupload style="font-weight:bold; color:black" label="Agregar Imagen de portada" id="uploadImagenPortada"  upload="true,maxsize=-1" />
+			</div>
+			<separator  spacing="15px"/>
+				<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
+					<auxhead sclass="category-center">
+	            		<auxheader style="color: black" label="Logo" colspan="6" rowspan="1" />
+	        		</auxhead>	
+				</div>
+			<separator spacing="15px"/>
+				<div align="center">
+					<hlayout valign="middle" >
+						<vlayout>
+						<div style="border-radius: 4px; border-style:groove;">
+							<image id="imagenLogo" />
+						</div>
+						<fileupload style="font-weight:bold; color:black" label="Subir Logo" id="uploadImagenLogo" upload="true,maxsize=-1" />
+						</vlayout> 				
+					</hlayout>
+				</div>
+			<separator spacing="15px"/>
+		</tabpanel>
+		<tabpanel>
+				<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
+					<auxhead sclass="category-center">
+            			<auxheader label="Texto de bienvenida" style="color: black" colspan="6" rowspan="1" />
+        			</auxhead>		
+				</div>
+				<separator spacing="2px"/>
+				<textbox  rows="25" id="txtPortada" width="100%"/>
+				<separator spacing="15px"></separator>
+				<div align="center">
+						<toolbarbutton id="buttonGuardarTexto" label="Guardar" style="font-weight:bold; color:black" image="/imagenes/save.png"></toolbarbutton>
+				</div>
+		</tabpanel>
+	</tabpanels>
+</tabbox>
+
+</window>
+</zk>

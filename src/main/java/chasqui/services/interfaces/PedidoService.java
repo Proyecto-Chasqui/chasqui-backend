@@ -44,7 +44,7 @@ public interface PedidoService {
 	/*
 	 * Pedidos en estado ABIERTO que han expirado (Es para quartz)
 	 */
-	List<Pedido> obtenerPedidosExpirados();
+	List<Pedido> obtenerPedidosExpirados(Integer idVendedor);
 
 	List<Pedido> obtenerPedidosProximosAVencerEnDeterminadaZona(Integer cantidadDeDias, Integer idVendedor,
 			DateTime fechaCierrePedido, Integer idZona);
@@ -68,7 +68,7 @@ public interface PedidoService {
 	@Transactional
 	public void agregarProductosAPedido(AgregarQuitarProductoAPedidoRequest request, String email)
 			throws UsuarioInexistenteException, ProductoInexistenteException, PedidoVigenteException,
-			RequestIncorrectoException, EstadoPedidoIncorrectoException;
+			RequestIncorrectoException, EstadoPedidoIncorrectoException, VendedorInexistenteException;
 
 	@Transactional
 	public void eliminarProductoDePedido(AgregarQuitarProductoAPedidoRequest request, String email)
@@ -113,5 +113,5 @@ public interface PedidoService {
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedor(Integer id, Date d, Date h,
 			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro, String email);
 
-	public void refrescarVencimiento(Integer idPedido, String email) throws UsuarioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException;
+	public void refrescarVencimiento(Integer idPedido, String email) throws UsuarioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException, VendedorInexistenteException;
 }

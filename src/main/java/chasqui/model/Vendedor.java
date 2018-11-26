@@ -23,7 +23,8 @@ public class Vendedor extends Usuario{
 	private String url;
 	private List<PreguntaDeConsumo> preguntasDePedidosIndividuales;
 	private List<PreguntaDeConsumo> preguntasDePedidosColectivos;
-	
+	private Integer tiempoVencimientoPedidos;
+	private DataMultimedia dataMultimedia;
 	
 	//GETs & SETs	
 	
@@ -39,6 +40,7 @@ public class Vendedor extends Usuario{
 		this.setIsRoot(false);
 		this.setUrl(urlBase);
 		this.setMontoMinimoPedido(0);
+		this.setTiempoVencimientoPedidos(0);
 	}
 
 	public String getNombre() {
@@ -382,6 +384,22 @@ public class Vendedor extends Usuario{
 			}
 		}
 		return list;
+	}
+
+	public Integer getTiempoVencimientoPedidos() {
+		return tiempoVencimientoPedidos;
+	}
+
+	public void setTiempoVencimientoPedidos(Integer tiempoVencimientoPedidos) {
+		this.tiempoVencimientoPedidos = tiempoVencimientoPedidos;
+	}
+
+	public DataMultimedia getDataMultimedia() {
+		return dataMultimedia;
+	}
+
+	public void setDataMultimedia(DataMultimedia dataMultimedia) {
+		this.dataMultimedia = dataMultimedia;
 	}
 
 }

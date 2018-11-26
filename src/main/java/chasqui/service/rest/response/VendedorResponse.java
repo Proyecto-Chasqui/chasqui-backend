@@ -16,6 +16,7 @@ public class VendedorResponse implements Serializable{
 	private String nombre;
 	private String nombreCorto;
 	private String imagen;
+	private String urlMapa;
 	private EstrategiaDeComercializacionGenerica few;
 	private EstrategiaDeComercializacionGenerica app;
 	
@@ -31,6 +32,11 @@ public class VendedorResponse implements Serializable{
 		this.setFew(new EstrategiaDeComercializacionGenerica());
 		this.setApp(new EstrategiaDeComercializacionGenerica());
 		this.inicializarEstrategias(estrategias);
+		if(v.getMapaZonas() != null ) {
+			this.setUrlMapa(v.getMapaZonas());
+		}else {
+			this.setUrlMapa("");
+		}
 	}
 	
 	private void inicializarEstrategias(EstrategiasDeComercializacion estrategia) {
@@ -93,6 +99,14 @@ public class VendedorResponse implements Serializable{
 	}
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
+	}
+
+	public String getUrlMapa() {
+		return urlMapa;
+	}
+
+	public void setUrlMapa(String urlMapa) {
+		this.urlMapa = urlMapa;
 	}
 
 	

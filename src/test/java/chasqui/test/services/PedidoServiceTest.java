@@ -195,7 +195,7 @@ public class PedidoServiceTest extends GenericSetUp{
 	}
 	
 	@Test(expected=RequestIncorrectoException.class)
-	public void testAgregarProductoAPedidoUsuarioNoPoseePedido() throws ProductoInexistenteException, UsuarioInexistenteException, PedidoVigenteException, RequestIncorrectoException, EstadoPedidoIncorrectoException{
+	public void testAgregarProductoAPedidoUsuarioNoPoseePedido() throws ProductoInexistenteException, UsuarioInexistenteException, PedidoVigenteException, RequestIncorrectoException, EstadoPedidoIncorrectoException, VendedorInexistenteException{
 		pedidoService.agregarProductosAPedido(agregarRequest, clienteJuanPerez.getEmail());
 	}
 	

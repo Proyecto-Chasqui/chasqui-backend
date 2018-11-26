@@ -12,27 +12,33 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Pedido;
+import chasqui.model.Vendedor;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.VendedorService;
 
 public class EliminacionPedidoQuartz {
 
 	@Autowired PedidoService pedidoService;
 	@Autowired String nombreServidor;
 	@Autowired UsuarioService usuarioService;
+	@Autowired VendedorService vendedorService;
 	
 	
 	public void execute() throws PedidoVigenteException, RequestIncorrectoException, UsuarioInexistenteException, VendedorInexistenteException{
 		if(obtenerHostname().equals(nombreServidor)){
-			List<Pedido> ps = pedidoService.obtenerPedidosExpirados();
-			for(Pedido p : ps){
-
-				try {
-					pedidoService.vencerPedido(p);
-				} catch (EstadoPedidoIncorrectoException e) {
-					e.printStackTrace();
-				}
-			}
+			for(Vendedor v : vendedorService.obtenerVendedores()) {
+				if(v.getTiempoVencimientoPedidos() > 0) {
+					List<Pedido> ps = pedidoService.obtenerPedidosExpirados(v.getId());
+					for(Pedido p : ps){
+						try {
+							pedidoService.vencerPedido(p);
+						} catch (EstadoPedidoIncorrectoException e) {
+							e.printStackTrace();
+						}
+				    }
+			    }
+		    }
 		}
 	}
 	

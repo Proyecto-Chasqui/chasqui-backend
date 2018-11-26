@@ -199,7 +199,7 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Pedido> obtenerPedidosAbiertosConFechaVencida() {
+	public List<Pedido> obtenerPedidosAbiertosConFechaVencida(final Integer idVendedor) {
 		return this.getHibernateTemplate().execute(new HibernateCallback<List<Pedido>>() {
 
 			@Override
@@ -208,6 +208,7 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				criteria.add(Restrictions.eq("alterable", true))
 						.add(Restrictions.eq("estado", Constantes.ESTADO_PEDIDO_ABIERTO))
 						//.add(Restrictions.eq("perteneceAPedidoGrupal", false))// TODO sacar
+						.add(Restrictions.eq("idVendedor", idVendedor))
 						.add(Restrictions.lt("fechaDeVencimiento", new DateTime()));
 				return (List<Pedido>) criteria.list();
 			}
