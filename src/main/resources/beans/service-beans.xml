@@ -217,6 +217,6 @@
     <!-- AOP -->
     <aop:aspectj-autoproxy />
     <bean name="loggerAspect" class="chasqui.aspect.LoggerAspect"/>
-    <bean name="dateableAspect" class="chasqui.aspect.DateableAspect"/>
+    <!--<bean name="dateableAspect" class="chasqui.aspect.DateableAspect"/>-->
 	   
 </beans>

@@ -298,20 +298,6 @@ public class UsuarioListener {
 		return request;
 	}
 
-	// TODO borrar este metodo 2017 03 17
-	@POST
-	@Path("/notificacion")
-	@Produces("application/json")
-	public Response enviarNotificacionDeInvitacion(@HeaderParam("destino") String destino) {
-		try {
-			String origen = obtenerEmailDeContextoDeSeguridad();
-			usuarioService.enviarInvitacionRequest(origen, destino);
-			return Response.ok().build();
-		} catch (Exception e) {
-			return Response.status(500).entity(e.getMessage()).build();
-		}
-	}
-
 	private List<NotificacionResponse> toNotificacionResponse(List<Notificacion> notificaciones) {
 		List<NotificacionResponse> resultado = new ArrayList<NotificacionResponse>();
 		for (Notificacion n : notificaciones) {

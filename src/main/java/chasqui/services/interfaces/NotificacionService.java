@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
@@ -39,7 +40,7 @@ public interface NotificacionService {
 	public void eliminarNotificacion(Notificacion notificacion);
 
 	@Transactional
-	void enviarAClienteSuPedidoConfirmado(String emailVendedor, String emailCliente, Pedido pedidoConfirmado);
+	void enviarAClienteSuPedidoConfirmado(String emailVendedor, String emailCliente, Pedido pedidoConfirmado) throws UsuarioInexistenteException;
 
 	@Transactional
 	public void notificarConfirmacionCompraOtroMiembro(String emailVendedor, String email, String nombreCliente,

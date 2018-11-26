@@ -13,11 +13,11 @@ Bienvenido a Chasqui
 
 <!-- Logo Chasqui -->
 <tr style="height: 90px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; height: 90px;"><a href="http://www.proyectochasqui.com"><img src="cid:logochasqui" border="0" alt="Chasqui" /></a></td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; height: 90px;"><a href=${catalogoVendedor}><img src="cid:logochasqui" border="0" alt="Chasqui" /></a></td>
 </tr>
 <!-- Imagen de referencia -->
 <tr style="height: 130px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: center; height: 130px;"><a href="http://www.proyectochasqui.com"><img src="cid:aceptado" width="100%" border="0" alt="Comunidad de consumo solidario" /></a></td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: center; height: 130px;"><a href=${catalogoVendedor}><img src="cid:aceptado" width="100%" border="0" alt="Comunidad de consumo solidario" /></a></td>
 </tr>
 
 <!-- cuerpo del mail -->

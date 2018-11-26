@@ -14,6 +14,7 @@ import com.google.android.gcm.server.Sender;
 
 import chasqui.aspect.Auditada;
 import chasqui.dao.NotificacionDAO;
+import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
@@ -114,7 +115,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 	 *   
 	 */
 	@Override
-	public void enviarAClienteSuPedidoConfirmado(String emailVendedor, String emailCliente,Pedido pedidoConfirmado){
+	public void enviarAClienteSuPedidoConfirmado(String emailVendedor, String emailCliente,Pedido pedidoConfirmado) throws UsuarioInexistenteException{
 		mailService.enviarEmailConfirmacionPedido(emailVendedor,emailCliente,pedidoConfirmado);
 
 		String mensaje = Constantes.CONFIRMACION_COMPRA_NOTIFICACION;

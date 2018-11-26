@@ -3,6 +3,8 @@ package chasqui.test.services;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.mail.MessagingException;
 
@@ -16,10 +18,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
+import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
+import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.ProductoPedido;
+import chasqui.model.Vendedor;
 import chasqui.services.impl.MailService;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.NotificacionService;
@@ -46,11 +52,34 @@ public class MailServiceTest extends GenericSetUp {
 	public String destinatarioSecundario = "destinatarioSecundario@dominio.com";
 	public String nombreDeUsuario = "User93";
 	public String passwordFalsa = "passw0rd1234";
+	Vendedor vendedorDestinatario;
 	
 	
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
+		
+		vendedorDestinatario = new Vendedor();
+		vendedorDestinatario.setUsername("Username");
+		vendedorDestinatario.setNombre("Nombre");
+		vendedorDestinatario.setPassword(encrypter.encrypt("federico"));
+		vendedorDestinatario.setEmail(destinatario);
+		vendedorDestinatario.setIsRoot(false);
+		vendedorDestinatario.setMontoMinimoPedido(213);
+		vendedorDestinatario.setUrl("vendedor.proyectochasqui.com/");
+		vendedorDestinatario.setNombreCorto("MiniNombre");
+		List<String> opciones = new ArrayList<String>();
+		opciones.add("si");
+		opciones.add("no");
+		vendedorDestinatario.setPreguntasDePedidosIndividuales(generarPreguntas(opciones, "Tiene Factura"));
+		vendedorDestinatario.setPreguntasDePedidosColectivos(generarPreguntas(opciones, "Tiene Factura"));
+		usuarioService.guardarUsuario(vendedorDestinatario);
+	}
+	
+	private List<PreguntaDeConsumo> generarPreguntas(List<String> opciones, String nombre){
+		List<PreguntaDeConsumo> lista = new ArrayList<PreguntaDeConsumo>();
+		lista.add(new PreguntaDeConsumo("Tiene Factura",true,opciones));
+		return lista;
 	}
 	
 	@Test
@@ -70,11 +99,11 @@ public class MailServiceTest extends GenericSetUp {
 	}
 	
 	@Test
-	public void testEnviarEmailDeConfirmacionDePedido() throws IOException, MessagingException, TemplateException, EstadoPedidoIncorrectoException {
+	public void testEnviarEmailDeConfirmacionDePedido() throws IOException, MessagingException, TemplateException, EstadoPedidoIncorrectoException, UsuarioInexistenteException {
 		//Se envia el email del template emailConfirmacionPedido.ftl
-		
+
 		DateTime fechaVencimiento = new DateTime();
-		Pedido pedido= new Pedido(vendedor, clienteFulano, false, fechaVencimiento.plusHours(24));
+		Pedido pedido= new Pedido(vendedorDestinatario, clienteFulano, false, fechaVencimiento.plusHours(24));
 		ProductoPedido prodPed = new ProductoPedido(variante, 5,"N/D");
 		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
@@ -121,8 +150,12 @@ public class MailServiceTest extends GenericSetUp {
 	public void testEnviarEmailNotificandoElPedido() throws IOException, MessagingException, TemplateException {
 		//Se envia el email del template emailNotificacionPedido.ftl 
 		
+		this.vendedor.setNombre("nombre del vendedor");
+		this.vendedor.setUrl("urlVendedor");
+		this.vendedor.setNombreCorto("nombreCorto");
+		
 		String cuerpoEmail = "Hola, este es el cuerpo del email, el original se obtiene en Chasqui.Properties";
-		mailService.enviarEmailNotificacionPedido(this.destinatario, cuerpoEmail, "nombreDelUsuario", "apellidoDelUsuario");;
+		mailService.enviarEmailNotificacionPedido(this.destinatario, cuerpoEmail, "nombreDelUsuario", "apellidoDelUsuario", vendedor);;
 		assertEquals(true , true);
 	}
 	
@@ -166,7 +199,12 @@ public class MailServiceTest extends GenericSetUp {
 		this.vendedor.setEmail(this.destinatario);
 		this.clienteFulano.setEmail(this.destinatario);
 		this.clienteJuanPerez.setEmail(this.destinatarioSecundario);
+		
+		GrupoCC grupoDeCompras = new GrupoCC(clienteFulano, "La casita de beltran", "El equipo de desarrollo tiene hambre y se organiza!");
+		grupoDeCompras.setVendedor(vendedor);
+
 		PedidoColectivo pedidoColectivo = new PedidoColectivo();
+		pedidoColectivo.setColectivo(grupoDeCompras);
 		
 		DateTime fechaVencimiento = new DateTime().plusHours(24);
 		Pedido pedidoFulano = new Pedido(this.vendedor, this.clienteFulano, true, fechaVencimiento);
@@ -194,16 +232,16 @@ public class MailServiceTest extends GenericSetUp {
 	public void testEnviarEmailDeRecuperoDeContraseñaVendedor() throws Exception {
 		//Se envia el email del template emailRecupero.ftl 
 		
-		this.vendedor.setEmail(this.destinatario);
-		usuarioService.guardarUsuario(vendedor);
-		
-		mailService.enviarEmailRecuperoContraseña(this.destinatario, "NombreDeUsuario");;
+		mailService.enviarEmailRecuperoContraseña(vendedorDestinatario.getEmail(), "NombreDeUsuario");;
 		assertEquals(true , true);
 	}
 	
 	@Test
 	public void testEnviarEmailDeRecuperoDeContraseñaCliente() throws Exception {
 		//Se envia el email del template emailRecupero.ftl
+		Vendedor vendedor = (Vendedor) usuarioService.obtenerUsuarioPorEmail(vendedorDestinatario.getEmail());
+		vendedor.setEmail("null@gmail.com");//esto se hace porque sino hay duplicados.
+		usuarioService.guardarUsuario(vendedor);
 		
 		this.clienteFulano.setEmail(this.destinatario);
 		usuarioService.guardarUsuario(clienteFulano);
@@ -212,7 +250,7 @@ public class MailServiceTest extends GenericSetUp {
 	}
 	
 	@Test
-	public void testEnviarEmailDeVencimientoDePedido() throws IOException, MessagingException, TemplateException, EstadoPedidoIncorrectoException {
+	public void testEnviarEmailDeVencimientoDePedido() throws IOException, MessagingException, TemplateException, EstadoPedidoIncorrectoException, VendedorInexistenteException {
 		//Se envia el email del template emailVencimientoAutomatico.ftl
 		//En Grupo e Individual.
 		
@@ -227,7 +265,7 @@ public class MailServiceTest extends GenericSetUp {
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
 		pedido.setDireccionEntrega(direccionCasa);
 		
-		mailService.enviarEmailVencimientoPedido("nombreVendedor", this.clienteFulano, pedido, this.dateTimeToString(fechaCreacionPedido), "15");;
+		mailService.enviarEmailVencimientoPedido(vendedor.getUsername(), this.clienteFulano, pedido, this.dateTimeToString(fechaCreacionPedido), "15");;
 
 		clienteFulano.setEmail(this.destinatario);
 		clienteJuanPerez.setEmail(this.destinatario);
@@ -243,7 +281,7 @@ public class MailServiceTest extends GenericSetUp {
 		pedido.setPerteneceAPedidoGrupal(true);
 		pedido.setPedidoColectivo(pedidoColectivo);
 
-		mailService.enviarEmailVencimientoPedido("nombreVendedor", this.clienteFulano, pedido, this.dateTimeToString(fechaCreacionPedido), "15");;
+		mailService.enviarEmailVencimientoPedido(vendedor.getUsername(), this.clienteFulano, pedido, this.dateTimeToString(fechaCreacionPedido), "15");;
 		
 		assertEquals(true , true);
 	}
@@ -307,6 +345,7 @@ public class MailServiceTest extends GenericSetUp {
 		grupo.invitarAlGrupo(this.destinatario);
 		notificacionService.notificarInvitacionAGCCClienteNoRegistrado(clienteFulano, this.destinatario, grupo, null);
 		
+		//el email ya es enviado en el metodo "notificarInvitacionAGCCClienteNoRegistrado".
 		mailService.enviarmailInvitadoSinRegistrar(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre(), idGrupo);;
 		assertEquals(true , true);
 	}

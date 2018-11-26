@@ -21,16 +21,20 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 
 import chasqui.exceptions.UsuarioExistenteException;
+import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
+import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
 import chasqui.security.PasswordGenerator;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
 import freemarker.template.Configuration;
 import freemarker.template.SimpleObjectWrapper;
@@ -42,6 +46,8 @@ public class MailService {
 	private JavaMailSender mailSender;	
 	@Autowired
 	private UsuarioService usuarioService;	
+	@Autowired
+	private VendedorService vendedorService;
 	@Autowired
 	private Encrypter encrypter;
 	@Autowired
@@ -74,13 +80,17 @@ public class MailService {
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_BIENVENIDA_CLIENTE, destino, Constantes.SUBJECT_BIENVENIDO, params);
 	}
 	
-	public void enviarEmailNotificacionPedido(String destino,String cuerpoEmail,String nombreUsuario, String apellidoUsuario) throws IOException, MessagingException, TemplateException{
+	public void enviarEmailNotificacionPedido(String destino,String cuerpoEmail,String nombreUsuario, String apellidoUsuario, Vendedor vendedor) throws IOException, MessagingException, TemplateException{
 
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("cuerpo", cuerpoEmail);
-		params.put("nombreUsuario", nombreUsuario); //Modificado nombre a nombreUsuario 02-06
+		params.put("nombreUsuario", nombreUsuario);
 		params.put("apellido", apellidoUsuario);
-
+		String catalogo = this.generarUrlCatalogo(vendedor.getUrl(), vendedor.getNombreCorto());
+		//CatalogoVendedor es la URL al catalogo de productos del vendedor que envia este correo.
+		//Actualmente no se utiliza. Pero deberia estar en el logo y baner del email.
+		params.put("catalogoVendedor", catalogo);
+		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NOTIFICACION_PEDIDO, destino, Constantes.SUBJECT_ALERT_VENCIMIENTO, params);
 	}
 		
@@ -92,7 +102,9 @@ public class MailService {
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
 		String idInvitacion = invitacionService.obtenerInvitacionAGCCporIDGrupo(destino, idGrupo).getId().toString();
 		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
-			 		
+		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
+		params.put("catalogoVendedor", catalogo);
+		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO, destino, Constantes.SUBJECT_INVITACION_NO_REGISTRADO, params);
 	}
 			
@@ -103,11 +115,23 @@ public class MailService {
 		params.put("vendedor", nombreVendedor);	
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
 		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro" );//TODO revisar que se forme correctamente 11/09
+		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
+		params.put("catalogoVendedor", catalogo);
+		
 		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_REGISTRADO, destino,Constantes.SUBJECT_INVITACION_REGISTRADO, params);
 		
 	}
 	
+	/**
+	 * Esta invitacion no esta siendo utilizada actualmente,
+	 * serviria para hacer una invitacion no relacionada con un grupo.
+	 * Para esto es necesario que referencie el catalogo como otros metodos de envio de email.
+	 * Ademas no deberia estar hardcodeado un vendedor
+	 * @param clienteOrigen
+	 * @param destino
+	 * @throws Exception
+	 */
 	public void enviarEmailDeInvitacionChasqui(Cliente clienteOrigen, String destino) throws Exception {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("usuarioOrigen", clienteOrigen.getUsername());
@@ -123,7 +147,9 @@ public class MailService {
 		params.put("usuarioInvitado",invitado.getUsername());
 		params.put("vendedor", grupo.getVendedor().getNombre());
 		params.put("nombreUsuario", grupo.getAdministrador().getUsername());
-
+		String catalogo = this.generarUrlCatalogo(grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto());
+		params.put("catalogoVendedor", catalogo);
+		
 		String subject = Constantes.SUBJECT_INVITACION_GCC_ACEPTADA.replaceAll("<usuario>", invitado.getUsername());
 
 		
@@ -178,8 +204,9 @@ public class MailService {
 	 * @param emailVendedor
 	 * @param emailCliente
 	 * @param p
+	 * @throws UsuarioInexistenteException 
 	 */
-	public void enviarEmailConfirmacionPedido(final String emailVendedor,final String emailCliente, final Pedido p){
+	public void enviarEmailConfirmacionPedido(final String emailVendedor,final String emailCliente, final Pedido p) throws UsuarioInexistenteException{
 		Direccion direccion = null;
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
@@ -191,6 +218,8 @@ public class MailService {
 			direccion = p.getPuntoDeRetiro().getDireccion();
 			textoDeDireccionDeEntrega ="Dirección de retiro";
 		}
+		Vendedor vendedor = (Vendedor) usuarioService.obtenerUsuarioPorEmail(emailVendedor);
+		String catalogo = this.generarUrlCatalogo(vendedor.getUrl(), vendedor.getNombreCorto());
 		
 		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
 		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
@@ -203,6 +232,7 @@ public class MailService {
 		params.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
 		params.put("agradecimiento",Constantes.AGRADECIMIENTO);
 		params.put("textoDetalle", textoEnEmail);
+		params.put("catalogoVendedor", catalogo);
 
 		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailCliente,formarTag(p) + Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, params);
 		
@@ -211,6 +241,7 @@ public class MailService {
 		paramsVendedor.put("tablaContenidoPedido",tablaContenidoPedido);
 		paramsVendedor.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
 		paramsVendedor.put("agradecimiento",Constantes.AGRADECIMIENTO);
+		paramsVendedor.put("catalogoVendedor", catalogo);
 		params.put("textoDetalle", textoEnEmail);
 
 		this.enviarMailEnThreadAparte(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL, emailVendedor, formarTag(p) + Constantes.CONFIRMACIÓN_DE_COMPRA_SUBJECT, paramsVendedor);
@@ -218,10 +249,14 @@ public class MailService {
 	}
 	
 	public void enviarEmailVencimientoPedido(String nombreVendedor, Cliente cliente, Pedido pedido, String fechaCreacionPedido,
-			String cantidadDeMinutosParaExpiracion) {
+			String cantidadDeMinutosParaExpiracion) throws VendedorInexistenteException {
 		
-
 		Map<String,Object> params = new HashMap<String,Object>();
+
+		Vendedor vendedor = vendedorService.obtenerVendedor(nombreVendedor);
+		String catalogo = this.generarUrlCatalogo(vendedor.getUrl(), vendedor.getNombreCorto());
+		params.put("catalogoVendedor", catalogo);
+		
 		params.put("vendedor", nombreVendedor);
 		params.put("fechaCreacionPedido",fechaCreacionPedido);
 		params.put("cantidadDeMinutosParaExpiracion", cantidadDeMinutosParaExpiracion);
@@ -271,6 +306,10 @@ public class MailService {
 	public void enviarEmailCierreDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		Direccion direccion;
+		
+		String catalogo = this.generarUrlCatalogo(pedidoColectivo.getColectivo().getVendedor().getUrl(), pedidoColectivo.getColectivo().getVendedor().getNombreCorto());
+		params.put("catalogoVendedor", catalogo);
+		
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
@@ -302,6 +341,8 @@ public class MailService {
 	public void enviarEmailPreparacionDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		Direccion direccion;
+		String catalogo = this.generarUrlCatalogo(pedidoColectivo.getColectivo().getVendedor().getUrl(), pedidoColectivo.getColectivo().getVendedor().getNombreCorto());
+		params.put("catalogoVendedor", catalogo);
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
@@ -370,6 +411,9 @@ public class MailService {
 
 	public void enviarEmailNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo) {
 		Map<String,Object> params = new HashMap<String,Object>();
+		
+		String catalogo = this.generarUrlCatalogo(grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto());
+		params.put("catalogoVendedor", catalogo);
 		params.put("nuevoAdmin", nuevoAdministrador.getUsername());
 		params.put("viejoAdmin",administradorAnterior.getUsername());
 		params.put("nombreGrupo", grupo.getAlias());
@@ -613,5 +657,15 @@ public class MailService {
 		return "[ Pedido N° "+ p.getId()+" ] ";
 	}
 	
+	/**
+	 * Genera la URL al catalo del vendedor.
+	 * @param url La url del vendedor.
+	 * @param nombreCorto El nombre corto del vendedor.
+	 * @return El catalogo de productos para el vendedor.
+	 */
+	private String generarUrlCatalogo(String url, String nombreCorto){
+		String slash = (url.endsWith("/"))?"":"/";
+		return (url + slash + "#/" + nombreCorto + "/productos");
+	}
 
 }

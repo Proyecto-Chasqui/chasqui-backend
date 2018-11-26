@@ -169,7 +169,6 @@ public class GrupoListener {
 		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioInexistenteException e) {
-
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
