@@ -28,7 +28,10 @@ import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.Messagebox.ClickEvent;
 
+import chasqui.model.DataContacto;
 import chasqui.model.DataMultimedia;
+import chasqui.model.DataPortada;
+import chasqui.model.Direccion;
 import chasqui.model.Imagen;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
@@ -65,6 +68,18 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	private Component window;
 	private ImagenRenderPortada imgRender;
 	private Toolbarbutton buttonGuardarTexto;
+	private Textbox textCalle;
+	private Textbox textAltura;
+	private Textbox textLocalidad;
+	private Textbox textCodigoPostal;
+	private Textbox textDepartamento;
+	private Textbox telefono;
+	private Textbox email;
+	private Textbox contactoDigital;
+	private Textbox celular;
+	private Textbox pais;
+	private Textbox provincia;
+	
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -77,6 +92,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		txtPortada.setValue(dataMultimedia.getDataPortada().getTextoBienvenida());
 		fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
 		this.llenarDatosDeImagenesDeVendedor(dataMultimedia);
+		this.llenarTextosDeVendedor();
 		comp.addEventListener(Events.ON_CLICK, new BorrarImagenPortadaEventListener(this));
 		comp.addEventListener(Events.ON_USER, new DescargarImagenPortadaEventListener(this));
 		listImagenesBanner.setItemRenderer(imgRender);
@@ -100,6 +116,31 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		}
 		
 	}
+	
+	private void llenarTextosDeVendedor(){
+		DataContacto dc = dataMultimedia.getDataContacto();
+		completarDireccion(dc.getDireccion());
+		telefono.setValue(dc.getTelefono());
+		email.setValue(dc.getEmail());
+		contactoDigital.setValue(dc.getUrl());
+		celular.setValue(dc.getCelular());
+	}
+
+	private void completarDireccion(Direccion direccion) {
+		if(direccion != null) {
+			if(direccion.getAltura() != null) {
+				textAltura.setValue(direccion.getAltura().toString());
+			}else {
+				textAltura.setValue(null);
+			}
+			textCalle.setValue(direccion.getCalle().toString());
+			textCodigoPostal.setValue(direccion.getCodigoPostal());
+			textLocalidad.setValue(direccion.getLocalidad());
+			textDepartamento.setValue(direccion.getDepartamento());
+			pais.setValue(direccion.getPais());
+			provincia.setValue(direccion.getProvincia());
+		}		
+	}
 
 	private DataMultimedia obtenerDataMultimedia(Vendedor vendedor) {
 		DataMultimedia vData;
@@ -107,6 +148,9 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 			vendedor.setDataMultimedia(new DataMultimedia(vendedor.getId()));
 			vData = vendedor.getDataMultimedia();
 		}else {
+			if(vendedor.getDataMultimedia().getDataContacto() == null) {
+				vendedor.getDataMultimedia().setDataContacto(new DataContacto());
+			}
 			vData = vendedor.getDataMultimedia();
 		}
 		return vData;
@@ -117,6 +161,35 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		this.vendedorLogueado.setDataMultimedia(dataMultimedia);
 		usuarioService.guardarUsuario(vendedorLogueado);
 		Clients.showNotification("El texto se guardo correctamente", "info", window, "middle_center", 3000,true);
+	}
+	
+	public void onClick$buttonGuardarContacto() {
+		DataContacto dc = dataMultimedia.getDataContacto();
+		Direccion dir = crearDireccion();
+		dc.setDireccion(dir);
+		dc.setEmail(email.getValue());
+		dc.setTelefono(telefono.getValue());
+		dc.setCelular(celular.getValue());
+		dc.setUrl(contactoDigital.getValue());
+		this.vendedorLogueado.setDataMultimedia(dataMultimedia);
+		usuarioService.guardarUsuario(vendedorLogueado);
+		Clients.showNotification("Los datos se guardaron correctamente", "info", window, "middle_center", 3000,true);
+	}
+	
+	public Direccion crearDireccion() {
+		Direccion dir = new Direccion();
+		if(!textAltura.getValue().equals("")) {
+			dir.setAltura(Integer.parseInt(textAltura.getValue()));
+		}else {
+			dir.setAltura(null);
+		}
+		dir.setCalle(textCalle.getValue());
+		dir.setCodigoPostal(textCodigoPostal.getValue());
+		dir.setDepartamento(textDepartamento.getValue());
+		dir.setLocalidad(textLocalidad.getValue());
+		dir.setPais(pais.getValue());
+		dir.setProvincia(provincia.getValue());
+		return dir;
 	}
 
 	public void onUpload$uploadImagenLogo(UploadEvent evt) {
@@ -398,6 +471,86 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	public void refresh() {
 		this.binder.loadAll();
 		
+	}
+
+	public Textbox getTextCalle() {
+		return textCalle;
+	}
+
+	public void setTextCalle(Textbox textCalle) {
+		this.textCalle = textCalle;
+	}
+
+	public Textbox getTextAltura() {
+		return textAltura;
+	}
+
+	public void setTextAltura(Textbox textAltura) {
+		this.textAltura = textAltura;
+	}
+
+	public Textbox getTextLocalidad() {
+		return textLocalidad;
+	}
+
+	public void setTextLocalidad(Textbox textLocalidad) {
+		this.textLocalidad = textLocalidad;
+	}
+
+	public Textbox getTextCodigoPostal() {
+		return textCodigoPostal;
+	}
+
+	public void setTextCodigoPostal(Textbox textCodigoPostal) {
+		this.textCodigoPostal = textCodigoPostal;
+	}
+
+	public Textbox getTextDepartamento() {
+		return textDepartamento;
+	}
+
+	public void setTextDepartamento(Textbox textDepartamento) {
+		this.textDepartamento = textDepartamento;
+	}
+
+	public Textbox getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(Textbox telefono) {
+		this.telefono = telefono;
+	}
+
+	public Toolbarbutton getButtonGuardarTexto() {
+		return buttonGuardarTexto;
+	}
+
+	public void setButtonGuardarTexto(Toolbarbutton buttonGuardarTexto) {
+		this.buttonGuardarTexto = buttonGuardarTexto;
+	}
+
+	public Textbox getEmail() {
+		return email;
+	}
+
+	public void setEmail(Textbox email) {
+		this.email = email;
+	}
+
+	public Textbox getContactoDigital() {
+		return contactoDigital;
+	}
+
+	public void setContactoDigital(Textbox contactoDigital) {
+		this.contactoDigital = contactoDigital;
+	}
+
+	public Textbox getCelular() {
+		return celular;
+	}
+
+	public void setCelular(Textbox celular) {
+		this.celular = celular;
 	}
 
 }

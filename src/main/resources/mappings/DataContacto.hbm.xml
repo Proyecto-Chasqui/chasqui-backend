@@ -3,21 +3,22 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping default-cascade="save-update">
-    <class name="chasqui.model.DataMultimedia" table="DATA_MULTIMEDIA">
+    <class name="chasqui.model.DataContacto" table="DATA_CONTACTO">
         <id name="id" type="java.lang.Integer">
             <column name="ID" />
             <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
-	            <param name="sequence_name">DATA_MULTIMEDIA_SEQUENCE</param>
+	            <param name="sequence_name">DATA_CONTACTO_SEQUENCE</param>
 	            <param name="optimizer">none</param>
 	            <param name="increment_size">1</param> 
          	</generator>
         </id>
-        <property name="idVendedor" type="java.lang.Integer"/>
-        <many-to-one name="dataPortada" class="chasqui.model.DataPortada" lazy="false" fetch="join">
-            <column name="ID_DATA_PORTADA"/>
-        </many-to-one>
-        <many-to-one name="dataContacto" class="chasqui.model.DataContacto" lazy="false" fetch="join">
-            <column name="ID_DATA_CONTACTO"/>
-        </many-to-one>
+        <many-to-one name="direccion" class="chasqui.model.Direccion"
+			fetch="join" not-null="false" not-found="ignore">
+			<column name="DIRECCION_CONTACTO"/>
+		</many-to-one>
+        <property name="telefono" type="java.lang.String"></property>
+        <property name="celular" type="java.lang.String"></property>
+        <property name="email" type="java.lang.String"></property>
+        <property name="url" type="java.lang.String"></property>
     </class>
 </hibernate-mapping>

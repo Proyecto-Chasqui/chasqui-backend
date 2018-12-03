@@ -21,6 +21,8 @@ public class Direccion{
 	private String codigoPostal;
 	private String alias;
 	private String departamento;
+	private String provincia;
+	private String pais;
 	private String latitud;
 	private String longitud;
 	private Boolean predeterminada;
@@ -70,6 +72,8 @@ public class Direccion{
 			calle = direccion.getCalle();
 			codigoPostal = direccion.getCodigoPostal();
 			departamento = direccion.getDepartamento();
+			provincia = direccion.getProvincia();
+			pais = direccion.getPais();
 			alias = direccion.getAlias();
 			predeterminada = direccion.getPredeterminada();			
 		}
@@ -237,6 +241,22 @@ public class Direccion{
 
 	public void setComentario(String comentario) {
 		this.comentario = comentario;
+	}
+
+	public String getProvincia() {
+		return provincia;
+	}
+
+	public void setProvincia(String provincia) {
+		this.provincia = provincia;
+	}
+
+	public String getPais() {
+		return pais;
+	}
+
+	public void setPais(String pais) {
+		this.pais = pais;
 	}
 
 	

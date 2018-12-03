@@ -30,6 +30,12 @@
         <property name="codigoPostal" type="java.lang.String">
             <column name="CODIGO_POSTAL" />
         </property>
+       <property name="provincia" type="java.lang.String">
+            <column name="PROVINCIA" />
+        </property>        
+        <property name="pais" type="java.lang.String">
+            <column name="PAIS" />
+        </property>
         <property name="latitud" type="java.lang.String">
             <column name="LATITUD" />
         </property>
