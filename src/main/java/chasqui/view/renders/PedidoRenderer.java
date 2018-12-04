@@ -68,12 +68,13 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		celdaMontoMinimo = new Listcell(String.valueOf(pedido.getMontoMinimo()));
 
 		celdaMontoActual = new Listcell(String.valueOf(pedido.getMontoActual()));
-		if (pedido.getMontoMinimo() < pedido.getMontoActual()) {
-			celdaMontoActual.setStyle("color:green;");
-		} else {
-			celdaMontoActual.setStyle("color:red;");
+		if(!pedido.getPerteneceAPedidoGrupal()) {
+			if (pedido.getMontoMinimo() <= pedido.getMontoActual()) {
+				celdaMontoActual.setStyle("color:green;");
+			} else {
+				celdaMontoActual.setStyle("color:red;");
+			}
 		}
-
 		celdaEstado = crearCeldaSegunEstado(pedido);
 		String estado = pedido.getEstado();
 
