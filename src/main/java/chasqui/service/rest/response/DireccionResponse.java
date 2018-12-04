@@ -42,6 +42,12 @@ public class DireccionResponse implements Serializable {
 		this.predeterminada = d.getPredeterminada();
 		this.idDireccion = d.getId();
 	}
+	
+	public DireccionResponse direccionResponseNoID(Direccion d){
+		DireccionResponse dr = new DireccionResponse(d);
+		dr.setIdDireccion(null);
+		return dr;		
+	}
 	public String getCalle() {
 		return calle;
 	}

@@ -141,7 +141,8 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerInfoDePortada(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
-			return Response.ok(new DataPortadaResponse(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getDataMultimedia().getDataPortada())).build();
+			DataPortadaResponse dr = new DataPortadaResponse(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getDataMultimedia());
+			return Response.ok(dr).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			
