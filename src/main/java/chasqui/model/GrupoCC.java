@@ -264,21 +264,30 @@ public class GrupoCC {
 			throw new EstadoPedidoIncorrectoException(
 					"Alguno de los pedidos del grupo " + alias + " no está confirmado");
 		}
-		//validar que hacer segun PR o direccion
-		if (this.pedidoActual.getMontoTotal() >= this.vendedor.getMontoMinimoPedido()) {
-			this.setearDireccionEnPedido(puntoDeRetiro,direccion);
-			this.setearOpcionesSeleccionadas(opcionesSeleccionadas);
-			this.pedidoActual.setZona(zona);
-			this.pedidoActual.setComentario(comentario);
-			this.pedidoActual.confirmarte();
-			this.historial.agregarAHistorial(this.pedidoActual);
-			this.historial.setId(this.id);
-			this.pedidoActual = new PedidoColectivo();
-			this.pedidoActual.setColectivo(this);
-		} else {
-			throw new NoAlcanzaMontoMinimoException();
+		
+		if(direccion != null) {
+			if (this.pedidoActual.getMontoTotal() >= this.vendedor.getMontoMinimoPedido()) {
+				cerrarPedidoColectivo(puntoDeRetiro,direccion,comentario,opcionesSeleccionadas,zona);
+			} else {
+				throw new NoAlcanzaMontoMinimoException();
+			}
+		}else {
+			cerrarPedidoColectivo(puntoDeRetiro,direccion,comentario,opcionesSeleccionadas,zona);
 		}
 
+
+	}
+	
+	private void cerrarPedidoColectivo(PuntoDeRetiro puntoDeRetiro, Direccion direccion, String comentario,List<OpcionSeleccionadaRequest> opcionesSeleccionadas, Zona zona) throws EstadoPedidoIncorrectoException {
+		this.setearDireccionEnPedido(puntoDeRetiro,direccion);
+		this.setearOpcionesSeleccionadas(opcionesSeleccionadas);
+		this.pedidoActual.setZona(zona);
+		this.pedidoActual.setComentario(comentario);
+		this.pedidoActual.confirmarte();
+		this.historial.agregarAHistorial(this.pedidoActual);
+		this.historial.setId(this.id);
+		this.pedidoActual = new PedidoColectivo();
+		this.pedidoActual.setColectivo(this);
 	}
 	
 	private void setearOpcionesSeleccionadas(List<OpcionSeleccionadaRequest> opcionesSeleccionadas) {

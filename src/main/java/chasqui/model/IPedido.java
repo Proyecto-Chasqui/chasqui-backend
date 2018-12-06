@@ -24,4 +24,6 @@ public interface IPedido {
 
 	void preparado() throws EstadoPedidoIncorrectoException;
 
+	void confirmarteSinMontoMinimo() throws EstadoPedidoIncorrectoException;
+
 }
