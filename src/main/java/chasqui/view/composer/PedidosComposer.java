@@ -362,7 +362,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 						export.fullexport(resumen);
 						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
+						Clients.showNotification(e.getMessage(), "error", window, "middle_center", 20000,true);
 						e.printStackTrace();						
 					}
 					break;
@@ -371,7 +371,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 						export.fullexport(pedidos);
 						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
+						Clients.showNotification(e.getMessage(), "error", window, "middle_center", 20000, true);
 						e.printStackTrace();
 					}
 					break;

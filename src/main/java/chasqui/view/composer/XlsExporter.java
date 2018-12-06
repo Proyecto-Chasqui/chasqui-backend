@@ -45,16 +45,24 @@ public class XlsExporter {
 	private static final String[] campospuntoderetiro = {"Nombre","Calle","Altura","Localidad","Codigo Postal","Departamento"};
 	
 	public void fullexport(List<Pedido> pedidos) throws Exception {
-		for (Pedido p : pedidos) {
-			if(p.getCliente() != null) {
-				this.generarPedido(p);
-			}else {
-				this.generarResumen(p);
+		Pedido pActual = null;
+		try {
+			for (Pedido p : pedidos) {
+				pActual = p;
+				if(p.getCliente() != null) {
+					this.generarPedido(p);
+				}else {
+					this.generarResumen(p);
+				}
+				doDetails();
 			}
-			doDetails();
+			showDownload();
+			clean();
+		}catch (Exception e){
+			throw new Exception("Hay una inconsistencia en el pedido con ID: " + pActual.getId() +", y no se puede exportar. Intente excluirlo del filtro o comuniquese con el administrador del sistema");
+		}finally {
+			clean();
 		}
-		showDownload();
-		clean();
 	}
 	
 	private void generarResumen(Pedido p) throws Exception {
