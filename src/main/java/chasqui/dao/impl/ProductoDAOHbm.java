@@ -57,6 +57,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				 }
 				 c.add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
 				 //.addOrder(Order.asc("id"))
+				 .addOrder(Order.desc("variante.destacado"))
 				 .addOrder(Order.asc("producto.nombre"))
 				 .setFirstResult(inicio )
 				 .setMaxResults(cantidadDeItems);
