@@ -446,13 +446,19 @@ public class PedidoServiceImpl implements PedidoService {
 
 	private void validarRequest(ConfirmarPedidoRequest request) throws RequestIncorrectoException {
 		validarRequest(request.getIdPedido());
-		//validarRequest(request.getIdDireccion());
+		validarLargoComentario(request.getComentario());
 
 	}
 
 	private void validarRequest(Integer idPedido) throws RequestIncorrectoException {
 		if (idPedido == null || idPedido < 0) {
 			throw new RequestIncorrectoException("el id del pedido debe ser mayor a 0");
+		}
+	}
+	
+	private void validarLargoComentario(String comentario) throws RequestIncorrectoException{
+		if (comentario.length() >= 2000) {
+			throw new RequestIncorrectoException("la observacion sobre la direccion es muy larga");
 		}
 	}
 
