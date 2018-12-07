@@ -114,4 +114,12 @@ public interface PedidoService {
 			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro, String email);
 
 	public void refrescarVencimiento(Integer idPedido, String email) throws UsuarioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException, VendedorInexistenteException;
+	
+	/**
+	 * Permite buscar pedidos por punto de retiro con nombre, si no se escribe nada o viene "" se ingora. Se usa para mostrar los pedidos
+	 * en BO ya que los pedidos una vez confirmados con puntoderetiro se "copian" al pedido, por lo que no se puede encontrar con ID, solo con nombre.
+	 */
+	
+	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedorConPRPorNombre(Integer id, Date d, Date h,
+			String estadoSeleccionado, Integer zonaId, String nombrePuntoRetiro, String email);
 }

@@ -92,6 +92,8 @@ style="overflow:auto">
 		<combobox id="estadosListbox"  readonly="true" model="@{pedidosWindow$composer.estados}" selectedItem="@{pedidosWindow$composer.estadoSeleccionado}"/>
 		<label value="Zona:"/>
 		<combobox id="zonasListbox"  readonly="true" model="@{pedidosWindow$composer.zonas.nombre}" selectedItem="@{pedidosWindow$composer.zonaSeleccionada}"/>
+		<label value="Punto de Retiro"/>
+		<combobox id="prCombobox"  readonly="true" model="@{pedidosWindow$composer.puntosDeRetiro}" selectedItem="@{pedidosWindow$composer.prSeleccionado}"/>
 		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
 		<button label="Buscar" id="buscar" visible="false"/>
 	</hbox>

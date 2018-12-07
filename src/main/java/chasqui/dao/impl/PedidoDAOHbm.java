@@ -318,6 +318,59 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 			}
 		});
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Pedido> obtenerPedidosIndividualesDeVendedorPRPorNombre(final Integer idVendedor, final Date desde, final Date hasta,
+			final String estadoSeleccionado, final Integer zonaId, final String nombrePuntoRetiro, final String email) {
+		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<Pedido>>() {
+
+			@Override
+			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(Pedido.class,"pedido")
+				.add(Restrictions.eq("pedido.idVendedor", idVendedor))
+				.add(Restrictions.eq("pedido.perteneceAPedidoGrupal", false))
+				.addOrder(Order.desc("pedido.id"));
+				
+				if(zonaId!=null){
+					c.createAlias("pedido.zona", "zona");
+					c.add(Restrictions.eq("zona.id", zonaId));
+				}
+				
+				if (!StringUtils.isEmpty(estadoSeleccionado)) {
+					c.add(Restrictions.eq("pedido.estado", estadoSeleccionado));
+				}
+				if (desde != null && hasta != null) {
+					DateTime d = new DateTime(desde.getTime());
+					DateTime h = new DateTime(hasta.getTime());
+					c.add(Restrictions.between("pedido.fechaCreacion", d.withHourOfDay(0), h.plusDays(1).withHourOfDay(0)));
+				}else{
+					if(desde!=null){
+						DateTime d = new DateTime(desde.getTime());
+						c.add(Restrictions.ge("pedido.fechaCreacion", d.withHourOfDay(0)));
+					}else{
+						if(hasta!=null){
+							DateTime h = new DateTime(hasta.getTime());
+							c.add(Restrictions.le("pedido.fechaCreacion", h.plusDays(1).withHourOfDay(0)));
+						}
+					}
+				}
+				
+				if(nombrePuntoRetiro!=null && !nombrePuntoRetiro.equals("")) {
+					c.createAlias("pedido.puntoDeRetiro", "puntoDeRetiro");
+					c.add(Restrictions.eq("puntoDeRetiro.nombre",nombrePuntoRetiro));
+				}
+				
+				if(email!=null && !email.equals("")) {
+					c.createAlias("pedido.cliente", "cliente");
+					c.add(Restrictions.like("cliente.email", "%"+email+"%"));
+				}
+				
+
+				return (List<Pedido>) c.list();
+			}
+		});
+	}
 
 
 

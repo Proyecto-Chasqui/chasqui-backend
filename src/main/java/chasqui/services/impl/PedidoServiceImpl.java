@@ -553,5 +553,11 @@ public class PedidoServiceImpl implements PedidoService {
 			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro, String email) {
 		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedor( id, d, h,estadoSeleccionado,zonaId,idPuntoRetiro, email);
 	}
+	
+	@Override
+	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedorConPRPorNombre(Integer id, Date d, Date h,
+			String estadoSeleccionado, Integer zonaId, String nombrePuntoRetiro, String email) {
+		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedorPRPorNombre( id, d, h,estadoSeleccionado,zonaId,nombrePuntoRetiro, email);
+	}
 
 }

@@ -9,12 +9,12 @@ import com.vividsolutions.jts.geom.Point;
  *
  */
 public class PuntoDeRetiro{
-	Integer id;
-	String idExterno;
-	String nombre;
-	String descripcion;
-	Boolean disponible;
-	Direccion direccion;
+	private Integer id;
+	private String idExterno;
+	private String nombre;
+	private String descripcion;
+	private Boolean disponible;
+	private Direccion direccion;
 	
 	public PuntoDeRetiro(){
 		
