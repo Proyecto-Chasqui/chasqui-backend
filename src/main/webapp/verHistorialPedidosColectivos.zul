@@ -21,6 +21,8 @@ style="overflow:auto">
 		<combobox id="estadosListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.estados}" selectedItem="@{historialPedidosColectivosWindow$composer.estadoSeleccionado}"/>
 		<label value="Zona:"/>
 		<combobox id="zonasListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.zonas.nombre}" selectedItem="@{historialPedidosColectivosWindow$composer.zonaSeleccionada}"/>
+		<label value="Punto de Retiro"/>
+		<combobox id="prCombobox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.puntosDeRetiro}" selectedItem="@{historialPedidosColectivosWindow$composer.prSeleccionado}"/>
 		<button label="Buscar" id="buscar" visible="false"/>
 		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
 	</hbox>

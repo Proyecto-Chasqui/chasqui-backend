@@ -92,9 +92,6 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	private List<Zona> zonas;
 	private List<String>estados;
 	private List<Pedido>pedidos;
-	private List<String> puntosDeRetiro;
-	private Combobox prCombobox;
-	private String prSeleccionado;
 	Vendedor usuarioLogueado;
 	private Paging paginal;
 	private Button buscar;
@@ -104,6 +101,9 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	private MailService mailService;
 	private Window window;
 	private Textbox buscadorPorCliente;
+	private List<String> puntosDeRetiro;
+	private Combobox prCombobox;
+	private String prSeleccionado;
 	private VendedorService vendedorService;
 //	private Integer maximaPaginaVisitada = 1;
 	
