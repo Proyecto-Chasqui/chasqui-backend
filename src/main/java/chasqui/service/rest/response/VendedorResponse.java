@@ -17,6 +17,7 @@ public class VendedorResponse implements Serializable{
 	private String nombreCorto;
 	private String imagen;
 	private String urlMapa;
+	private Integer tiempoDeVencimiento;
 	private EstrategiaDeComercializacionGenerica few;
 	private EstrategiaDeComercializacionGenerica app;
 	
@@ -28,6 +29,7 @@ public class VendedorResponse implements Serializable{
 		nombre = v.getNombre();
 		nombreCorto = v.getNombreCorto();
 		imagen = v.getImagenPerfil();
+		tiempoDeVencimiento = v.getTiempoVencimientoPedidos();
 		EstrategiasDeComercializacion estrategias = v.getEstrategiasUtilizadas();
 		this.setFew(new EstrategiaDeComercializacionGenerica());
 		this.setApp(new EstrategiaDeComercializacionGenerica());
@@ -107,6 +109,14 @@ public class VendedorResponse implements Serializable{
 
 	public void setUrlMapa(String urlMapa) {
 		this.urlMapa = urlMapa;
+	}
+
+	public Integer getTiempoDeVencimiento() {
+		return tiempoDeVencimiento;
+	}
+
+	public void setTiempoDeVencimiento(Integer tiempoDeVencimiento) {
+		this.tiempoDeVencimiento = tiempoDeVencimiento;
 	}
 
 	
