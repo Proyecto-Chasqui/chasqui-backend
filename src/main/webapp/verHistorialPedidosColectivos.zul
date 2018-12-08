@@ -10,19 +10,19 @@ style="overflow:auto">
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" />
-		<datebox id="desde" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
+		<datebox readonly="true" id="desde" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
 		<label value="Fecha Hasta:"/>
-		<datebox id="hasta" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
+		<datebox readonly="true" id="hasta" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
 		<textbox id="buscadorPorUsuario" placeholder="Buscar por email admin"  forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>
 		<combobox id="estadosListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.estados}" selectedItem="@{historialPedidosColectivosWindow$composer.estadoSeleccionado}"/>
 		<label value="Zona:"/>
-		<combobox id="zonasListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.zonas.nombre}" selectedItem="@{historialPedidosColectivosWindow$composer.zonaSeleccionada}"/>
+		<combobox id="zonasListbox" autodrop="true" readonly="false" model="@{historialPedidosColectivosWindow$composer.zonas.nombre}" selectedItem="@{historialPedidosColectivosWindow$composer.zonaSeleccionada}" forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
 		<label value="Punto de Retiro"/>
-		<combobox id="prCombobox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.puntosDeRetiro}" selectedItem="@{historialPedidosColectivosWindow$composer.prSeleccionado}"/>
+		<combobox id="prCombobox" autodrop="true" readonly="false" model="@{historialPedidosColectivosWindow$composer.puntosDeRetiro}" selectedItem="@{historialPedidosColectivosWindow$composer.prSeleccionado}" forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
 		<button label="Buscar" id="buscar" visible="false"/>
 		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
 	</hbox>

@@ -81,19 +81,19 @@ style="overflow:auto">
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" />
-		<datebox id="desde" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
+		<datebox id="desde" readonly="true" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<space spacing="10px"/>
 		<label value="Fecha Hasta:"/>
-		<datebox id="hasta" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
+		<datebox id="hasta" readonly="true" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
 		<textbox id="buscadorPorCliente" placeholder="Buscar por email cliente"  forward="onOK=pedidosWindow$composer.onBuscar"/>	
 	</hbox>
 	<hbox>
 		<label value="Estado:"/>
 		<combobox id="estadosListbox"  readonly="true" model="@{pedidosWindow$composer.estados}" selectedItem="@{pedidosWindow$composer.estadoSeleccionado}"/>
 		<label value="Zona:"/>
-		<combobox id="zonasListbox"  readonly="true" model="@{pedidosWindow$composer.zonas.nombre}" selectedItem="@{pedidosWindow$composer.zonaSeleccionada}"/>
+		<combobox id="zonasListbox" autodrop="true" readonly="false" model="@{pedidosWindow$composer.zonas.nombre}" selectedItem="@{pedidosWindow$composer.zonaSeleccionada}" forward="onOK=pedidosWindow$composer.onBuscar"/>
 		<label value="Punto de Retiro"/>
-		<combobox id="prCombobox"  readonly="true" model="@{pedidosWindow$composer.puntosDeRetiro}" selectedItem="@{pedidosWindow$composer.prSeleccionado}"/>
+		<combobox id="prCombobox"  autodrop="true" readonly="false" model="@{pedidosWindow$composer.puntosDeRetiro}" selectedItem="@{pedidosWindow$composer.prSeleccionado}" forward="onOK=pedidosWindow$composer.onBuscar"/>
 		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
 		<button label="Buscar" id="buscar" visible="false"/>
 	</hbox>
