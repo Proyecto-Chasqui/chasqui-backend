@@ -35,7 +35,6 @@ style="overflow:auto">
 		height: 16px;
 		width: 16px;	
      }
- 	
  </style>
     
 <script type="text/javascript">
@@ -80,22 +79,28 @@ style="overflow:auto">
 
 <div align="center">
 	<hbox>
-		<label value="Fecha Desde:" />
-		<datebox id="desde" readonly="true" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
-		<space spacing="10px"/>
-		<label value="Fecha Hasta:"/>
-		<datebox id="hasta" readonly="true" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
-		<textbox id="buscadorPorCliente" placeholder="Buscar por email cliente"  forward="onOK=pedidosWindow$composer.onBuscar"/>	
-	</hbox>
-	<hbox>
-		<label value="Estado:"/>
-		<combobox id="estadosListbox"  readonly="true" model="@{pedidosWindow$composer.estados}" selectedItem="@{pedidosWindow$composer.estadoSeleccionado}"/>
-		<label value="Zona:"/>
-		<combobox id="zonasListbox" autodrop="true" readonly="false" model="@{pedidosWindow$composer.zonas.nombre}" selectedItem="@{pedidosWindow$composer.zonaSeleccionada}" forward="onOK=pedidosWindow$composer.onBuscar"/>
-		<label value="Punto de Retiro"/>
-		<combobox id="prCombobox"  autodrop="true" readonly="false" model="@{pedidosWindow$composer.puntosDeRetiro}" selectedItem="@{pedidosWindow$composer.prSeleccionado}" forward="onOK=pedidosWindow$composer.onBuscar"/>
-		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
-		<button label="Buscar" id="buscar" visible="false"/>
+		<vbox>
+			<hbox>
+				<label value="Fecha Desde:" />
+				<datebox id="desde" readonly="true" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
+			</hbox>		
+			<hbox>
+				<label value="Fecha Hasta:"/>
+				<datebox id="hasta" readonly="true" format="dd/MM/yyyy" forward="onChange=pedidosWindow.composer.onBuscar"/>
+			</hbox>	
+		</vbox>
+		<vbox>
+			<textbox id="buscadorPorCliente" placeholder="Buscar por email cliente"  forward="onOK=pedidosWindow$composer.onBuscar"/>	
+			<combobox placeholder="Buscar por estado"  id="estadosListbox"  readonly="true" model="@{pedidosWindow$composer.estados}" selectedItem="@{pedidosWindow$composer.estadoSeleccionado}"/>
+		</vbox>
+		<vbox>
+			<combobox placeholder="Buscar por zona" id="zonasListbox" autodrop="true" readonly="false" model="@{pedidosWindow$composer.zonas.nombre}" selectedItem="@{pedidosWindow$composer.zonaSeleccionada}" forward="onOK=pedidosWindow$composer.onBuscar"/>
+			<combobox placeholder="Buscar por punto de retiro"  id="prCombobox"  autodrop="true" readonly="false" model="@{pedidosWindow$composer.puntosDeRetiro}" selectedItem="@{pedidosWindow$composer.prSeleccionado}" forward="onOK=pedidosWindow$composer.onBuscar"/>
+		</vbox>
+		<vbox>
+			<button label="Limpiar Campos" id="limpiarCamposbtn"/>
+			<button label="Buscar" id="buscar" visible="false"/>
+		</vbox>
 	</hbox>
 </div>
 <separator spacing="15px"/>

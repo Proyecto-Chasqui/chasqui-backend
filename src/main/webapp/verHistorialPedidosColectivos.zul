@@ -4,27 +4,34 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
+    
 <window width="100%" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="false"
 style="overflow:auto">
 
 <div align="center">
 	<hbox>
-		<label value="Fecha Desde:" />
-		<datebox readonly="true" id="desde" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
-		<space spacing="10px"/>
-		<label value="Fecha Hasta:"/>
-		<datebox readonly="true" id="hasta" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
-		<textbox id="buscadorPorUsuario" placeholder="Buscar por email admin"  forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
-	</hbox>
-	<hbox>
-		<label value="Estado:"/>
-		<combobox id="estadosListbox"  readonly="true" model="@{historialPedidosColectivosWindow$composer.estados}" selectedItem="@{historialPedidosColectivosWindow$composer.estadoSeleccionado}"/>
-		<label value="Zona:"/>
-		<combobox id="zonasListbox" autodrop="true" readonly="false" model="@{historialPedidosColectivosWindow$composer.zonas.nombre}" selectedItem="@{historialPedidosColectivosWindow$composer.zonaSeleccionada}" forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
-		<label value="Punto de Retiro"/>
-		<combobox id="prCombobox" autodrop="true" readonly="false" model="@{historialPedidosColectivosWindow$composer.puntosDeRetiro}" selectedItem="@{historialPedidosColectivosWindow$composer.prSeleccionado}" forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
-		<button label="Buscar" id="buscar" visible="false"/>
-		<button label="Limpiar Campos" id="limpiarCamposbtn"/>
+		<vbox>
+			<hbox>
+				<label value="Fecha Desde:" /> 
+				<datebox readonly="true" id="desde" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
+			</hbox>
+			<hbox>
+				<label value="Fecha Hasta:"/>
+				<datebox readonly="true" id="hasta" forward="onChange=historialPedidosColectivosWindow.composer.onBuscar"/>
+			</hbox>
+		</vbox>
+	    <vbox>
+			<textbox id="buscadorPorUsuario" placeholder="Buscar por email admin"  forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
+			<combobox id="estadosListbox" placeholder="Buscar por estado" readonly="true" model="@{historialPedidosColectivosWindow$composer.estados}" selectedItem="@{historialPedidosColectivosWindow$composer.estadoSeleccionado}"/>
+	    </vbox>
+	    <vbox>
+			<combobox  placeholder="Buscar por zona" id="zonasListbox" autodrop="true" readonly="false" model="@{historialPedidosColectivosWindow$composer.zonas.nombre}" selectedItem="@{historialPedidosColectivosWindow$composer.zonaSeleccionada}" forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
+			<combobox placeholder="Buscar por Punto de retiro" id="prCombobox" autodrop="true" readonly="false" model="@{historialPedidosColectivosWindow$composer.puntosDeRetiro}" selectedItem="@{historialPedidosColectivosWindow$composer.prSeleccionado}" forward="onOK=historialPedidosColectivosWindow$composer.onBuscar"/>
+		</vbox>
+	    <vbox>
+			<button label="Buscar" id="buscar" visible="false"/>
+			<button label="Limpiar Campos" id="limpiarCamposbtn"/>
+	    </vbox>
 	</hbox>
 </div>
 <separator spacing="15px"/>
