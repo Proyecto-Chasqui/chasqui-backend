@@ -219,37 +219,74 @@ public class Vendedor extends Usuario{
 		this.zonas = zonas;
 	}
 
-	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId, String codigoProducto) {
+	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId, String codigoProducto, Boolean destacado, Boolean visibilidad) {
 		List<Producto>p = new ArrayList<Producto>();
 		for(Fabricante f :fabricantes){
-			if(fabricanteSeleccionadoId != null) {
-				if(!codigoProducto.equals("")) {
-					if(f.getId().equals(fabricanteSeleccionadoId)){
-						for(Producto producto: f.getProductos()) {
-							if(producto.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
-								p.add(producto);
-							}
-						}						
-					}
-				}else {
-					if(f.getId().equals(fabricanteSeleccionadoId)){
-						p.addAll(f.getProductos());
-					}
-				}
-			}else {
-				if(!codigoProducto.equals("")) {
-					for(Producto producto: f.getProductos()) {
-						if(producto.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
-							p.add(producto);
-						}
-					}	
-				}else {
-					p.addAll(f.getProductos());
+			p.addAll(f.getProductos());
+		}
+		p = (List<Producto>) this.obtenerProductosConCodigo(p,codigoProducto);
+		p = (List<Producto>) this.obtenerProductosConIdFabricante(p, fabricanteSeleccionadoId);
+		p = (List<Producto>) this.obtenerProductosDestacados(p, destacado);
+		p = (List<Producto>) this.obtenerProductosHabilitadosDeshabilitados(p, visibilidad);
+		
+		return p;
+	}
+	
+
+	private Collection<? extends Producto> obtenerProductosConCodigo(Collection <? extends Producto> lista, String codigoProducto) {
+		List<Producto> productosResultado = new ArrayList<Producto>();
+		if(codigoProducto != null) {
+			for(Producto p: lista) {
+				if(p.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
+					productosResultado.add(p);
 				}
 			}
-
+		}else {
+			productosResultado.addAll(lista);
 		}
-		return p;
+		return productosResultado;
+	}
+	
+	private Collection<? extends Producto> obtenerProductosConIdFabricante(Collection <? extends Producto> lista, Integer idFabricante) {
+		List<Producto> productosResultado = new ArrayList<Producto>();
+		if(idFabricante != null) {
+			for(Producto p: lista) {
+				if(p.getFabricante().getId().equals(idFabricante)) {
+					productosResultado.add(p);
+				}
+			}
+		}else {
+			productosResultado.addAll(lista);
+		}
+		return productosResultado;
+	}
+	
+	private Collection<? extends Producto> obtenerProductosHabilitadosDeshabilitados(Collection <? extends Producto> lista, Boolean visibilidad) {
+		List<Producto> productosResultado = new ArrayList<Producto>();
+		if(visibilidad != null) {
+			for(Producto p: lista) {
+				if(p.isOcultado() == !visibilidad) {
+					productosResultado.add(p);
+				}
+			}
+		}else {
+			productosResultado.addAll(lista);
+		}
+		return productosResultado;
+	}
+	
+	private Collection<? extends Producto> obtenerProductosDestacados(Collection <? extends Producto> lista, Boolean destacado) {
+		List<Producto> productosResultado = new ArrayList<Producto>();
+		if(destacado != null) {
+			for(Producto p: lista) {
+				if(p.getVariantes().get(0).getDestacado() == destacado) {
+					productosResultado.add(p);
+				}
+			}
+		}else {
+			productosResultado.addAll(lista);
+		}
+		return productosResultado;
 	}
 
 	public EstrategiasDeComercializacion getEstrategiasUtilizadas() {

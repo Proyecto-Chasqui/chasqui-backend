@@ -139,9 +139,9 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 			</hbox>
 			<hbox>
 				<div>
-				<label value="Productor:"/>
-				<combobox id="productorComboBox" readonly="false" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" >
-  				</combobox>
+				<combobox id="productorComboBox" placeholder="Buscar por productor" readonly="false" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
+				<combobox id="destacadoComboBox" placeholder="Buscar por destacado" readonly="false" model="@{administracionWindow$composer.destacado}" selectedItem="@{administracionWindow$composer.destacadoSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
+				<combobox id="habilitadoComboBox" placeholder="Buscar por ocultado/mostrado" readonly="false" model="@{administracionWindow$composer.visibilidad}" selectedItem="@{administracionWindow$composer.visibilidadSeleccionada}" forward="onOK=administracionWindow$composer.onBuscar" />
 				<button label="Buscar" id="buscarProducto" visible="false"/>
 				<textbox id="busquedaPorCodigoProducto" placeholder="Buscar por codigo producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
 				<button label="Limpiar Campos" id="limpiarCamposbtn" visible="true"/>
@@ -150,10 +150,12 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10"
 				selectedItem="${administracionWindow$composer.productoSeleccionado}" rows="10">
 					<listhead>
-						<listheader label="${c:l('zk.listheader.label.administracion.producto')}"/>
-						<listheader label="${c:l('zk.listheader.label.administracion.producto.fabricante')}"/>
-						<listheader label="${c:l('zk.listheader.label.administracion.producto.categoria')}"/>
-						<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto')}"/>
+						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto.fabricante')}"/>
+						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto.categoria')}"/>
+						<listheader align="center" label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+						<listheader align="center" label="Destacado"/>
+						<listheader align="center" label="Visibilidad"/>
 					</listhead>
 				</listbox>
 			</vbox>
