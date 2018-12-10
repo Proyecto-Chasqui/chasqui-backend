@@ -33,5 +33,11 @@
         </bag>
         <many-to-one name="caracteristica" class="chasqui.model.CaracteristicaProductor" 
         column="ID_CARACTERISTICA" lazy="false"/>
+        
+        <list name="caracteristicas" table="CARACTERISITICA_PRODUCTOR" lazy="false">
+			<key column="CARACTERISITICA_PRODUCTOR_ID"></key>
+			<index column="SEQUENCE"></index>
+			<one-to-many class="chasqui.model.CaracteristicaProductor"/>
+		</list>
     </class>
 </hibernate-mapping>
