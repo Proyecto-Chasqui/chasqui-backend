@@ -285,13 +285,16 @@ public class GrupoListener {
 	@GET
 	@Path("/grupo/{idGrupo : \\d+ }")
 	@Produces("application/json")
-	public Response obtenerGrupoDeCliente(@PathParam("idGrupo") final Integer idGrupo) throws JsonParseException, JsonMappingException, IOException, GrupoCCInexistenteException{
+	public Response obtenerGrupoDeCliente(@PathParam("idGrupo") final Integer idGrupo){
 		String email = obtenerEmailDeContextoDeSeguridad();
 		try {
 			return Response.ok(toResponse(grupoService.obtenerGrupo(idGrupo), email),
 					MediaType.APPLICATION_JSON).build();
 		} catch (ClienteNoPerteneceAGCCException e) {
 			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage()))
+					.build();
+		} catch (GrupoCCInexistenteException e){
+			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage()))
 					.build();
 		}
 	}
