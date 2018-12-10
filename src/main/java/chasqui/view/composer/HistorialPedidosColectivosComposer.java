@@ -116,7 +116,9 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO,Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_PREPARADO);
 			pedidosColectivos = (List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo");
-			puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(usuarioLogueado.getId()));
+			if(!usuarioLogueado.getIsRoot()) {
+				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(usuarioLogueado.getId()));
+			}
 			binder = new AnnotateDataBinder(component);
 			listboxPedidos.setItemRenderer(new PedidoColectivoRenderer((Window) component));
 			this.onClick$limpiarCamposbtn();
