@@ -12,6 +12,18 @@
 <!--                   ]]> -->
 
 <!-- </zscript> -->
+<style>
+	.selectorproductos{
+		width: 100px;
+	    border-radius: 10px;
+		background:rgba(0,0,0,0);
+		border-top : none;
+		border-bottom: none;
+		padding: 0px;
+		position:relative;
+		left:40%;
+	}
+</style>
 <window id="administracionWindow"  border="normal" apply="chasqui.view.composer.AdministracionComposer"
 visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="overflow:auto;">
 <div style="background: #00b8fc">

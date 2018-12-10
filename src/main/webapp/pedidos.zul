@@ -7,6 +7,16 @@
 <window id="pedidosWindow"  border="normal" apply="chasqui.view.composer.PedidosComposer" sizable="true"
 style="overflow:auto">
 <style>
+	.selectorpedidos{
+		width: 100px;
+	    border-radius: 10px;
+		background:rgba(0,0,0,0);
+		border-top : none;
+		border-bottom: none;
+		padding: 0px;
+		position:relative;
+	}
+
 .z-notification-pointer ~ .z-notification-content
     {
         display:table-cell;

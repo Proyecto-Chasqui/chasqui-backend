@@ -4,7 +4,18 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-    
+<style>
+	.selectorpedidoscolectivos{
+		width: 100px;
+	    border-radius: 10px;
+		background:rgba(0,0,0,0);
+		border-top : none;
+		border-bottom: none;
+		padding: 0px;
+		position:relative;
+		right:10%;
+	}
+</style>
 <window width="100%" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="false"
 style="overflow:auto">
 

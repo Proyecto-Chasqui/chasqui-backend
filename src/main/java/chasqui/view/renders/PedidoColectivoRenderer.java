@@ -283,7 +283,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			itemEntregar.setStyle("color:black");
 			itemEntregar.setTooltiptext("Pedido cancelado");
 		}
-		
+		menubar.setSclass("selectorpedidoscolectivos");
 		//bindea los componentes a un hbox
 		Hlayout hbox = new Hlayout();
 		if(pedido.getPuntoDeRetiro() == null){

@@ -126,7 +126,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		}
 		menuitemeocultar.addForward(Events.ON_CLICK, administracionWindow, Events.ON_NOTIFY, params5);
 		
-		
+		menubar.setSclass("selectorproductos");
 		
 		c1.setParent(item);
 		c2.setParent(item);

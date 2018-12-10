@@ -267,7 +267,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			itemEntregar.setStyle("color:black");
 			itemEntregar.setTooltiptext("Pedido cancelado");
 		}
-		
+		menubar.setSclass("selectorpedidos");
 		//bindea los componentes a un hbox
 		Hlayout hbox = new Hlayout();
 		if(!pedido.getPerteneceAPedidoGrupal()){
