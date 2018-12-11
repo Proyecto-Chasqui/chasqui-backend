@@ -72,7 +72,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	boolean existe = false;
 	private List<CaracteristicaProductor>caracteristicas = new ArrayList<CaracteristicaProductor>();
 	private CaracteristicaProductor caracteristicaSinDefinir = new CaracteristicaProductor();
-	private boolean modoEdicion = false;
+	private boolean mostrarBorrarCaract = true;
 	private List<CaracteristicaProductor> caracteristicasProductor = new ArrayList<CaracteristicaProductor>();
 	
 	
@@ -122,6 +122,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	
 	public void inicializarModoLectura(){
 		llenarCampos();
+		setMostrarBorrarCaract(false);
 		comboCaracteristica.setDisabled(true);
 		altura.setDisabled(true);
 		descLarga.setCustomConfigurationsPath("/js/ckEditorReadOnly.js");
@@ -152,7 +153,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 			throw new WrongValueException(comboCaracteristica,"Debe seleccionar una caracteristica.");
 		}
 		if(caracteristicasProductor.contains(caracteristicaProductorSeleccionada)){
-			throw new WrongValueException("El producto ya posee la caracteristica que desea agregar");			
+			throw new WrongValueException("El productor ya posee la caracteristica que desea agregar");			
 		}
 		caracteristicasProductor.add(caracteristicaProductorSeleccionada);
 		Clients.showNotification("Agregada la caracterisitica " + caracteristicaProductorSeleccionada.getNombre(),
@@ -342,20 +343,20 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		this.caracteristicaProductorSeleccionada = caracteristicaProductorSeleccionada;
 	}
 
-	public boolean isModoEdicion() {
-		return modoEdicion;
-	}
-
-	public void setModoEdicion(boolean modoEdicion) {
-		this.modoEdicion = modoEdicion;
-	}
-
 	public List<CaracteristicaProductor> getCaracteristicasProductor() {
 		return caracteristicasProductor;
 	}
 
 	public void setCaracteristicasProductor(List<CaracteristicaProductor> caracteristicasProductor) {
 		this.caracteristicasProductor = caracteristicasProductor;
+	}
+
+	public boolean isMostrarBorrarCaract() {
+		return mostrarBorrarCaract;
+	}
+
+	public void setMostrarBorrarCaract(boolean mostrarBorrarCaract) {
+		this.mostrarBorrarCaract = mostrarBorrarCaract;
 	}
 
 
