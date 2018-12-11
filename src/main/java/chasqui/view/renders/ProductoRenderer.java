@@ -68,7 +68,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		menu.setParent(menubar);
 		Menupopup menupop = new Menupopup();
 		menupop.setParent(menu);
-		menubar.setAutodrop(true);
+		menubar.setAutodrop(false);
 		
 		//Menuitem ver detalle
 		params1.put("accion", "visualizar");

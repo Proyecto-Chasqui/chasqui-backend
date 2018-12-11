@@ -147,7 +147,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		menu.setParent(menubar);
 		Menupopup menupop = new Menupopup();
 		menupop.setParent(menu);
-		menubar.setAutodrop(true);
+		menubar.setAutodrop(false);
 		
 		//Menuitem ver detalle
 		Menuitem menuitemdetalle = new Menuitem("Ver detalle");
