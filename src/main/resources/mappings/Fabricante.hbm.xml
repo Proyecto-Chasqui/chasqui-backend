@@ -34,10 +34,13 @@
         <many-to-one name="caracteristica" class="chasqui.model.CaracteristicaProductor" 
         column="ID_CARACTERISTICA" lazy="false"/>
         
-        <list name="caracteristicas" table="CARACTERISITICA_PRODUCTOR" lazy="false">
-			<key column="CARACTERISITICA_PRODUCTOR_ID"></key>
-			<index column="SEQUENCE"></index>
-			<one-to-many class="chasqui.model.CaracteristicaProductor"/>
-		</list>
+        <bag name="caracteristicas" inverse="false" table="PRODUCTOR_CARACTERISTICA" lazy="false">
+            <key>
+                <column name="ID_PRODUCTOR"/>
+            </key>            
+<!--             <list-index column="ORDEN_CARACTERISTICA"/> -->
+            <many-to-many entity-name="chasqui.model.CaracteristicaProductor" column="ID_PRODUCTOR_CARACTERISTICA" />
+        </bag>
+        
     </class>
 </hibernate-mapping>

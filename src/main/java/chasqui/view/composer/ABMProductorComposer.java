@@ -17,6 +17,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -25,6 +26,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
@@ -59,8 +61,8 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	private Image imagenProductor;
 	private Fileupload uploadImagen;
 	private ProductorService productorService;
-	
-	
+	private Listbox listboxCaracteristicas;
+	private CaracteristicaProductor caracteristicaProductorSeleccionada;
 	
 	private Vendedor usuario;
 	private Fabricante model;
@@ -70,6 +72,8 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	boolean existe = false;
 	private List<CaracteristicaProductor>caracteristicas = new ArrayList<CaracteristicaProductor>();
 	private CaracteristicaProductor caracteristicaSinDefinir = new CaracteristicaProductor();
+	private boolean modoEdicion = false;
+	private List<CaracteristicaProductor> caracteristicasProductor = new ArrayList<CaracteristicaProductor>();
 	
 	
 	public void doAfterCompose(Component comp) throws Exception{
@@ -86,8 +90,6 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
 		comp.addEventListener(Events.ON_NOTIFY, new RefreshListener<Refresher>(this));
 		caracteristicas = service.buscarCaracteristicasProductor();
-		caracteristicaSinDefinir.setNombre("Sin Definir");
-		caracteristicas.add(caracteristicaSinDefinir);
 		if(model != null && Constantes.VENTANA_MODO_LECTURA.equals(edicion)){
 			inicializarModoLectura();
 		}else if(model != null && Constantes.VENTANA_MODO_EDICION.equals(edicion)){
@@ -96,6 +98,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		}
 		
 		binder = new AnnotateDataBinder(comp);
+		binder.loadAll();
 	}
 	
 	public void llenarCampos(){
@@ -113,6 +116,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		}else{
 			comboCaracteristica.setValue(caracteristicaSinDefinir.getNombre());
 		}
+		caracteristicasProductor.addAll(model.getCaracteristicas());
 		imagenProductor.setSrc(model.getPathImagen());
 	}
 	
@@ -129,6 +133,35 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		txtLocalidad.setDisabled(true);
 		buttonGuardar.setDisabled(true);
 		uploadImagen.setDisabled(true);
+	}
+	
+	public void onEliminarCaracteristica(){
+		if(!listboxCaracteristicas.isDisabled()){			
+			caracteristicasProductor.remove(caracteristicaSeleccionada);
+		}
+		refresh();
+	}
+	
+	public void onSelect$comboCaracteristica(SelectEvent evt) {
+		this.onClick$botonAgregarCaracteristica();
+	}
+	
+	public void onClick$botonAgregarCaracteristica(){
+		
+		if(caracteristicaProductorSeleccionada == null){
+			throw new WrongValueException(comboCaracteristica,"Debe seleccionar una caracteristica.");
+		}
+		if(caracteristicasProductor.contains(caracteristicaProductorSeleccionada)){
+			throw new WrongValueException("El producto ya posee la caracteristica que desea agregar");			
+		}
+		caracteristicasProductor.add(caracteristicaProductorSeleccionada);
+		Clients.showNotification("Agregada la caracterisitica " + caracteristicaProductorSeleccionada.getNombre(),
+								"info", listboxCaracteristicas, "top_center",
+								3000);
+		comboCaracteristica.setValue(null);
+		caracteristicaProductorSeleccionada = null;
+		refresh();
+		
 	}
 	
 	public void onClick$buttonGuardar(){
@@ -163,6 +196,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		model.setPathImagen(imagenProductor.getSrc());
 		model.setLocalidad(localidad);
 		model.setIdVendedor(usuario.getId());
+		model.setCaracteristicas(caracteristicasProductor);
 		if(!existe){
 			usuario.agregarProductor(model);
 			usuarioService.guardarUsuario(usuario);
@@ -290,6 +324,38 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	public void refresh() {
 		this.binder.loadAll();
 		
+	}
+
+	public Listbox getListboxCaracteristicas() {
+		return listboxCaracteristicas;
+	}
+
+	public void setListboxCaracteristicas(Listbox listboxCaracteristicas) {
+		this.listboxCaracteristicas = listboxCaracteristicas;
+	}
+
+	public CaracteristicaProductor getCaracteristicaProductorSeleccionada() {
+		return caracteristicaProductorSeleccionada;
+	}
+
+	public void setCaracteristicaProductorSeleccionada(CaracteristicaProductor caracteristicaProductorSeleccionada) {
+		this.caracteristicaProductorSeleccionada = caracteristicaProductorSeleccionada;
+	}
+
+	public boolean isModoEdicion() {
+		return modoEdicion;
+	}
+
+	public void setModoEdicion(boolean modoEdicion) {
+		this.modoEdicion = modoEdicion;
+	}
+
+	public List<CaracteristicaProductor> getCaracteristicasProductor() {
+		return caracteristicasProductor;
+	}
+
+	public void setCaracteristicasProductor(List<CaracteristicaProductor> caracteristicasProductor) {
+		this.caracteristicasProductor = caracteristicasProductor;
 	}
 
 
