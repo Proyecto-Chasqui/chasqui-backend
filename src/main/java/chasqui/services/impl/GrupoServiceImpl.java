@@ -562,12 +562,25 @@ public class GrupoServiceImpl implements GrupoService {
 		
 		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelGCC(emailCliente,grupo.getId());
 		for (MiembroDeGCC compa : compas) {
-			if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
-				notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
+			PedidoColectivo p = grupo.getPedidoActual();
+			if(!p.tienePedidoParaCliente(compa.getEmail())) {
+				if(pedidoEnEstadoInactivo(p.getPedidosIndividuales().get(compa.getEmail()))) {
+					if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+						notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
+					}
+				}
+			}else {
+				if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+					notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
+				}
 			}
 		}
 	}
 	
+
+	private boolean pedidoEnEstadoInactivo(Pedido pedido) {		
+		return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_INEXISTENTE);
+	}
 
 	/*
 	 * Este método notifica a los miembros del grupo que un cliente ha confirmado el pedido individual
