@@ -7,7 +7,7 @@
 <window id="zonaWindow" border="normal" title="Alta de Zonas" position="center,top"
 apply="chasqui.view.composer.ZonasComposer" width="60%"  closable="true">
 
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <tabbox>
 	<tabs>
 		<tab label="Zonas"/>

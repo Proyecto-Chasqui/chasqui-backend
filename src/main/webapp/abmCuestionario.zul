@@ -6,7 +6,7 @@
 <zk>
 <window id="cuestionarioWindow" border="normal" title="Configuracion del cuestionario" position="center,top"
 apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="true">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <!-- Seccion Nueva Pregunta -->
 <div id="mostrarNuevaPregunta">
 			<tabbox>
