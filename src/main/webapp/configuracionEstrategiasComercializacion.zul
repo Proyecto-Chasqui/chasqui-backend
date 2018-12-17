@@ -6,6 +6,7 @@
 <zk>
 <window id="configuracionEstrategiasComercializacionWindow" title="Configuracion de Vendedor" style="text-align: center" width="100%" border="normal"
 apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <listbox>
 	<listhead>
 			<listheader/>

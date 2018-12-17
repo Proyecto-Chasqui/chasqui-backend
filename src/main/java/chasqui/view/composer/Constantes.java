@@ -74,10 +74,10 @@ public class Constantes {
 	public static final String CONFIRMACIÓN_DE_COMPRA_SUBJECT = "Confirmación de Compra";
 	public static final int CANT_MAX_IMAGENES_VARIEDAD = 3;
 	public static final int MAX_SIZE_DESC_LARGA_PRODUCTOR = 8200;
-	public static final String CONFIRMACION_COMPRA_NOTIFICACION ="Tu pedido se ha confirmado con éxito, recibirás un correo con la fecha probable de entrega";
-	public static final String CONFIRMACION_COMPRA_NOTIFICACION_OTROMIEMBRO = "El usuario <usuario> ha confirmado su pedido en tu grupo de compras <grupo> ¡Apurate a hacer el tuyo!";
+	public static final String CONFIRMACION_COMPRA_NOTIFICACION ="Tu pedido se ha confirmado con éxito, recibirás un correo con la fecha probable de entrega.";
+	public static final String CONFIRMACION_COMPRA_NOTIFICACION_OTROMIEMBRO = "El usuario <usuario> ha confirmado su pedido en tu grupo de compras <grupo>.";
 	public static final String NUEVO_PEDIDO_NOTIFICACION_OTROMIEMBRO =  "El usuario <usuario> ha iniciado su pedido en el grupo <grupo> del catálogo de <vendedor> ¡No te pierdas esta compra!";
-	public static final String CONFIRMACION_PEDIDO_COLECTIVO = "El administrador del grupo <grupo> en el catálogo del vendedor <vendedor> ha confirmado el pedido colectivo";
+	public static final String CONFIRMACION_PEDIDO_COLECTIVO = "El administrador del grupo <grupo> en el catálogo de <vendedor> ha confirmado el pedido colectivo.";
 	public static final String VENCIMIENTO_PEDIDO_TEMPLATE = "emailVencimientoAutomatico.ftl";
 	public static final String TEMPLATE_NUEVO_ADMINISTRADOR = "emailNuevoAdministrador.ftl";
 	public static final String PEDIDO_PREPARADO_TEMPLATE = "emailPedidoPreparado.ftl";

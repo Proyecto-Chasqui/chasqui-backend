@@ -26,6 +26,7 @@
 </style>
 <window id="administracionWindow"  border="normal" apply="chasqui.view.composer.AdministracionComposer"
 visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="overflow:auto;">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <div style="background: #00b8fc">
 	<grid  style="background: #00b8fc">
 		<columns zclass="none">

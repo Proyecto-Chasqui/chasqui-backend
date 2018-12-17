@@ -517,7 +517,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		this.binder.loadAll();
 		
 	}
-	
+	//Hacer que elimine la imagen de disco, para evitar basura.
 	public void eliminarImagen(Imagen img){
 		imagenes.remove(img);
 		refresh();
