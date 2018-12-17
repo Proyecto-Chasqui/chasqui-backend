@@ -1,11 +1,14 @@
 package chasqui.services.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import chasqui.dao.MiembroDeGCCDAO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
+import chasqui.exceptions.EncrypterException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.GrupoCCInexistenteException;
 import chasqui.exceptions.NoAlcanzaMontoMinimoException;
@@ -48,6 +52,7 @@ import chasqui.services.interfaces.PuntoDeRetiroService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.ZonaService;
 import chasqui.view.composer.Constantes;
+import freemarker.template.TemplateException;
 
 public class GrupoServiceImpl implements GrupoService {
 
@@ -182,12 +187,15 @@ public class GrupoServiceImpl implements GrupoService {
 	 * 1. Genera un objeto InvitacionAGCC
 	 * 2. Envia un mail para notificar (e invitar a Chasqui si corresponde)
 	 * 3. Agrega un miembro al grupo
-	 * @throws Exception 
+	 * @throws EncrypterException
+	 * @throws GrupoCCInexistenteException 
+	 * @throws TemplateException 
+	 * @throws MessagingException 
+	 * @throws IOException 
 	 */
 	@Override
 	public void invitarAGrupo(Integer idGrupo, String emailInvitado, String emailAdministrador)
-			throws Exception {
-
+			throws GrupoCCInexistenteException, IOException, MessagingException, TemplateException, EncrypterException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
 		if (grupo == null) {
 			throw new GrupoCCInexistenteException(idGrupo);
