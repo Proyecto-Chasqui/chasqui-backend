@@ -6,7 +6,7 @@
 <zk>
 <window id="puntosDeRetiroWindow" border="normal" title="Alta de Puntos de retiro" position="center,top"
 apply="chasqui.view.composer.PuntosDeRetiroComposer" width="30%"  closable="true">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 	<tabbox>
 	<tabs>
 		<tab label="Puntos de retiro"/>

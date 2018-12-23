@@ -6,7 +6,7 @@
 <zk>
 <window title="Alta/Edición de Productos" id="productosWindow" border="normal"
 apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" position="center,top" sizable="true">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <style>
 .z-notification-pointer ~ .z-notification-content
     {

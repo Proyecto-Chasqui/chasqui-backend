@@ -6,7 +6,7 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <window id="altaUsuarioWindow" title="${c:l('zk.window.altaUsuario.title')}" border="normal"
 apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <div>
 	<listbox>
 		<listhead>

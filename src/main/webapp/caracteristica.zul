@@ -6,6 +6,7 @@
 <zk>
 <window id="caracteristicaWindow" title="Alta de Caracteristicas" border="normal"
 apply="chasqui.view.composer.CaracteristicaComposer">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 	<tabbox>
 	<tabs>
 		<tab label="Producto" id="tabProducto"/>

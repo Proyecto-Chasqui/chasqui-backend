@@ -15,6 +15,7 @@
         padding:5px 18px 5px 45px;
         vertical-align:middle;
     }</style>
+    <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <separator spacing="15px"/>
 	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{previewPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">
 		<listhead>

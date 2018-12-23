@@ -94,15 +94,16 @@ public class GrupoListener {
 	@Produces("application/json")
 	// @Consumes(MediaType.APPLICATION_JSON)
 	public Response confirmarInvitacionGCC(
-			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString)
-			throws IOException {
+			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString){
 		try {
 			String emailClienteLogueado = obtenerEmailDeContextoDeSeguridad();
 			AceptarRequest aceptarReq = this.toAceptarRequest(aceptarReqString);
 			grupoService.confirmarInvitacionGCC(aceptarReq.getIdInvitacion(), emailClienteLogueado);
 			return Response.ok().build();
 		} catch (UsuarioInexistenteException e) {
-			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+			return Response.status(RestConstants.CLIENTE_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (IOException e) {
+			return Response.status(RestConstants.IO_EXCEPTION).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	
@@ -111,8 +112,7 @@ public class GrupoListener {
 	@Produces("application/json")
 	// @Consumes(MediaType.APPLICATION_JSON)
 	public Response rechazarInvitacionGCC(
-			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString)
-			throws IOException {
+			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString){
 		try {
 			String emailClienteLogueado = obtenerEmailDeContextoDeSeguridad();
 			AceptarRequest aceptarReq = this.toAceptarRequest(aceptarReqString);
@@ -120,7 +120,9 @@ public class GrupoListener {
 			
 			return Response.ok().build();
 		} catch (UsuarioInexistenteException e) {
-			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+			return Response.status(RestConstants.CLIENTE_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (IOException e) {
+			return Response.status(RestConstants.IO_EXCEPTION).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 
@@ -129,7 +131,7 @@ public class GrupoListener {
 	@Produces("application/json")
 	// idGrupo mailInvitado token(obtenerEmailDeContextoDeSeguridad)
 	public Response invitarAGrupo(
-			@Multipart(value = "invitacionRequest", type = "application/json") final String invitacionRequest) throws Exception {
+			@Multipart(value = "invitacionRequest", type = "application/json") final String invitacionRequest) {
 
 		InvitacionRequest request;
 		try {
@@ -151,6 +153,8 @@ public class GrupoListener {
 		} catch (ClassCastException e) {
 			return Response.status(500)
 					.entity(new ChasquiError("El mail invitado ya pertence a un vendedor" + e.getMessage())).build();
+		} catch (Exception e) {
+			return Response.status(RestConstants.ERROR_INTERNO).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 
@@ -347,7 +351,7 @@ public class GrupoListener {
 	@Path("/confirmar")
 	@Produces("application/json")
 	public Response confirmar(
-			@Multipart(value = "confirmarPedidoColectivoRequest", type = "application/json") final String confirmarPedidoColectivoRequest) throws PuntoDeRetiroInexistenteException {
+			@Multipart(value = "confirmarPedidoColectivoRequest", type = "application/json") final String confirmarPedidoColectivoRequest) {
 
 		String email = obtenerEmailDeContextoDeSeguridad();
 		ConfirmarPedidoColectivoRequest request;

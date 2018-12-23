@@ -50,11 +50,13 @@ public class ImagenesRender implements ListitemRenderer<Imagen>{
 			preview.setTooltiptext("Eligir como imagen de previsualización");
 			
 			trashbutton.setImage("/imagenes/trash.png");
+			trashbutton.setTooltiptext("Eliminar imagen");
 			trashbutton.addForward(Events.ON_CLICK, varianteWindow, Events.ON_CLICK, img);
 		}
 		
 		Toolbarbutton downloadbutton = new Toolbarbutton();
 		downloadbutton.setImage("/imagenes/download.png");
+		downloadbutton.setTooltiptext("Descargar imagen");
 		downloadbutton.addForward(Events.ON_CLICK, varianteWindow, Events.ON_USER, img);
 		
 		space.setParent(hbox);

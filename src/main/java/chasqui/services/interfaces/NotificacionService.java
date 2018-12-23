@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.exceptions.EncrypterException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
@@ -101,14 +102,14 @@ public interface NotificacionService {
 	 * @param administrador
 	 * @param emailInvitado
 	 * @param grupo
+	 * @throws EncrypterException
 	 * @throws TemplateException
 	 * @throws MessagingException
 	 * @throws IOException
-	 * @throws Exception 
 	 */
 	@Transactional
 	public void notificarInvitacionAGCCClienteNoRegistrado(Cliente administrador, String emailInvitado, GrupoCC grupo,
-			String iddisp) throws IOException, MessagingException, TemplateException, Exception;
+			String iddisp) throws IOException, MessagingException, TemplateException, EncrypterException;
 
 	/**
 	 * 

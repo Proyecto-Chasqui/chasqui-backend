@@ -86,7 +86,7 @@ style="overflow:auto">
 			}
 		});
 </script>
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <div align="center">
 	<hbox>
 		<vbox>

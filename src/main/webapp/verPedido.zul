@@ -8,7 +8,7 @@
 apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
 
 <separator spacing="20px"/>
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <listbox width="100%">
 	<listhead>
 		<listheader/>
