@@ -241,22 +241,24 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
 
 			public void onEvent(ClickEvent event) throws Exception {
-				String edata= event.getData().toString();
-				switch (edata){
-				case "YES":
-					try {
-						notificar(p);
-						Clients.showNotification("El email se envió correctamente", "info", windowComponent, "middle_center", 2000);
-					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
-						e.printStackTrace();						
+				Object eventclick = event.getData();
+				if(eventclick != null) {
+					String edata= event.getData().toString();
+					switch (edata){
+					case "YES":
+						try {
+							notificar(p);
+							Clients.showNotification("El email se envió correctamente", "info", windowComponent, "middle_center", 2000);
+						} catch (Exception e) {
+							Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
+							e.printStackTrace();						
+						}
+						break;
+					case "ABORT":
 					}
-					break;
-				case "ABORT":
 				}
 			}
 			});
-		this.notificar(p);
 	}
 	
 	private void notificar(PedidoColectivo p) {

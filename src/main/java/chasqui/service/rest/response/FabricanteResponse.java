@@ -1,7 +1,10 @@
 package chasqui.service.rest.response;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import chasqui.model.CaracteristicaProductor;
 import chasqui.model.Fabricante;
 
 public class FabricanteResponse implements Serializable{
@@ -17,7 +20,7 @@ public class FabricanteResponse implements Serializable{
 	private String descripcionCorta;
 	private String descripcionLarga;
 	private DireccionProductorResponse direccion;
-	private CaracteristicaResponse medalla;
+	private List<CaracteristicaResponse> medallas = new ArrayList<CaracteristicaResponse>();
 	
 	
 	public FabricanteResponse(){}
@@ -27,8 +30,11 @@ public class FabricanteResponse implements Serializable{
 		pathImagen = f.getPathImagen();
 		descripcionCorta = f.getDescripcionCorta();
 		descripcionLarga = f.getDescripcionLarga();
-		if(f.getCaracteristica() != null){
-			medalla = new CaracteristicaResponse(f.getCaracteristica());			
+		if(f.getCaracteristicas() != null){
+			for(CaracteristicaProductor cp : f.getCaracteristicas()) {
+				CaracteristicaResponse cpr = new CaracteristicaResponse(cp);
+				medallas.add(cpr);
+			}
 		}
 		direccion = new DireccionProductorResponse(f.getCalle(),f.getAltura(),f.getPais(),f.getLocalidad(),f.getProvincia());
 	}
@@ -57,12 +63,7 @@ public class FabricanteResponse implements Serializable{
 	public void setDireccion(DireccionProductorResponse direccion) {
 		this.direccion = direccion;
 	}
-	public CaracteristicaResponse getMedalla() {
-		return medalla;
-	}
-	public void setMedalla(CaracteristicaResponse medalla) {
-		this.medalla = medalla;
-	}
+	
 	public String getDescripcionCorta() {
 		return descripcionCorta;
 	}

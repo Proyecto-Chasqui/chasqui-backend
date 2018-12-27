@@ -45,12 +45,12 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 					 .add(Restrictions.eq("categoria.id", idCategoria));
 				 }
 				 if(idMedalla != null){
-					 c.createAlias("producto.caracteristicas","caracteristicas")
-					 .add(Restrictions.eq("caracteristicas.id", idMedalla));
+					 c.createAlias("producto.caracteristicas","caracteristicasProducto")
+					 .add(Restrictions.eq("caracteristicasProducto.id", idMedalla));
 				 }
 				 if(idSelloProductor != null){
-					 c.createAlias("fabricante.caracteristica", "caracteristica")
-					  .add(Restrictions.eq("caracteristica.id", idSelloProductor));
+					 c.createAlias("fabricante.caracteristicas", "caracteristicasProductor")
+					  .add(Restrictions.eq("caracteristicasProductor.id", idSelloProductor));
 				 }
 				 if(idProductor !=null){
 				  c.add(Restrictions.eq("fabricante.id", idProductor));
@@ -87,12 +87,12 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 					 .add(Restrictions.eq("categoria.id", idCategoria));
 				 }
 				 if(idMedalla != null){
-					 c.createAlias("producto.caracteristicas","caracteristicas")
-					 .add(Restrictions.eq("caracteristicas.id", idMedalla));
+					 c.createAlias("producto.caracteristicas","caracteristicasProducto")
+					 .add(Restrictions.eq("caracteristicasProducto.id", idMedalla));
 				 }
 				 if(idSelloProductor != null){
-					 c.createAlias("fabricante.caracteristica", "caracteristica")
-					  .add(Restrictions.eq("caracteristica.id", idSelloProductor));
+					 c.createAlias("fabricante.caracteristicas", "caracteristicasProductor")
+					  .add(Restrictions.eq("caracteristicasProductor.id", idSelloProductor));
 				 }
 				 if(idProductor !=null){
 				  c.add(Restrictions.eq("fabricante.id", idProductor));
