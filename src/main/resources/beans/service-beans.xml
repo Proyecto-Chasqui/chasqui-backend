@@ -110,7 +110,7 @@
 	   		<property name="sessionFactory" ref="sessionFactory"/>
 	   </bean>
 	   <bean id="applicationContextProvider" name="applicationContextProvider" class="chasqui.model.ApplicationContextProvider"/>
-	   
+	   <bean id="webSocketManager" name="webSocketManager" class="chasqui.service.websocket.impl.WebSocketManager"></bean>
 	   <!-- SERVICIO EMAIL -->
 	   
 	   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
