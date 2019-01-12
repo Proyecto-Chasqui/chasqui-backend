@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chasqui.model.Caracteristica;
+import chasqui.model.CaracteristicaProductor;
 import chasqui.model.Producto;
 import chasqui.model.Variante;
 
@@ -164,9 +165,11 @@ public class VariedadResponse implements Serializable{
 				medallasProducto.add(new CaracteristicaResponse(c));
 			}			
 		}
-		if(p.getFabricante().getCaracteristica() != null){
+		if(p.getFabricante().getCaracteristicas() != null){
 			medallasProductor = new ArrayList<CaracteristicaResponse>();
-			medallasProductor.add(new CaracteristicaResponse(p.getFabricante().getCaracteristica()));			
+			for(CaracteristicaProductor cp : p.getFabricante().getCaracteristicas()) {
+				medallasProductor.add(new CaracteristicaResponse(cp));
+			}
 		}
 		codigoArticulo = v.getCodigo();
 	}

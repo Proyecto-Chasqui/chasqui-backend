@@ -43,5 +43,8 @@ public interface PedidoDAO {
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedor(Integer id, Date d, Date h,
 			String estadoSeleccionado,Integer zonaId, Integer idPuntoDeRetiro, String email);
 
+	List<Pedido> obtenerPedidosIndividualesDeVendedorPRPorNombre(Integer idVendedor, Date desde, Date hasta,
+			String estadoSeleccionado, Integer zonaId, String idPuntoRetiro, String email);
+
 
 }

@@ -37,6 +37,12 @@ public class PedidoColectivoServiceImpl implements PedidoColectivoService{
 			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro,String emailadmn) {
 		return this.pedidoColectivoDao.obtenerPedidosColectivosDeVendedor( vendedorid, d, h,estadoSeleccionado, zonaId,idPuntoRetiro,emailadmn);
 	}
+	
+	@Override
+	public Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedorConPRConNombre(Integer vendedorid, Date d, Date h,
+			String estadoSeleccionado, Integer zonaId, String puntoRetiro,String emailadmn) {
+		return this.pedidoColectivoDao.obtenerPedidosColectivosDeVendedorConPRPorNombre( vendedorid, d, h,estadoSeleccionado, zonaId,puntoRetiro,emailadmn);
+	}
 
 	@Override
 	public List<PedidoColectivo> obtenerPedidosColectivosDeGrupo(Integer grupoid) {

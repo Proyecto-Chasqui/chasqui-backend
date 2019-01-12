@@ -133,6 +133,9 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		colectiva.setChecked(false);
 		puntoDeEntrega.setChecked(false);
 		entregaADomicilio.setChecked(false);
+		textboxTiempoVencimiento.setValue("");
+		urlMapa.setValue("");
+		usuarioSeleccionado = null;
 	}
 	
 	public Window getConfwindow() {

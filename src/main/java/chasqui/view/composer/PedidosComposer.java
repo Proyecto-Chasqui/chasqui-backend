@@ -53,12 +53,15 @@ import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.Producto;
 import chasqui.model.ProductoPedido;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.services.impl.MailService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
+import chasqui.services.interfaces.PuntoDeRetiroService;
+import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
 import chasqui.view.renders.PedidoRenderer;
 
@@ -98,6 +101,10 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	private MailService mailService;
 	private Window window;
 	private Textbox buscadorPorCliente;
+	private List<String> puntosDeRetiro;
+	private Combobox prCombobox;
+	private String prSeleccionado;
+	private VendedorService vendedorService;
 //	private Integer maximaPaginaVisitada = 1;
 	
 	public void doAfterCompose(Component component) throws Exception{
@@ -109,11 +116,15 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			component.addEventListener(Events.ON_USER, new PedidoEventListener(this));
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
+			vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
 			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonaService = (ZonaService)SpringUtil.getBean("zonaService");
 			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
 			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO, Constantes.ESTADO_PEDIDO_VENCIDO);
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
+			if(!usuarioLogueado.getIsRoot()) {
+				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(usuarioLogueado.getId()));
+			}
 			binder = new AnnotateDataBinder(component);
 			window = (Window) component;
 			listboxPedidos.setItemRenderer(new PedidoRenderer((Window) component));
@@ -122,13 +133,25 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		}
 	}
 	
+	private List<String> crearListaDeNombresDePR(List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor) {
+		List<String> list = new ArrayList<String>();
+		for(PuntoDeRetiro pr: obtenerPuntosDeRetiroDeVendedor) {
+			list.add(pr.getNombre());
+		}
+	    return list;
+    }
+
 	public void onClick$buscar(){
 		Date d = desde.getValue();
 		Date h = hasta.getValue();
 		Integer zonaId = null;
 		String email = buscadorPorCliente.getValue();
+		String nombrePR = null;
 		if(zonaSeleccionada!=null){
 			zonaId = zonaSeleccionada.getId();
+		}
+		if(prSeleccionado!= null) {
+			nombrePR = prSeleccionado;
 		}
 		if(d != null && h != null){
 			if(h.before(d)){
@@ -136,7 +159,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			}
 		}		
 		pedidos.clear();
-		pedidos.addAll(pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId,null,email));
+		pedidos.addAll(pedidoService.obtenerPedidosIndividualesDeVendedorConPRPorNombre(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId,nombrePR,email));
 		this.binder.loadAll();
 	}
 
@@ -184,10 +207,12 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		zonaSeleccionada = null;
 		desde.setValue(null);
 		hasta.setValue(null);
+		prSeleccionado =null;
 		estadosListbox.setValue("");
 		zonasListbox.setValue("");
 		buscadorPorCliente.setValue(null);
 		pedidos = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
+		prCombobox.setValue("");
 		this.binder.loadAll();
 	}
 
@@ -272,18 +297,21 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
 
 			public void onEvent(ClickEvent event) throws Exception {
-				String edata= event.getData().toString();
-				switch (edata){
-				case "YES":
-					try {
-						notificar(p);
-						Clients.showNotification("El email se envió correctamente", "info", window, "middle_center", 2000);
-					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error desconocido", "error", window, "middle_center", 3000);
-						e.printStackTrace();						
+				Object eventclick = event.getData();
+				if(eventclick != null) {
+				String edata= eventclick.toString();
+					switch (edata){
+					case "YES":
+						try {
+							notificar(p);
+							Clients.showNotification("El email se envió correctamente", "info", window, "middle_center", 2000);
+						} catch (Exception e) {
+							Clients.showNotification("Ocurrio un error desconocido", "error", window, "middle_center", 3000);
+							e.printStackTrace();						
+						}
+						break;
+					case "ABORT":
 					}
-					break;
-				case "ABORT":
 				}
 			}
 			});
@@ -328,6 +356,10 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		onClick$buscar();
 	}
 	
+	public void onSelect$prCombobox(SelectEvent evt) {
+		onClick$buscar();
+	}
+	
 	public void onSelect$zonasListbox(SelectEvent evt) {
 		onClick$buscar();
 	}
@@ -362,7 +394,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 						export.fullexport(resumen);
 						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
+						Clients.showNotification(e.getMessage(), "error", window, "middle_center", 20000,true);
 						e.printStackTrace();						
 					}
 					break;
@@ -371,7 +403,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 						export.fullexport(pedidos);
 						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error al generar el archivo", "error", window, "middle_center", 3000);
+						Clients.showNotification(e.getMessage(), "error", window, "middle_center", 20000, true);
 						e.printStackTrace();
 					}
 					break;
@@ -441,6 +473,30 @@ public Combobox getZonasListbox() {
 
 	public void setZonas(List<Zona> zonas) {
 		this.zonas = zonas;
+	}
+
+	public List<String> getPuntosDeRetiro() {
+		return puntosDeRetiro;
+	}
+
+	public void setPuntosDeRetiro(List<String> puntosDeRetiro) {
+		this.puntosDeRetiro = puntosDeRetiro;
+	}
+
+	public Combobox getPrCombobox() {
+		return prCombobox;
+	}
+
+	public void setPrCombobox(Combobox prCombobox) {
+		this.prCombobox = prCombobox;
+	}
+
+	public String getPrSeleccionado() {
+		return prSeleccionado;
+	}
+
+	public void setPrSeleccionado(String prSeleccionado) {
+		this.prSeleccionado = prSeleccionado;
 	}
 }
 

@@ -6,7 +6,7 @@
 <zk>
 <window id="pedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.PedidosColectivosComposer" sizable="true"
 style="overflow:auto">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <div align="center">
 	<hbox>
 		<label value="Fecha Desde:" visible="false"/>

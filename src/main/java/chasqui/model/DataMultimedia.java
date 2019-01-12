@@ -1,7 +1,5 @@
 package chasqui.model;
 
-import java.util.List;
-
 
 /* 
  * Objeto Diseñado para agregar mas objetos de información a futuro
@@ -13,6 +11,7 @@ public class DataMultimedia {
 	private Integer id;
 	private Integer idVendedor;
 	private DataPortada dataPortada;
+	private DataContacto dataContacto;
 	
 	public DataMultimedia() {
 		
@@ -21,6 +20,7 @@ public class DataMultimedia {
 	public DataMultimedia(Integer idVendedor) {
 		this.idVendedor = idVendedor;
 		this.dataPortada = new DataPortada();
+		this.dataContacto = new DataContacto();
 	}
 
 	public Integer getIdVendedor() {
@@ -45,6 +45,14 @@ public class DataMultimedia {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public DataContacto getDataContacto() {
+		return dataContacto;
+	}
+
+	public void setDataContacto(DataContacto dataContacto) {
+		this.dataContacto = dataContacto;
 	}
 	
 }

@@ -22,7 +22,7 @@ import chasqui.aspect.Auditada;
 import chasqui.dao.MiembroDeGCCDAO;
 import chasqui.dao.UsuarioDAO;
 import chasqui.exceptions.DireccionesInexistentes;
-import chasqui.exceptions.EncrypteException;
+import chasqui.exceptions.EncrypterException;
 import chasqui.exceptions.PasswordIncorrectoException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioExistenteException;
@@ -254,7 +254,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		usuarioDAO.guardarUsuario(cliente);
 	}
 	
-	private void validarPasswordRequest(EditarPasswordRequest request, Cliente cliente) throws RequestIncorrectoException, EncrypteException, PasswordIncorrectoException {
+	private void validarPasswordRequest(EditarPasswordRequest request, Cliente cliente) throws RequestIncorrectoException, EncrypterException, PasswordIncorrectoException {
 
 		try{
 			if(!request.getOldPassword().equals(encrypter.decrypt(cliente.getPassword()))){
@@ -264,7 +264,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		}catch (PasswordIncorrectoException e){
 			throw e;
 		}catch (Exception e) {
-			throw new EncrypteException(Constantes.ERROR_DE_DESCENCRIPTACION);
+			throw new EncrypterException(Constantes.ERROR_DE_DESCENCRIPTACION);
 		}				
 		if(request.getPassword().length() < 10 || request.getPassword().length() > 26){
 			throw new RequestIncorrectoException(Constantes.PASSWORD_CORTO);

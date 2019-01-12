@@ -6,17 +6,18 @@
 <zk>
 <window id="configuracionPortadaWindow" style="text-align: center; font-weight:bold;" border="normal" title="Configuración de portada" position="center,top"
 apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable="true">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 	<tabbox>
 	<tabs>
 		<tab label="Imágenes"/>
 		<tab label="Textos"/>
+		<tab label="Contacto"/>
 	</tabs>
 	<tabpanels>
 		<tabpanel>
-			<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
+			<div align="center" style="background-color: #66b3ff; border-color:#d0d3d8; border-style:solid; border-width: 1px;">
 				<auxhead sclass="category-center">
-            		<auxheader label="Banner" style="color: black" colspan="6" rowspan="1" />
+            		<auxheader label="Banner" colspan="6" rowspan="1" />
         		</auxhead>		
 			</div>
 			<listbox id="listImagenesBanner" width="100%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="1">
@@ -40,9 +41,9 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 				<fileupload style="font-weight:bold; color:black" label="Agregar Imagen de Banner" id="uploadImagenBanner"  upload="true,maxsize=-1" />
 			</div>
 			<separator spacing="15px"/>
-			<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
+			<div align="center" style="background-color: #66b3ff; border-color:#d0d3d8; border-style:solid; border-width: 1px;">
 				<auxhead sclass="category-center">
-            		<auxheader label="Portada" style="color: black" colspan="6" rowspan="1" />
+            		<auxheader label="Portada"  colspan="6" rowspan="1" />
         		</auxhead>	
 			</div>
 			<listbox id="listImagenesPortada" width="100%" model="@{configuracionPortadaWindow$composer.imagenesPortada}"  rows="1">
@@ -66,9 +67,9 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 				<fileupload style="font-weight:bold; color:black" label="Agregar Imagen de portada" id="uploadImagenPortada"  upload="true,maxsize=-1" />
 			</div>
 			<separator  spacing="15px"/>
-				<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
+				<div align="center" style="background-color: #66b3ff; border-color:#d0d3d8; border-style:solid; border-width: 1px;">
 					<auxhead sclass="category-center">
-	            		<auxheader style="color: black" label="Logo" colspan="6" rowspan="1" />
+	            		<auxheader label="Logo" colspan="6" rowspan="1" />
 	        		</auxhead>	
 				</div>
 			<separator spacing="15px"/>
@@ -85,9 +86,9 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 			<separator spacing="15px"/>
 		</tabpanel>
 		<tabpanel>
-				<div align="center" style="background-color: #66b3ff; border-radius: 4px; border-style:groove;">
+				<div align="center" style="background-color: #66b3ff; border-color:#d0d3d8; border-style:solid; border-width: 1px;">
 					<auxhead sclass="category-center">
-            			<auxheader label="Texto de bienvenida" style="color: black" colspan="6" rowspan="1" />
+            			<auxheader label="Texto de bienvenida"  colspan="6" rowspan="1" />
         			</auxhead>		
 				</div>
 				<separator spacing="2px"/>
@@ -95,6 +96,92 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 				<separator spacing="15px"></separator>
 				<div align="center">
 						<toolbarbutton id="buttonGuardarTexto" label="Guardar" style="font-weight:bold; color:black" image="/imagenes/save.png"></toolbarbutton>
+				</div>
+		</tabpanel>
+		<tabpanel>
+        		<hbox>
+				<listbox width="100%">
+					<listhead>
+						<listheader label="Dirección" align="center" style="background-color: #66b3ff; "/>
+					</listhead>
+					<listitem>
+						<listcell label="Calle" style="text-align: center"/>
+						<listcell>
+							<textbox id="textCalle"  width="100%"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="Altura" style="text-align: center"/>
+						<listcell>
+							<textbox id="textAltura"  width="100%"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="Localidad" style="text-align: center"/>
+						<listcell>
+							<textbox id="textLocalidad"  width="100%"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="Provincia" style="text-align: center"/>
+						<listcell>
+							<textbox id="provincia"  width="100%"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="País" style="text-align: center"/>
+						<listcell>
+							<textbox id="pais"  width="100%"/>
+						</listcell>
+					</listitem>
+
+					<listitem>
+						<listcell label="Código Postal" style="text-align: center"/>
+						<listcell>
+							<textbox id="textCodigoPostal"  width="100%"/>
+						</listcell>
+					</listitem> 
+					<listitem visible="false">
+						<listcell label="Departamento" style="text-align: center"/>
+						<listcell>
+							<textbox id="textDepartamento"  width="100%"/>
+						</listcell>
+					</listitem>
+			    </listbox>
+			    
+			    <listbox>
+					<listhead>
+						<listheader label="Datos de contacto" align="center" style="background-color: #66b3ff;"/>
+					</listhead>
+					<listitem>
+						<listcell label="Telefono" style="text-align: center"/>
+						<listcell>
+							<textbox id="telefono"  width="100%"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="Celular" style="text-align: center"/>
+						<listcell>
+							<textbox id="celular"  width="100%"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="Email" style="text-align: center"/>
+						<listcell>
+							<textbox id="email"  width="100%"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="Contacto digital" style="text-align: center"/>
+						<listcell>
+							<textbox id="contactoDigital" placeholder="Url a paginas como twitter, Facebook, propio portal, etc"  width="100%"/>
+						</listcell>
+					</listitem>
+				</listbox>
+        		</hbox>		
+				<separator spacing="15px"></separator>
+				<div align="center">
+						<toolbarbutton id="buttonGuardarContacto" label="Guardar" style="font-weight:bold; color:black" image="/imagenes/save.png"></toolbarbutton>
 				</div>
 		</tabpanel>
 	</tabpanels>

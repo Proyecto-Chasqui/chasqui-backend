@@ -6,7 +6,7 @@
 <zk>
 <window title="Alta/Edición de Nodos" id="nodoWindow" position="center,top"
 apply="chasqui.view.composer.ABMNodoComposer" border="normal" width="42%" sizable="true" closable="true">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <listbox id="enter">
 	<listhead>
 		<listheader/>

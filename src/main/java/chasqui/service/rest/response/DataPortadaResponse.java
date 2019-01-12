@@ -3,6 +3,8 @@ package chasqui.service.rest.response;
 import java.util.ArrayList;
 import java.util.List;
 
+import chasqui.model.DataContacto;
+import chasqui.model.DataMultimedia;
 import chasqui.model.DataPortada;
 import chasqui.model.Imagen;
 
@@ -12,18 +14,22 @@ public class DataPortadaResponse {
 	private List<String> urlImagenesBanner;
 	private List<String> urlImagenesPortada;
 	private String textoPortada;
+	private DataContactoResponse dataContacto;
 	
-	public DataPortadaResponse(DataPortada data) {
+	public DataPortadaResponse(DataMultimedia datamultimedia) {
+		DataContacto dc = datamultimedia.getDataContacto();
+		DataPortada dp = datamultimedia.getDataPortada();
 		urlImagenesBanner = new ArrayList<String>();
 		urlImagenesPortada = new ArrayList<String>();
-		urlLogo = data.getLogo().getPath();
-		textoPortada = data.getTextoBienvenida();
-		for(Imagen img: data.getImagenesDeBanner()) {
+		urlLogo = dp.getLogo().getPath();
+		textoPortada = dp.getTextoBienvenida();
+		for(Imagen img: dp.getImagenesDeBanner()) {
 			urlImagenesBanner.add(img.getPath());
 		}
-		for(Imagen imgp: data.getImagenesDePortada()) {
+		for(Imagen imgp: dp.getImagenesDePortada()) {
 			urlImagenesPortada.add(imgp.getPath());
 		}
+		this.setDataContacto(new DataContactoResponse(dc));
 	}
 
 	public String getUrlLogo() {
@@ -57,4 +63,13 @@ public class DataPortadaResponse {
 	public void setTextoPortada(String textoPortada) {
 		this.textoPortada = textoPortada;
 	}
+
+	public DataContactoResponse getDataContacto() {
+		return dataContacto;
+	}
+
+	public void setDataContacto(DataContactoResponse dataContacto) {
+		this.dataContacto = dataContacto;
+	}
+
 }

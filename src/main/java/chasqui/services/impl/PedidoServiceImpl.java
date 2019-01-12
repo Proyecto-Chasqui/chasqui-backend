@@ -375,11 +375,11 @@ public class PedidoServiceImpl implements PedidoService {
 					"El usuario: " + c.getUsername() + " no posee un pedido vigente con el ID otorgado");
 		}
 		
-		if(!(request.getIdDireccion() ==null ^ request.getIdPuntoDeRetiro() ==null)){
+		if(request.getIdDireccion() ==null && request.getIdPuntoDeRetiro() ==null){
 			throw new EstadoPedidoIncorrectoException("El pedido le falta id de punto de retiro o id direccion");
 		}
 		
-		if(!(request.getIdDireccion() !=null ^ request.getIdPuntoDeRetiro() !=null)){
+		if(request.getIdDireccion() !=null && request.getIdPuntoDeRetiro() !=null){
 			throw new EstadoPedidoIncorrectoException("El pedido no puede poseer un id de punto de retiro y id direccion");
 		}
 		
@@ -446,13 +446,19 @@ public class PedidoServiceImpl implements PedidoService {
 
 	private void validarRequest(ConfirmarPedidoRequest request) throws RequestIncorrectoException {
 		validarRequest(request.getIdPedido());
-		//validarRequest(request.getIdDireccion());
+		validarLargoComentario(request.getComentario());
 
 	}
 
 	private void validarRequest(Integer idPedido) throws RequestIncorrectoException {
 		if (idPedido == null || idPedido < 0) {
 			throw new RequestIncorrectoException("el id del pedido debe ser mayor a 0");
+		}
+	}
+	
+	private void validarLargoComentario(String comentario) throws RequestIncorrectoException{
+		if (comentario.length() >= 2000) {
+			throw new RequestIncorrectoException("la observacion sobre la direccion es muy larga");
 		}
 	}
 
@@ -552,6 +558,12 @@ public class PedidoServiceImpl implements PedidoService {
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedor(Integer id, Date d, Date h,
 			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro, String email) {
 		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedor( id, d, h,estadoSeleccionado,zonaId,idPuntoRetiro, email);
+	}
+	
+	@Override
+	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedorConPRPorNombre(Integer id, Date d, Date h,
+			String estadoSeleccionado, Integer zonaId, String nombrePuntoRetiro, String email) {
+		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedorPRPorNombre( id, d, h,estadoSeleccionado,zonaId,nombrePuntoRetiro, email);
 	}
 
 }

@@ -7,7 +7,7 @@
 <window id="varianteWindow" border="normal" title="Alta de Variedad de Producto"
 apply="chasqui.view.composer.ABMVarianteComposer" height="auto" width="70%" closable="true">
 
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <listbox>
 	<listhead>
 		<listheader/>
