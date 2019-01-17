@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
@@ -53,7 +54,7 @@ public class MailServiceTest extends GenericSetUp {
 	public String nombreDeUsuario = "User93";
 	public String passwordFalsa = "passw0rd1234";
 	Vendedor vendedorDestinatario;
-	
+	Cliente clienteDestinatario;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -61,7 +62,7 @@ public class MailServiceTest extends GenericSetUp {
 		
 		vendedorDestinatario = new Vendedor();
 		vendedorDestinatario.setUsername("Username");
-		vendedorDestinatario.setNombre("Nombre");
+		vendedorDestinatario.setNombre("NombreVendedor");
 		vendedorDestinatario.setPassword(encrypter.encrypt("federico"));
 		vendedorDestinatario.setEmail(destinatario);
 		vendedorDestinatario.setIsRoot(false);
@@ -74,6 +75,11 @@ public class MailServiceTest extends GenericSetUp {
 		vendedorDestinatario.setPreguntasDePedidosIndividuales(generarPreguntas(opciones, "Tiene Factura"));
 		vendedorDestinatario.setPreguntasDePedidosColectivos(generarPreguntas(opciones, "Tiene Factura"));
 		usuarioService.guardarUsuario(vendedorDestinatario);
+		clienteDestinatario = new Cliente();
+		clienteDestinatario.setNombre("NombreCliente");
+		clienteDestinatario.setApellido("ApellidoCliente");
+		clienteDestinatario.setEmail(this.destinatarioSecundario);
+		usuarioService.guardarUsuario(clienteDestinatario);
 	}
 	
 	private List<PreguntaDeConsumo> generarPreguntas(List<String> opciones, String nombre){
@@ -108,7 +114,7 @@ public class MailServiceTest extends GenericSetUp {
 		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
 		pedido.setDireccionEntrega(direccionCasa);
-		mailService.enviarEmailConfirmacionPedido(this.destinatario, this.destinatario, pedido);;
+		mailService.enviarEmailConfirmacionPedido(this.destinatario, this.destinatarioSecundario, pedido);;
 		assertEquals(true , true);
 	}
 	

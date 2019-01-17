@@ -219,18 +219,19 @@ public class MailService {
 			textoDeDireccionDeEntrega ="Dirección de retiro";
 		}
 		Vendedor vendedor = (Vendedor) usuarioService.obtenerUsuarioPorEmail(emailVendedor);
+		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
 		String catalogo = this.generarUrlCatalogo(vendedor.getUrl(), vendedor.getNombreCorto());
 		
 		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
 		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
-		String cuerpoCliente = armarCuerpoCliente();
+		String cuerpoCliente = armarCuerpoCliente(cliente.getNombre(), vendedor.getNombre());
 		String cuerpoVendedor = armarCuerpoVendedor(emailCliente);
 		
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("cuerpo", cuerpoCliente);
 		params.put("tablaContenidoPedido",tablaContenidoPedido);
 		params.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
-		params.put("agradecimiento",Constantes.AGRADECIMIENTO);
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<nombreVendedor>", vendedor.getNombre()));
 		params.put("textoDetalle", textoEnEmail);
 		params.put("catalogoVendedor", catalogo);
 
@@ -240,7 +241,7 @@ public class MailService {
 		paramsVendedor.put("cuerpo", cuerpoVendedor);
 		paramsVendedor.put("tablaContenidoPedido",tablaContenidoPedido);
 		paramsVendedor.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
-		paramsVendedor.put("agradecimiento",Constantes.AGRADECIMIENTO);
+		paramsVendedor.put("sugerencia","");
 		paramsVendedor.put("catalogoVendedor", catalogo);
 		params.put("textoDetalle", textoEnEmail);
 
@@ -544,13 +545,17 @@ public class MailService {
 	
 	
 	
-	private String armarCuerpoCliente(){
-		return "Datos de confirmación de compra";
+	private String armarCuerpoCliente(String nombre, String nombreVendedor){
+		return "¡"+ nombre +" tu pedido en "+ nombreVendedor +" está confirmado!" +
+				" <br> " +
+				"Detalles de tu compra:";
+
+		
 	}
 
 	
 	private String armarCuerpoVendedor(String usuario){
-		return "El usuario: "+ usuario +" ha confirmado su compra (Los detalles del mismo se encuentran debajo y también pueden visualizarse en el panel de administración)";
+		return "El usuario "+ usuario +" confirmó su compra (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
 	}
 	
 	
