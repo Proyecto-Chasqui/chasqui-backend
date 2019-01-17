@@ -29,11 +29,11 @@ Bienvenido a Chasqui
 </tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">Estimado usuario: <span style="font-weight: bold; color: #00adee;">${nombreApellido}</span></td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">Hola, <span style="font-weight: bold; color: #00adee;">${nombreApellido}</span></td>
 </tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">Le damos la bienvenida a la plataforma Chasqui.</td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">Te damos la bienvenida a Chasqui. Ya podés empezar a conocer todo lo que te ofrece!</td>
 </tr>
 
 <tr style="height: 40px;">
@@ -41,7 +41,7 @@ Bienvenido a Chasqui
 </tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">Su usuario es: <span style="font-weight: bold; color: #00adee;">${email}</span></td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">Tu usuario es: <span style="font-weight: bold; color: #00adee;">${email}</span></td>
 </tr>
 
 <tr style="height: 40px;">
