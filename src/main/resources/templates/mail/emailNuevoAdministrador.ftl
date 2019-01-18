@@ -29,11 +29,6 @@ Bienvenido a Chasqui
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 15px;">&nbsp;</td>
 </tr>
 
-<tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">Estimado usuario: <span style="font-weight: bold; color: #00adee;">${nuevoAdmin}</span></td>
-
-</tr>
-
 <tr style="height: 40px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
 </tr>
@@ -43,8 +38,9 @@ Bienvenido a Chasqui
 
 <tr style="height: 21px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">
-                      El usuario <span style="font-weight: bold; color: #00adee;">${viejoAdmin}</span> le ha cedido la administración del grupo de compras colectivas <span style="font-weight: bold; color: #00adee;">${nombreGrupo}</span> para el vendedor <span style="font-weight: bold; color: #00adee;">${vendedor}</span>
-					  <br>				
+	Hola, <span style="font-weight: bold; color: #00adee;">${nombreNuevoAdmin}</span> <span style="font-weight: bold; color: #00adee;">${apellidoNuevoAdmin}</span>.<span style="font-weight: bold; color: #00adee;">${nombreViejoAdmin}</span> <span style="font-weight: bold; color: #00adee;">${apellidoViejoAdmin}</span> te cedió la administración del grupo de compras colectivas <span style="font-weight: bold; color: #00adee;">${nombreGrupo}</span>.
+Podés ver las compras de sus integrantes ingresando a la sección Mis Grupos y también podés  invitar nuevos participantes.
+Recordá que ahora administrás el grupo y por eso tenés que confirmar el pedido colectivo una vez se hayan realizado todas las compras.
 					
 </td>
 </tr>

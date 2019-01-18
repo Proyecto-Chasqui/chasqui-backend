@@ -423,12 +423,12 @@ public class MailService {
 		Map<String,Object> params = new HashMap<String,Object>();
 		
 		String catalogo = this.generarUrlCatalogo(grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto());
-		params.put("catalogoVendedor", catalogo);
-		params.put("nuevoAdmin", nuevoAdministrador.getUsername());
-		params.put("viejoAdmin",administradorAnterior.getUsername());
+		params.put("nombreNuevoAdmin", nuevoAdministrador.getNombre());
+		params.put("apellidoNuevoAdmin", nuevoAdministrador.getApellido());
+		params.put("nombreViejoAdmin", administradorAnterior.getNombre());
+		params.put("apellidoViejoAdmin", administradorAnterior.getApellido());
 		params.put("nombreGrupo", grupo.getAlias());
-		params.put("vendedor", grupo.getVendedor().getNombre());
-		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
+		params.put("catalogoVendedor", catalogo);
 		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NUEVO_ADMINISTRADOR, nuevoAdministrador.getEmail(), Constantes.NUEVO_ADMINISTRADOR_SUBJECT, params);
 	}
