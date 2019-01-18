@@ -292,7 +292,8 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedido.getDireccionEntrega() != null) {
 			direccion = pedido.getDireccionEntrega();
-			textoEnEmail = "Su pedido de " + pedido.getNombreVendedor() +" esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
+			
+			textoEnEmail = "Hola "+ this.generateSpan(pedido.getCliente().getNombre(), "00adee") +", tu pedido de "+ this.generateSpan(pedido.getNombreVendedor(), "00adee") +" está preparado para ser entregado. El detalle de tu pedido es:";
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedido.getPuntoDeRetiro().getDireccion();
@@ -307,10 +308,22 @@ public class MailService {
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
 		params.put("textoDetalle", textoEnEmail);
 		params.put("textoDeDireccionDeEntrega", textoDeDireccionDeEntrega);
-		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
+		params.put("sugerencia", Constantes.SUGERENCIA.replace("<nombreVendedor>", this.generateSpan(pedido.getNombreVendedor(), "00adee")));
 		
 		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), formarTag(pedido) +Constantes.PEDIDO_PREPARADO_SUBJECT, params);
 		
+	}
+	
+	/**
+	 * Adds the html tag <span> to the string
+	 * e.g., The String "Duck" with the code "00adee" returns:
+	 * <span style="font-weight: bold; color: #00adee;">Duck</span>
+	 * @param str
+	 * @param colorCode Hexadecimal RGB Code RRGGBB
+	 * @return
+	 */
+	private String generateSpan(String str, String colorCode){
+		return "<span style=\"font-weight: bold; color: #"+colorCode+";\">"+ str +"</span>";
 	}
 	
 	public void enviarEmailCierreDePedidoColectivo(PedidoColectivo pedidoColectivo) {
