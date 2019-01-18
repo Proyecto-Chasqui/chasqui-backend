@@ -370,7 +370,7 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
-			textoEnEmail = "Su pedido colectivo hecho en <b>" + pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>esta siendo preparado para ser enviado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Hola, "+ this.generateSpan(pedidoColectivo.getColectivo().getAdministrador().getNombre(), "00adee") +". El pedido colectivo del grupo "+ this.generateSpan(pedidoColectivo.getColectivo().getAlias(), "00adee") +" está preparado para ser entregado. El detalle del pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
@@ -386,7 +386,7 @@ public class MailService {
 		
 		params.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivo);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
-		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
+		params.put("sugerencia", Constantes.SUGERENCIA.replace("<nombreVendedor>", this.generateSpan(pedidoColectivo.getColectivo().getVendedor().getNombre(), "00adee")));
 		params.put("textoDetalle", textoEnEmail);
 		
 		
