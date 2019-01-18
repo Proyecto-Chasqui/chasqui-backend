@@ -144,9 +144,11 @@ public class MailService {
 	public void enviarEmailDeInvitacionAGCCAceptada(GrupoCC grupo, Cliente invitado) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("aliasGrupo", grupo.getAlias());
+		params.put("nombreInvitado", invitado.getNombre());
+		params.put("apellidoInvitado", invitado.getApellido());
 		params.put("usuarioInvitado",invitado.getUsername());
 		params.put("vendedor", grupo.getVendedor().getNombre());
-		params.put("nombreUsuario", grupo.getAdministrador().getUsername());
+		params.put("nombreEmisor", grupo.getAdministrador().getNombre());
 		String catalogo = this.generarUrlCatalogo(grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto());
 		params.put("catalogoVendedor", catalogo);
 		

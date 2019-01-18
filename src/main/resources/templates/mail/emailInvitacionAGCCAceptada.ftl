@@ -30,7 +30,7 @@ Bienvenido a Chasqui
 </tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">Estimado usuario: <span style="font-weight: bold; color: #00adee;">${nombreUsuario}</span> </td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;"><span style="font-weight: bold; color: #00adee;">${nombreEmisor}</span> </td>
 </tr>
 
 <tr style="height: 40px;">
@@ -38,7 +38,13 @@ Bienvenido a Chasqui
 </tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">La invitacion al grupo de compras colectivas <span style="font-weight: bold; color: #00adee;">${aliasGrupo}</span> del usuario <span style="font-weight: bold; color: #00adee;">${usuarioInvitado}</span> para el vendedor <span style="font-weight: bold; color: #00adee;">${vendedor}</span> ha sido aceptada. </td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;"> <span style="font-weight: bold; color: #00adee;">${nombreInvitado}</span> <span style="font-weight: bold; color: #00adee;">${apellidoInvitado}</span> (<span style="font-weight: bold; color: #00adee;">${usuarioInvitado}</span>) aceptó tu invitación al grupo de compras colectivas <span style="font-weight: bold; color: #00adee;">${aliasGrupo}</span>.</td>
+</tr>
+
+<tr style="height: 21px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">Podrás ver sus compras en el grupo ingresando a la sección Mis Grupos.
+Recordá que administrás el grupo y por eso tenés que confirmar el pedido colectivo una vez se hayan realizado todas las compras.
+</td>
 </tr>
 
 <tr style="height: 40px;">
