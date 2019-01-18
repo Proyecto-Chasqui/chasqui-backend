@@ -141,14 +141,14 @@ public class MailServiceTest extends GenericSetUp {
 	}
 	
 	@Test
-	public void testEnviarEmailDeInvitacionAGrupoAUsuarioRegistrado() throws IOException, MessagingException, TemplateException {
+	public void testEnviarEmailDeInvitacionAGrupoAUsuarioRegistrado() throws IOException, MessagingException, TemplateException, UsuarioInexistenteException {
 		//Se envia el email del template emailInvitadoRegistrado.ftl 
 		
 		this.vendedor.setNombre("nombre del vendedor");
 		this.vendedor.setUrl("urlVendedor");
 		this.vendedor.setNombreCorto("nombreCorto");
 		
-		mailService.enviarEmailInvitadoRegistrado(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre());
+		mailService.enviarEmailInvitadoRegistrado(this.clienteFulano, this.destinatarioSecundario, "aliasGrupo", this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre());
 		assertEquals(true , true);
 	}
 

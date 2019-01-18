@@ -165,14 +165,14 @@ public class NotificacionServiceImpl implements NotificacionService{
 	}
 
 	@Override
-	public void notificarInvitacionAGCCClienteRegistrado(Cliente adminGCC, String emailInvitado, GrupoCC grupo, String idDispositivo) throws IOException, MessagingException, TemplateException {
+	public void notificarInvitacionAGCCClienteRegistrado(Cliente adminGCC, String emailInvitado, GrupoCC grupo, String idDispositivo) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException {
 		String mensaje = Constantes.TXT_INVITACION_GCC;
 		mensaje = mensaje.replaceAll("<usuario>", adminGCC.getUsername());
 		mensaje = mensaje.replaceAll("<alias>", grupo.getAlias());
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
 		
 		this.invitar(adminGCC.getEmail(), emailInvitado, mensaje, idDispositivo,grupo.getId());
-		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre());
+		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getAlias(), grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre());
 	}
 
 

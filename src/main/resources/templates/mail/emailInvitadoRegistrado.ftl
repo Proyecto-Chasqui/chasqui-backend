@@ -29,19 +29,22 @@ Bienvenido a Chasqui
 </tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">Estimado usuario: </td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;"><span style="font-weight: bold; color: #00adee;"> ${nombreInvitado}</span></td>
 </tr>
 
 <tr style="height: 40px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
 </tr>
 
- 
-
-
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">Gracias! Usted ha sido invitado a participar de un grupo de compras colectivas por el usuario:<span style="font-weight: bold; color: #00adee;">${usuarioOrigen} (${mailOrigen}).</span><br><br>
-Para poder aceptar la invitación, <span style="font-weight: bold; color: #00adee;"><a href="${urlRegistracion}"> ingresá a Chasqui </a></span> y así empezar a comprar con <span style="font-weight: bold; color: #00adee;"> ${usuarioOrigen}.</span> </td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;"><span style="font-weight: bold; color: #00adee;"> ${nombreEmisor} </span><span style="font-weight: bold; color: #00adee;">${apellidoEmisor}</span> te invitó al grupo de compras colectivas* <span style="font-weight: bold; color: #00adee;">${aliasGrupo}</span> de <span style="font-weight: bold; color: #00adee;">${vendedor}</span>:
+<br><br>
+*Un grupo de compras colectivas está conformado por varias personas que se ponen de acuerdo para comprar conjuntamente a través de la comunidad de consumo solidario, Chasqui.
+<br><br>
+Para aceptar la invitación, <span style="font-weight: bold; color: #00adee;"><a href="${urlRegistracion}"> ingresá a Chasqui </a></span> y empezá a comprar con tu grupo.
+<br><br>
+Si no conocés a <span style="font-weight: bold; color: #00adee;">${nombreEmisor} </span><span style="font-weight: bold; color: #00adee;">${apellidoEmisor}</span> ignorá este correo.
+</td>
 </tr>
 
 <tr style="height: 40px;">

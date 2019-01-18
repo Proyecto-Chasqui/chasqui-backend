@@ -108,13 +108,19 @@ public class MailService {
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO, destino, Constantes.SUBJECT_INVITACION_NO_REGISTRADO, params);
 	}
 			
-	public void enviarEmailInvitadoRegistrado(Cliente clienteOrigen, String destino, String urlVendedor, String nombreCorto, String nombreVendedor) throws IOException, MessagingException, TemplateException  {		
+	public void enviarEmailInvitadoRegistrado(Cliente clienteOrigen, String destino, String aliasGrupo, String urlVendedor, String nombreCorto, String nombreVendedor) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException  {		
 		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("usuarioOrigen", clienteOrigen.getUsername());
-		params.put("mailOrigen",clienteOrigen.getEmail());
+		Cliente clienteInvitado = usuarioService.obtenerClientePorEmail(destino);
+		params.put("nombreInvitado", clienteInvitado.getNombre());
+		params.put("nombreEmisor", clienteOrigen.getNombre());
+		params.put("apellidoEmisor", clienteOrigen.getApellido());
+		params.put("aliasGrupo", aliasGrupo);
 		params.put("vendedor", nombreVendedor);	
+		
+		params.put("mailOrigen",clienteOrigen.getEmail());
+		
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
-		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro" );//TODO revisar que se forme correctamente 11/09
+		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro" );
 		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
 		params.put("catalogoVendedor", catalogo);
 		
@@ -132,6 +138,7 @@ public class MailService {
 	 * @param destino
 	 * @throws Exception
 	 */
+	@Deprecated
 	public void enviarEmailDeInvitacionChasqui(Cliente clienteOrigen, String destino) throws Exception {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("usuarioOrigen", clienteOrigen.getUsername());

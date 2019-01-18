@@ -90,10 +90,11 @@ public interface NotificacionService {
 	 * @throws TemplateException
 	 * @throws MessagingException
 	 * @throws IOException
+	 * @throws UsuarioInexistenteException 
 	 */
 	@Transactional
 	public void notificarInvitacionAGCCClienteRegistrado(Cliente administrador, String emailInvitado, GrupoCC grupo,
-			String idDispositivo) throws IOException, MessagingException, TemplateException;
+			String idDispositivo) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException;
 
 	/**
 	 * Notifica a un POTENCIAL usuario de Chasqui que ha sido invitado a un
