@@ -20,7 +20,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
             		<auxheader label="Banner" colspan="6" rowspan="1" />
         		</auxhead>		
 			</div>
-			<listbox id="listImagenesBanner" width="100%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="1">
+			<listbox id="listImagenesBanner" width="100%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="3">
 				<listhead>
 					<listheader label="Nombre"/>
 					<listheader label="Acciones"/>

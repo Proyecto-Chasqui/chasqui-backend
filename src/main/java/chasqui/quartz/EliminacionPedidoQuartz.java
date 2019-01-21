@@ -42,8 +42,6 @@ public class EliminacionPedidoQuartz {
 	UsuarioService usuarioService;
 	@Autowired
 	VendedorService vendedorService;
-	@Autowired
-	private ServletContext servletContext;
 //	@Autowired
 //	WebSocketManager webSocketManager;
 	ObjectMapper mapper = new ObjectMapper();

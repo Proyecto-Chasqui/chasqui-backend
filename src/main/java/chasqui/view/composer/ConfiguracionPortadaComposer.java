@@ -219,7 +219,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		formats.add("jpeg");
 		formats.add("png");
 		formats.add("bmp");
-		if(dataMultimedia.getDataPortada().getImagenesDeBanner().size()<1) {
+		if(dataMultimedia.getDataPortada().getImagenesDeBanner().size()<3) {
 			if(this.validateSizeOfImageAt(alto,ancho,margen,ALTO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
 				this.actualizarImagen(evt,BANNER);
 			}else {
@@ -227,7 +227,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 				Clients.showNotification(mensaje, "warning", window, "middle_center", 10000, true);
 			}
 		}else {
-			Clients.showNotification("Por favor borre la imagen primero antes de agregar una nueva", "info", window, "middle_center", 3000, true);
+			Clients.showNotification("Por favor borre alguna imagen primero antes de agregar una nueva", "info", window, "middle_center", 3000, true);
 		}
 	}
 	
@@ -435,7 +435,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		
 		if(img!=null) {
 			Messagebox.show(
-					"¿Esta seguro que desea eliminar la imagen" + img.getNombre() + " ?",
+					"¿Esta seguro que desea eliminar la imagen " + img.getNombre() + " ?",
 					"Pregunta",
 		    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
 		    		new String[] {"Aceptar","Cancelar"},
