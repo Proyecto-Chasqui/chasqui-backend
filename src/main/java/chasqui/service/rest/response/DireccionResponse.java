@@ -44,9 +44,12 @@ public class DireccionResponse implements Serializable {
 	}
 	
 	public DireccionResponse direccionResponseNoID(Direccion d){
-		DireccionResponse dr = new DireccionResponse(d);
-		dr.setIdDireccion(null);
-		return dr;		
+		DireccionResponse dr = null;
+		if(d!=null) {
+			dr = new DireccionResponse(d);
+			dr.setIdDireccion(null);	
+		}
+		return dr;
 	}
 	public String getCalle() {
 		return calle;

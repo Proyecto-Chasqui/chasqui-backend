@@ -17,17 +17,20 @@ public class DataPortadaResponse {
 	private DataContactoResponse dataContacto;
 	
 	public DataPortadaResponse(DataMultimedia datamultimedia) {
-		DataContacto dc = datamultimedia.getDataContacto();
-		DataPortada dp = datamultimedia.getDataPortada();
-		urlImagenesBanner = new ArrayList<String>();
-		urlImagenesPortada = new ArrayList<String>();
-		urlLogo = dp.getLogo().getPath();
-		textoPortada = dp.getTextoBienvenida();
-		for(Imagen img: dp.getImagenesDeBanner()) {
-			urlImagenesBanner.add(img.getPath());
-		}
-		for(Imagen imgp: dp.getImagenesDePortada()) {
-			urlImagenesPortada.add(imgp.getPath());
+		DataContacto dc = null;
+		if(datamultimedia != null) {
+			dc = datamultimedia.getDataContacto();
+			DataPortada dp = datamultimedia.getDataPortada();
+			urlImagenesBanner = new ArrayList<String>();
+			urlImagenesPortada = new ArrayList<String>();
+			urlLogo = dp.getLogo().getPath();
+			textoPortada = dp.getTextoBienvenida();
+			for(Imagen img: dp.getImagenesDeBanner()) {
+				urlImagenesBanner.add(img.getPath());
+			}
+			for(Imagen imgp: dp.getImagenesDePortada()) {
+				urlImagenesPortada.add(imgp.getPath());
+			}
 		}
 		this.setDataContacto(new DataContactoResponse(dc));
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.zkforge.ckez.CKeditor;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
@@ -56,7 +57,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	private Fileupload uploadImagenLogo;
 	private Fileupload uploadImagenBanner;
 	private Fileupload uploadImagenPortada;
-	private Textbox txtPortada;
+	private CKeditor txtPortada;
 	private static final String BANNER = "banner";
 	private static final String IMAGEN_PORTADA = "imagenPortada";
 	private static final String LOGO = "logo";
@@ -337,7 +338,11 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 			}
 		}
 		if(!ret) {
-			ret = name.equals(vendedorLogueado.getDataMultimedia().getDataPortada().getLogo().getNombre());
+			Imagen imagen = vendedorLogueado.getDataMultimedia().getDataPortada().getLogo();
+			if(imagen != null) {
+				String nombre = imagen.getNombre();
+				ret = name.equals(nombre);
+			}
 		}
 		return ret;
 	}
@@ -423,11 +428,11 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		this.uploadImagenPortada = uploadImagenPortada;
 	}
 
-	public Textbox getTxtPortada() {
+	public CKeditor getTxtPortada() {
 		return txtPortada;
 	}
 
-	public void setTxtPortada(Textbox txtPortada) {
+	public void setTxtPortada(CKeditor txtPortada) {
 		this.txtPortada = txtPortada;
 	}
 	
