@@ -29,26 +29,35 @@ Bienvenido a Chasqui
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 15px;">&nbsp;</td>
 </tr>
 
-<tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; font-weight: bold; height: 21px;">Estimado usuario: </td>
-</tr>
-
 <tr style="height: 40px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
 </tr>
 
- 
-
+<tr style="height: 21px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">
+		¡Hola! <span style="font-weight: bold; color: #00adee;">${nombreEmisor} ${apellidoEmisor}</span> te invitó a participar del grupo de compras colectivas* <span style="font-weight: bold; color: #00adee;">${aliasGrupo}</span> de <span style="font-weight: bold; color: #00adee;">${nombreVendedor}</span>.
+	<br>
+		Tu correo no pertenece a un usuario registrado en la comunidad de consumo solidario Chasqui**.
+	<br>
+		Para aceptar la invitación: <span style="font-weight: bold; color: #00adee;"><a href="${urlRegistracion}">Registrate aquí</a></span>
+	<br>
+</td>
+</tr>
 
 <tr style="height: 21px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">Usted ha sido invitado a participar de un grupo de compras colectivas, pero encontramos que aún no se encuentra registrado en CHASQUI.
-                        Chasqui es una aplicación que te permite conocer y comprar los productos de la economía social, que tienen precio justo, trabajo legítimo y de fabricación sustentable.
-						<br>
-						Le comentamos que el usuario <span style="font-weight: bold; color: #00adee;">${usuarioOrigen} (${mailOrigen})</span> desea invitarlo a que compres con él.
-                        <br><br>
-                        Para poder aceptar la invitación, proceda con la registración aquí:<br>
-                        <span style="font-weight: bold; color: #00adee;"><a href="${urlRegistracion}">Registracion</a></span>
-						
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">
+	<br>
+		* Un grupo de compras colectivas está conformado por varias personas que se ponen de acuerdo para comprar conjuntamente a través de la comunidad de consumo colectivo Chasqui.
+	<br>
+		**Chasqui es una plataforma que te permite conocer y comprar productos de la economía social y solidaria, que tienen precio justo, trabajo legítimo y que aportan a la transformación.
+	<br>
+</td>
+</tr>
+
+<tr style="height: 21px;">
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">
+	<br>
+		Si no conocés a <span style="font-weight: bold; color: #00adee;">${nombreEmisor} ${apellidoEmisor}</span> ignorá este correo.				
 </td>
 </tr>
 

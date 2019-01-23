@@ -32,6 +32,7 @@ import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
 import chasqui.security.PasswordGenerator;
+import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
@@ -54,6 +55,8 @@ public class MailService {
 	private PasswordGenerator passwordGenerator;
 	@Autowired
 	private InvitacionService invitacionService;
+	@Autowired
+	private GrupoService grupoService;
 	
 	public static final Logger logger = Logger.getLogger(MailService.class);
 	
@@ -96,11 +99,15 @@ public class MailService {
 		
 	public void enviarmailInvitadoSinRegistrar(Cliente clienteOrigen, String destino, String urlVendedor, String nombreCorto, String nombreVendedor, Integer idGrupo) throws Exception  {
 		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("usuarioOrigen", clienteOrigen.getUsername());
-		params.put("mailOrigen",clienteOrigen.getEmail());
-		params.put("vendedor", nombreVendedor);
-		String slash = (urlVendedor.endsWith("/"))?"":"/";
+		
+		GrupoCC grupo = grupoService.obtenerGrupo(idGrupo);
 		String idInvitacion = invitacionService.obtenerInvitacionAGCCporIDGrupo(destino, idGrupo).getId().toString();
+		
+		params.put("nombreEmisor",clienteOrigen.getNombre());
+		params.put("apellidoEmisor",clienteOrigen.getApellido());
+		params.put("aliasGrupo",grupo.getAlias());
+		params.put("nombreVendedor", nombreVendedor);
+		String slash = (urlVendedor.endsWith("/"))?"":"/";
 		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
 		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
 		params.put("catalogoVendedor", catalogo);
