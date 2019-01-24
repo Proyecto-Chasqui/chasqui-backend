@@ -23,7 +23,9 @@ public class DataPortadaResponse {
 			DataPortada dp = datamultimedia.getDataPortada();
 			urlImagenesBanner = new ArrayList<String>();
 			urlImagenesPortada = new ArrayList<String>();
-			urlLogo = dp.getLogo().getPath();
+			if(dp.getLogo() != null) {
+				urlLogo = dp.getLogo().getPath();
+			}
 			textoPortada = dp.getTextoBienvenida();
 			for(Imagen img: dp.getImagenesDeBanner()) {
 				urlImagenesBanner.add(img.getPath());
