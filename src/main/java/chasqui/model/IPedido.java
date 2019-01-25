@@ -25,5 +25,15 @@ public interface IPedido {
 	void preparado() throws EstadoPedidoIncorrectoException;
 
 	void confirmarteSinMontoMinimo() throws EstadoPedidoIncorrectoException;
+	
+	/**
+	 * @return true si es un pedido para pasar a retirar sino false.
+	 */
+	boolean esParaRetirar();
+
+	/**
+	 * @return true si es un pedido a domicilio sino false.
+	 */
+	boolean esParaDomicilio();
 
 }

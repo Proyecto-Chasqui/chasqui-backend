@@ -366,4 +366,14 @@ public class Pedido implements IPedido {
 		this.respuestasAPreguntas = respuestasAPreguntas;
 	}
 
+	@Override
+	public boolean esParaRetirar() {
+		return (this.puntoDeRetiro != null);
+	}
+
+	@Override
+	public boolean esParaDomicilio() {
+		return (this.direccionEntrega != null);
+	}
+
 }

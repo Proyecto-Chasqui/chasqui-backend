@@ -279,4 +279,14 @@ public class PedidoColectivo implements IPedido{
 		
 	}
 
+	@Override
+	public boolean esParaRetirar() {
+		return (this.puntoDeRetiro != null);
+	}
+
+	@Override
+	public boolean esParaDomicilio() {
+		return (this.domicilioEntrega != null);
+	}
+
 }
