@@ -27,6 +27,7 @@ import chasqui.model.PedidoColectivo;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
+import chasqui.model.Zona;
 import chasqui.services.impl.MailService;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.NotificacionService;
@@ -111,9 +112,11 @@ public class MailServiceTest extends GenericSetUp {
 		DateTime fechaVencimiento = new DateTime();
 		Pedido pedido= new Pedido(vendedorDestinatario, clienteFulano, false, fechaVencimiento.plusHours(24));
 		ProductoPedido prodPed = new ProductoPedido(variante, 5,"N/D");
+		Zona zona = new Zona("nombreZona", DateTime.now().plusDays(1), "mensaje de zona");
 		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
 		pedido.setDireccionEntrega(direccionCasa);
+		pedido.setZona(zona);
 		mailService.enviarEmailConfirmacionPedido(this.destinatario, this.destinatarioSecundario, pedido);;
 		assertEquals(true , true);
 	}
@@ -189,10 +192,11 @@ public class MailServiceTest extends GenericSetUp {
 		DateTime fechaVencimiento = new DateTime().plusHours(24);
 		Pedido pedido = new Pedido(this.vendedor, this.clienteFulano, false, fechaVencimiento);
 		ProductoPedido prodPed = new ProductoPedido(variante, 5,"N/D");
+		Zona zona = new Zona("nombreZona", DateTime.now().plusDays(1), "mensaje de zona");
 		pedido.setDireccionEntrega(direccionCasa);
 		pedido.agregarProductoPedido(prodPed, fechaVencimiento.plusHours(48));
 		pedido.sumarAlMontoActual(prodPed.getPrecio(), prodPed.getCantidad());
-		
+		pedido.setZona(zona);
 		
 		mailService.enviarEmailPreparacionDePedido(pedido);;
 		assertEquals(true , true);
@@ -211,6 +215,8 @@ public class MailServiceTest extends GenericSetUp {
 
 		PedidoColectivo pedidoColectivo = new PedidoColectivo();
 		pedidoColectivo.setColectivo(grupoDeCompras);
+		Zona zona = new Zona("nombreZona", DateTime.now().plusDays(1), "mensaje de zona");
+		pedidoColectivo.setZona(zona);
 		
 		DateTime fechaVencimiento = new DateTime().plusHours(24);
 		Pedido pedidoFulano = new Pedido(this.vendedor, this.clienteFulano, true, fechaVencimiento);

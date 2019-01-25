@@ -26,6 +26,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
+import chasqui.model.IPedido;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
@@ -226,11 +227,11 @@ public class MailService {
 		Direccion direccion = null;
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
-		if(p.getDireccionEntrega() != null) {
+		if(p.esParaDomicilio()) {
 			direccion = p.getDireccionEntrega();
 			textoDeDireccionDeEntrega = "Dirección de envio";
 		}
-		if(p.getPuntoDeRetiro() != null) {
+		if(p.esParaRetirar()) {
 			direccion = p.getPuntoDeRetiro().getDireccion();
 			textoDeDireccionDeEntrega ="Dirección de retiro";
 		}
@@ -239,7 +240,7 @@ public class MailService {
 		String catalogo = this.generarUrlCatalogo(vendedor.getUrl(), vendedor.getNombreCorto());
 		
 		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
-		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
+		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p, direccion, textoDeDireccionDeEntrega);
 		String cuerpoCliente = armarCuerpoCliente(cliente.getNombre(), vendedor.getNombre());
 		String cuerpoVendedor = armarCuerpoVendedor(emailCliente);
 		
@@ -309,7 +310,7 @@ public class MailService {
 		}
 		
 		String tablaContenidoPedido = armarTablaContenidoDePedido(pedido);
-		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
+		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedido, direccion,textoDeDireccionDeEntrega);
 		
 		params.put("tablaContenidoPedido", tablaContenidoPedido);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
@@ -354,7 +355,7 @@ public class MailService {
 		//Genero tabla de contenido de pedido de cada persona
 		String tablaContenidoDePedidoColectivo = this.armarTablaContenidoDePedidoColectivo(pedidoColectivo);
 		//La direccion del grupo
-		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
+		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedidoColectivo, direccion,textoDeDireccionDeEntrega);
 		
 		List<String> emailsClientesDestino = obtenerEmails(pedidoColectivo);
 		
@@ -387,7 +388,7 @@ public class MailService {
 		//Genero tabla de contenido de pedido de cada persona
 		String tablaContenidoDePedidoColectivo = this.armarTablaContenidoDePedidoColectivo(pedidoColectivo);
 		//La direccion del grupo
-		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(direccion,textoDeDireccionDeEntrega);
+		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedidoColectivo, direccion,textoDeDireccionDeEntrega);
 		
 		List<String> emailsClientesDestino = obtenerEmails(pedidoColectivo);
 		
@@ -575,7 +576,7 @@ public class MailService {
 	
 	
 	private String armarCuerpoCliente(String nombre, String nombreVendedor){
-		return "¡"+ nombre +" tu pedido en "+ nombreVendedor +" está confirmado!" +
+		return "¡"+ this.generateSpan(nombre, "00adee") +" tu pedido en "+ this.generateSpan(nombreVendedor, "00adee") +" está confirmado!" +
 				" <br> " +
 				"Detalles de tu compra:";
 
@@ -584,17 +585,21 @@ public class MailService {
 
 	
 	private String armarCuerpoVendedor(String usuario){
-		return "El usuario "+ usuario +" confirmó su compra (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
+		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
 	}
 	
 	
 	
 	
-	private String armarTablaDireccionDeEntrega(Direccion d,String texto){
+	private String armarTablaDireccionDeEntrega(IPedido pedido, Direccion d,String texto){
 		if (d!=null) {
 			String departamento =  d.getDepartamento() != null ? d.getDepartamento() : "---";
 			String codigoPostal = d.getCodigoPostal() == null ?  "---" : d.getCodigoPostal();
 			String localidad = d.getLocalidad() == null ? "---": d.getLocalidad();
+			String zona = pedido.getZona() == null ? "---": pedido.getZona().getNombre();
+			String modoDeEntrega = null;
+			modoDeEntrega = pedido.esParaDomicilio() ? "Envío a domicilio" : "Pasa a retirar";
+			
 			
 			String tabla=
 					"<br><br>"
@@ -605,10 +610,14 @@ public class MailService {
 					       +"</tr>"
 					  +"</thead>"
 					  +"<tbody align=\"left\">"
-					      +"<tr>"
-					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Calle </td>"
-					           +"<td>"+d.getCalle()+"</td>"
-					      +"</tr>"
+				      	+"<tr>"
+			           		+"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Modo de entrega </td>"
+			           		+"<td>"+ modoDeEntrega +"</td>"
+			           	+"</tr>"
+			           	+"<tr>"
+			           		+"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Calle </td>"
+			           		+"<td>"+d.getCalle()+"</td>"
+			           	+"</tr>"
 					      +"<tr>"
 					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Altura</td>"
 					           +"<td>"+d.getAltura()+"</td>"
@@ -621,9 +630,13 @@ public class MailService {
 					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Cod.Postal</td>"
 					           +"<td>"+ codigoPostal +"</td>"
 					       +"</tr>"
-					      +"<tr>"
+						   +"<tr>"
 					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Localidad</td>"
 					           +"<td>"+ localidad +"</td>"
+					       +"</tr>"
+						   +"<tr>"
+					           +"<td bgcolor=\"#c1c1c1\" width=\"40%\"> Zona</td>"
+					           +"<td>"+ zona +"</td>"
 					       +"</tr>"	   
 					   +"</tbody>"
 					+"</table>"
