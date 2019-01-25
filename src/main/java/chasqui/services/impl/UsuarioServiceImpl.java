@@ -76,7 +76,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	private String serverAbsolutPath;
 	@Autowired
 	private MiembroDeGCCDAO miembroDeGCCDao;
-	//@Autowired
+	@Autowired
 	private ServletContext servletContext;
 
 	public Usuario obtenerUsuarioPorID(Integer id) {
