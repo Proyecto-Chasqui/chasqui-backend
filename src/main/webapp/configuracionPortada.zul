@@ -20,7 +20,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
             		<auxheader label="Banner" colspan="6" rowspan="1" />
         		</auxhead>		
 			</div>
-			<listbox id="listImagenesBanner" width="100%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="1">
+			<listbox id="listImagenesBanner" width="100%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="3">
 				<listhead>
 					<listheader label="Nombre"/>
 					<listheader label="Acciones"/>
@@ -92,7 +92,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
         			</auxhead>		
 				</div>
 				<separator spacing="2px"/>
-				<textbox  rows="25" id="txtPortada" width="100%"/>
+				<ckeditor width="100%" height="400px" id="txtPortada" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
 				<separator spacing="15px"></separator>
 				<div align="center">
 						<toolbarbutton id="buttonGuardarTexto" label="Guardar" style="font-weight:bold; color:black" image="/imagenes/save.png"></toolbarbutton>

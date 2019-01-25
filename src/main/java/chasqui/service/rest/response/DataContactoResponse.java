@@ -11,11 +11,13 @@ public class DataContactoResponse {
 	private String url;
 	
 	public DataContactoResponse(DataContacto dc) {
-		this.setDireccion(new DireccionResponse().direccionResponseNoID(dc.getDireccion()));
-		this.telefono = dc.getTelefono();
-		this.celular = dc.getCelular();
-		this.email = dc.getEmail();
-		this.url = dc.getUrl();
+		if(dc != null){
+			this.setDireccion(new DireccionResponse().direccionResponseNoID(dc.getDireccion()));
+			this.telefono = dc.getTelefono();
+			this.celular = dc.getCelular();
+			this.email = dc.getEmail();
+			this.url = dc.getUrl();
+		}
 	}
 	
 
