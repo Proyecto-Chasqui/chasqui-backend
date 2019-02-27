@@ -305,8 +305,8 @@ public class MailService {
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedido.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Su pedido de " + pedido.getNombreVendedor() +" esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
-			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar su pedido";
+			textoEnEmail = "Tu pedido de " + pedido.getNombreVendedor() +" esta preparado para que lo pueda pasar a retirar. El detalle de tu pedido es el siguiente:";
+			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar tu pedido";
 		}
 		
 		String tablaContenidoPedido = armarTablaContenidoDePedido(pedido);
@@ -345,11 +345,11 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
-			textoEnEmail = "Su pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>ha sido confirmado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>ha sido confirmado. El detalle de tu pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "La dirección elegida es la siguiente:";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Su pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() + " </b>ha sido confirmado. El detalle de su pedido es el siguiente:";
+			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() + " </b>ha sido confirmado. El detalle de tu pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="El punto de retiro elegido es el siguiente:";
 		}
 		//Genero tabla de contenido de pedido de cada persona
@@ -382,8 +382,8 @@ public class MailService {
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Su pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>esta preparado para que lo pueda pasar a retirar. El detalle de su pedido es el siguiente:";
-			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar su pedido";
+			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>esta preparado para que lo pueda pasar a retirar. El detalle de tu pedido es el siguiente:";
+			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar tu pedido";
 		}
 		//Genero tabla de contenido de pedido de cada persona
 		String tablaContenidoDePedidoColectivo = this.armarTablaContenidoDePedidoColectivo(pedidoColectivo);
