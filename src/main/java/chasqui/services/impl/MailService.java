@@ -305,7 +305,7 @@ public class MailService {
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedido.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Tu pedido de " + pedido.getNombreVendedor() +" esta preparado para que lo pueda pasar a retirar. El detalle de tu pedido es el siguiente:";
+			textoEnEmail = "Tu pedido de " + pedido.getNombreVendedor() +" esta preparado para que lo puedas pasar a retirar. El detalle de tu pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar tu pedido";
 		}
 		
@@ -382,7 +382,7 @@ public class MailService {
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>esta preparado para que lo pueda pasar a retirar. El detalle de tu pedido es el siguiente:";
+			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>esta preparado para que lo puedas pasar a retirar. El detalle de tu pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar tu pedido";
 		}
 		//Genero tabla de contenido de pedido de cada persona
