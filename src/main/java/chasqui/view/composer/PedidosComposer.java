@@ -47,6 +47,7 @@ import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 
 import chasqui.dtos.PedidoIndividualDTO;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Pedido;
@@ -317,7 +318,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			});
 	}
 	
-	public void notificar(Pedido p) {
+	public void notificar(Pedido p) throws VendedorInexistenteException {
 		////////////////////
 		//Notificar por mail que el pedido ha sido preparado
 		mailService.enviarEmailPreparacionDePedido(p);

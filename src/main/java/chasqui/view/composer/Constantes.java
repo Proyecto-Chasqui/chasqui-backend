@@ -46,7 +46,7 @@ public class Constantes {
 	public static final String VENCIMIENTO_DE_PEDIDO_SUBJECT = "Vencimiento automatico";
 	public static final String NUEVO_PEDIDO_EN_GCC_SUBJECT = "Un miembro de tu grupo de compras ha iniciado su pedido";
 	public static final String AGRADECIMIENTO = "Muchas gracias por utilizar el sistema Chasqui";
-	public static final String SUGERENCIA = "Si tenés alguna duda con respecto a tu pedido, comunicate con <nombreVendedor>.";
+	public static final String SUGERENCIA = "Si tenés alguna duda con respecto a días y lugares de entrega, consultá la información relacionada en la sección <bienvenida>. ";
 	public static final String TEMPLATE_ACEPTAR_INVITACION_GCC ="emailInvitacionAGCCAceptada.ftl";
 	public static final String TEMPLATE_BIENVENIDA_VENDEDOR = "emailBienvenida.ftl";
 	public static final String TEMPLATE_BIENVENIDA_CLIENTE = "emailBienvenidaCliente.ftl";

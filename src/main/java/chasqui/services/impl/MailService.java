@@ -238,17 +238,27 @@ public class MailService {
 		Vendedor vendedor = (Vendedor) usuarioService.obtenerUsuarioPorEmail(emailVendedor);
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
 		String catalogo = this.generarUrlCatalogo(vendedor.getUrl(), vendedor.getNombreCorto());
-		
+		String cuerpoCliente;
+		String tablaDireccionDeEntrega;
 		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
-		String tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p, direccion, textoDeDireccionDeEntrega);
-		String cuerpoCliente = armarCuerpoCliente(cliente.getNombre(), vendedor.getNombre());
-		String cuerpoVendedor = armarCuerpoVendedor(emailCliente);
+		String cuerpoVendedor;
+		
+		if(p.getPerteneceAPedidoGrupal()) {
+			cuerpoCliente = armarCuerpoClienteParaPedidoGrupal(cliente.getNombre(), vendedor.getNombre());
+			tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p, direccion, textoDeDireccionDeEntrega);
+			cuerpoVendedor = armarCuerpoVendedorPedidoColectivo(emailCliente);
+		}else {
+			cuerpoCliente= armarCuerpoCliente(cliente.getNombre(), vendedor.getNombre());
+			tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p, direccion, textoDeDireccionDeEntrega);	
+			cuerpoVendedor = armarCuerpoVendedor(emailCliente);
+		}
+		
 		
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("cuerpo", cuerpoCliente);
 		params.put("tablaContenidoPedido",tablaContenidoPedido);
 		params.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
-		params.put("sugerencia",Constantes.SUGERENCIA.replace("<nombreVendedor>", vendedor.getNombre()));
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(),vendedor.getNombreCorto()) + "> bienvenida </a>"));
 		params.put("textoDetalle", textoEnEmail);
 		params.put("catalogoVendedor", catalogo);
 
@@ -266,6 +276,8 @@ public class MailService {
 		
 	}
 	
+
+
 	public void enviarEmailVencimientoPedido(String nombreVendedor, Cliente cliente, Pedido pedido, String fechaCreacionPedido,
 			String cantidadDeMinutosParaExpiracion) throws VendedorInexistenteException {
 		
@@ -293,7 +305,7 @@ public class MailService {
 		
 	}
 	
-	public void enviarEmailPreparacionDePedido(Pedido pedido) {
+	public void enviarEmailPreparacionDePedido(Pedido pedido) throws VendedorInexistenteException {
 		Map<String,Object> params = new HashMap<String,Object>();
 		Direccion direccion;
 		String textoEnEmail = "";
@@ -316,7 +328,8 @@ public class MailService {
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
 		params.put("textoDetalle", textoEnEmail);
 		params.put("textoDeDireccionDeEntrega", textoDeDireccionDeEntrega);
-		params.put("sugerencia", Constantes.SUGERENCIA.replace("<nombreVendedor>", this.generateSpan(pedido.getNombreVendedor(), "00adee")));
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(pedido.getIdVendedor());
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(), vendedor.getNombreCorto()) + "> bienvenida </a>"));
 		
 		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), formarTag(pedido) +Constantes.PEDIDO_PREPARADO_SUBJECT, params);
 		
@@ -394,7 +407,8 @@ public class MailService {
 		
 		params.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivo);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
-		params.put("sugerencia", Constantes.SUGERENCIA.replace("<nombreVendedor>", this.generateSpan(pedidoColectivo.getColectivo().getVendedor().getNombre(), "00adee")));
+		Vendedor vendedor= pedidoColectivo.getColectivo().getVendedor();
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(), vendedor.getNombreCorto())  + "> bienvenida </a>"));
 		params.put("textoDetalle", textoEnEmail);
 		
 		
@@ -588,7 +602,23 @@ public class MailService {
 		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
 	}
 	
+	private String armarCuerpoVendedorPedidoColectivo(String usuario){
+		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra que pertenece a un pedido colectivo (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
+	}
 	
+	
+	private String armarTablaDireccionDeEntregaParaPedidoGrupal(Pedido p, Direccion direccion,
+			String textoDeDireccionDeEntrega) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String armarCuerpoClienteParaPedidoGrupal(String nombre, String nombreVendedor) {
+		return "¡"+ this.generateSpan(nombre, "00adee") +" tu pedido individual en el grupo de "+ this.generateSpan(nombreVendedor, "00adee") +" está confirmado! " +
+				"Recordá que quién administra el grupo debe confirmar el pedido grupal para que se hagan efectivos los pedidos individuales." +
+				" <br> " +
+				"Detalles de tu compra:";
+	}
 	
 	
 	private String armarTablaDireccionDeEntrega(IPedido pedido, Direccion d,String texto){
@@ -713,6 +743,11 @@ public class MailService {
 	private String generarUrlCatalogo(String url, String nombreCorto){
 		String slash = (url.endsWith("/"))?"":"/";
 		return (url + slash + "#/" + nombreCorto + "/productos");
+	}
+	
+	private String generarUrlBienvenida(String url, String nombreCorto){
+		String slash = (url.endsWith("/"))?"":"/";
+		return (url + slash + "#/" + nombreCorto + "/bienvenida");
 	}
 
 }

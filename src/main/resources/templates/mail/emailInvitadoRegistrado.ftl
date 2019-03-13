@@ -93,9 +93,7 @@ Si no conocés a <span style="font-weight: bold; color: #00adee;">${nombreEmisor
 <tr style="height: 20px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 20px;">&nbsp;</td>
 </tr>
-<tr style="height: 30px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; color: #777777; text-align: justify; height: 30px;"><strong>NOTA:</strong> Bajo el decreto S.1618 titulo 3ro. Aprobado por el 105 congreso en base de las normativas internacionales sobre SPAM, este mail no podrá ser considerado SPAM mientras incluya una forma de ser removido. Si desea ser automáticamente eliminado de nuestra base de datos, por favor envíe un e-mail con el ASUNTO/SUBJECT : REMOVER y será borrado de nuestra base.</td>
-</tr>
+
 </tbody>
 </table>
 </body>
