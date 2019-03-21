@@ -258,7 +258,7 @@ public class MailService {
 		params.put("cuerpo", cuerpoCliente);
 		params.put("tablaContenidoPedido",tablaContenidoPedido);
 		params.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
-		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(),vendedor.getNombreCorto()) + "> bienvenida </a>"));
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(),vendedor.getNombreCorto()) + "> bienvenida</a>"));
 		params.put("textoDetalle", textoEnEmail);
 		params.put("catalogoVendedor", catalogo);
 
@@ -616,7 +616,7 @@ public class MailService {
 	private String armarCuerpoClienteParaPedidoGrupal(String nombre, String nombreVendedor) {
 		return "¡"+ this.generateSpan(nombre, "00adee") +" tu pedido individual en el grupo de "+ this.generateSpan(nombreVendedor, "00adee") +" está confirmado! " +
 				"Recordá que quién administra el grupo debe confirmar el pedido grupal para que se hagan efectivos los pedidos individuales." +
-				" <br> " +
+				" <br>" + "<br>" +
 				"Detalles de tu compra:";
 	}
 	
