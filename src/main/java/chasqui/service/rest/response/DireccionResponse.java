@@ -23,6 +23,8 @@ public class DireccionResponse implements Serializable {
 	private String alias;
 	private Integer idDireccion;
 	private String comentario;
+	private String pais;
+	private String provincia;
 	
 	
 	
@@ -41,6 +43,8 @@ public class DireccionResponse implements Serializable {
 		this.departamento = d.getDepartamento();
 		this.predeterminada = d.getPredeterminada();
 		this.idDireccion = d.getId();
+		this.provincia = d.getProvincia();
+		this.pais = d.getPais();
 	}
 	
 	public DireccionResponse direccionResponseNoID(Direccion d){
@@ -128,6 +132,18 @@ public class DireccionResponse implements Serializable {
 	}
 	public void setComentario(String comentario) {
 		this.comentario = comentario;
+	}
+	public String getPais() {
+		return pais;
+	}
+	public void setPais(String pais) {
+		this.pais = pais;
+	}
+	public String getProvincia() {
+		return provincia;
+	}
+	public void setProvincia(String provincia) {
+		this.provincia = provincia;
 	}
 	
 	

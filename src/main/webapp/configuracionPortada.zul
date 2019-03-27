@@ -92,7 +92,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
         			</auxhead>		
 				</div>
 				<separator spacing="2px"/>
-				<ckeditor width="100%" height="400px" id="txtPortada" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
+				<ckeditor width="100%" height="400px" id="txtPortada" customConfigurationsPath="/js/config_portada.js"/>
 				<separator spacing="15px"></separator>
 				<div align="center">
 						<toolbarbutton id="buttonGuardarTexto" label="Guardar" style="font-weight:bold; color:black" image="/imagenes/save.png"></toolbarbutton>

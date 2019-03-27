@@ -46,7 +46,7 @@ public class Constantes {
 	public static final String VENCIMIENTO_DE_PEDIDO_SUBJECT = "Vencimiento automatico";
 	public static final String NUEVO_PEDIDO_EN_GCC_SUBJECT = "Un miembro de tu grupo de compras ha iniciado su pedido";
 	public static final String AGRADECIMIENTO = "Muchas gracias por utilizar el sistema Chasqui";
-	public static final String SUGERENCIA = "Si tenés alguna duda con respecto a tu pedido, comunicate con <nombreVendedor>.";
+	public static final String SUGERENCIA = "Si tenés alguna duda con respecto a días y lugares de entrega, consultá la información relacionada en la sección <bienvenida>. ";
 	public static final String TEMPLATE_ACEPTAR_INVITACION_GCC ="emailInvitacionAGCCAceptada.ftl";
 	public static final String TEMPLATE_BIENVENIDA_VENDEDOR = "emailBienvenida.ftl";
 	public static final String TEMPLATE_BIENVENIDA_CLIENTE = "emailBienvenidaCliente.ftl";
@@ -65,10 +65,10 @@ public class Constantes {
 	public static final String SUBJECT_CONOCES_CHASQUI = "¿Conocés Chasqui?";
 	public static final String SUBJECT_INVITACION_GCC_ACEPTADA = "<usuario> acepto tu invitacion";
 	public static final String NUEVO_ADMINISTRADOR_SUBJECT = "Usted es el nuevo Administrador";
-	public static final String PEDIDO_PREPARADO_SUBJECT = "Su pedido ha sido preparado";
+	public static final String PEDIDO_PREPARADO_SUBJECT = "Tu pedido ha sido preparado";
 	public static final String PEDIDOS_PREPARADOS_SUBJECT = "Los pedidos han sido preparados";
-	public static final String PEDIDO_COLECTIVO_CONFIRMADO = "Su pedido colectivo ha sido confirmado";
-	public static final String PEDIDO_COLECTIVO_PREPARADO = "Su pedido colectivo esta preparado";
+	public static final String PEDIDO_COLECTIVO_CONFIRMADO = "Tu pedido colectivo ha sido confirmado";
+	public static final String PEDIDO_COLECTIVO_PREPARADO = "Tu pedido colectivo esta preparado";
 	
 	public static final String AVISO_DE_RECUPERO_DE_CONTRASEÑA = "Aviso de Recupero de contraseña";
 	public static final String CONFIRMACION_COMPRA_TEMPLATE_URL = "emailConfirmacionPedido.ftl";

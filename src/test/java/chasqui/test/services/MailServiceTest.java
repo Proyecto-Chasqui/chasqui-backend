@@ -183,7 +183,7 @@ public class MailServiceTest extends GenericSetUp {
 	}
 	
 	@Test
-	public void testEnviarEmailDePreparacionDePedido() throws IOException, MessagingException, TemplateException, EstadoPedidoIncorrectoException {
+	public void testEnviarEmailDePreparacionDePedido() throws IOException, MessagingException, TemplateException, EstadoPedidoIncorrectoException, VendedorInexistenteException {
 		//Se envia el email del template emailPedidoPreparado.ftl 
 		
 		this.vendedor.setEmail(this.destinatario);
