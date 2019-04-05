@@ -214,7 +214,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		Integer alto = 340;
 		Integer ancho = 1600;
 		Integer kb = 2048;
-		Integer margen = 800;
+		Integer margen = 0;
 		List<String> formats = new ArrayList<String>();
 		formats.add("jpg");
 		formats.add("jpeg");
@@ -224,7 +224,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 			if(this.validateSizeOfImageAt(alto,ancho,margen,ALTO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
 				this.actualizarImagen(evt,BANNER);
 			}else {
-				String mensaje = "La imagen debe tener entre " +ancho+"px x " +alto+"px y " +(ancho + margen) +"px x " +alto+"px, debe ser de formato jpg, jpeg, png o bmp y no debe pesar mas de "+ kb /1024 +"MB";
+				String mensaje = "La imagen debe tener una dimensión de " +ancho+"px x " +alto+" px, debe ser de formato jpg, jpeg, png o bmp y no debe pesar mas de "+ kb /1024 +"MB";
 				Clients.showNotification(mensaje, "warning", window, "middle_center", 10000, true);
 			}
 		}else {

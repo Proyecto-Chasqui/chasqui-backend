@@ -82,7 +82,7 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
 					<button label="Ver Puntos de Retiro" id="puntoDeRetiroButton"/>
 				</listcell>
 			</listitem>
-			<listitem>
+			<listitem  id="cuestionarioitem">
 				<listcell id="cuestionario" label="Preguntas de consumo"/>
 				<listcell>
 					<button label="Ver preguntas de consumo" id="cuestionarioButton"/>
