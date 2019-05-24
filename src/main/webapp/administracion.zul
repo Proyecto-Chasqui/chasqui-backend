@@ -157,7 +157,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 				<combobox id="habilitadoComboBox" placeholder="Buscar por ocultado/mostrado" readonly="false" model="@{administracionWindow$composer.visibilidad}" selectedItem="@{administracionWindow$composer.visibilidadSeleccionada}" forward="onOK=administracionWindow$composer.onBuscar" />
 				<button label="Buscar" id="buscarProducto" visible="false"/>
 				<textbox id="busquedaPorCodigoProducto" placeholder="Buscar por codigo producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
-				<intbox id="busquedaPorStock" placeholder="Buscar stock menor a" width="150px" forward="onOK=administracionWindow$composer.onBuscar"/>
+				<intbox id="busquedaPorStock" placeholder="Buscar stock menor a" width="150px" constraint="no negative" forward="onOK=administracionWindow$composer.onBuscar"/>
 				<button label="Limpiar Campos" id="limpiarCamposbtn" visible="true"/>
 				</div>
 			</hbox>
