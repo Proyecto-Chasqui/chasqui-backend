@@ -21,6 +21,8 @@ public class DireccionRequest implements Serializable{
 	private String longitud;
 	private Boolean predeterminada;
 	private String comentario;
+	private String pais;
+	private String provincia;
 	
 	
 	public String getCalle() {
@@ -95,6 +97,18 @@ public class DireccionRequest implements Serializable{
 	}
 	public void setCalleAdyacente2(String calleAdyacente2) {
 		this.calleAdyacente2 = calleAdyacente2;
+	}
+	public String getPais() {
+		return pais;
+	}
+	public void setPais(String pais) {
+		this.pais = pais;
+	}
+	public String getProvincia() {
+		return provincia;
+	}
+	public void setProvincia(String provincia) {
+		this.provincia = provincia;
 	}
 	
 	

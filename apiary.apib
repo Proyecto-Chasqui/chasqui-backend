@@ -150,7 +150,7 @@ Existen dos tipos de urls para los servicios:
             "error": "Exception message"
             }
 
-### Obtener email invitado v[POST /rest/client/sso/obtenerMailInvitado]
+### Obtener email invitado[POST /rest/client/sso/obtenerMailInvitado]
 
 
 + Request (application/json)
@@ -168,7 +168,7 @@ Existen dos tipos de urls para los servicios:
     + Body
     
             {
-            "verificar":"response"
+            "mail":"usuario@dominio.com"
             }
             
 + Response 401 (application/json)
@@ -1763,7 +1763,7 @@ Nota: Los parámetros *latitud*, *longitud* y *departamento* son opcionales.
             "error": "Exception message"
             }
 
-### Obtener avatar v[GET /rest/user/admin/avatar]
+### Obtener avatar [GET /rest/user/adm/avatar]
 
 
     + Header
@@ -1771,7 +1771,10 @@ Nota: Los parámetros *latitud*, *longitud* y *departamento* son opcionales.
             Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 
 + Response 200 (application/json)
-            
+
+            {
+                "avatar": "<relativepath to image>"
+            }
 + Response 404 (application/json)
 
 
@@ -1790,7 +1793,7 @@ Nota: Los parámetros *latitud*, *longitud* y *departamento* son opcionales.
             "error": "Exception message"
             }
 
-### Actualizar avatar v [POST /rest/user/admin/avatar]
+### Actualizar avatar [POST /rest/user/adm/avatar]
 
 
 + Request (application/json)
@@ -2322,7 +2325,7 @@ Al igual que cancelar pedido individual, se debe validar que la solicitud sea co
             "error": "Exception message"
             }
 
-### Refrescar vencimiento v[POST /rest/user/pedido/refrescarVencimiento]
+### Refrescar vencimiento [POST /rest/user/pedido/refrescarVencimiento]
 Al igual que cancelar pedido individual, se debe validar que la solicitud sea correcta, que ese pedido corresponda a ese usuario
     
 
@@ -2360,7 +2363,7 @@ Al igual que cancelar pedido individual, se debe validar que la solicitud sea co
             "error": "Exception message"
             }
 
-### Obtener o crear pedido individual v[POST /rest/user/pedido/obtenerIndividual]
+### Obtener o crear pedido individual [POST /rest/user/pedido/obtenerIndividual]
 
 + Request (application/json)
 
@@ -2375,7 +2378,28 @@ Al igual que cancelar pedido individual, se debe validar que la solicitud sea co
                 "idVendedor": 1
             }
 
-+ Response 201 (application/json)
++ Response 200 (application/json)
+
+           {
+              "id": 122,
+              "idGrupo": null,
+              "idVendedor": 2,
+              "cliente": {
+                 "alias": "Alias Usuario",
+                 "email": "dominio@email.com"
+              },
+              "estado": "ABIERTO",
+              "aliasGrupo": null,
+              "fechaCreacion": "15/05/2019",
+              "fechaVencimiento": "15/05/2019",
+              "montoMinimo": 500,
+              "montoActual": 0,
+              "nombreVendedor": "Puente del Sur",
+              "zona": null,
+              "direccion": null,
+              "puntoDeRetiro": null,
+              "productosResponse": []
+           }
             
 + Response 406 (application/json)
 
@@ -2395,7 +2419,7 @@ Al igual que cancelar pedido individual, se debe validar que la solicitud sea co
             "error": "Exception message"
             }
 
-### Obtener pedidos con estados v [POST /rest/user/pedido/conEstados]
+### Obtener pedidos con estados [POST /rest/user/pedido/conEstados]
 
 + Request (application/json)
 
@@ -2407,11 +2431,70 @@ Al igual que cancelar pedido individual, se debe validar que la solicitud sea co
     + Body
     
             {   
-                "idVendedor": 1
-                "estados": ["CONFIRMADO","CANCELADO","PREPARADO","ENVIADO","ABIERTO"]
+                "idVendedor": 1,
+                "estados": ["CONFIRMADO","CANCELADO","PREPARADO","ENTREGADO","ABIERTO"]
             }
 
-+ Response 201 (application/json)
++ Response 200 (application/json)
+
+            [
+               {
+                  "id": 122,
+                  "idGrupo": null,
+                  "idVendedor": 2,
+                  "cliente": {
+                     "alias": "User",
+                     "email": "user@dominio.com"
+                  },
+                  "estado": "CANCELADO",
+                  "aliasGrupo": null,
+                  "fechaCreacion": "15/05/2019",
+                  "fechaVencimiento": "15/05/2019",
+                  "montoMinimo": 500,
+                  "montoActual": 96,
+                  "nombreVendedor": "Puente del Sur",
+                  "zona": null,
+                  "direccion": null,
+                  "puntoDeRetiro": null,
+                  "productosResponse": [
+                     {
+                        "nombre": "Budín con chispas de chocolate 370 g  ",
+                        "idVariante": 78,
+                        "precio": 48,
+                        "cantidad": 2,
+                        "imagen": "/imagenes/usuarios/adminpds/van011.JPG"
+                     }
+                  ]
+               },
+               {
+                  "id": 123,
+                  "idGrupo": null,
+                  "idVendedor": 2,
+                  "cliente": {
+                     "alias": "David edit",
+                     "email": "degnexo@gmail.com"
+                  },
+                  "estado": "CANCELADO",
+                  "aliasGrupo": null,
+                  "fechaCreacion": "15/05/2019",
+                  "fechaVencimiento": "15/05/2019",
+                  "montoMinimo": 500,
+                  "montoActual": 96,
+                  "nombreVendedor": "Puente del Sur",
+                  "zona": null,
+                  "direccion": null,
+                  "puntoDeRetiro": null,
+                  "productosResponse": [
+                     {
+                        "nombre": "Budín con chispas de chocolate 370 g  ",
+                        "idVariante": 78,
+                        "precio": 48,
+                        "cantidad": 2,
+                        "imagen": "/imagenes/usuarios/adminpds/van011.JPG"
+                     }
+                  ]
+               }
+            ]
             
 + Response 406 (application/json)
 
@@ -2431,7 +2514,7 @@ Al igual que cancelar pedido individual, se debe validar que la solicitud sea co
             "error": "Exception message"
             }
 
-### Obtener pedidos colectivos con estado v[POST /rest/user/pedido/pedidosColectivosConEstados]
+### Obtener pedidos colectivos con estado [POST /rest/user/pedido/pedidosColectivosConEstados]
 
 + Request (application/json)
 
@@ -2444,10 +2527,94 @@ Al igual que cancelar pedido individual, se debe validar que la solicitud sea co
     
             {   
                 "idGrupo": 1
-                "estados": ["CONFIRMADO","CANCELADO","PREPARADO","ENVIADO","ABIERTO"]
+                "estados": ["CONFIRMADO","PREPARADO","ENTREGADO","ABIERTO"]
             }
             
-+ Response 201 (application/json)
++ Response 200 (application/json)
+
+        [
+           {
+              "estado": "CONFIRMADO",
+              "fechaCreacion": "19/05/2019",
+              "fechaModificacion": "19/05/2019",
+              "montoTotal": 720,
+              "zona": {
+                 "id": 1,
+                 "nombre": "Prueba 2",
+                 "fechaCierrePedidos": "17-10-2017 20:25:39",
+                 "descripcion": "Esta es una zona de prueba. El plazo para realizar el pedido es el habitual: hasta las 14 hs. del día anterior al recorrido"
+              },
+              "direccion": {
+                 "calle": "calle 2",
+                 "calleAdyacente1": null,
+                 "calleAdyacente2": null,
+                 "altura": 1075,
+                 "localidad": "Berazategui",
+                 "codigoPostal": null,
+                 "latitud": "-34.7695472",
+                 "longitud": "-58.25583449999999",
+                 "predeterminada": false,
+                 "departamento": null,
+                 "alias": "Casa",
+                 "idDireccion": 48,
+                 "comentario": null,
+                 "pais": null,
+                 "provincia": null
+              },
+              "puntoDeRetiro": null,
+              "pedidos": [
+                 {
+                    "id": 126,
+                    "idGrupo": 14,
+                    "idVendedor": 2,
+                    "cliente": {
+                       "alias": "David edit",
+                       "email": "degnexo@gmail.com"
+                    },
+                    "estado": "CONFIRMADO",
+                    "aliasGrupo": "alias Grupo",
+                    "fechaCreacion": "19/05/2019",
+                    "fechaVencimiento": "19/05/2019",
+                    "montoMinimo": 500,
+                    "montoActual": 720,
+                    "nombreVendedor": "Puente del Sur",
+                    "zona": {
+                       "id": 1,
+                       "nombre": "Prueba 2",
+                       "fechaCierrePedidos": "17-10-2017 20:25:39",
+                       "descripcion": "Esta es una zona de prueba. El plazo para realizar el pedido es el habitual: hasta las 14 hs. del día anterior al recorrido"
+                    },
+                    "direccion": {
+                       "calle": "calle 2",
+                       "calleAdyacente1": null,
+                       "calleAdyacente2": null,
+                       "altura": 1075,
+                       "localidad": "Berazategui",
+                       "codigoPostal": null,
+                       "latitud": "-34.7695472",
+                       "longitud": "-58.25583449999999",
+                       "predeterminada": false,
+                       "departamento": null,
+                       "alias": "Casa",
+                       "idDireccion": 48,
+                       "comentario": null,
+                       "pais": null,
+                       "provincia": null
+                    },
+                    "puntoDeRetiro": null,
+                    "productosResponse": [
+                       {
+                          "nombre": "Che Guevara  ",
+                          "idVariante": 176,
+                          "precio": 120,
+                          "cantidad": 6,
+                          "imagen": "/imagenes/usuarios/adminpds/sud123.png"
+                       }
+                    ]
+                 }
+              ]
+           }
+        ]
             
 + Response 406 (application/json)
 
