@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+    <class name="chasqui.model.DataPortada" table="DATA_PORTADA">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">DATA_PORTADA_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        <many-to-one name="logo" class="chasqui.model.Imagen" 
+        column="ID_IMAGEN_LOGO" lazy="false"/>
+        <list name="imagenesDePortada" inverse="false" table="IMAGEN_PORTADA" lazy="false" cascade="all">
+            <key>
+                <column name="ID_DATA_PORTADA" />
+            </key>
+            <list-index column="ORDEN"/>
+            <one-to-many class="chasqui.model.Imagen" />
+        </list>
+        <list name="imagenesDeBanner" inverse="false" table="IMAGEN_BANNER" lazy="false" cascade="all">
+            <key>
+                <column name="ID_DATA_BANNER" />
+            </key>
+            <list-index column="ORDEN"/>
+            <one-to-many class="chasqui.model.Imagen" />
+        </list>
+        <property name="textoBienvenida" type="text"></property>
+    </class>
+</hibernate-mapping>

@@ -60,10 +60,10 @@ Descargate la app para navegar el catálogo de <span style="font-weight: bold; c
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
 </tr>
 <tr style="height: 20px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 20px;">&iquest;Queres saber mas de chaqui? Te ayudamos:</td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 20px;">&iquest;Queres saber mas de chaqui? Ingresá a:</td>
 </tr>
 <tr style="height: 40px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 32px; color: #777777; text-align: center; font-weight: bold; height: 40px;">Proyectochasqui.org</td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 32px; color: #777777; text-align: center; font-weight: bold; height: 40px;"><a href="http://www.proyectochasqui.org">Proyectochasqui.org</a></td>
 </tr>
 
 <!-- footer linia violeta -->
@@ -86,9 +86,6 @@ Descargate la app para navegar el catálogo de <span style="font-weight: bold; c
 
 <tr style="height: 20px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 20px;">&nbsp;</td>
-</tr>
-<tr style="height: 30px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; color: #777777; text-align: justify; height: 30px;"><strong>NOTA:</strong> Bajo el decreto S.1618 titulo 3ro. Aprobado por el 105 congreso en base de las normativas internacionales sobre SPAM, este mail no podrá ser considerado SPAM mientras incluya una forma de ser removido. Si desea ser automáticamente eliminado de nuestra base de datos, por favor envíe un e-mail con el ASUNTO/SUBJECT : REMOVER y será borrado de nuestra base.</td>
 </tr>
 </tbody>
 </table>

@@ -1,0 +1,3206 @@
+FORMAT: 1A
+HOST: http://proyectochasqui.org:8080/chasqui-testing/
+
+# Chasqui API 
+
+Chasqui es una herramienta que facilita la comercialización electrónica a organizaciones asociativas de comercialización y consumo de productos de la ESS (Economía Social y Solidaria).  
+
+Esta constará de una aplicación móvil y una aplicación web, que permitirán realizar pedidos en las diversas modalidades que hemos identificado que son practicadas en la economía social: individuales, compras colectivas y compras por nodos de consumo.
+
+Existen dos tipos de urls para los servicios:
+
+* http://proyectochasqui.org:8080/chasqui-testing/rest/client/**    (de acceso público)
+* http://proyectochasqui.org:8080/chasqui-testing/rest/user/**      (requiere autorización)
+
+# Group Servicios Publicos
+
+## Servicios de Usuario [/rest/client/]
+
+### Crear usuario [POST /rest/client/sso/singUp]
+
++ Request (application/json)
+
+
+    + Body
+    
+            {
+                "email": "usuario@dominio.com",
+                "password": "123456789",
+                "nickName": "jperez",
+                "nombre": "Juan",
+                "apellido": "Perez",
+                "telefonoFijo": "011-1111-1111",
+                "telefonoMovil": "1122222222",
+                "extension": ".jpeg"
+                "avatar": imagen transferida en forma de hash
+            }
+
++ Response 201 (application/json)
+
+
+    + Body
+    
+            {
+            "mail": "usuario@dominio.com",
+            "token": "wKabhung0K",
+            "id": 1,
+            "nickname": "jperez"
+            }
+            
++ Response 400 (application/json)
+
+
+    + Body
+    
+            {
+             "error": "Debe completar todos los campos"
+            }
+
++ Response 409 (application/json)
+
+
+    + Body
+    
+            {
+             "error": "El email ya se encuentra en uso"
+            }
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+              "error": "El password debe tener entre 10 y 26 caracteres"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            { 
+            "error": "Exception message"
+            }
+
+### Loguear usuario [POST /rest/client/sso/singIn]
+
+
++ Request (application/json)
+
+
+    + Body 
+    
+            {
+            "email": "usuario@dominio.com",
+            "password": "123456789"
+            }
+            
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "mail": "usuario@dominio.com",
+            "token": "yhH1qc9nCF",
+            "id": 1,
+            "nickname": "jperez"
+            "avatar": "/imagenes/usuarios/1/1_avatar.jpg"
+            }
+            
++ Response 401 (application/json)
+
+
+    + Body
+    
+            {
+             "error": "Usuario o Password incorrectos!"
+            }
+
+### Recuperar contraseña [GET /rest/client/sso/resetPass/{email}]
+
+
++ Parameters
+    
+    + email (required, email, `usuario@dominio.com`) ... Email del usuario que solicita resetear contraseña.
+
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            { 
+            "error": "Email invalido"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener email invitado[POST /rest/client/sso/obtenerMailInvitado]
+
+
++ Request (application/json)
+
+
+    + Body 
+    
+            {
+            "idInvitacion": "Encrypted string"
+            }
+            
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "mail":"usuario@dominio.com"
+            }
+            
++ Response 401 (application/json)
+
+
+    + Body
+    
+            {
+             "error": "Usuario o Password incorrectos!"
+            }
+
+## Servicios de Vendedor [/rest/client/vendedor/]
+
+### Vendedores  [GET /rest/client/vendedor/all]
+
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+                [  {
+                    "id": 2,
+                    "nombre": "Puente del Sur",
+                    "nombreCorto": "pds",
+                    "imagen": "/imagenes/usuarios/adminpds/puente.png",
+                    "urlMapa": "https://www.google.com/maps/d/embed?mid=1W64ZBiI6vjN5p4F_5seoqkAJlhc&ll=-34.58167310864703%2C-58.64692924999997&z=9",
+                    "tiempoDeVencimiento": 30,
+                    "montoMinimo": 600,
+                    "few": {
+                        "gcc": true,
+                        "nodos": false,
+                        "compraIndividual": true,
+                        "puntoDeEntrega": false,
+                        "seleccionDeDireccionDelUsuario": true
+                    },
+                    "app": {
+                        "gcc": false,
+                        "nodos": false,
+                        "compraIndividual": true,
+                        "puntoDeEntrega": false,
+                        "seleccionDeDireccionDelUsuario": true
+                    }
+                },]
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Vendedor [GET /rest/client/vendedor/{nombreCorto}]
+
++ Parameters
+    
+    + nombreCorto (required, nombreVendedor, `pds`) ... Nombre corto del vendedor (admin)
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+                "id": 2,
+                "nombre": "Puente del Sur",
+                "nombreCorto": "pds",
+                "imagen": "/imagenes/usuarios/adminpds/puente.png",
+                "urlMapa": "https://www.google.com/maps/d/embed?mid=1W64ZBiI6vjN5p4F_5seoqkAJlhc&ll=-34.58167310864703%2C-58.64692924999997&z=9",
+                "tiempoDeVencimiento": 30,
+                "montoMinimo": 600,
+                "few": {
+                    "gcc": true,
+                    "nodos": false,
+                    "compraIndividual": true,
+                    "puntoDeEntrega": false,
+                    "seleccionDeDireccionDelUsuario": true
+                },
+                "app": {
+                    "gcc": false,
+                    "nodos": false,
+                    "compraIndividual": true,
+                    "puntoDeEntrega": false,
+                    "seleccionDeDireccionDelUsuario": true
+                }
+            }
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No existe el vendedor: ..."
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener zonas de Vendedor  [GET /rest/client/vendedor/zonas/{idVendedor}]
+
+
++ Parameters
+    
+    + idVendedor (required, idVendedor, `1`) ... id del vendedor (admin)
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            [
+              {
+                "id": 1,
+                "nombre": "Prueba 2",
+                "fechaCierrePedidos": "17-10-2017 20:25:39",
+                "descripcion": "Esta es una zona de prueba. El plazo para realizar el pedido es el habitual: hasta las 14 hs. del día anterior al recorrido"
+              },
+              {
+                "id": 2,
+                "nombre": "Pureba 1",
+                "fechaCierrePedidos": "17-10-2017 20:26:55",
+                "descripcion": "Esta es una zona de prueba. El plazo para realizar el pedido es el habitual: hasta las 14 hs. del día anterior al recorrido"
+              }
+            ]
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "implementar error cuando el id es invalido"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener zona proxima a cerrar  [GET /rest/client/vendedor/zonas/proxima/{idVendedor}]
+
++ Parameters
+    
+    + idVendedor (required, idVendedor, `1`) ... id del vendedor (admin)
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+              {
+                "id": 1,
+                "nombre": "Prueba 2",
+                "fechaCierrePedidos": "17-10-2017 20:25:39",
+                "descripcion": "Esta es una zona de prueba. El plazo para realizar el pedido es el habitual: hasta las 14 hs. del día anterior al recorrido"
+              }
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No existe el vendedor: ..."
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener puntos de retiro [GET /rest/client/vendedor/puntosDeRetiro/{nombreCortoVendedor}]
+
+
++ Parameters
+    
+    + nombreCortoVendedor (required, nombreCortoVendedor, `pds`) ... id del vendedor (admin)
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+              "puntosDeRetiro": [
+                {
+                  "id": 3,
+                  "nombre": " La Justa",
+                  "mensaje": "DOMINGO 12 y 19 de 15 a 19hs",
+                  "direccion": {
+                    "id": 41,
+                    "calle": "Laprida y Mitre",
+                    "calleAdyacente1": null,
+                    "calleAdyacente2": null,
+                    "altura": 0,
+                    "localidad": "Vicente López",
+                    "codigoPostal": "",
+                    "alias": null,
+                    "departamento": null,
+                    "provincia": null,
+                    "pais": null,
+                    "latitud": null,
+                    "longitud": null,
+                    "predeterminada": null,
+                    "geoUbicacion": null,
+                    "comentario": null
+                  }
+                },
+                {
+                  "id": 4,
+                  "nombre": "Local CyH",
+                  "mensaje": "Lunes a Viernes de 9 a 19hs",
+                  "direccion": {
+                    "id": 42,
+                    "calle": "El Indio",
+                    "calleAdyacente1": null,
+                    "calleAdyacente2": null,
+                    "altura": 2105,
+                    "localidad": "Villa Adelina",
+                    "codigoPostal": "",
+                    "alias": null,
+                    "departamento": null,
+                    "provincia": null,
+                    "pais": null,
+                    "latitud": null,
+                    "longitud": null,
+                    "predeterminada": null,
+                    "geoUbicacion": null,
+                    "comentario": null
+                  }
+                }
+              ]
+            }
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No existe el vendedor: ..."
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener preguntas consumo [GET /rest/client/vendedor/preguntasDeConsumoIndividual/{nombreCortoVendedor}]
+
+
++ Parameters
+    
+    + nombreCortoVendedor (required, nombreCortoVendedor, `pds`) ... id del vendedor (admin)
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            [
+              {
+                "nombre": "¿Tenés cupón de descuento?",
+                "habilitada": true,
+                "opciones": [
+                  "si",
+                  "no"
+                ]
+              },
+              {
+                "nombre": "Forma de pago",
+                "habilitada": true,
+                "opciones": [
+                  "Pago contra-entrega en efectivo",
+                  "Transferencia Bancaria"
+                ]
+              }
+            ]
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No existe el vendedor: ..."
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener preguntas de consumo colectivo [GET /rest/client/vendedor/preguntasDeConsumoColectivo/{nombreCortoVendedor}]
+
+
++ Parameters
+    
+    + nombreCortoVendedor (required, nombreCortoVendedor, `pds`) ... id del vendedor (admin)
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            [
+              {
+                "nombre": "¿Tenés cupón de descuento?",
+                "habilitada": true,
+                "opciones": [
+                  "si",
+                  "no"
+                ]
+              },
+              {
+                "nombre": "Forma de pago",
+                "habilitada": true,
+                "opciones": [
+                  "Pago contra-entrega en efectivo",
+                  "Transferencia Bancaria"
+                ]
+              }
+            ]
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No existe el vendedor: ..."
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener datos de página de portada [GET /rest/client/vendedor/datosPortada/{nombreCortoVendedor}]
+
++ Parameters
+    
+    + nombreCortoVendedor (required, nombreCortoVendedor, `pds`) ... id del vendedor (admin)
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+              "urlLogo": {},
+              "urlImagenesBanner": [],
+              "urlImagenesPortada": [
+                "/imagenes/portada/usuarios/adminpds/logo PdelS V - copia.jpg"
+              ],
+              "textoPortada": "",
+              "dataContacto": {
+                "direccion": {
+                  "calle": "",
+                  "calleAdyacente1": {},
+                  "calleAdyacente2": {},
+                  "altura": {},
+                  "localidad": "Ituzaingo ",
+                  "codigoPostal": "",
+                  "latitud": {},
+                  "longitud": {},
+                  "predeterminada": {},
+                  "departamento": "",
+                  "alias": {},
+                  "idDireccion": {},
+                  "comentario": {},
+                  "pais": "",
+                  "provincia": ""
+                },
+                "telefono": "5353-9271",
+                "celular": "15-3919-3792",
+                "email": "puentedelsurcoop@gmail.com",
+                "url": "https://puentedelsurcoop.com.ar/"
+              }
+            }
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No existe el vendedor: ..."
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+## Servicios de Categoria [/rest/client/categoria/]
+
+### Categorias [GET /rest/client/categoria/all/{idVendedor}]
+
+
++ Parameters
+    
+    + idVendedor (required, number, `1`) ... ID de la comercializadora.
+    
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+                [{
+                "idCategoria": "1",
+                "nombre": "Alimentos"
+                },]
+            }
+
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Vendedor inexistente o el mismo no posee categorias definidas"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+## Servicios de Productor [/rest/client/productor/]
+
+### Productores [GET /rest/client/productor/all/{idVendedor}]
+
+    
++ Parameters
+    
+    + idVendedor (required, number, `2`) ... ID de la comercializadora.
+    
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+                [{
+                "idProductor": "1",
+                "nombreProductor": "Productor X",
+                "pathImagen": "URL <Relativa>",
+                "descripcionCorta": "Descripcion",
+                "descripcionLarga" : "Descripcion <HTML>",
+                "direccion": {
+                    "pais": "Argentina",
+                    "provincia": "Buenos Aires",
+                    "localidad": "Bernal",
+                    "calle": "calle",
+                    "altura": 123
+                }
+            }
+            
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Vendedor inexistente o el mismo no posee productores definidos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+## Servicios de Medalla [/rest/client/medalla/]
+
+### Todas las Medallas [GET /rest/client/medalla/all]
+
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+                [{
+                "idMedalla": 1,
+                "nombre": "Reciclado",
+                "descripcion": "Descripcion <HTML>",
+                "pathImagen": "URL <Relativa>"
+                },]
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Medallas de productos [GET /rest/client/medalla/producto/all]
+
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+                [{
+                "idMedalla": 1,
+                "nombre": "Reciclado",
+                "descripcion": "Descripcion <HTML>",
+                "pathImagen": "URL <Relativa>"
+                },]
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Medallas de productores [GET /rest/client/medalla/productor/all]
+
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+                [{
+                "idMedalla": 1,
+                "nombre": "Familiar",
+                "descripcion": "Descripcion <HTML>",
+                "pathImagen": "URL <Relativa>"
+                },]
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Medalla de Producto por Id [GET /rest/client/producto/medalla/{idMedalla}]
+
+
++ Parameters
+    
+    + idMedalla (required, number, `1`) ... ID de la medalla.
+    
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+            "idMedalla": 1,
+            "nombre": "Reciclado",
+            "descripcion": "Descripcion <HTML>",
+            "pathImagen": "URL <Relativa>"
+            }
+            
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No existe la medalla con ID: ..."
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+## Servicios de Producto [/rest/client/producto/]
+
+El listado de productos que se solicita deberá especificar el siguiente JSON:
+
+    + Body
+    
+        pagina: 1        -> *Nro de página*
+        cantItems: 20    -> *Cantidad de items*
+        precio: "Up"     -> *Orden de items por precio [OPTIONS: Up, Down]*
+        idCategoria: 1   -> *Id de la categoria*
+
+### Filtrado de productos por Categoria deprecado [POST /rest/client/producto/byCategoria]
+
++ Request (application/json)
+
+
+    + Body
+    
+            {
+            "pagina": 1,
+            "cantItems": 20,
+            "precio": "Up",
+            "idCategoria": 1
+            }
+        
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "cantItems": 20,
+            "pagina": 1, 
+            "total": 1,
+            "productos": [{
+                "idProducto": 1, 
+                "idVariante": 1, 
+                "idCategoria": 1,
+                "idFabricante": 1,
+                "imagenPrincipal": "URL <Relativa>",
+                "nombreProducto": "Mermelada",
+                "nombreVariedad": "Naranja",
+                "nombreFabricante": "Productor X",
+                "precioParteEntera": "34",
+                "precioParteDecimal": "0.5",
+                "precio": 34.5,
+                "stock": 10,
+                "descripcion": "Descripcion <HTML>",
+                "medallasProducto": [{
+                    "idMedalla": 1,
+                    "nombre": "Reciclable",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                "medallasProductor": [{
+                    "idMedalla": 1,
+                    "nombre": "Familiar",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                }]
+            }
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Filtrado de productos por Productor deprecado [POST /rest/client/producto/byProductor]
+
++ Request (application/json)
+
+
+    + Body
+    
+            {
+            "pagina": 1,
+            "cantItems": 20,
+            "precio": "Up",
+            "idProductor": 1
+            }
+        
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "cantItems": 20,
+            "pagina": 1, 
+            "total": 1,
+            "productos": [{
+                "idProducto": 1, 
+                "idVariante": 1, 
+                "idCategoria": 1,
+                "idFabricante": 1,
+                "imagenPrincipal": "URL <Relativa>",
+                "nombreProducto": "Mermelada",
+                "nombreVariedad": "Naranja",
+                "nombreFabricante": "Productor X",
+                "precioParteEntera": "34",
+                "precioParteDecimal": "0.5",
+                "precio": 34.5,
+                "stock": 10,
+                "descripcion": "Descripcion <HTML>",
+                "medallasProducto": [{
+                    "idMedalla": 1,
+                    "nombre": "Reciclable",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                "medallasProductor": [{
+                    "idMedalla": 1,
+                    "nombre": "Familiar",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                }]
+            }
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Filtrado de productos por Medalla deprecado[POST /rest/client/producto/byMedalla]
+
+
++ Request (application/json)
+
+
+    + Body
+    
+            {
+            "pagina": 1,
+            "cantItems": 20,
+            "precio": "Up",
+            "idMedalla": 1,
+            "idVendedor":1
+            }
+        
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "cantItems": 20,
+            "pagina": 1, 
+            "total": 1,
+            "productos": [{
+                "idProducto": 1, 
+                "idVariante": 1, 
+                "idCategoria": 1,
+                "idFabricante": 1,
+                "imagenPrincipal": "URL <Relativa>",
+                "nombreProducto": "Mermelada",
+                "nombreVariedad": "Naranja",
+                "nombreFabricante": "Productor X",
+                "precioParteEntera": "34",
+                "precioParteDecimal": "0.5",
+                "precio": 34.5,
+                "stock": 10,
+                "destacado": false,
+                "descripcion": "Descripcion <HTML>",
+                "medallasProducto": [{
+                    "idMedalla": 1,
+                    "nombre": "Reciclable",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                "medallasProductor": [{
+                    "idMedalla": 1,
+                    "nombre": "Familiar",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                }]
+            }
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Búsqueda de productos sin filtro deprecado [POST /rest/client/producto/sinFiltro]
+
++ Request (application/json)
+
+
+    + Body
+    
+            {
+            "pagina": 1,
+            "cantItems": 20,
+            "precio": "Up",
+            "idVendedor":1
+            }
+        
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "cantItems": 20,
+            "pagina": 1, 
+            "total": 1,
+            "productos": [{
+                "idProducto": 1, 
+                "idVariante": 1, 
+                "idCategoria": 1,
+                "idFabricante": 1,
+                "imagenPrincipal": "URL <Relativa>",
+                "nombreProducto": "Mermelada",
+                "nombreVariedad": "Naranja",
+                "nombreFabricante": "Productor X",
+                "precioParteEntera": "34",
+                "precioParteDecimal": "0.5",
+                "precio": 34.5,
+                "stock": 10,
+                "descripcion": "Descripcion <HTML>",
+                "medallasProducto": [{
+                    "idMedalla": 1,
+                    "nombre": "Reciclable",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                "medallasProductor": [{
+                    "idMedalla": 1,
+                    "nombre": "Familiar",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                }]
+            }
+
+### Búsqueda de productos por nombre deprecado[POST /rest/client/producto/byQuery]
+
+
++ Request (application/json)
+
+
+    + Body
+    
+            {
+            "pagina": 1,
+            "cantItems": 20,
+            "precio": "Up",
+            "query": "mermeladas",
+            "idVendedor": 1
+            }
+        
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "cantItems": 20,
+            "pagina": 1, 
+            "total": 1,
+            "productos": [{
+                "idProducto": 1, 
+                "idVariante": 1, 
+                "idCategoria": 1,
+                "idFabricante": 1,
+                "imagenPrincipal": "URL <Relativa>",
+                "nombreProducto": "Mermelada",
+                "nombreVariedad": "Naranja",
+                "nombreFabricante": "Productor X",
+                "precioParteEntera": "34",
+                "precioParteDecimal": "0.5",
+                "precio": 34.5,
+                "stock": 10,
+                "descripcion": "Descripcion <HTML>",
+                "medallasProducto": [{
+                    "idMedalla": 1,
+                    "nombre": "Reciclable",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                "medallasProductor": [{
+                    "idMedalla": 1,
+                    "nombre": "Familiar",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                }]
+            }
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Imágenes: Variedad del Producto [GET /rest/client/producto/images/{idVariedad}]
+
+
++ Parameters
+    
+    + idVariedad (required, number, `1`) ... ID de la variedad del producto.
+    
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+
+    + Body 
+    
+            {
+                [{
+                "nombre": "Imagen 1",
+                "path": "URL <Relativa>"
+                },]
+            }
+            
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "El producto no existe"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Filtrado de productos por multiples filtros [POST /rest/client/producto/productosByMultiplesFiltros]
+
++ Request (application/json)
+
+
+    
+            {
+                "idVendedor": 1,
+                "idCategoria": 2,
+                "idMedalla" : 3,
+                "idProductor": 12,
+                "idMedallaProductor": 2,
+                "query": "mermeladas",
+                "pagina": 1
+                "cantItems": 20,
+                "precio": "Up",
+            }
+        
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "cantItems": 20,
+            "pagina": 1, 
+            "total": 1,
+            "productos": [{
+                "idProducto": 1, 
+                "idVariante": 1, 
+                "idCategoria": 1,
+                "idFabricante": 1,
+                "imagenPrincipal": "URL <Relativa>",
+                "nombreProducto": "Mermelada",
+                "nombreVariedad": "Naranja",
+                "nombreFabricante": "Productor X",
+                "precioParteEntera": "34",
+                "precioParteDecimal": "0.5",
+                "precio": 34.5,
+                "stock": 10,
+                "descripcion": "Descripcion <HTML>",
+                "medallasProducto": [{
+                    "idMedalla": 1,
+                    "nombre": "Reciclable",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                "medallasProductor": [{
+                    "idMedalla": 1,
+                    "nombre": "Familiar",
+                    "descripcion": "Descripcion <HTML>",
+                    "pathImagen": "URL <Relativa>"
+                    }],
+                }]
+            }
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener productos destacados [GET /rest/client/producto/destacados/{idVendedor}]
+
++ Parameters
+    
+    + idVendedor (required, number, `1`) ... ID de la comercializadora.
+    
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+            [
+               {
+                    "cantItems": 20,
+                    "pagina": 1, 
+                    "total": 1,
+                    "productos": [{
+                        "idProducto": 1, 
+                        "idVariante": 1, 
+                        "idCategoria": 1,
+                        "idFabricante": 1,
+                        "imagenPrincipal": "URL <Relativa>",
+                        "codigoArticulo": "van011",
+                        "nombreProducto": "Mermelada",
+                        "nombreVariedad": "Naranja",
+                        "nombreFabricante": "Productor X",
+                        "precioParteEntera": "34",
+                        "precioParteDecimal": "0.5",
+                        "precio": 34.5,
+                        "stock": 10,
+                        "descripcion": "Descripcion <HTML>",
+                        "destacado": true,
+                        "medallasProducto": [{
+                            "idMedalla": 1,
+                            "nombre": "Reciclable",
+                            "descripcion": "Descripcion <HTML>",
+                            "pathImagen": "URL <Relativa>"
+                            }],
+                        "medallasProductor": [{
+                            "idMedalla": 1,
+                            "nombre": "Familiar",
+                            "descripcion": "Descripcion <HTML>",
+                            "pathImagen": "URL <Relativa>"
+                            }],
+                        }]
+                }
+            ]
+
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Vendedor inexistente o el mismo no posee categorias definidas"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+# Group Servicios Privados
+Para generar el "Authorization: Basic *base64*"
+
+*base64* = usuario:password
+
+* usuario: el mail del cliente
+* password: último token vigente
+
+## Servicios de Usuario [/rest/user/]
+
+### Editar perfil [PUT /rest/user/adm/edit]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body    
+    
+            {
+                "password": "1234567890",
+                "nickName": "jperez",
+                "nombre": "Juan",
+                "apellido": "Perez",
+                "telefonoFijo": "011-1111-1111",
+                "telefonoMovil": "1122222222",
+                "extension": ".jpeg"
+                "avatar": imagen transferida en forma de hash
+            }
+        
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Ver perfil [GET /rest/user/adm/read]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 200 (application/json)
+
+
+    + Body    
+    
+            {
+                "email": "usuario@dominio.com",
+                "nickName": "jperez",
+                "nombre": "Juan",
+                "apellido": "Perez",
+                "telefonoFijo": "011-2222-2222",
+                "telefonoMovil": "1133333333",
+                "direccion": {
+                            "calle": "Roque Sáenz Peña",
+                            "calleAdyacente1": null,
+                            "calleAdyacente2": null,
+                            "altura": 352,
+                            "localidad": "Bernal",
+                            "codigoPostal": null,
+                            "latitud": "-34.7061893",
+                            "longitud": "-58.2771366",
+                            "predeterminada": true,
+                            "departamento": null,
+                            "alias": "Casa",
+                            "idDireccion": 92,
+                            "comentario": null,
+                            "pais": null,
+                            "provincia": null
+                }
+            }
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "El email es invalido o el usuario no existe"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Chequear validez del token [GET /rest/user/adm/check]
+
+Nota: Utilizado para validar que el token utilizado para el *Authorization* está vigente.
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 200 (application/json)
+
+### Editar contraseña [PUT /rest/user/adm/editpassword]
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body    
+    
+            {
+                "password": "1234567890",
+                "oldPassword": "0987654321"
+            }
+        
++ Response 200 (application/json)
+            
+            {
+               "email":"nombre@dominio.com",
+               "token":"8VYTpMFfF9",
+               "id":109,
+               "nickname":"Nick",
+               "avatar":"/imagenes/usuarios/109/109_avatar.jpg"
+            }
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Registrar ID del dispositivo deprecado[GET /rest/user/adm/registrar/{dispositivo}]
+
+Nota: Registra el ID del dispositivo móvil, para utilizar con push notifications.
+
++ Parameters
+    
+    + dispositivo (required, number, `1`) ... ID del dispositivo
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 200 (application/json)
+
+## Servicios de Dirección [/rest/user/adm/dir]
+
+### Ver direcciones [GET /rest/user/adm/dir]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
++ Response 200 (application/json)
+
+
+    + Body    
+    
+            [  {
+                "calle": "Roque Sáenz Peña",
+                "calleAdyacente1": null,
+                "calleAdyacente2": null,
+                "altura": 352,
+                "localidad": "Bernal",
+                "codigoPostal": null,
+                "latitud": "-34.7061893",
+                "longitud": "-58.2771366",
+                "predeterminada": true,
+                "departamento": null,
+                "alias": "UNQ",
+                "idDireccion": 92,
+                "comentario": null,
+                "pais": null,
+                "provincia": null
+              },
+            ]
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Nueva direccion [POST /rest/user/adm/dir]
+
+Nota: Los parámetros *latitud*, *longitud* y *departamento* son opcionales.
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "calle": "Lebenson",
+                "altura": 3411,
+                "localidad": "Bernal",
+                "codigoPostal": "1885",
+                "latitud": null,
+                "longitud": null,
+                "predeterminada": false,
+                "departamento": null,
+                "alias": "Depto"
+            }
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+                "calle": "Lebenson",
+                "altura": 3411,
+                "localidad": "Bernal",
+                "codigoPostal": "1885",
+                "latitud": null,
+                "longitud": null,
+                "predeterminada": false,
+                "departamento": null,
+                "alias": "Depto",
+                "idDireccion": 1
+            }
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Modificar direccion [PUT /rest/user/adm/dir]
+
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {   
+                "idDireccion": 1,
+                "calle": "Lebenson",
+                "altura": 3411,
+                "localidad": "Bernal",
+                "codigoPostal": "1885",
+                "latitud": "-34.709188",
+                "longitud": "-58.2744787",
+                "predeterminada": true,
+                "departamento": "1B",
+                "alias": "Depto"
+            }
+            
++ Response 200 (application/json)
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No se han encontrado direcciones"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Eliminar direccion [DELETE /rest/user/adm/dir/{idDireccion}]
+
++ Parameters
+    
+    + idDireccion (required, number, `2`) ... ID de la direccion a modificar.
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+            
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No se han encontrado direcciones"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener avatar [GET /rest/user/adm/avatar]
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+            {
+                "avatar": "<relativepath to image>"
+            }
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No se han encontrado direcciones"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Actualizar avatar [POST /rest/user/adm/avatar]
+
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {   
+                "avatar": "Hash string",
+                "extension": ".jpeg"
+            }
+            
++ Response 200 (application/json)
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No se han encontrado direcciones"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+## Servicios de Notificación [/rest/user/adm/notificacion/]
+
+### Obtener notificaciones [GET /rest/user/adm/notificacion/{pagina}]
+
+Nota: El servicio paginará cada 5 notificaciones. Ordenándolas descendientemente.
+
++ Parameters
+    
+    + pagina (required, number, `2`) ... Numero de pagina.
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            {
+            "usuarioOrigen": "CHASQUI",
+            "usuarioDestino": "jperez",
+            "mensaje": "mensaje",
+            "estado": "No Leído",
+            "id": 1
+            }
+    
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener todas las notificaciones no leídas [GET /rest/user/adm/notificacion/noLeidas]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            [{ "usuarioOrigen": "CHASQUI",
+               "usuarioDestino": "jperez",
+               "mensaje": "mensaje",
+               "estado": "NOTIFICACION_NO_LEIDA",
+               "id": 1
+             },
+             { "usuarioOrigen": "CHASQUI",
+               "usuarioDestino": "jperez",
+               "mensaje": "mensaje",
+               "estado": "NOTIFICACION_NO_LEIDA",
+               "id": 2
+              },
+             ]
+    
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Leer Notificación [POST /rest/user/adm/notificacion/{idNotificacion}]
+
++ Parameters
+    
+    + idNotificacion (required, number, `2`) ... id de la Notificación que se desea marcar como leída.
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+    
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Total de notificaciones [GET /rest/user/adm/notificacion/total]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+    
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+## Servicios de Pedido Individual  [/rest/user/pedido/individual/]
+
+### Pedidos vigentes individuales [GET /rest/user/pedido/individual/vigentes]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+            { 
+               {
+                  "id": 122,
+                  "idGrupo": null,
+                  "idVendedor": 2,
+                  "cliente": {
+                     "alias": "Alias Usuario",
+                     "email": "dominio@email.com"
+                  },
+                  "estado": "ABIERTO",
+                  "aliasGrupo": null,
+                  "fechaCreacion": "15/05/2019",
+                  "fechaVencimiento": "15/05/2019",
+                  "montoMinimo": 500,
+                  "montoActual": 96,
+                  "nombreVendedor": "Puente del Sur",
+                  "zona": null,
+                  "direccion": null,
+                  "puntoDeRetiro": null,
+                  "productosResponse": [
+                     {
+                        "nombre": "Budín con chispas de chocolate 370 g  ",
+                        "idVariante": 78,
+                        "precio": 48,
+                        "cantidad": 2,
+                        "imagen": "/imagenes/usuarios/adminpds/nombre_imagen.JPG"
+                     }
+                  ]
+               }
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Pedido vigente individual [GET /rest/user/pedido/individual/{idVendedor}]
+
++ Parameters
+    
+    + idVendedor (required, number, `2`) ... ID del Vendedor.
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+
+    + Body
+    
+               {
+                  "id": 122,
+                  "idGrupo": null,
+                  "idVendedor": 2,
+                  "cliente": {
+                     "alias": "Alias Usuario",
+                     "email": "dominio@email.com"
+                  },
+                  "estado": "ABIERTO",
+                  "aliasGrupo": null,
+                  "fechaCreacion": "15/05/2019",
+                  "fechaVencimiento": "15/05/2019",
+                  "montoMinimo": 500,
+                  "montoActual": 96,
+                  "nombreVendedor": "Puente del Sur",
+                  "zona": null,
+                  "direccion": null,
+                  "puntoDeRetiro": null,
+                  "productosResponse": [
+                     {
+                        "nombre": "Budín con chispas de chocolate 370 g  ",
+                        "idVariante": 78,
+                        "precio": 48,
+                        "cantidad": 2,
+                        "imagen": "/imagenes/usuarios/adminpds/nombre_imagen.JPG"
+                     }
+                  ]
+               }
+        
++ Response 404 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "El usuario: ... no posee ningun pedido vigente para el vendedor solicitado"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Nuevo pedido individual [POST /rest/user/pedido/individual]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {   
+                "idVendedor": 1
+            }
+
++ Response 201 (application/json)
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No se ha encontrado el usuario con el mail otorgado | Vendedor Inexistente | El usuario: ... ya posee un pedido vigente para el vendedor brindado"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Agregar producto al pedido individual [PUT /rest/user/pedido/individual/agregar-producto]
+
+Requiere validación del BE, actualmente no valida si el id de la variante pertence al vendedor.
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {   
+                "idPedido": 1,
+                "idVariante": 1,
+                "cantidad":1
+            }
+            
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 404   (application/json)
+
+
+    + Body
+    
+            {
+            "error": "El producto no posee más Stock | El usuario no posee el pedido con ID: ... o el mismo no se encuentra vigente"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Eliminar producto del pedido individual [PUT /rest/user/pedido/individual/eliminar-producto]
+
+Al igual que agregar producto, se debe validar que la solicitud sea correcta.
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {   
+                "idPedido": 1,
+                "idVariante": 1,
+                "cantidad":1
+            }
+            
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Cancelar pedido individual [DELETE /rest/user/pedido/individual/{idPedido}]
+
+Se debe validar que la solicitud sea correcta, que ese pedido corresponda a ese usuario
+
++ Parameters
+    
+    + idPedido (required, number, `2`) ... ID del pedido.
+    
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Confirmar pedido individual [POST /rest/user/pedido/individual/confirmar]
+
+Al igual que cancelar pedido individual, se debe validar que la solicitud sea correcta, que ese pedido corresponda a ese usuario
+Validar si las preguntas seleccionadas son del vendedor.
+    
+
++ Request (application/json)
+    
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
+    + Body
+    
+            {
+                "idDireccion": 45,
+                "idPedido": 125,
+                "idPuntoDeRetiro": "",
+                "opcionesSeleccionadas":[{"nombre": "Tipo de pago",
+                                          "opcionSeleccionada": "Contado"}],
+                "idZona": 1,
+                "comentario": "ninguno"
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Confirmar perido individual en grupo [POST /rest/user/pedido/individualEnGrupo/confirmar]
+Al igual que cancelar pedido individual, se debe validar que la solicitud sea correcta, que ese pedido corresponda a ese usuario
+    
+
++ Request (application/json)
+    
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
+    + Body
+    
+            {
+                "idPedido": 125,
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Refrescar vencimiento [POST /rest/user/pedido/refrescarVencimiento]
+Al igual que cancelar pedido individual, se debe validar que la solicitud sea correcta, que ese pedido corresponda a ese usuario
+    
+
++ Request (application/json)
+    
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
+    + Body
+    
+            {
+                "id": 125,
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener o crear pedido individual [POST /rest/user/pedido/obtenerIndividual]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {   
+                "idVendedor": 1
+            }
+
++ Response 200 (application/json)
+
+           {
+              "id": 122,
+              "idGrupo": null,
+              "idVendedor": 2,
+              "cliente": {
+                 "alias": "Alias Usuario",
+                 "email": "dominio@email.com"
+              },
+              "estado": "ABIERTO",
+              "aliasGrupo": null,
+              "fechaCreacion": "15/05/2019",
+              "fechaVencimiento": "15/05/2019",
+              "montoMinimo": 500,
+              "montoActual": 0,
+              "nombreVendedor": "Puente del Sur",
+              "zona": null,
+              "direccion": null,
+              "puntoDeRetiro": null,
+              "productosResponse": []
+           }
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No se ha encontrado el usuario con el mail otorgado | Vendedor Inexistente | El usuario: ... ya posee un pedido vigente para el vendedor brindado"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener pedidos con estados [POST /rest/user/pedido/conEstados]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {   
+                "idVendedor": 1,
+                "estados": ["CONFIRMADO","CANCELADO","PREPARADO","ENTREGADO","ABIERTO"]
+            }
+
++ Response 200 (application/json)
+
+            [
+               {
+                  "id": 122,
+                  "idGrupo": null,
+                  "idVendedor": 2,
+                  "cliente": {
+                     "alias": "User",
+                     "email": "user@dominio.com"
+                  },
+                  "estado": "CANCELADO",
+                  "aliasGrupo": null,
+                  "fechaCreacion": "15/05/2019",
+                  "fechaVencimiento": "15/05/2019",
+                  "montoMinimo": 500,
+                  "montoActual": 96,
+                  "nombreVendedor": "Puente del Sur",
+                  "zona": null,
+                  "direccion": null,
+                  "puntoDeRetiro": null,
+                  "productosResponse": [
+                     {
+                        "nombre": "Budín con chispas de chocolate 370 g  ",
+                        "idVariante": 78,
+                        "precio": 48,
+                        "cantidad": 2,
+                        "imagen": "/imagenes/usuarios/adminpds/van011.JPG"
+                     }
+                  ]
+               },
+               {
+                  "id": 123,
+                  "idGrupo": null,
+                  "idVendedor": 2,
+                  "cliente": {
+                     "alias": "David edit",
+                     "email": "degnexo@gmail.com"
+                  },
+                  "estado": "CANCELADO",
+                  "aliasGrupo": null,
+                  "fechaCreacion": "15/05/2019",
+                  "fechaVencimiento": "15/05/2019",
+                  "montoMinimo": 500,
+                  "montoActual": 96,
+                  "nombreVendedor": "Puente del Sur",
+                  "zona": null,
+                  "direccion": null,
+                  "puntoDeRetiro": null,
+                  "productosResponse": [
+                     {
+                        "nombre": "Budín con chispas de chocolate 370 g  ",
+                        "idVariante": 78,
+                        "precio": 48,
+                        "cantidad": 2,
+                        "imagen": "/imagenes/usuarios/adminpds/van011.JPG"
+                     }
+                  ]
+               }
+            ]
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No se ha encontrado el usuario con el mail otorgado | Vendedor Inexistente | El usuario: ... ya posee un pedido vigente para el vendedor brindado"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener pedidos colectivos con estado [POST /rest/user/pedido/pedidosColectivosConEstados]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {   
+                "idGrupo": 1
+                "estados": ["CONFIRMADO","PREPARADO","ENTREGADO","ABIERTO"]
+            }
+            
++ Response 200 (application/json)
+
+        [
+           {
+              "estado": "CONFIRMADO",
+              "fechaCreacion": "19/05/2019",
+              "fechaModificacion": "19/05/2019",
+              "montoTotal": 720,
+              "zona": {
+                 "id": 1,
+                 "nombre": "Prueba 2",
+                 "fechaCierrePedidos": "17-10-2017 20:25:39",
+                 "descripcion": "Esta es una zona de prueba. El plazo para realizar el pedido es el habitual: hasta las 14 hs. del día anterior al recorrido"
+              },
+              "direccion": {
+                 "calle": "calle 2",
+                 "calleAdyacente1": null,
+                 "calleAdyacente2": null,
+                 "altura": 1075,
+                 "localidad": "Berazategui",
+                 "codigoPostal": null,
+                 "latitud": "-34.7695472",
+                 "longitud": "-58.25583449999999",
+                 "predeterminada": false,
+                 "departamento": null,
+                 "alias": "Casa",
+                 "idDireccion": 48,
+                 "comentario": null,
+                 "pais": null,
+                 "provincia": null
+              },
+              "puntoDeRetiro": null,
+              "pedidos": [
+                 {
+                    "id": 126,
+                    "idGrupo": 14,
+                    "idVendedor": 2,
+                    "cliente": {
+                       "alias": "David edit",
+                       "email": "degnexo@gmail.com"
+                    },
+                    "estado": "CONFIRMADO",
+                    "aliasGrupo": "alias Grupo",
+                    "fechaCreacion": "19/05/2019",
+                    "fechaVencimiento": "19/05/2019",
+                    "montoMinimo": 500,
+                    "montoActual": 720,
+                    "nombreVendedor": "Puente del Sur",
+                    "zona": {
+                       "id": 1,
+                       "nombre": "Prueba 2",
+                       "fechaCierrePedidos": "17-10-2017 20:25:39",
+                       "descripcion": "Esta es una zona de prueba. El plazo para realizar el pedido es el habitual: hasta las 14 hs. del día anterior al recorrido"
+                    },
+                    "direccion": {
+                       "calle": "calle 2",
+                       "calleAdyacente1": null,
+                       "calleAdyacente2": null,
+                       "altura": 1075,
+                       "localidad": "Berazategui",
+                       "codigoPostal": null,
+                       "latitud": "-34.7695472",
+                       "longitud": "-58.25583449999999",
+                       "predeterminada": false,
+                       "departamento": null,
+                       "alias": "Casa",
+                       "idDireccion": 48,
+                       "comentario": null,
+                       "pais": null,
+                       "provincia": null
+                    },
+                    "puntoDeRetiro": null,
+                    "productosResponse": [
+                       {
+                          "nombre": "Che Guevara  ",
+                          "idVariante": 176,
+                          "precio": 120,
+                          "cantidad": 6,
+                          "imagen": "/imagenes/usuarios/adminpds/sud123.png"
+                       }
+                    ]
+                 }
+              ]
+           }
+        ]
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "No se ha encontrado el usuario con el mail otorgado | Vendedor Inexistente | El usuario: ... ya posee un pedido vigente para el vendedor brindado"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+## Servicios de Grupos [/rest/user/gcc/]
+
+### Alta de grupo [POST /rest/user/gcc/alta]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "idVendedor" : 2,
+                "alias" : "alias Grupo",
+                "descripcion" : "descripcion"
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Confirmar invitación[POST /rest/user/gcc/aceptar]
+
+Capturar error en BE y enviar el que corresponda, actualmente envia trace
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "idInvitacion" : 2,
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Rechazar invitación [POST /rest/user/gcc/rechazar]
+
+Capturar error en BE cuando el id es invalido
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "idInvitacion" : 2,
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Invitar usuario [POST /rest/user/gcc/invitacion]
+
+Capturar error en BE cuando el id es invalido
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "idGrupo": 2,
+                "emailInvitado": "email@dominio.com"
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Quitar miembro[POST /rest/user/gcc/quitarMiembro]
+
+Capturar error en BE cuando el id es invalido
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "idGrupo" : 2,
+                "emailCliente": "email@dominio.com"
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Eliminar Grupo [POST /rest/user/gcc/eliminarGrupo]
+
+Capturar error en BE cuando el id es invalido
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "idGrupo" : 1,
+                "idVendedor" : 2
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Ceder Adminitración [POST /rest/user/gcc/cederAdministracion]
+
+Capturar error en BE cuando el id es invalido
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "idGrupo" : 1,
+                "emailCliente" : "email@dominio.com"
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener grupos de cliente[GET /rest/user/gcc/all/{idVendedor}]
+
++ Parameters
+    
+    + idVendedor (required, idVendedor, `1`) ... id del vendedor (admin)
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+
++ Response 200 (application/json)
+
+            [
+               {
+                  "alias": "alias Grupo",
+                  "emailAdministrador": "degnexo@gmail.com",
+                  "esAdministrador": true,
+                  "idPedidoIndividual": null,
+                  "miembros": [
+                     {
+                        "avatar": "/imagenes/usuarios/67/67_avatar.jpeg",
+                        "nickname": "Nickname",
+                        "email": "usuario@dominio.com",
+                        "invitacion": "NOTIFICACION_ACEPTADA",
+                        "estadoPedido": "INEXISTENTE",
+                        "pedido": null
+                     }
+                  ],
+                  "descripcion": "descripcion",
+                  "idGrupo": 14
+               },
+            ]
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener grupo de cliente [GET /rest/user/gcc/grupo/{idGrupo}]
+
++ Parameters
+    
+    + idGrupo (required, idGrupo, `1`) ... id del grupo
+
++ Response 200 (application/json)
+
+            {
+               "alias": "alias Grupo",
+               "emailAdministrador": "degnexo@gmail.com",
+               "esAdministrador": false,
+               "idPedidoIndividual": null,
+               "miembros": [
+                  {
+                     "avatar": "/imagenes/usuarios/67/67_avatar.jpeg",
+                     "nickname": "David edit",
+                     "email": "degnexo@gmail.com",
+                     "invitacion": "NOTIFICACION_ACEPTADA",
+                     "estadoPedido": "INEXISTENTE",
+                     "pedido": null
+                  }
+               ],
+               "descripcion": "descripcion",
+               "idGrupo": 14
+            }
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Nuevo pedido individual de grupo [POST /rest/user/gcc/individual]
+
++ Request (application/json)
+
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+    
+            {
+                "idGrupo" : 1,
+                "idVendedor" : 2
+            }
+
++ Response 200 (application/json)
+
+            {
+               "id": 129,
+               "idGrupo": 14,
+               "idVendedor": 2,
+               "cliente": {
+                  "alias": "alias",
+                  "email": "usuario@dominio.com"
+               },
+               "estado": "ABIERTO",
+               "aliasGrupo": "alias Grupo",
+               "fechaCreacion": "19/05/2019",
+               "fechaVencimiento": "19/05/2019",
+               "montoMinimo": 500,
+               "montoActual": 0,
+               "nombreVendedor": "Puente del Sur",
+               "zona": null,
+               "direccion": null,
+               "puntoDeRetiro": null,
+               "productosResponse": []
+            }
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros incorrectos"
+            }
+            
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Confirmar pedido colectivo de un grupo [POST /rest/user/gcc/confirmar]
+
++ Request (application/json)
+    
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+ 
+            
+    + Body
+          
+            {
+                "idGrupo" : 1
+                "idDireccion": 45,
+                "idPuntoDeRetiro": "",
+                "opcionesSeleccionadas":[{"nombre": "Tipo de pago",
+                                          "opcionSeleccionada": "Contado"}],
+                "idZona": 1,
+                "comentario": "ninguno"
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Editar Grupo [PUT /rest/user/gcc/editarGCC/{idGrupo}]
++ Request (application/json)
+    
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+            
+    + Body
+    
+            {
+                "alias": "otro alias",
+                "descripcion": "otra descripcion"
+            }
+
++ Response 200 (application/json)
+
+            
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }
+
+### Obtener pedidos de grupo [GET /rest/user/gcc/pedidos/{idvendedor}]
+
++ Request (application/json)
+    
+
+    + Header
+    
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+
++ Response 200 (application/json)
+
+            [
+               {
+                  "id": 127,
+                  "idGrupo": 14,
+                  "idVendedor": 2,
+                  "cliente": null,
+                  "estado": "CONFIRMADO",
+                  "aliasGrupo": "alias Grupo",
+                  "fechaCreacion": "19/05/2019",
+                  "fechaVencimiento": "19/05/2019",
+                  "montoMinimo": 500,
+                  "montoActual": 1611,
+                  "nombreVendedor": "Puente del Sur",
+                  "zona": null,
+                  "direccion": null,
+                  "puntoDeRetiro": null,
+                  "productosResponse": [
+                     {
+                        "nombre": "Cerveza Artesanal Roja 660 cc  ",
+                        "idVariante": 105,
+                        "precio": 75,
+                        "cantidad": 2,
+                        "imagen": "/imagenes/usuarios/adminpds/eie020.JPG"
+                     },
+                     {
+                        "nombre": "Aceite de girasol de primer prensión bidón 4,5 l  ",
+                        "idVariante": 312,
+                        "precio": 487,
+                        "cantidad": 3,
+                        "imagen": "/imagenes/usuarios/adminpds/gnv014.JPG"
+                     }
+                  ]
+               }
+            ]
+
++ Response 406 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Parametros Incorrectos"
+            }
+
++ Response 500 (application/json)
+
+
+    + Body
+    
+            {
+            "error": "Exception message"
+            }

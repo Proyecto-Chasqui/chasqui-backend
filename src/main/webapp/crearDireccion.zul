@@ -7,7 +7,7 @@
 <window id="direccionWindow" border="normal" title="Crear dirección" binder="@init(queueName='direccionQueue')"
 apply="chasqui.view.composer.NuevaDireccionComposer" height="auto" width="25%" closable="true">
 
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <listbox>
 	<listhead>
 		<listheader/>

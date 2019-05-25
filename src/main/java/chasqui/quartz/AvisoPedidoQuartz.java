@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Notificacion;
 import chasqui.model.Pedido;
@@ -83,8 +84,9 @@ public class AvisoPedidoQuartz {
 	}
 
 	private void notificarCierrePedidosPorZona(Zona zona, Integer idVendedor)
-			throws UsuarioInexistenteException, IOException, MessagingException, TemplateException {
+			throws UsuarioInexistenteException, IOException, MessagingException, TemplateException, VendedorInexistenteException {
 
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(idVendedor);
 		List<Pedido> pedidos = pedidoService.obtenerPedidosProximosAVencerEnDeterminadaZona(
 				cantidadDeDiasParaEnviarNotificacion, idVendedor, zona.getFechaCierrePedidos(), zona.getId());
 		for (Pedido p : pedidos) {
@@ -93,7 +95,7 @@ public class AvisoPedidoQuartz {
 			Cliente c = (Cliente) usuarioService.obtenerUsuarioPorEmail(p.getCliente().getEmail());
 			if (dt.getDayOfYear() == zona.getFechaCierrePedidos().getDayOfYear()) {
 				mailService.enviarEmailNotificacionPedido(p.getCliente().getEmail(), cuerpoEmail, c.getNombre(),
-						c.getApellido());
+						c.getApellido(), vendedor);
 			} else {
 				// String mensajeNotificacion = obtenerMensajeNotificacion(v);
 				Notificacion n = new Notificacion("Chasqui", p.getCliente().getEmail(), zona.getDescripcion(),

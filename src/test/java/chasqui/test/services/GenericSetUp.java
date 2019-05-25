@@ -223,7 +223,8 @@ public class GenericSetUp {
 		vendedor.setEmail("floresfederico_993@hotmail.com");
 		vendedor.setIsRoot(false);
 		vendedor.setMontoMinimoPedido(213);
-		vendedor.setUrl("vendedor.proyectochasqui.com");
+		vendedor.setUrl("vendedor.proyectochasqui.com/");
+		vendedor.setNombreCorto("MiniNombre");
 		List<String> opciones = new ArrayList<String>();
 		opciones.add("si");
 		opciones.add("no");

@@ -38,6 +38,7 @@ import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.services.impl.MailService;
@@ -45,6 +46,7 @@ import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
+import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
 import chasqui.view.renders.PedidoColectivoRenderer;
 import chasqui.view.renders.PedidoRenderer;
@@ -89,6 +91,10 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private MailService mailService;
 	private Textbox buscadorPorUsuario;
 	private Component windowComponent;
+	private List<String> puntosDeRetiro;
+	private Combobox prCombobox;
+	private String prSeleccionado;
+	private VendedorService vendedorService;
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -102,19 +108,31 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
 			pedidoColectivoService = (PedidoColectivoService) SpringUtil.getBean("pedidoColectivoService");
+			vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
 			grupoService = (GrupoService) SpringUtil.getBean("grupoService");
 			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
 			zonaService = (ZonaService) SpringUtil.getBean("zonaService");
 			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO,Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_PREPARADO);
-			pedidosColectivos = (List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo");			
+			pedidosColectivos = (List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo");
+			if(!usuarioLogueado.getIsRoot()) {
+				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(usuarioLogueado.getId()));
+			}
 			binder = new AnnotateDataBinder(component);
 			listboxPedidos.setItemRenderer(new PedidoColectivoRenderer((Window) component));
 			this.onClick$limpiarCamposbtn();
 			
 		}
 	}
+	
+	private List<String> crearListaDeNombresDePR(List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor) {
+		List<String> list = new ArrayList<String>();
+		for(PuntoDeRetiro pr: obtenerPuntosDeRetiroDeVendedor) {
+			list.add(pr.getNombre());
+		}
+	    return list;
+    }
 	
 	public void onBuscar(){
 			onClick$buscar();
@@ -147,10 +165,11 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		if(zonaSeleccionada !=null){
 			zonaId = zonaSeleccionada.getId();
 		}
-		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedor(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId, null, email));
+		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedorConPRConNombre(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId, prSeleccionado, email));
 		this.binder.loadAll();
 	}
-
+	
+	
 
 	public List<Pedido> getPedidos() {
 		return pedidos;
@@ -201,6 +220,8 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		estadosListbox.setValue("");
 		zonasListbox.setValue(null);
 		buscadorPorUsuario.setValue("");
+		prSeleccionado = null;
+		prCombobox.setValue("");
 		pedidosColectivos = (List<PedidoColectivo>) pedidoColectivoService.obtenerPedidosColectivosDeVendedor(usuarioLogueado.getId(),null,null,null,null,null,null);
 		this.binder.loadAll();
 	}
@@ -220,22 +241,24 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
 
 			public void onEvent(ClickEvent event) throws Exception {
-				String edata= event.getData().toString();
-				switch (edata){
-				case "YES":
-					try {
-						notificar(p);
-						Clients.showNotification("El email se envió correctamente", "info", windowComponent, "middle_center", 2000);
-					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
-						e.printStackTrace();						
+				Object eventclick = event.getData();
+				if(eventclick != null) {
+					String edata= event.getData().toString();
+					switch (edata){
+					case "YES":
+						try {
+							notificar(p);
+							Clients.showNotification("El email se envió correctamente", "info", windowComponent, "middle_center", 2000);
+						} catch (Exception e) {
+							Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
+							e.printStackTrace();						
+						}
+						break;
+					case "ABORT":
 					}
-					break;
-				case "ABORT":
 				}
 			}
 			});
-		this.notificar(p);
 	}
 	
 	private void notificar(PedidoColectivo p) {
@@ -312,6 +335,10 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	public void onSelect$listboxPedidos(SelectEvent evt) {
 	}	
 	
+	public void onSelect$prCombobox(SelectEvent evt) {
+		onClick$buscar();
+	}
+	
 	public void onClick$exportarSeleccionados() throws Exception{
 	}
 	
@@ -360,6 +387,30 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 
 	public void exportarPedidosCSV(List<PedidoColectivo> pPedidos) throws Exception {
 
+	}
+
+	public List<String> getPuntosDeRetiro() {
+		return puntosDeRetiro;
+	}
+
+	public void setPuntosDeRetiro(List<String> puntosDeRetiro) {
+		this.puntosDeRetiro = puntosDeRetiro;
+	}
+
+	public Combobox getPrCombobox() {
+		return prCombobox;
+	}
+
+	public void setPrCombobox(Combobox prCombobox) {
+		this.prCombobox = prCombobox;
+	}
+
+	public String getPrSeleccionado() {
+		return prSeleccionado;
+	}
+
+	public void setPrSeleccionado(String prSeleccionado) {
+		this.prSeleccionado = prSeleccionado;
 	}
 
 

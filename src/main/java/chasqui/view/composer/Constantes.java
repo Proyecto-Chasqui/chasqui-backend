@@ -48,6 +48,7 @@ public class Constantes {
 	public static final String VENCIMIENTO_DE_PEDIDO_SUBJECT = "Vencimiento automatico";
 	public static final String NUEVO_PEDIDO_EN_GCC_SUBJECT = "Un miembro de tu grupo de compras ha iniciado su pedido";
 	public static final String AGRADECIMIENTO = "Muchas gracias por utilizar el sistema Chasqui";
+	public static final String SUGERENCIA = "Si tenés alguna duda con respecto a días y lugares de entrega, consultá la información relacionada en la sección <bienvenida>. ";
 	public static final String TEMPLATE_ACEPTAR_INVITACION_GCC ="emailInvitacionAGCCAceptada.ftl";
 	public static final String TEMPLATE_BIENVENIDA_VENDEDOR = "emailBienvenida.ftl";
 	public static final String TEMPLATE_BIENVENIDA_CLIENTE = "emailBienvenidaCliente.ftl";
@@ -66,20 +67,20 @@ public class Constantes {
 	public static final String SUBJECT_CONOCES_CHASQUI = "¿Conocés Chasqui?";
 	public static final String SUBJECT_INVITACION_GCC_ACEPTADA = "<usuario> acepto tu invitacion";
 	public static final String NUEVO_ADMINISTRADOR_SUBJECT = "Usted es el nuevo Administrador";
-	public static final String PEDIDO_PREPARADO_SUBJECT = "Su pedido ha sido preparado";
+	public static final String PEDIDO_PREPARADO_SUBJECT = "Tu pedido ha sido preparado";
 	public static final String PEDIDOS_PREPARADOS_SUBJECT = "Los pedidos han sido preparados";
-	public static final String PEDIDO_COLECTIVO_CONFIRMADO = "Su pedido colectivo ha sido confirmado";
-	public static final String PEDIDO_COLECTIVO_PREPARADO = "Su pedido colectivo esta preparado";
+	public static final String PEDIDO_COLECTIVO_CONFIRMADO = "Tu pedido colectivo ha sido confirmado";
+	public static final String PEDIDO_COLECTIVO_PREPARADO = "Tu pedido colectivo esta preparado";
 	
 	public static final String AVISO_DE_RECUPERO_DE_CONTRASEÑA = "Aviso de Recupero de contraseña";
 	public static final String CONFIRMACION_COMPRA_TEMPLATE_URL = "emailConfirmacionPedido.ftl";
 	public static final String CONFIRMACIÓN_DE_COMPRA_SUBJECT = "Confirmación de Compra";
 	public static final int CANT_MAX_IMAGENES_VARIEDAD = 3;
 	public static final int MAX_SIZE_DESC_LARGA_PRODUCTOR = 8200;
-	public static final String CONFIRMACION_COMPRA_NOTIFICACION ="Tu pedido se ha confirmado con éxito, recibirás un correo con la fecha probable de entrega";
-	public static final String CONFIRMACION_COMPRA_NOTIFICACION_OTROMIEMBRO = "El usuario <usuario> ha confirmado su pedido en tu grupo de compras <grupo> ¡Apurate a hacer el tuyo!";
+	public static final String CONFIRMACION_COMPRA_NOTIFICACION ="Tu pedido se ha confirmado con éxito, recibirás un correo con la fecha probable de entrega.";
+	public static final String CONFIRMACION_COMPRA_NOTIFICACION_OTROMIEMBRO = "El usuario <usuario> ha confirmado su pedido en tu grupo de compras <grupo>.";
 	public static final String NUEVO_PEDIDO_NOTIFICACION_OTROMIEMBRO =  "El usuario <usuario> ha iniciado su pedido en el grupo <grupo> del catálogo de <vendedor> ¡No te pierdas esta compra!";
-	public static final String CONFIRMACION_PEDIDO_COLECTIVO = "El administrador del grupo <grupo> en el catálogo del vendedor <vendedor> ha confirmado el pedido colectivo";
+	public static final String CONFIRMACION_PEDIDO_COLECTIVO = "El administrador del grupo <grupo> en el catálogo de <vendedor> ha confirmado el pedido colectivo.";
 	public static final String VENCIMIENTO_PEDIDO_TEMPLATE = "emailVencimientoAutomatico.ftl";
 	public static final String TEMPLATE_NUEVO_ADMINISTRADOR = "emailNuevoAdministrador.ftl";
 	public static final String PEDIDO_PREPARADO_TEMPLATE = "emailPedidoPreparado.ftl";
@@ -102,5 +103,6 @@ public class Constantes {
 	public static final String ERROR_USUARIO_NO_ES_MIEMBRO = "El usuario no es miembro del grupo de compras";
 	public static final String ERROR_PUNTO_DE_RETIRO_INEXISTENTE = "El punto de retiro solicitado no existe";
 	public static final String ZONA_NO_NECESARIA = "---";
+	public static final String AVISO_PEDIDO_VENCIDO = "notificar_vencimiento";
 	
 }

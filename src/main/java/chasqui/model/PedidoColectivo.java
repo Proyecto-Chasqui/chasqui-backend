@@ -268,4 +268,25 @@ public class PedidoColectivo implements IPedido{
 		this.fechaModificacion = fechaModificacion;
 	}
 
+	@Override
+	public void confirmarteSinMontoMinimo() throws EstadoPedidoIncorrectoException {
+		if (this.estado.equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+			this.estado = Constantes.ESTADO_PEDIDO_CONFIRMADO;			
+		}
+		else{
+			throw new EstadoPedidoIncorrectoException("El pedido no estaba abierto");
+		}
+		
+	}
+
+	@Override
+	public boolean esParaRetirar() {
+		return (this.puntoDeRetiro != null);
+	}
+
+	@Override
+	public boolean esParaDomicilio() {
+		return (this.domicilioEntrega != null);
+	}
+
 }

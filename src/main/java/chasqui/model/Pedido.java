@@ -293,6 +293,13 @@ public class Pedido implements IPedido {
 			throw new EstadoPedidoIncorrectoException(
 					"El monto de compra no supera el mínimo (" + this.getMontoMinimo().toString() + ")");
 	}
+	
+	@Override
+	public void confirmarteSinMontoMinimo() throws EstadoPedidoIncorrectoException {
+		this.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		this.alterable = false;
+		this.fechaModificacion = new DateTime();
+	}
 
 	@Override
 	public void setZona(Zona zona) {
@@ -357,6 +364,16 @@ public class Pedido implements IPedido {
 
 	public void setRespuestasAPreguntas(Map<String,String> respuestasAPreguntas) {
 		this.respuestasAPreguntas = respuestasAPreguntas;
+	}
+
+	@Override
+	public boolean esParaRetirar() {
+		return (this.puntoDeRetiro != null);
+	}
+
+	@Override
+	public boolean esParaDomicilio() {
+		return (this.direccionEntrega != null);
 	}
 
 }

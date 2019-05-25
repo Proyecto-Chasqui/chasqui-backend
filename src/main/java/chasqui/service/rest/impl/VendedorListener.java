@@ -19,6 +19,7 @@ import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.service.rest.response.ChasquiError;
+import chasqui.service.rest.response.DataPortadaResponse;
 import chasqui.service.rest.response.PreguntaDeConsumoResponse;
 import chasqui.service.rest.response.PuntosDeRetiroResponse;
 import chasqui.service.rest.response.VendedorResponse;
@@ -147,6 +148,20 @@ public class VendedorListener {
 	public Response obtenerPreguntasDeConsumoColectivo(@PathParam("nombreVendedor")String nombreVendedor){
 		try{
 			return Response.ok(this.toResponsePreguntaConsumo(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getPreguntasDePedidosColectivosHabilitados())).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch(Exception e){			
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	@GET
+	@Path("/datosPortada/{nombreVendedor}")
+	@Produces("application/json")
+	public Response obtenerInfoDePortada(@PathParam("nombreVendedor")String nombreVendedor){
+		try{
+			DataPortadaResponse dr = new DataPortadaResponse(vendedorService.obtenerVendedorPorNombreCorto(nombreVendedor).getDataMultimedia());
+			return Response.ok(dr).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			

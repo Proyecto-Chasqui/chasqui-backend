@@ -6,7 +6,7 @@
 <zk>
 <window title="Alta/Edición de Productores" id="productorWindow" position="center,top"
 apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  sizable="true" closable="true">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <listbox>
 	<listhead>
 		<listheader/>
@@ -82,14 +82,40 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 		<listcell label="Sello:"/>
 		<listcell>
 			<hbox>
-			<combobox readonly="true" id="comboCaracteristica" model="@{productorWindow$composer.caracteristicas}"
+<!-- 			<combobox readonly="true" id="comboCaracteristica" model="@{productorWindow$composer.caracteristicas}"
 			itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"
 			selectedItem="@{productorWindow$composer.caracteristicaSeleccionada}"/>
-<!-- 			<toolbarbutton image="/imagenes/plus.png" id="agregarCaracteristicaButton"/> -->
+ 			<toolbarbutton image="/imagenes/plus.png" id="agregarCaracteristicaButton"/> -->
 			</hbox>
 		</listcell>
 	</listitem>
 </listbox>
+
+	<listbox id="listboxCaracteristicas" mold="paging" pageSize="3" selectedItem="@{productorWindow$composer.caracteristicaSeleccionada}"
+		model="@{productorWindow$composer.model.caracteristicasProductor}" rows="3">
+		<auxhead>
+			<auxheader colspan="2">
+				<combobox id="comboCaracteristica" placeholder="Seleccione un sello"  readonly="true" model="@{productorWindow$composer.caracteristicas}"
+				selectedItem="@{productorWindow$composer.caracteristicaProductorSeleccionada}"
+				itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"/>
+			</auxheader>
+		</auxhead>
+		<listhead>
+			<listheader label="${c:l('zk.listcell.label.abmProducto.caracteristica')}"/>
+			<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+		</listhead>
+		<listitem self="@{each=caracteristica}">			
+			<listcell>
+				<image src="@{caracteristica.getPathImagen}" height="16px" width="16px"/>
+				<label  maxlength="25" value="@{caracteristica.getNombre}"/>
+			</listcell>
+			<listcell>
+				<image src="/imagenes/trash.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.eliminar')}"
+				forward="onClick=productorWindow$composer.onEliminarCaracteristica" visible="@{productorWindow$composer.mostrarBorrarCaract}"/>
+			</listcell>
+		</listitem>
+	</listbox>
+
 <separator spacing="15px"/>
 <div align="center">
 	<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>

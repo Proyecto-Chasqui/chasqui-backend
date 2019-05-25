@@ -364,7 +364,11 @@ public class Cliente extends Usuario {
 				throw new EstadoPedidoIncorrectoException(" El id del punto de retiro no pertence al vendedor");
 			}
 		}
-		p.confirmarte();
+		if(idPuntoDeRetiro != null) {
+			p.confirmarteSinMontoMinimo();
+		}else {
+			p.confirmarte();
+		}
 		//TODO; ver cuando corresponde remover de la colección
 //		pedidos.remove(p);
 //		if (historialPedidos == null) {

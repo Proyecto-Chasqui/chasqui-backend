@@ -1,6 +1,7 @@
 package chasqui.view.composer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +13,14 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Include;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Messagebox;
@@ -25,6 +28,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Categoria;
@@ -96,10 +100,22 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Integer numeroMaxDestacados = 6;
 	private Textbox busquedaPorCodigoProducto;
 	private Textbox busquedaPorNombreProductor;
+	private Intbox busquedaPorStock;
+	private List<String> destacado;
+	private List<String> visibilidad;
+	private String destacadoSeleccionado;
+	private String visibilidadSeleccionada;
+	private Component admcomponent;
+	private static final String TODAS = "Todas";
+	private static final String HABILITADO = "Visible";
+	private static final String DESHABILITADO = "Oculto";
+	private static final String DESTACADO = "Destacado";
+	private static final String NO_DESTACADO = "No destacado";
 	
 //	private List<Producto>productos;
 	
 	public void doAfterCompose(Component comp) throws Exception{
+		admcomponent = comp;
 		Executions.getCurrent().getSession().setAttribute("administracionComposer",this);
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		if(usuarioLogueado == null){
@@ -114,6 +130,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		numeroDestacados = productoService.obtenerVariantesDestacadas(usuarioLogueado.getId()).size();
 		productosFiltrados = usuarioLogueado.getProductos();
 		fabricantes = (List<Fabricante>) productorService.obtenerProductores(usuarioLogueado.getId());
+		visibilidad = Arrays.asList(TODAS,HABILITADO,DESHABILITADO);
+		destacado = Arrays.asList(TODAS,DESTACADO,NO_DESTACADO);
 		listfabricantes = new ArrayList<Fabricante>();
 		listfabricantes.addAll(fabricantes);
 		super.doAfterCompose(comp);
@@ -177,8 +195,10 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 			radioPedidosColectivos.setVisible(true);
 		}
 		if(estrategias.isNodos()){
-			cellRadioSolicitudesNodos.setVisible(true);
-			radioSolicitudesNodos.setVisible(true);
+			//cellRadioSolicitudesNodos.setVisible(true);
+			//radioSolicitudesNodos.setVisible(true);
+			cellRadioPedidos.setVisible(true);
+			radioPedidos.setVisible(true);
 		}
 	}
 	
@@ -307,7 +327,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(true);
 		usuariosActualesInclude.setVisible(true);
 		estrategiasInclude.setVisible(true);
-		
 		binder.loadAll();
 	}
 	
@@ -459,27 +478,46 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		windowProducto.doModal();
 	}
 	
-	public void onEliminarProducto(Producto p){
-		// mostrar cartel
-		p.getCategoria().eliminarProducto(p);
-		p.getFabricante().eliminarProducto(p);
-		usuarioService.guardarUsuario(usuarioLogueado);
-		this.onClick$buscarProducto();
-		this.binder.loadAll();
-//		productos.remove(p);
-		alert("El producto: '" + p.getNombre() + "' fue eliminado con exito!");
+	public void onEliminarProducto(final Producto p){
+		Messagebox.show(
+				"¿Esta seguro que desea eliminar el producto  " + p.getNombre() + " ?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Aceptar","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						p.getCategoria().eliminarProducto(p);
+						p.getFabricante().eliminarProducto(p);
+						usuarioService.guardarUsuario(usuarioLogueado);
+						onClick$buscarProducto();
+						binder.loadAll();
+						Clients.showNotification("El producto: '" + p.getNombre() + "' fue eliminado con exito!", "info", admcomponent, "middle_center", 2000,true);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido", "error", admcomponent, "middle_center", 3000,true);
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
+				}
+			}
+			});
 	}
 	
 	public void onDestacarProducto(Producto p, Toolbarbutton botonDestacar){
 		Variante v = p.getVariantes().get(0);
 		if(v.getDestacado()){
 			v.setDestacado(!v.getDestacado());
-			destacar(v,botonDestacar);
+			destacar(v);
 			usuarioService.guardarUsuario(usuarioLogueado);
 		}else{
 			if(!v.getDestacado() && numeroDestacados < numeroMaxDestacados){
 				v.setDestacado(!v.getDestacado());
-				destacar(v,botonDestacar);
+				destacar(v);
 				usuarioService.guardarUsuario(usuarioLogueado);
 			}else{
 				Messagebox.show("Solo se pueden tener hasta 6 destacados",
@@ -492,14 +530,13 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		this.binder.loadAll();
 	}
 	
-	///////Ocultar producto
-	public void onOcultarProducto(Producto producto, Toolbarbutton botonOcultar){
+//	///////Ocultar producto
+	public void onOcultarProducto(Producto producto){
 		producto.setOcultado(!producto.isOcultado());
-		ocultar(producto,botonOcultar);
 		usuarioService.guardarUsuario(usuarioLogueado);
 		this.binder.loadAll();
 	}
-	///////Ocultar producto
+//	///////Ocultar producto
 	
 	public void onBuscar() {
 		this.onClick$buscarProducto();
@@ -515,41 +552,66 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		
 		Integer fabricanteSeleccionadoId = null;
 		if(fabricanteSeleccionado!=null||busquedaPorCodigoProducto.getValue() != null){
+			Boolean habilitado = evaluarVisibilidad(this.visibilidadSeleccionada);
+			Boolean destacado = evaluarPropiedadDestacada(this.destacadoSeleccionado);
 			if(fabricanteSeleccionado != null) {
 				fabricanteSeleccionadoId = fabricanteSeleccionado.getId();
 			}
 			productosFiltrados.clear();	
-			productosFiltrados.addAll(usuarioLogueado.obtenerProductosDelFabricante(fabricanteSeleccionadoId,busquedaPorCodigoProducto.getValue()));
+			productosFiltrados.addAll(usuarioLogueado.obtenerProductosDelFabricante(fabricanteSeleccionadoId,busquedaPorCodigoProducto.getValue(),destacado,habilitado,busquedaPorStock.getValue()));
 		}else{
 			this.onClick$limpiarCamposbtn();
 		}
 		this.binder.loadAll();
 	}
 	
+	private Boolean evaluarPropiedadDestacada(String destacadoSeleccionado2) {
+		
+		Boolean ret = null;
+		if(destacadoSeleccionado2 != null) {
+			if(destacadoSeleccionado2.equals(DESTACADO)) {
+				ret = true;
+			}
+			if(destacadoSeleccionado2.equals(NO_DESTACADO)) {
+				ret = false;
+			}
+		}		
+		return ret;
+	}
+
+	private Boolean evaluarVisibilidad(String visibilidadSeleccionada2) {
+		Boolean ret = null;
+		if(visibilidadSeleccionada2 != null) {
+			if(visibilidadSeleccionada2.equals(HABILITADO)) {
+				ret = true;
+			}
+		
+			if(visibilidadSeleccionada2.equals(DESHABILITADO)) {
+				ret = false;
+			}
+		}
+		
+		return ret;
+	}
+
 	public void onClick$limpiarCamposbtn(){
 		productosFiltrados.clear();
 		productosFiltrados.addAll(usuarioLogueado.getProductos());
+		visibilidadSeleccionada = null;
+		destacadoSeleccionado = null;
 		fabricanteSeleccionado = null;
 		busquedaPorCodigoProducto.setValue(null);
+		busquedaPorStock.setValue(null);
 		this.binder.loadAll();
 	}
 	
-	////Actualizar imagen del boton de ocultar
-	private void ocultar(Producto producto, Toolbarbutton botonOcultar){
-		if(producto.isOcultado()){
-			botonOcultar.setImage("/imagenes/ocultado_on.png");
-		}else{
-			botonOcultar.setImage("/imagenes/ocultado_off.png");
-		}
-	}
-	////
 	
-	private void destacar(Variante v, Toolbarbutton botonDestacar){
+	private void destacar(Variante v){
 		if(v.getDestacado()){
-			botonDestacar.setImage("/imagenes/destacado_on.png");
+			//botonDestacar.setImage("/imagenes/destacado_on.png");
 			numeroDestacados ++;
 		}else{
-			botonDestacar.setImage("/imagenes/destacado_off.png");
+			//botonDestacar.setImage("/imagenes/destacado_off.png");
 			numeroDestacados--;
 		}
 	}
@@ -620,6 +682,13 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		onClick$buscarProducto();
 	}
 	
+	public void onSelect$destacadoComboBox(SelectEvent evt){
+		onClick$buscarProducto();
+	}
+	
+	public void onSelect$habilitadoComboBox(SelectEvent evt){
+		onClick$buscarProducto();
+	}
 
 	public Vendedor getUsuarioLogueado() {
 		return usuarioLogueado;
@@ -714,6 +783,38 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void setListfabricantes(List<Fabricante> listfabricantes) {
 		this.listfabricantes = listfabricantes;
 	}
+
+	public List<String> getDestacado() {
+		return destacado;
+	}
+
+	public void setDestacado(List<String> destacado) {
+		this.destacado = destacado;
+	}
+
+	public List<String> getVisibilidad() {
+		return visibilidad;
+	}
+
+	public void setVisibilidad(List<String> visibilidad) {
+		this.visibilidad = visibilidad;
+	}
+
+	public String getDestacadoSeleccionado() {
+		return destacadoSeleccionado;
+	}
+
+	public void setDestacadoSeleccionado(String destacadoSeleccionado) {
+		this.destacadoSeleccionado = destacadoSeleccionado;
+	}
+
+	public String getVisibilidadSeleccionada() {
+		return visibilidadSeleccionada;
+	}
+
+	public void setVisibilidadSeleccionada(String visibilidadSeleccionada) {
+		this.visibilidadSeleccionada = visibilidadSeleccionada;
+	}
 	
 //	public void setVisibleEstrategiasConfig(Boolean b){
 //		estrategiasInclude.setVisible(b);
@@ -800,7 +901,7 @@ class ProductoEventListener implements EventListener<Event>{
 			this.composer.onDestacarProducto(p,botonDestacar);
 		}
 		if(params.get("accion").equals("ocultar") && p != null){
-			this.composer.onOcultarProducto(p,botonOcultar);
+			this.composer.onOcultarProducto(p);
 		}
 	}
 	

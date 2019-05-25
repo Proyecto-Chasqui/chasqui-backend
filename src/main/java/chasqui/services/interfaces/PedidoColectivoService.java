@@ -26,5 +26,8 @@ public interface PedidoColectivoService {
 
 	List<PedidoColectivo> obtenerPedidosColectivosDeGrupoConEstado(Integer idUsuario, Integer idVendedor,
 			List<String> estados);
+
+	Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedorConPRConNombre(Integer vendedorid, Date d,
+			Date h, String estadoSeleccionado, Integer zonaId, String puntoRetiro, String emailadmn);
 	
 }

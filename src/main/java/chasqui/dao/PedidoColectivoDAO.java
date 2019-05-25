@@ -21,5 +21,9 @@ public interface PedidoColectivoDAO {
 			String estadoSeleccionado, Integer zonaId, Integer idPuntoRetiro,String emailAdmin);
 
 	List<PedidoColectivo> obtenerPedidosColectivosDeConEstado(Integer idUsuario, Integer idVendedor, List<String> estados);
+
+
+	Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedorConPRPorNombre(Integer vendedorid, Date d,
+			Date h, String estadoSeleccionado, Integer zonaId, String puntoRetiro, String emailAdmin);
 	
 }

@@ -8,6 +8,8 @@ import javax.mail.MessagingException;
 import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.EncrypterException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
@@ -39,7 +41,7 @@ public interface NotificacionService {
 	public void eliminarNotificacion(Notificacion notificacion);
 
 	@Transactional
-	void enviarAClienteSuPedidoConfirmado(String emailVendedor, String emailCliente, Pedido pedidoConfirmado);
+	void enviarAClienteSuPedidoConfirmado(String emailVendedor, String emailCliente, Pedido pedidoConfirmado) throws UsuarioInexistenteException;
 
 	@Transactional
 	public void notificarConfirmacionCompraOtroMiembro(String emailVendedor, String email, String nombreCliente,
@@ -88,10 +90,11 @@ public interface NotificacionService {
 	 * @throws TemplateException
 	 * @throws MessagingException
 	 * @throws IOException
+	 * @throws UsuarioInexistenteException 
 	 */
 	@Transactional
 	public void notificarInvitacionAGCCClienteRegistrado(Cliente administrador, String emailInvitado, GrupoCC grupo,
-			String idDispositivo) throws IOException, MessagingException, TemplateException;
+			String idDispositivo) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException;
 
 	/**
 	 * Notifica a un POTENCIAL usuario de Chasqui que ha sido invitado a un
@@ -101,14 +104,14 @@ public interface NotificacionService {
 	 * @param administrador
 	 * @param emailInvitado
 	 * @param grupo
+	 * @throws EncrypterException
 	 * @throws TemplateException
 	 * @throws MessagingException
 	 * @throws IOException
-	 * @throws Exception 
 	 */
 	@Transactional
 	public void notificarInvitacionAGCCClienteNoRegistrado(Cliente administrador, String emailInvitado, GrupoCC grupo,
-			String iddisp) throws IOException, MessagingException, TemplateException, Exception;
+			String iddisp) throws IOException, MessagingException, TemplateException, EncrypterException;
 
 	/**
 	 * 

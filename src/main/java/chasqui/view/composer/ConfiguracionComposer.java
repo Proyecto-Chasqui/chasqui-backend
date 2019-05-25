@@ -27,6 +27,7 @@ import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
@@ -50,6 +51,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	private Checkbox checkUtilizarMismaFecha;
 	private Button zonaButton;
 	private Button puntoDeRetiroButton;
+	private Button configuracionDePortadaButton;
 	private Listcell puntoderetiro;
 	private Listcell puntoderetiroOptions;
 	private Encrypter encrypter ;
@@ -63,7 +65,16 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	private FileSaver fileSaver;
 	private UsuarioService usuarioService;
 	private Imagen imagen;
+	private Listitem cuestionarioitem;
 	
+	public Listitem getCuestionarioitem() {
+		return cuestionarioitem;
+	}
+
+	public void setCuestionarioitem(Listitem cuestionarioitem) {
+		this.cuestionarioitem = cuestionarioitem;
+	}
+
 	public void doAfterCompose(Component comp) throws Exception{
 		vendedorLogueado =(Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		if(vendedorLogueado != null){
@@ -82,6 +93,9 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			if(!vendedorLogueado.getEstrategiasUtilizadas().isPuntoDeEntrega()){
 				puntoderetiro.setVisible(false);
 				puntoderetiroOptions.setVisible(false);
+			}
+			if(vendedorLogueado.getEstrategiasUtilizadas().isNodos()){
+				cuestionarioitem.setVisible(false);
 			}
 //			DateTime d = new DateTime(vendedorLogueado.getFechaCierrePedido());
 //			DateTime hoy = new DateTime();
@@ -184,6 +198,11 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	
 	public void onClick$cuestionarioButton(){
 		Window w = (Window) Executions.createComponents("/abmCuestionario.zul", this.self, null);
+		w.doModal();
+	}
+	
+	public void onClick$configuracionDePortadaButton(){
+		Window w = (Window) Executions.createComponents("/configuracionPortada.zul", this.self, null);
 		w.doModal();
 	}
 	
@@ -314,7 +333,8 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	public void setImagen(Imagen imagen) {
 		this.imagen = imagen;
 	}
-	
+
+
 	
 	
 	

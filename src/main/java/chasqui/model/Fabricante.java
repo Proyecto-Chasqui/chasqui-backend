@@ -18,6 +18,7 @@ public class Fabricante {
 	private String pathImagen;
 	private List<Producto> productos;
 	private CaracteristicaProductor caracteristica;
+	private List<CaracteristicaProductor> caracteristicas;
  	
 	//CONSTRUCTORs
 
@@ -176,6 +177,14 @@ public class Fabricante {
 
 	public void eliminarProducto (Producto producto) {
 		productos.remove(producto);
+	}
+
+	public List<CaracteristicaProductor> getCaracteristicas() {
+		return caracteristicas;
+	}
+
+	public void setCaracteristicas(List<CaracteristicaProductor> caracteristicas) {
+		this.caracteristicas = caracteristicas;
 	}
 
 

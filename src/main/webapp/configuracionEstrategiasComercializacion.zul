@@ -4,14 +4,60 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="configuracionEstrategiasComercializacionWindow" title="Configuracion de estrategias(Solo al Editar)" width="100%" border="nomal"
+<window id="configuracionEstrategiasComercializacionWindow" title="Configuracion de Vendedor" style="text-align: center" width="100%" border="normal"
 apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<listbox>
+	<listhead>
+			<listheader/>
+			<listheader/>
+		</listhead>
+		<listitem>
+			<listcell style="text-align: center"  label="Compra individual"/>
+			<listcell style="text-align: center;" >
+				  <checkbox  id="individual"/>
+			</listcell>
+		</listitem>
+		<listitem>
+			<listcell style="text-align: center"  label="Compra Colectiva"/>
+			<listcell style="text-align: center">
+				<checkbox id="colectiva"/>
+			</listcell>
+		</listitem>
+		<listitem>
+			<listcell style="text-align: center"  label="Compra por nodos"/>
+			<listcell style="text-align: center">
+				<checkbox id="nodos"/>
+			</listcell>         	 		
+		</listitem>
+		<listitem>
+			<listcell style="text-align: center"  label="Punto de entrega"/>
+         	<listcell style="text-align: center">
+         		<checkbox id="puntoDeEntrega"/>
+         	</listcell>			 
+		</listitem>
+		<listitem>
+         	<listcell style="text-align: center"  label="Entrega a domicilio"/>
+         	<listcell style="text-align: center">
+         		<checkbox id="entregaADomicilio"/>
+         	</listcell>		
+		</listitem>
+		<listitem>
+			<listcell style="text-align: center"  label="Tiempo vencimiento: "/>
+			<listcell style="text-align: center">
+				<textbox width="100%" id="textboxTiempoVencimiento" maxlength="3" type="tel"/>
+			</listcell>
+		</listitem>
+		<listitem>
+			<listcell style="text-align: center"  label="UrlMapa "/>
+			<listcell style="text-align: center">
+				<textbox width="100%" id="urlMapa"/>
+			</listcell>
+		</listitem>
+</listbox>
 
-         <checkbox  id="individual" label="Compra Individual"/>
-         <checkbox id="colectiva" label="Compra Colectiva"/>
-         <checkbox id="nodos" label="Compra Por Nodos"/>
-         <checkbox id="puntoDeEntrega" label="Punto De Entrega"/>
-         <checkbox id="entregaADomicilio" label="Entrega a domicilio"/>
+         
+         
     
 	<div align="center">
 		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>

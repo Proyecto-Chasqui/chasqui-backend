@@ -2,10 +2,13 @@ package chasqui.service.rest.request;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.service.rest.response.DireccionResponse;
+import chasqui.service.rest.response.PedidoResponse;
 import chasqui.service.rest.response.PuntoDeRetiroResponse;
 import chasqui.service.rest.response.ZonaResponse;
 
@@ -19,6 +22,7 @@ public class PedidoColectivoResponse {
 	private ZonaResponse zona;
 	private DireccionResponse direccion;
 	private PuntoDeRetiroResponse puntoDeRetiro;
+	private List<PedidoResponse> pedidos;
 
 
 	public String getEstado() {
@@ -74,6 +78,15 @@ public class PedidoColectivoResponse {
 		fechaModificacion = (p.getFechaModificacion()!=null)?f.format(p.getFechaModificacion().toDate()):null;
 		montoTotal = p.getMontoTotal();
 		cargarDireccionYZonaSeleccionadaDePedidoColectivo(p);
+		setPedidos(crearListaDePedidos(p));
+	}
+
+	private List<PedidoResponse> crearListaDePedidos(PedidoColectivo p) {
+		List<PedidoResponse> pedidos= new ArrayList<PedidoResponse>();
+		for(Pedido pd: p.getPedidosIndividuales().values()) {
+			pedidos.add(new PedidoResponse(pd));
+		}
+		return pedidos;
 	}
 
 	public ZonaResponse getZona() {
@@ -112,5 +125,13 @@ public class PedidoColectivoResponse {
 
 	public void setMontoTotal(Double montoTotal) {
 		this.montoTotal = montoTotal;
+	}
+
+	public List<PedidoResponse> getPedidos() {
+		return pedidos;
+	}
+
+	public void setPedidos(List<PedidoResponse> pedidos) {
+		this.pedidos = pedidos;
 	}
 }

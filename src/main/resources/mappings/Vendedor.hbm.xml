@@ -22,6 +22,9 @@
         <property name="distanciaCompraColectiva" type="java.lang.Integer">
             <column name="DISTANCIA_COMPRA_COLECTIVA" />
         </property>
+        <property name="tiempoVencimientoPedidos" type="java.lang.Integer">
+            <column name="TIEMPO_VENCIMIENTO_PEDIDOS" />
+        </property>
         <property name="mapaZonas" type="java.lang.String" column="MAPA"/>
         
         <many-to-one name="estrategiasUtilizadas" class="chasqui.model.EstrategiasDeComercializacion" lazy="false" column="ESTRATEGIAS_UTILIZADAS"/>
@@ -81,6 +84,10 @@
 			<index column="SEQUENCE"></index>
 			<one-to-many class="chasqui.model.PreguntaDeConsumo"/>
 		</list>
+		
+		<many-to-one name="dataMultimedia" class="chasqui.model.DataMultimedia" lazy="false" fetch="join">
+            <column name="ID_DATA_MULTIMEDIA"/>
+        </many-to-one>
         
     </joined-subclass>
 </hibernate-mapping>

@@ -6,7 +6,7 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <window id="configuracionWindow" border="normal" title="${c:l('zk.label.configuracion')}" 
 apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
-
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <vbox>
 	<hbox>	
 		<listbox>
@@ -82,10 +82,16 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
 					<button label="Ver Puntos de Retiro" id="puntoDeRetiroButton"/>
 				</listcell>
 			</listitem>
-			<listitem>
+			<listitem  id="cuestionarioitem">
 				<listcell id="cuestionario" label="Preguntas de consumo"/>
 				<listcell>
 					<button label="Ver preguntas de consumo" id="cuestionarioButton"/>
+				</listcell>
+			</listitem>
+			<listitem>
+				<listcell id="datosPortada" label="Pagina Principal"/>
+				<listcell id="configuracionDatosPortada">
+					<button label="Configurar Pagina" id="configuracionDePortadaButton"/>
 				</listcell>
 			</listitem>
 			<listitem>

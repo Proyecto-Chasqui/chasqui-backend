@@ -11,6 +11,9 @@
     <name>org.zkoss.zul.progressbox.position</name>
     <value>center,center</value>
 </library-property>
+<session-config>
+  <timer-keep-alive>true</timer-keep-alive>
+</session-config>
 <client-config>
 		<processing-prompt-delay>1</processing-prompt-delay>
 </client-config>

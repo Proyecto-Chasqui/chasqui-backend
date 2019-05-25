@@ -16,6 +16,9 @@ public class VendedorResponse implements Serializable{
 	private String nombre;
 	private String nombreCorto;
 	private String imagen;
+	private String urlMapa;
+	private Integer tiempoDeVencimiento;
+	private Integer montoMinimo;
 	private EstrategiaDeComercializacionGenerica few;
 	private EstrategiaDeComercializacionGenerica app;
 	
@@ -27,10 +30,17 @@ public class VendedorResponse implements Serializable{
 		nombre = v.getNombre();
 		nombreCorto = v.getNombreCorto();
 		imagen = v.getImagenPerfil();
+		tiempoDeVencimiento = v.getTiempoVencimientoPedidos();
+		montoMinimo = v.getMontoMinimoPedido();
 		EstrategiasDeComercializacion estrategias = v.getEstrategiasUtilizadas();
 		this.setFew(new EstrategiaDeComercializacionGenerica());
 		this.setApp(new EstrategiaDeComercializacionGenerica());
 		this.inicializarEstrategias(estrategias);
+		if(v.getMapaZonas() != null ) {
+			this.setUrlMapa(v.getMapaZonas());
+		}else {
+			this.setUrlMapa("");
+		}
 	}
 	
 	private void inicializarEstrategias(EstrategiasDeComercializacion estrategia) {
@@ -93,6 +103,30 @@ public class VendedorResponse implements Serializable{
 	}
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
+	}
+
+	public String getUrlMapa() {
+		return urlMapa;
+	}
+
+	public void setUrlMapa(String urlMapa) {
+		this.urlMapa = urlMapa;
+	}
+
+	public Integer getTiempoDeVencimiento() {
+		return tiempoDeVencimiento;
+	}
+
+	public void setTiempoDeVencimiento(Integer tiempoDeVencimiento) {
+		this.tiempoDeVencimiento = tiempoDeVencimiento;
+	}
+
+	public Integer getMontoMinimo() {
+		return montoMinimo;
+	}
+
+	public void setMontoMinimo(Integer montoMinimo) {
+		this.montoMinimo = montoMinimo;
 	}
 
 	

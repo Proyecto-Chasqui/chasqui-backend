@@ -14,6 +14,8 @@ import com.google.android.gcm.server.Sender;
 
 import chasqui.aspect.Auditada;
 import chasqui.dao.NotificacionDAO;
+import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.EncrypterException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
@@ -114,7 +116,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 	 *   
 	 */
 	@Override
-	public void enviarAClienteSuPedidoConfirmado(String emailVendedor, String emailCliente,Pedido pedidoConfirmado){
+	public void enviarAClienteSuPedidoConfirmado(String emailVendedor, String emailCliente,Pedido pedidoConfirmado) throws UsuarioInexistenteException{
 		mailService.enviarEmailConfirmacionPedido(emailVendedor,emailCliente,pedidoConfirmado);
 
 		String mensaje = Constantes.CONFIRMACION_COMPRA_NOTIFICACION;
@@ -163,14 +165,14 @@ public class NotificacionServiceImpl implements NotificacionService{
 	}
 
 	@Override
-	public void notificarInvitacionAGCCClienteRegistrado(Cliente adminGCC, String emailInvitado, GrupoCC grupo, String idDispositivo) throws IOException, MessagingException, TemplateException {
+	public void notificarInvitacionAGCCClienteRegistrado(Cliente adminGCC, String emailInvitado, GrupoCC grupo, String idDispositivo) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException {
 		String mensaje = Constantes.TXT_INVITACION_GCC;
 		mensaje = mensaje.replaceAll("<usuario>", adminGCC.getUsername());
 		mensaje = mensaje.replaceAll("<alias>", grupo.getAlias());
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
 		
 		this.invitar(adminGCC.getEmail(), emailInvitado, mensaje, idDispositivo,grupo.getId());
-		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre());
+		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getAlias(), grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre());
 	}
 
 
@@ -185,14 +187,18 @@ public class NotificacionServiceImpl implements NotificacionService{
 
 	@Override
 	public void notificarInvitacionAGCCClienteNoRegistrado(Cliente adminGCC, String emailInvitado, GrupoCC grupo,
-			String iddisp) throws Exception {
+			String iddisp) throws EncrypterException {
 		String mensaje = Constantes.TXT_INVITACION_GCC;
 		mensaje = mensaje.replaceAll("<usuario>", adminGCC.getUsername());
 		mensaje = mensaje.replaceAll("<alias>", grupo.getAlias());
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
 		
 		this.invitar(adminGCC.getEmail(), emailInvitado, mensaje, iddisp,grupo.getId());
-		mailService.enviarmailInvitadoSinRegistrar(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre(), grupo.getId());	
+		try{
+			mailService.enviarmailInvitadoSinRegistrar(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre(), grupo.getId());	
+		} catch (Exception e) {
+			throw new EncrypterException(e);
+		}
 	}
 
 	@Override
