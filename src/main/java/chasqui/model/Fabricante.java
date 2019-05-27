@@ -186,6 +186,9 @@ public class Fabricante {
 	public void setCaracteristicas(List<CaracteristicaProductor> caracteristicas) {
 		this.caracteristicas = caracteristicas;
 	}
-
+	
+	public boolean equals(Fabricante otro){
+		return this.nombre.equals(otro.nombre);
+	}
 
 }

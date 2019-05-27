@@ -57,6 +57,10 @@ public class Categoria {
 		this.vendedor = vendedor;
 	}
 	
+	
+	public boolean equals(Categoria otra){
+		return this.nombre.equals(otra.nombre);
+	}
 
 
 	//METHODS
