@@ -164,14 +164,23 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		this.altaUsuarioWindow = altaUsuarioWindow;
 	}
 
+	public void onCargarStartUp(Vendedor v){
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("vendedor", v);
+		Window windowCargaStartUp = (Window) Executions.createComponents("/cargaStartup.zul", this.self, params);
+		windowCargaStartUp.doModal();
+	}
+	
 }
 
 class AccionEventListener implements EventListener<Event>{
 	
-	UsuariosActualesComposer composer;
+	private UsuariosActualesComposer composer;
+	
 	public AccionEventListener(UsuariosActualesComposer c){
 		this.composer = c;
 	}
+	
 	public void onEvent(Event event) throws Exception {
 		if(event.getName().equals(Events.ON_NOTIFY)){
 			@SuppressWarnings("unchecked")
@@ -186,10 +195,10 @@ class AccionEventListener implements EventListener<Event>{
 			}
 			if(param.get("accion").equals("editarEstrategias")){
 				composer.editarEstrategias((Vendedor)param.get("usuario"));
-			}
-			
-		}
-		
+			}			
+			if(param.get("accion").equals("cargarStartUp")){
+				this.composer.onCargarStartUp((Vendedor)param.get("usuario"));
+			}			
+		}		
 	}
-	
 }
