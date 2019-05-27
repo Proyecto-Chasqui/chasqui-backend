@@ -1,0 +1,21 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./CargaStartUpWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window title="Start up! Carga de archivos" id="CargaStartUpWindow" border="normal"
+apply="chasqui.view.composer.CargaStartUp" width="60%" closable="true" position="center,top" sizable="true">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+	<style>
+	
+    </style>
+	<hbox>
+		<div align="center" > Descripción* </div>
+		<div align="center">
+			<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadImagen"  upload="true,maxsize=-1" />
+		</div>
+		<textbox width="190px" id="productosYaCargados" placeholder="i.e: Mermelada" />
+	</hbox>
+</window>
+</zk>
