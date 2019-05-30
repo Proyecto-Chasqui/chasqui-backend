@@ -74,12 +74,12 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		c.addEventListener(Events.ON_NOTIFY,new SubirImagenListener(this));
 		zonas = zonaService.buscarZonasBy(usuario.getId());
-		//if(usuario.getMapaZonas() != null){
-		//	imgMapa.setSrc(usuario.getMapaZonas());			
-		//}
 		tokenGenerator = (TokenGenerator) SpringUtil.getBean("tokenGenerator");
-		String selfurl = "http://localhost:8080/map";//"http://" + Executions.getCurrent().getServerName() + ":" + Executions.getCurrent().getServerPort()+"/map/";
-		mapFrame.setSrc(selfurl+"?token="+tokenGenerator.generarTokenParaVendedor(usuario.getId()));
+		String urlMap = usuario.getMapaZonas();
+		if(urlMap == null || urlMap.equals("") || urlMap.contains("google")) {
+			urlMap = "http://" + Executions.getCurrent().getServerName() + ":" + Executions.getCurrent().getServerPort()+"/map/";
+		}
+		mapFrame.setSrc(urlMap+"?token="+tokenGenerator.generarTokenParaVendedor(usuario.getId()));
 		binder = new AnnotateDataBinder(c);
 		binder.loadAll();
 	}
