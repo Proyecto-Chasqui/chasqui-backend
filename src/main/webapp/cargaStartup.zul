@@ -5,7 +5,7 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window title="Start up! Carga de archivos" id="CargaStartUpWindow" border="normal"
-apply="chasqui.view.composer.CargaStartUp" width="60%" closable="true" position="center,top" sizable="true">
+apply="chasqui.view.composer.CargaStartUpComposer" width="60%" closable="true" position="center,top" sizable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 	<style>
 	
@@ -13,7 +13,7 @@ apply="chasqui.view.composer.CargaStartUp" width="60%" closable="true" position=
 	<hbox>
 		<div align="center" > Descripción* </div>
 		<div align="center">
-			<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadImagen"  upload="true,maxsize=-1" />
+			<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadStartUp"  upload="true,maxsize=-1" />
 		</div>
 		<textbox width="190px" id="productosYaCargados" placeholder="i.e: Mermelada" />
 	</hbox>
