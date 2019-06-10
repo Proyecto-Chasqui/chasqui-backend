@@ -31,6 +31,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Textbox;
 
 import chasqui.model.Categoria;
@@ -134,12 +135,6 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
         List<Producto> nuevosProductos = (List<Producto>)otrosDatos.get("productos");
         List<Categoria> nuevasCategorias = (List<Categoria>)otrosDatos.get("categorias");
     
-        System.out.println(nuevosProductores.size());
-        System.out.println(nuevosProductos.size());
-        System.out.println(nuevasCategorias.size());
-        	     
-        
-        //vendedor.setCategorias(nuevasCategorias);
 		usuarioService.guardarUsuario(vendedor);
 		
 	}
@@ -195,9 +190,11 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			varianteDelProducto.setDestacado(false);
 			
 			varianteDelProducto.setProducto(nuevoProducto);
+			List<Imagen> imagenes = new ArrayList<Imagen>();
+			imagenes.add(getImagenNoDisponible(varianteDelProducto.getNombre()));
+			varianteDelProducto.setImagenes(imagenes);
 			List<Variante> variantes = new ArrayList<Variante>();
 			variantes.add(varianteDelProducto);
-			setImagenNoDisponible(varianteDelProducto.getNombre());
 			nuevoProducto.setVariantes(variantes);
 			
 			nuevaCategoria.agregarProducto(nuevoProducto);
@@ -206,7 +203,9 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			productorDelProducto.agregarProducto(nuevoProducto);
 			nuevoProducto.setFabricante(productorDelProducto);
 			
-			setImagenNoDisponible(productorDelProducto.getNombre());
+			Image imagenProductor = new Image();
+			imagenProductor.setSrc(getImagenNoDisponible(productorDelProducto.getNombre()).getPath());
+			productorDelProducto.setPathImagen(imagenProductor.getSrc());
 
 			usuarioService.guardarUsuario(vendedor);
 
@@ -232,7 +231,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	
 	
 	// Seteo de la imagen por defecto de una variante
-	private String setImagenNoDisponible(String nombreElemento) throws IOException{
+	private Imagen getImagenNoDisponible(String nombreElemento) throws IOException{
 		ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
 		String path = context.getRealPath("/imagenes/");
 		String sourcePath = context.getRealPath("/imagenes/imagennodisponible.jpg");
@@ -245,7 +244,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		Imagen imagen = fileSaver.guardarImagen(path, vendedor.getUsername(), nombreElemento+"_ND", imageInByte);
 		imagen.setNombre(nombreElemento + "_imagenNoDisponible");
 		imagen.setPreview(false);
-		return imagen.getPath();
+		return imagen;
 	}
 }
 
