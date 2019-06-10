@@ -44,7 +44,6 @@ import chasqui.services.impl.FileSaver;
 import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.genericEvents.Refresher;
-import chasqui.view.renders.CategoriaRenderer;
 import chasqui.view.renders.StartupErrorsRenderer;
 
 @SuppressWarnings({"serial","deprecation"})
@@ -53,7 +52,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	public AnnotateDataBinder binder;
 	private Vendedor vendedor;	
 	// Carga de excels
-	private Label errorLabel; 
+	private Label confirmationLabel; 
 	private FileSaver fileSaver;
 	@Autowired
 	private UsuarioService usuarioService;
@@ -128,8 +127,10 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		InputStream fin = (InputStream) media.getStreamData();
         		
 		try {
-			verifyExcel(fin);
-			readExcel(fin);
+			Workbook wb = WorkbookFactory.create(fin);
+			verifyExcel(wb);
+			readExcel(wb);
+			confirmationLabel.setValue("Carga completa");
 		} catch (EncryptedDocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -146,9 +147,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		binder.loadAll();
 	}
 	
-	private void verifyExcel(InputStream fin) throws EncryptedDocumentException, InvalidFormatException, IOException, StartUpException{
-		Workbook wb = WorkbookFactory.create(fin);
-
+	private void verifyExcel(Workbook wb) throws EncryptedDocumentException, InvalidFormatException, IOException, StartUpException{
         Sheet sheetProductores = wb.getSheetAt(productor_sheet);
         Sheet sheetProductos = wb.getSheetAt(producto_sheet);
         
@@ -231,12 +230,10 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	}
 	
 	
-	private void readExcel(InputStream fin) throws IOException, EncryptedDocumentException, InvalidFormatException{
+	private void readExcel(Workbook wb) throws IOException, EncryptedDocumentException, InvalidFormatException{
 		Hibernate.initialize(vendedor.getCategorias());
 		Hibernate.initialize(vendedor.getFabricantes());
 		
-		Workbook wb = WorkbookFactory.create(fin);
-
         Sheet sheetProductores = wb.getSheetAt(productor_sheet);
         Sheet sheetProductos = wb.getSheetAt(producto_sheet);
         

@@ -11,9 +11,10 @@ apply="chasqui.view.composer.CargaStartUpComposer" width="60%" closable="true" p
 	
     </style>
 	<hbox>
-		<div align="center">
+		<vbox align="center">
 			<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadStartUp"  upload="true,maxsize=-1" />
-		</div>
+			<label style="color: green" id="confirmationLabel"/>
+		</vbox>
 		<div >
 			<vbox>
 				<listbox id="listboxErrores" model="@{CargaStartUpWindow$composer.errores}" mold="paging" pageSize="10" rows="10">
