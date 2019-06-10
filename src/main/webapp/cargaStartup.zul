@@ -11,11 +11,18 @@ apply="chasqui.view.composer.CargaStartUpComposer" width="60%" closable="true" p
 	
     </style>
 	<hbox>
-		<div align="center" > Descripción* </div>
 		<div align="center">
 			<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadStartUp"  upload="true,maxsize=-1" />
 		</div>
-		<textbox width="190px" id="productosYaCargados" placeholder="i.e: Mermelada" />
+		<div >
+			<vbox>
+				<listbox id="listboxErrores" model="@{CargaStartUpWindow$composer.errores}" mold="paging" pageSize="10" rows="10">
+					<listhead>
+						<listheader label="Errores" sort="auto"/>
+					</listhead>
+				</listbox>
+			</vbox>
+		</div>
 	</hbox>
 </window>
 </zk>
