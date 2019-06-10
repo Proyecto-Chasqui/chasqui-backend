@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -53,6 +54,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	private Vendedor vendedor;	
 	// Carga de excels
 	private Label confirmationLabel; 
+	private Fileupload uploadStartUp;
 	private FileSaver fileSaver;
 	@Autowired
 	private UsuarioService usuarioService;
@@ -130,7 +132,9 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			Workbook wb = WorkbookFactory.create(fin);
 			verifyExcel(wb);
 			readExcel(wb);
-			confirmationLabel.setValue("Carga completa");
+			confirmationLabel.setValue("Carga completa sin errores!");
+			uploadStartUp.setVisible(false);
+			listboxErrores.setVisible(false);
 		} catch (EncryptedDocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
