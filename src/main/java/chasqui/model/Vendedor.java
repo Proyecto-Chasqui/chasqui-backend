@@ -219,7 +219,7 @@ public class Vendedor extends Usuario{
 		this.zonas = zonas;
 	}
 
-	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId, String codigoProducto, Boolean destacado, Boolean visibilidad) {
+	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId, String codigoProducto, Boolean destacado, Boolean visibilidad, Integer stock) {
 		List<Producto>p = new ArrayList<Producto>();
 		for(Fabricante f :fabricantes){
 			p.addAll(f.getProductos());
@@ -228,10 +228,11 @@ public class Vendedor extends Usuario{
 		p = (List<Producto>) this.obtenerProductosConIdFabricante(p, fabricanteSeleccionadoId);
 		p = (List<Producto>) this.obtenerProductosDestacados(p, destacado);
 		p = (List<Producto>) this.obtenerProductosHabilitadosDeshabilitados(p, visibilidad);
+		p = (List<Producto>) this.obtenerStock(p, stock);
 		
 		return p;
 	}
-	
+
 
 	private Collection<? extends Producto> obtenerProductosConCodigo(Collection <? extends Producto> lista, String codigoProducto) {
 		List<Producto> productosResultado = new ArrayList<Producto>();
@@ -288,7 +289,21 @@ public class Vendedor extends Usuario{
 		}
 		return productosResultado;
 	}
-
+	
+	private List<Producto> obtenerStock(List<Producto> lista, Integer stock) {
+		List<Producto> productosResultado = new ArrayList<Producto>();
+		if(stock != null && stock >= 0) {
+			for(Producto p: lista) {
+				if(p.getVariantes().get(0).getStock() < stock) {
+					productosResultado.add(p);
+				}
+			}
+		}else {
+			productosResultado.addAll(lista);
+		}
+		return productosResultado;
+	}
+	
 	public EstrategiasDeComercializacion getEstrategiasUtilizadas() {
 		if(this.estrategiasUtilizadas == null){
 		   this.estrategiasUtilizadas = new EstrategiasDeComercializacion();

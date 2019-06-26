@@ -204,12 +204,17 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		List<Pedido> pedidos = new ArrayList<Pedido> ();
 		
 		for(Pedido p: pedidosTotales){
-			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
+			if(this.pedidoEnEstadoConfirmado(p)){
 				pedidos.add(p);
 			}
 		}
 		
 		return pedidos;
+	}
+	
+	private boolean pedidoEnEstadoConfirmado(Pedido p) {
+		return p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)
+				|| p.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO);
 	}
 	
 	private List<Pedido> pedidoColectivoMerge(List<Pedido> pedidosgenerados, PedidoColectivo pedidoColectivo) throws EstadoPedidoIncorrectoException {
@@ -221,7 +226,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		pedidogeneralgrupal.setZona(pedidoColectivo.getZona());
 		pedidogeneralgrupal.setRespuestasAPreguntas(pedidoColectivo.getRespuestasAPreguntas());
 		for(Pedido p : pedidosgenerados){
-			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){
+			if(this.pedidoEnEstadoConfirmado(p)){
 				for(ProductoPedido pp : p.getProductosEnPedido()){
 					pedidogeneralgrupal.agregarProductoPedido(pp, null);
 				}
