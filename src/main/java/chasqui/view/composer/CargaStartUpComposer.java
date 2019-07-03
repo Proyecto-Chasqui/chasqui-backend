@@ -8,7 +8,9 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
@@ -35,6 +37,8 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 
 import chasqui.exceptions.StartUpException;
+import chasqui.model.Caracteristica;
+import chasqui.model.CaracteristicaProductor;
 import chasqui.model.Categoria;
 import chasqui.model.Fabricante;
 import chasqui.model.Imagen;
@@ -42,6 +46,7 @@ import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.services.impl.FileSaver;
+import chasqui.services.interfaces.CaracteristicaService;
 import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.genericEvents.Refresher;
@@ -59,6 +64,15 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	@Autowired
 	private UsuarioService usuarioService;
 	private ProductorService productorService;
+	private CaracteristicaService caracteristicaService;
+	
+	private Map<String, CaracteristicaProductor> caracteristicasProductor;
+	private Map<String, Caracteristica> caracteristicasProducto;
+	
+	// Codigos
+	
+
+	Map<String,String> codigos;
 	
 	// Configuracion de las hojas del import
 	
@@ -68,16 +82,20 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	// Configuracion de las columnas del import
 
 	private int productor_nombre = 0;
-	private int productor_descripcionCorta = 1;
-	private int productor_descripcionLarga = 2;
+	private int productor_sellos = 1;
+	private int productor_descripcionCorta = 2;
+	private int productor_descripcionLarga = 3;
 	
 	private int producto_nombre = 0;
 	private int producto_precio = 1;
-	private int producto_productor = 2;
-	private int producto_categoria = 3;
-	private int producto_stock = 4;
-	private int producto_codigo = 5;
-	private int producto_descripcion = 6;
+	private int producto_sellos = 2;
+	private int producto_productor = 3;
+	private int producto_categoria = 4;
+	private int producto_stock = 5;
+	private int producto_codigo = 6;
+	private int producto_descripcion = 7;
+	
+	private String sellos_separator = ",";
 	
 	// Errores
 	
@@ -106,11 +124,35 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		// obtenerVendedorPorID
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		productorService = (ProductorService) SpringUtil.getBean("productorService");
+		caracteristicaService = (CaracteristicaService) SpringUtil.getBean("caracteristicaService");
 		fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
 
 		vendedor = (Vendedor) Executions.getCurrent().getArg().get("vendedor");
 		vendedor = usuarioService.obtenerVendedorPorID(vendedor.getId());
 		usuarioService.inicializarListasDe(vendedor);
+		
+		// Codigos de Sellos
+		codigos = new HashMap<String, String>();
+		codigos.put("Cooperativas", "COOPES");
+		codigos.put("Agricultura Familiar", "AGRFML");
+		codigos.put("Empresa Social", "EMPSOC");
+		codigos.put("Recuperadas", "RECPER");
+		codigos.put("Agroecológico", "AGRECO");
+		codigos.put("Artesanal", "ARTESA");
+		codigos.put("En Red", "EN_RED");
+		codigos.put("Kilómetro Cero", "KMCERO");
+		codigos.put("Orgánico", "ORGANI");
+		codigos.put("Reciclado", "RECICL");
+		
+		caracteristicasProductor = new HashMap<String, CaracteristicaProductor>();		
+		for(CaracteristicaProductor c: caracteristicaService.buscarCaracteristicasProductor()){
+			caracteristicasProductor.put(nombreSelloToCodigo(c.getNombre()), c);
+		}
+		
+		caracteristicasProducto = new HashMap<String, Caracteristica>();		
+		for(Caracteristica c: caracteristicaService.buscarCaracteristicasProducto()){
+			caracteristicasProducto.put(nombreSelloToCodigo(c.getNombre()), c);
+		}
 		
 		listboxErrores.setItemRenderer(new StartupErrorsRenderer(this.self));
 		
@@ -169,6 +211,15 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			if(nombre == ""){
 				errores.add("Productor en linea " + (i+1) + " sin nombre");
 			}
+			
+			String[] sellos = cellContentToSellos(row.getCell(productor_sellos).toString());
+			
+			for(String sello: sellos){
+				if(!verifySelloProductor(sello)){
+					errores.add("Productor en linea " + (i+1) + " con sello invalido (" + sello + ")");
+				}
+			}
+			
 			res.add(new Fabricante(nombre));
 		}
 		return res;
@@ -209,6 +260,13 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 				}
 			} catch (Exception e){
 				errores.add("Producto en linea " + (i+1) + " sin precio");
+			}
+			
+			String[] sellos = cellContentToSellos(row.getCell(producto_sellos).toString());
+			for(String sello: sellos){
+				if(!verifySelloProducto(sello)){
+					errores.add("Producto en linea " + (i+1) + " con sello invalido (" + sello + ")");
+				}
 			}
 			
 			try{
@@ -255,6 +313,9 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			Row row = sheet.getRow(i);
 			Fabricante nuevo = new Fabricante(row.getCell(productor_nombre).toString());
 			
+			//Seteo Sellos
+			nuevo.setCaracteristicas(getSellosProductor(row.getCell(productor_sellos).toString()));
+			
 			// Seteo de la descripcion corta
 			String descripcionCorta = row.getCell(productor_descripcionCorta).toString();
 			descripcionCorta = (descripcionCorta == "") ? "Sin descripción" : descripcionCorta;
@@ -296,6 +357,8 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			Fabricante productorDelProducto = productores.get(productores.lastIndexOf(mockFabricante));
 			
 			Producto nuevoProducto = new Producto(rowStr(row, producto_nombre), nuevaCategoria, productorDelProducto);
+			nuevoProducto.setCaracteristicas(getSellosProducto(row.getCell(producto_sellos).toString()));
+			
 			Variante varianteDelProducto = new Variante();
 			varianteDelProducto.setNombre(rowStr(row, producto_nombre));
 			varianteDelProducto.setPrecio(rowDouble(row, producto_precio));
@@ -359,6 +422,53 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		imagen.setPreview(false);
 		return imagen;
 	}
-}
+	
+	private String[] cellContentToSellos(String cellContent){
+		return cellContent.split(sellos_separator);
+	}
+	
+	private boolean verifySelloProductor(String sello){
+		return  sello.equals("COOPES") ||
+				sello.equals("AGRFML") ||
+				sello.equals("EMPSOC") ||
+				sello.equals("RECPER") ||
+				sello.equals("");
+	}
+	
+	private boolean verifySelloProducto(String sello){
+		return  sello.equals("AGRECO") ||
+				sello.equals("ARTESA") ||
+				sello.equals("EN_RED") ||
+				sello.equals("KMCERO") ||
+				sello.equals("ORGANI") ||
+				sello.equals("RECICL") ||
+				sello.equals("");
+	}
+	
+	private String nombreSelloToCodigo(String nombre){		
+		return codigos.get(nombre);
+	}
+	
+	private List<CaracteristicaProductor> getSellosProductor(String codigos){
+		List<CaracteristicaProductor> res = new ArrayList<CaracteristicaProductor>();
+		
+		for(String c: cellContentToSellos(codigos)){
+			res.add(caracteristicasProductor.get(c));
+		}
+			
+		return res;
+	}
 
 	
+	private List<Caracteristica> getSellosProducto(String codigos){
+		List<Caracteristica> res = new ArrayList<Caracteristica>();
+		
+		for(String c: cellContentToSellos(codigos)){
+			res.add(caracteristicasProducto.get(c));
+		}
+			
+		return res;
+	}
+
+	
+}
