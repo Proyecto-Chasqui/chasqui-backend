@@ -20,6 +20,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Include;
+import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Messagebox;
@@ -99,6 +100,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Integer numeroMaxDestacados = 6;
 	private Textbox busquedaPorCodigoProducto;
 	private Textbox busquedaPorNombreProductor;
+	private Intbox busquedaPorStock;
 	private List<String> destacado;
 	private List<String> visibilidad;
 	private String destacadoSeleccionado;
@@ -556,7 +558,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 				fabricanteSeleccionadoId = fabricanteSeleccionado.getId();
 			}
 			productosFiltrados.clear();	
-			productosFiltrados.addAll(usuarioLogueado.obtenerProductosDelFabricante(fabricanteSeleccionadoId,busquedaPorCodigoProducto.getValue(),destacado,habilitado));
+			productosFiltrados.addAll(usuarioLogueado.obtenerProductosDelFabricante(fabricanteSeleccionadoId,busquedaPorCodigoProducto.getValue(),destacado,habilitado,busquedaPorStock.getValue()));
 		}else{
 			this.onClick$limpiarCamposbtn();
 		}
@@ -599,6 +601,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		destacadoSeleccionado = null;
 		fabricanteSeleccionado = null;
 		busquedaPorCodigoProducto.setValue(null);
+		busquedaPorStock.setValue(null);
 		this.binder.loadAll();
 	}
 	

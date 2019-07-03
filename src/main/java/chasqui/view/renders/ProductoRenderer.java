@@ -6,7 +6,6 @@ import java.util.Map;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -15,11 +14,9 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
-import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
 import chasqui.model.Producto;
-import chasqui.view.composer.PedidosComposer;
 
 public class ProductoRenderer implements ListitemRenderer<Producto>{
 
@@ -38,7 +35,8 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		Listcell c6 = new Listcell();
 		Listcell c7 = new Listcell();
 		Listcell c8 = new Listcell();
-		Hbox hboxImagenes = new Hbox();		
+		Listcell c9 = new Listcell(p.getVariantes().get(0).getStock().toString());
+		Hbox hboxImagenes = new Hbox();
 		hboxImagenes.setAlign("center");
 		
 		if(p.getVariantes().get(0).getDestacado()) {
@@ -55,6 +53,10 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		}else {
 			c8.setLabel("Visible");
 			c8.setStyle("color:green;font-family:Arial Black;");
+		}
+		
+		if(p.getVariantes().get(0).getStock() == 0) {
+			c9.setStyle("color:red;font-family:Arial Black;");
 		}
 		
 		Map<String,Object>params1 = new HashMap<String,Object>();
@@ -128,9 +130,10 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		
 		menubar.setSclass("selectorproductos");
 		
-		c1.setParent(item);
-		c2.setParent(item);
-		c5.setParent(item);
+		c1.setParent(item); // Producto
+		c2.setParent(item); // Productor
+		c5.setParent(item); // Categoria
+		c9.setParent(item);	// Stock
 		menuitemdetalle.setParent(menupop);
 		menuitemedit.setParent(menupop);
 		menuitemedestacar.setParent(menupop);
