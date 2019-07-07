@@ -130,6 +130,19 @@ public class VendedorListener {
 	}
 	
 	@GET
+	@Path("/puntosDeRetiro/id/{idVendedor}")
+	@Produces("application/json")
+	public Response obtenerPuntosDeRetiroPorIdDeVendedor(@PathParam("idVendedor")Integer idVendedor){
+		try{
+			return Response.ok(vendedorService.obtenerVendedorPorId(idVendedor).getPuntosDeRetiro()).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch(Exception e){			
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	@GET
 	@Path("/preguntasDeConsumoIndividual/{nombreVendedor}")
 	@Produces("application/json")
 	public Response obtenerPreguntasDeConsumoIndividual(@PathParam("nombreVendedor")String nombreVendedor){
