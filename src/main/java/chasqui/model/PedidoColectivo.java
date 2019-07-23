@@ -148,7 +148,14 @@ public class PedidoColectivo implements IPedido{
 		}
 	}
 	
-
+	public boolean tieneAlgunPedidoConfirmado() {
+		for (Pedido pedido : pedidosIndividuales.values()) {
+			if (pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public boolean tienePedidosAbiertos() {
 		for (Pedido pedido : pedidosIndividuales.values()) {
