@@ -150,7 +150,7 @@ public class PedidoColectivo implements IPedido{
 	
 	public boolean tieneAlgunPedidoConfirmado() {
 		for (Pedido pedido : pedidosIndividuales.values()) {
-			if (pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+			if (pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)||pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)) {
 				return true;
 			}
 		}
