@@ -115,7 +115,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			direccion = pedidoColectivo.getDireccionEntrega().getCalle() + " " + pedidoColectivo.getDireccionEntrega().getAltura();
 		}
 		if(pedidoColectivo.getPuntoDeRetiro() != null){
-			direccion = this.reducirTextoA("Punto de Retiro: " + pedidoColectivo.getPuntoDeRetiro().getNombre(), 24);
+			direccion = this.reducirTextoA("PR: " + pedidoColectivo.getPuntoDeRetiro().getNombre(), 24);
 		}
 		if(direccion.equals("")) {
 			direccion = "N/D";

@@ -108,7 +108,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			direccion = pedido.getDireccionEntrega().getCalle() + " " + pedido.getDireccionEntrega().getAltura();
 		}
 		if(pedido.getPuntoDeRetiro() != null){
-			direccion = this.reducirTextoA("Punto de Retiro: " + pedido.getPuntoDeRetiro().getNombre(),32);
+			direccion = this.reducirTextoA("PR: " + pedido.getPuntoDeRetiro().getNombre(),32);
 		}
 		celdaDireccion = new Listcell(direccion);
 		if(pedido.getPuntoDeRetiro() != null){
