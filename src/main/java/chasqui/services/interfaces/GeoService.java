@@ -7,6 +7,7 @@ import com.vividsolutions.jts.io.ParseException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.service.rest.request.EliminarZonaRequest;
+import chasqui.service.rest.request.PuntoDeRetiroRequest;
 import chasqui.service.rest.request.ZonaRequest;
 
 public interface GeoService {
@@ -22,5 +23,9 @@ public interface GeoService {
 	void crearGuardarZona(ZonaRequest request) throws Exception;
 
 	void eliminarZona(EliminarZonaRequest request);
+
+	void eliminarPuntoDeRetiro(EliminarZonaRequest request);
+
+	void crearGuardarPR(PuntoDeRetiroRequest request) throws Exception;
 
 }

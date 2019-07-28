@@ -8,7 +8,7 @@
 apply="chasqui.view.composer.ZonasComposer" width="75%"  closable="true">
 
     			<vlayout>
-        			<iframe id="mapFrame" style="width:100%; height:650px;border:1px"></iframe>
+        			<iframe id="mapFrame" style="width:1000px; height:600px;border:1px"></iframe>
     			</vlayout>
 </window>
 </zk>

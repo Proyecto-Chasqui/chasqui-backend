@@ -8,12 +8,15 @@ public class PuntoDeRetiroDTO {
 	String nombre;
 	String mensaje;
 	Direccion direccion;
+	boolean habilitado;
 	
 	public PuntoDeRetiroDTO(PuntoDeRetiro pr){
 		id = pr.getId();
 		nombre = pr.getNombre();
 		mensaje = pr.getDescripcion();
 		direccion = pr.getDireccion();
+		direccion.setGeoUbicacion(null);
+		habilitado = pr.getDisponible();
 	}
 	
 	public Integer getId() {
@@ -42,5 +45,13 @@ public class PuntoDeRetiroDTO {
 
 	public void setDireccion(Direccion direccion) {
 		this.direccion = direccion;
+	}
+
+	public boolean isHabilitado() {
+		return habilitado;
+	}
+
+	public void setHabilitado(boolean habilitado) {
+		this.habilitado = habilitado;
 	}
 }

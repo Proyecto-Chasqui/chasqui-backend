@@ -30,6 +30,7 @@ import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 import chasqui.dao.GrupoDAO;
+import chasqui.dao.PuntoDeRetiroDAO;
 import chasqui.dao.UsuarioDAO;
 import chasqui.dao.VendedorDAO;
 import chasqui.dao.ZonaDAO;
@@ -39,10 +40,12 @@ import chasqui.exceptions.ErrorZona;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.service.rest.request.EliminarZonaRequest;
+import chasqui.service.rest.request.PuntoDeRetiroRequest;
 import chasqui.service.rest.request.ZonaRequest;
 import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.UsuarioService;
@@ -55,6 +58,7 @@ import chasqui.utils.TokenGenerator;
 public class GeoServiceImpl implements GeoService{
 	
 	@Autowired ZonaDAO zonaDAO;
+	@Autowired PuntoDeRetiroDAO puntoDeRetiroDAO;
 	@Autowired VendedorDAO vendedorDAO;
 	@Autowired UsuarioDAO usuarioDAO;
 	@Autowired GrupoDAO grupoDAO;
@@ -422,6 +426,73 @@ public class GeoServiceImpl implements GeoService{
 		}
 		
 	}
+	
+	@Override
+	public void crearGuardarPR(PuntoDeRetiroRequest request) {
+		
+			validarPRRequest(request);
+			String latitud = request.getDireccion().getLatitud();
+			String longitud = request.getDireccion().getLongitud();	
+			Point point = new GeometryFactory().createPoint(new Coordinate(Double.parseDouble(latitud),Double.parseDouble(longitud)));
+			PuntoDeRetiro puntoDeRetiro;
+			Vendedor vendedor = vendedorDAO.obtenerVendedorPorId(request.getIdVendedor());
+			if(request.getId()!=null) {
+				puntoDeRetiro = vendedor.obtenerPuntoDeRetiro(request.getId());
+			}else {
+				puntoDeRetiro = new PuntoDeRetiro();
+				vendedor.agregarPuntoDeRetiro(puntoDeRetiro);
+			}
+			puntoDeRetiro.setNombre(request.getNombre());
+			puntoDeRetiro.setDescripcion(request.getDescripcion());
+			puntoDeRetiro.setDisponible(request.isHabilitado());
+			puntoDeRetiro.setDireccion(request.getDireccion());
+			puntoDeRetiro.setGeoUbicacion(point);
+			usuarioDAO.guardarUsuario(vendedor);
+			request.setId(puntoDeRetiro.getId());
+	}
+	
+	private void validarPRRequest(PuntoDeRetiroRequest request) {
+		
+		if(! tokenGenerator.tokenActivo(request.getToken())) {
+			throw new ErrorZona("ez001");
+		}
+		
+		if(request.getDireccion() == null) {
+			throw new ErrorZona("ez002");
+		}
+		
+		if(request.getDireccion().getLatitud() == null) {
+			throw new ErrorZona("ez002");
+		}
+		
+		if(request.getDireccion().getLongitud() == null) {
+			throw new ErrorZona("ez002");
+		}
+		
+		if(request.getIdVendedor() == null) {
+			throw new ErrorZona("ez004");
+		}
+		
+		if(request.getDescripcion().isEmpty()) {
+			throw new ErrorZona("ez005");
+		}
+		
+		if(request.getNombre().isEmpty()) {
+			throw new ErrorZona("ez006");
+		}
+		/*
+		//verifica que ante una zona nueva no exista el nombre en las zonas existentes.
+		if( request.getId() == null && existeZonaConNombre(request) ) {
+			throw new ErrorZona("ez007");
+		}
+		//verifica que en caso de cambio de nombre a una zona existente, ese cambio de nombre no este asignado a otra zona.
+		if(!laZonaConIdTieneElNombre(request)) {
+			if(existeZonaConNombre(request)){
+				throw new ErrorZona("ez007");
+			}
+		}
+		*/
+	}
 
 	@Override
 	public void eliminarZona(EliminarZonaRequest request) {
@@ -429,6 +500,15 @@ public class GeoServiceImpl implements GeoService{
 		Zona zona = this.zonaDAO.obtenerZonaPorId(request.getId());
 		usuarioService.inicializarListasDe(usuario);
 		usuario.eliminarZona(zona);
+		usuarioService.guardarUsuario(usuario);
+	}
+	
+	@Override
+	public void eliminarPuntoDeRetiro(EliminarZonaRequest request) {
+		Vendedor usuario = this.usuarioDAO.obtenerVendedorPorID(request.getIdVendedor());
+		PuntoDeRetiro puntoDeRetiro = puntoDeRetiroDAO.obtenerPuntoDeRetiro(request.getId());
+		usuarioService.inicializarListasDe(usuario);
+		usuario.eliminarPuntoDeRetiro(puntoDeRetiro);
 		usuarioService.guardarUsuario(usuario);
 	}	
 	

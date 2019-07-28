@@ -134,7 +134,7 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerPuntosDeRetiroPorIdDeVendedor(@PathParam("idVendedor")Integer idVendedor){
 		try{
-			return Response.ok(vendedorService.obtenerVendedorPorId(idVendedor).getPuntosDeRetiro()).build();
+			return Response.ok(new PuntosDeRetiroResponse(vendedorService.obtenerVendedorPorId(idVendedor).getPuntosDeRetiro())).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){			
