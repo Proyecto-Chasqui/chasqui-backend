@@ -1,5 +1,6 @@
 package chasqui.model;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ public class PedidoColectivo implements IPedido{
 	private String comentario;
 	private Map<String,String> respuestasAPreguntas;
 	private GrupoCC colectivo;
+	DecimalFormat df = new DecimalFormat("#.##");
 	
 	public PedidoColectivo() {
 		pedidosIndividuales = new HashMap<String,Pedido>();
@@ -65,7 +67,13 @@ public class PedidoColectivo implements IPedido{
 
 	public Pedido buscarPedidoParaCliente(String usuarioBuscado) {
 		return this.pedidosIndividuales.get(usuarioBuscado);
-	}	
+	}
+	
+	private Double trim2decimals(Double d) {
+		String trim = df.format(d); 
+		Double value = Double.parseDouble(trim.replace(",","."));
+		return value;
+	}
 
 	@Override
 	public Double getMontoTotal() {
@@ -75,7 +83,7 @@ public class PedidoColectivo implements IPedido{
 				total=total+pedido.getMontoActual();
 			}
 		}			
-		return total;
+		return trim2decimals(total);
 	}
 	
 	private boolean estaConfirmado(String estado) {
@@ -148,7 +156,14 @@ public class PedidoColectivo implements IPedido{
 		}
 	}
 	
-
+	public boolean tieneAlgunPedidoConfirmado() {
+		for (Pedido pedido : pedidosIndividuales.values()) {
+			if (pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)||pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public boolean tienePedidosAbiertos() {
 		for (Pedido pedido : pedidosIndividuales.values()) {

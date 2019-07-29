@@ -106,6 +106,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	private Combobox prCombobox;
 	private String prSeleccionado;
 	private VendedorService vendedorService;
+	private List<Pedido> pedidosSeleccionados;
 //	private Integer maximaPaginaVisitada = 1;
 	
 	public void doAfterCompose(Component component) throws Exception{
@@ -214,6 +215,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		buscadorPorCliente.setValue(null);
 		pedidos = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
 		prCombobox.setValue("");
+		idsSeleccionados = new ArrayList<Integer>();
 		this.binder.loadAll();
 	}
 
@@ -342,10 +344,26 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	}
 	
 	public void onSelect$listboxPedidos(SelectEvent evt) {
-		idsSeleccionados = new ArrayList<Integer>();		
-		ArrayList<Object> ch =  new ArrayList<>(Arrays.asList(evt.getSelectedItems().toArray()));
+		idsSeleccionados = new ArrayList<Integer>();
+		ArrayList<Object> ch =  new ArrayList<>(Arrays.asList(evt.getPreviousSelectedObjects().toArray()));
+		insertObjectsFromTo(Arrays.asList(evt.getSelectedObjects().toArray()),ch);
+		removeObjectsFromTo(Arrays.asList(evt.getUnselectedObjects().toArray()),ch);
 		for(Object check: ch){
-				idsSeleccionados.add(Integer.parseInt(((Listitem) check).getLabel()));
+				idsSeleccionados.add(((Pedido) check).getId());
+		}
+		
+	}
+	
+	private void insertObjectsFromTo(List<Object> from, ArrayList<Object> to){
+		for(Object element: from){
+			if(!to.contains(element)) {
+				to.add(element);
+			}			
+		}
+	}
+	private void removeObjectsFromTo(List<Object> from, ArrayList<Object> to){
+		for(Object element: from){
+			to.remove(element);
 		}
 	}
 	
@@ -366,17 +384,54 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	}
 	
 	public void onClick$exportarSeleccionados() throws Exception{
-		List<Pedido> pedidosSeleccionados = new ArrayList<Pedido>();
+		pedidosSeleccionados = new ArrayList<Pedido>();
 		for(Pedido p: pedidos){
 			for(Integer id : idsSeleccionados){
-				if(p.getId()==id){
+				if(p.getId().equals(id)){
 					pedidosSeleccionados.add(p);
 				}
 			}
 		}
-		export.fullexport(pedidosSeleccionados);
+		if(pedidosSeleccionados.size() > 0) {
+			Messagebox.show(
+					"Va a exportar "+pedidosSeleccionados.size()+" pedido/s, es esto correcto?",
+					"Pregunta",
+		    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO, Messagebox.Button.ABORT},
+		    		new String[] {"Si","No","Cancelar"},
+		    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+	
+				public void onEvent(ClickEvent event) throws Exception {
+					String edata= event.getData().toString();
+					switch (edata){
+					case "YES":
+						try {
+						export.fullexport(pedidosSeleccionados);
+						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
+						} catch (Exception e) {
+							Clients.showNotification(e.getMessage(), "error", window, "middle_center", 20000,true);
+							e.printStackTrace();						
+						}
+						break;
+					case "NO":
+						break;
+					case "ABORT":
+					}
+				}
+				});
+		}else {
+			Clients.showNotification("Debe seleccionar como minimo 1 pedido para exportar", "warning", window, "middle_center", 5000,true);
+		}
+
 	}
 	
+	private String formarListaDeIDs(List<Pedido> pedidosSeleccionados2) {
+		String lista = "";
+		for(Pedido pedido: pedidosSeleccionados2) {
+			lista = lista + pedido.getId() + ", ";
+		}
+		return lista;
+	}
+
 	public void onClick$exportarTodosbtn() throws EstadoPedidoIncorrectoException{
 		Messagebox.show(
 				"¿Desea que se genere un resumen de todos los productos de los pedidos?",
