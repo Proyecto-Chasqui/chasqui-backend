@@ -171,7 +171,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	}
 	
 	public List<PedidoColectivo> filtrarColectivosInactivos(Collection<? extends PedidoColectivo> collection) {
-		List<PedidoColectivo> pedidosActivos = new ArrayList<PedidoColectivo>();
+		/*List<PedidoColectivo> pedidosActivos = new ArrayList<PedidoColectivo>();
 		if(collection != null) {
 			for(PedidoColectivo pedido: collection) {
 				if(pedido.tieneAlgunPedidoConfirmado()) {
@@ -179,7 +179,8 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 				}
 			}
 		}
-		return pedidosActivos;
+		*/
+		return (List<PedidoColectivo>) collection;
 	}
 
 	public List<Pedido> getPedidos() {
