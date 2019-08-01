@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import chasqui.exceptions.ErrorZona;
+import chasqui.exceptions.EstrategiaInvalidaException;
 import chasqui.exceptions.PuntoDeRetiroInexistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
@@ -63,7 +64,7 @@ public class ZonaListener {
 			return Response.ok(toResponseZona(zonaService.buscarZonasBy(idVendedor)),MediaType.APPLICATION_JSON).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
-		}catch(PuntoDeRetiroInexistenteException e){
+		}catch(EstrategiaInvalidaException e){
 			return Response.status(401).build();
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
@@ -111,6 +112,7 @@ public class ZonaListener {
 		ChasquiZonaStatus statusResponse = new ChasquiZonaStatus();
 		try {
 			request = this.toZonaRequest(zonaRequest);
+			validarEstrategiaActiva("ZN",request.getIdVendedor());
 			DateTime d = request.getFechaCierre().plusDays(1);
 			request.setFechaCierre(d);
 			geoService.crearGuardarZona(request);
@@ -120,7 +122,11 @@ public class ZonaListener {
 			statusResponse.setStatus("ERROR");
 			statusResponse.setCode("");
 			return Response.ok(statusResponse).build();
-		} catch (ErrorZona e) {
+		} catch (EstrategiaInvalidaException e) {
+			statusResponse.setCode("ez009");
+			statusResponse.setStatus("ERROR");
+			return Response.ok(statusResponse).build();
+		}catch (ErrorZona e) {
 			statusResponse.setCode(e.getMessage());
 			statusResponse.setStatus("ERROR");
 			return Response.ok(statusResponse).build();
@@ -140,6 +146,7 @@ public class ZonaListener {
 		ChasquiZonaStatus statusResponse = new ChasquiZonaStatus();
 		try {
 			request = this.toEliminarZonaRequest(eliminarZonaRequest);
+			validarEstrategiaActiva("ZN",request.getIdVendedor());
 			if(tokenGenerator.tokenActivo(request.getToken())) {
 				geoService.eliminarZona(request);
 				statusResponse.setStatus("OK");
@@ -153,6 +160,14 @@ public class ZonaListener {
 		} catch (IOException e) {
 			statusResponse.setStatus("ERROR");
 			statusResponse.setCode("");
+			return Response.ok(statusResponse).build();
+		} catch (VendedorInexistenteException e) {
+			statusResponse.setStatus("ERROR");
+			statusResponse.setCode("ez004");
+			return Response.ok(statusResponse).build();
+		} catch (EstrategiaInvalidaException e) {
+			statusResponse.setStatus("ERROR");
+			statusResponse.setCode("ez009");
 			return Response.ok(statusResponse).build();
 		} 
 	}
@@ -187,11 +202,11 @@ public class ZonaListener {
 		return new ZonaGeoJsonResponse(zona);
 	}
 	
-	private void validarEstrategiaActiva(String codigo_estrategia, Integer idVendedor) throws PuntoDeRetiroInexistenteException, VendedorInexistenteException {
+	private void validarEstrategiaActiva(String codigo_estrategia, Integer idVendedor) throws VendedorInexistenteException, EstrategiaInvalidaException {
 		EstrategiasDeComercializacion estrategias = vendedorService.obtenerVendedorPorId(idVendedor).getEstrategiasUtilizadas();
 		switch(codigo_estrategia) {
 			case "ZN": if(!estrategias.isSeleccionDeDireccionDelUsuario()) {
-							throw new PuntoDeRetiroInexistenteException();
+							throw new EstrategiaInvalidaException();
 						};
 					break;
 			}

@@ -10,5 +10,7 @@ public class ErrorCodes {
 	public String ez006 = "El nombre esta vacio";
 	public String ez007 = "Ya existe una zona con el nombre";
 	public String ez008 = "La Zona se solapa, por favor ajuste la zona";
+	public String ez009 = "No tiene permisos para editar las zonas";
+	public String epr001 = "No tiene permisos para editar puntos de retiro";
 	
 }
