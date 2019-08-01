@@ -23,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import chasqui.exceptions.ErrorZona;
+import chasqui.exceptions.PuntoDeRetiroInexistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.Zona;
 import chasqui.service.rest.request.EliminarZonaRequest;
 import chasqui.service.rest.request.ErrorCodesRequest;
@@ -34,6 +36,7 @@ import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.ChasquiZonaStatus;
 import chasqui.service.rest.response.ZonaGeoJsonResponse;
 import chasqui.services.interfaces.GeoService;
+import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
 import chasqui.utils.ErrorCodes;
 import chasqui.utils.TokenGenerator;
@@ -48,13 +51,20 @@ public class ZonaListener {
 	GeoService geoService;
 	@Autowired
 	TokenGenerator tokenGenerator;
+	@Autowired
+	VendedorService vendedorService;
 	
 	@GET
 	@Path("/all/{idVendedor}")
 	@Produces("application/json")
 	public Response obtenerVendedores(@PathParam("idVendedor") Integer idVendedor){
 		try{
+			validarEstrategiaActiva("ZN",idVendedor);
 			return Response.ok(toResponseZona(zonaService.buscarZonasBy(idVendedor)),MediaType.APPLICATION_JSON).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
+		}catch(PuntoDeRetiroInexistenteException e){
+			return Response.status(401).build();
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
 		}
@@ -175,5 +185,15 @@ public class ZonaListener {
 	
 	private ZonaGeoJsonResponse toEchoZona(Zona zona) {
 		return new ZonaGeoJsonResponse(zona);
+	}
+	
+	private void validarEstrategiaActiva(String codigo_estrategia, Integer idVendedor) throws PuntoDeRetiroInexistenteException, VendedorInexistenteException {
+		EstrategiasDeComercializacion estrategias = vendedorService.obtenerVendedorPorId(idVendedor).getEstrategiasUtilizadas();
+		switch(codigo_estrategia) {
+			case "ZN": if(!estrategias.isSeleccionDeDireccionDelUsuario()) {
+							throw new PuntoDeRetiroInexistenteException();
+						};
+					break;
+			}
 	}
 }

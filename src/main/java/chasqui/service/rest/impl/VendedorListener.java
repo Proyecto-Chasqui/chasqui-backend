@@ -13,8 +13,10 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import chasqui.exceptions.PuntoDeRetiroInexistenteException;
 import chasqui.exceptions.TokenInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
@@ -134,14 +136,30 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerPuntosDeRetiroPorIdDeVendedor(@PathParam("idVendedor")Integer idVendedor){
 		try{
+			this.validarEstrategiaActiva("PR", idVendedor);
 			return Response.ok(new PuntosDeRetiroResponse(vendedorService.obtenerVendedorPorId(idVendedor).getPuntosDeRetiro())).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-		}catch(Exception e){			
+		}catch(PuntoDeRetiroInexistenteException e){			
+			return Response.status(401).build();
+		}
+		catch(Exception e){			
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	
+	private void validarEstrategiaActiva(String codigo_estrategia, Integer idVendedor) throws Exception {
+		EstrategiasDeComercializacion estrategias = vendedorService.obtenerVendedorPorId(idVendedor).getEstrategiasUtilizadas();
+		switch(codigo_estrategia) {
+			case "PR": if(!estrategias.isPuntoDeEntrega()) {
+							throw new PuntoDeRetiroInexistenteException();
+						};
+					break;
+			}
+	}
+
+
+
 	@GET
 	@Path("/preguntasDeConsumoIndividual/{nombreVendedor}")
 	@Produces("application/json")
