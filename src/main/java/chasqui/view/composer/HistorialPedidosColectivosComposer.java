@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -115,7 +116,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
 			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO,Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_PREPARADO);
-			pedidosColectivos = (List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo");
+			pedidosColectivos = filtrarColectivosInactivos((List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo"));
 			if(!usuarioLogueado.getIsRoot()) {
 				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(usuarioLogueado.getId()));
 			}
@@ -165,11 +166,22 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		if(zonaSeleccionada !=null){
 			zonaId = zonaSeleccionada.getId();
 		}
-		pedidosColectivos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeVendedorConPRConNombre(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId, prSeleccionado, email));
+		pedidosColectivos.addAll(filtrarColectivosInactivos(pedidoColectivoService.obtenerPedidosColectivosDeVendedorConPRConNombre(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId, prSeleccionado, email)));
 		this.binder.loadAll();
 	}
 	
-	
+	public List<PedidoColectivo> filtrarColectivosInactivos(Collection<? extends PedidoColectivo> collection) {
+		/*List<PedidoColectivo> pedidosActivos = new ArrayList<PedidoColectivo>();
+		if(collection != null) {
+			for(PedidoColectivo pedido: collection) {
+				if(pedido.tieneAlgunPedidoConfirmado()) {
+					pedidosActivos.add(pedido);
+				}
+			}
+		}
+		*/
+		return (List<PedidoColectivo>) collection;
+	}
 
 	public List<Pedido> getPedidos() {
 		return pedidos;
@@ -222,7 +234,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		buscadorPorUsuario.setValue("");
 		prSeleccionado = null;
 		prCombobox.setValue("");
-		pedidosColectivos = (List<PedidoColectivo>) pedidoColectivoService.obtenerPedidosColectivosDeVendedor(usuarioLogueado.getId(),null,null,null,null,null,null);
+		pedidosColectivos = filtrarColectivosInactivos((List<PedidoColectivo>) pedidoColectivoService.obtenerPedidosColectivosDeVendedor(usuarioLogueado.getId(),null,null,null,null,null,null));
 		this.binder.loadAll();
 	}
 	

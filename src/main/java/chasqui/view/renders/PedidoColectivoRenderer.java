@@ -43,8 +43,8 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		celdaId = new Listcell(String.valueOf(pedidoColectivo.getId()));
 		
 		if(pedidoColectivo.getColectivo() !=null) {
-			celdaUsr = new Listcell(pedidoColectivo.getColectivo().getAlias());
-			celdaAdmn = new Listcell(pedidoColectivo.getColectivo().getAdministrador().getEmail());
+			celdaUsr = new Listcell(this.reducirTextoA(pedidoColectivo.getColectivo().getAlias(),16));
+			celdaAdmn = new Listcell(this.reducirTextoA(pedidoColectivo.getColectivo().getAdministrador().getEmail(),32));
 		}else {
 			celdaUsr = new Listcell("N/D");
 			celdaAdmn = new Listcell("N/D");
@@ -82,7 +82,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 				celdaZona.setStyle("color:red;");
 			}
 		} else {
-			celdaZona = new Listcell(zonaPedido.getNombre());
+			celdaZona = new Listcell(this.reducirTextoA(zonaPedido.getNombre(), 16));
 		}
 
 		celdaMontoMinimo = new Listcell("0");
@@ -115,7 +115,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			direccion = pedidoColectivo.getDireccionEntrega().getCalle() + " " + pedidoColectivo.getDireccionEntrega().getAltura();
 		}
 		if(pedidoColectivo.getPuntoDeRetiro() != null){
-			direccion = "Punto de Retiro: " + pedidoColectivo.getPuntoDeRetiro().getNombre();
+			direccion = this.reducirTextoA("PR: " + pedidoColectivo.getPuntoDeRetiro().getNombre(), 24);
 		}
 		if(direccion.equals("")) {
 			direccion = "N/D";
@@ -143,7 +143,18 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		celdaBotones.setParent(item);
 
 	}
-
+	
+	private String reducirTextoA(String texto, Integer cantidadMaxima) {
+		String textoCut = texto;
+		if(textoCut==null) {
+			textoCut = "";
+		}
+		if(textoCut.length() > cantidadMaxima) {
+			textoCut = textoCut.substring(0, cantidadMaxima) + "...";
+		}
+		return textoCut;
+	}
+	
 	private void completarCeldas(Listcell celdaUsr2, Listcell celdaAdmn2,Integer idpedido) {
 		GrupoCC grupo = this.datagrupo.get(idpedido);
 		if(grupo!=null) {

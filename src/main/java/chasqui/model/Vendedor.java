@@ -219,7 +219,7 @@ public class Vendedor extends Usuario{
 		this.zonas = zonas;
 	}
 
-	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId, String codigoProducto, Boolean destacado, Boolean visibilidad, Integer stock) {
+	public Collection<? extends Producto> obtenerProductosDelFabricante(Integer fabricanteSeleccionadoId, String codigoProducto, Boolean destacado, Boolean visibilidad, Integer stock, String nombreDeProducto) {
 		List<Producto>p = new ArrayList<Producto>();
 		for(Fabricante f :fabricantes){
 			p.addAll(f.getProductos());
@@ -229,16 +229,16 @@ public class Vendedor extends Usuario{
 		p = (List<Producto>) this.obtenerProductosDestacados(p, destacado);
 		p = (List<Producto>) this.obtenerProductosHabilitadosDeshabilitados(p, visibilidad);
 		p = (List<Producto>) this.obtenerStock(p, stock);
+		p = (List<Producto>) this.obtenerProductosPorNombre(p, nombreDeProducto);
 		
 		return p;
 	}
-
 
 	private Collection<? extends Producto> obtenerProductosConCodigo(Collection <? extends Producto> lista, String codigoProducto) {
 		List<Producto> productosResultado = new ArrayList<Producto>();
 		if(codigoProducto != null) {
 			for(Producto p: lista) {
-				if(p.getVariantes().get(0).getCodigo().contains(codigoProducto)) {
+				if(p.getVariantes().get(0).getCodigo().matches("(?i).*" + codigoProducto+ ".*")) {
 					productosResultado.add(p);
 				}
 			}
@@ -295,6 +295,20 @@ public class Vendedor extends Usuario{
 		if(stock != null && stock >= 0) {
 			for(Producto p: lista) {
 				if(p.getVariantes().get(0).getStock() < stock) {
+					productosResultado.add(p);
+				}
+			}
+		}else {
+			productosResultado.addAll(lista);
+		}
+		return productosResultado;
+	}
+	
+	private Collection<? extends Producto> obtenerProductosPorNombre(Collection <? extends Producto> lista, String nombreProducto) {
+		List<Producto> productosResultado = new ArrayList<Producto>();
+		if(nombreProducto != null) {
+			for(Producto p: lista) {
+				if(p.getVariantes().get(0).getProducto().getNombre().matches("(?i).*" + nombreProducto+ ".*")) {
 					productosResultado.add(p);
 				}
 			}

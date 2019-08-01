@@ -100,6 +100,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Integer numeroMaxDestacados = 6;
 	private Textbox busquedaPorCodigoProducto;
 	private Textbox busquedaPorNombreProductor;
+	private Textbox busquedaPorNombreProducto;
 	private Intbox busquedaPorStock;
 	private List<String> destacado;
 	private List<String> visibilidad;
@@ -558,7 +559,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 				fabricanteSeleccionadoId = fabricanteSeleccionado.getId();
 			}
 			productosFiltrados.clear();	
-			productosFiltrados.addAll(usuarioLogueado.obtenerProductosDelFabricante(fabricanteSeleccionadoId,busquedaPorCodigoProducto.getValue(),destacado,habilitado,busquedaPorStock.getValue()));
+			productosFiltrados.addAll(usuarioLogueado.obtenerProductosDelFabricante(fabricanteSeleccionadoId,busquedaPorCodigoProducto.getValue(),destacado,habilitado,busquedaPorStock.getValue(), busquedaPorNombreProducto.getValue()));
 		}else{
 			this.onClick$limpiarCamposbtn();
 		}
@@ -601,6 +602,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		destacadoSeleccionado = null;
 		fabricanteSeleccionado = null;
 		busquedaPorCodigoProducto.setValue(null);
+		busquedaPorNombreProducto.setValue(null);
 		busquedaPorStock.setValue(null);
 		this.binder.loadAll();
 	}
