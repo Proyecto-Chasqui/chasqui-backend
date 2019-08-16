@@ -69,6 +69,9 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 	}
 	
 	private void definirOrdenRandom(Criteria c, Integer numeroDeOrden) {
+		if(numeroDeOrden == null) {
+			numeroDeOrden = 0;
+		}
 		System.out.print(numeroDeOrden%10);
 		switch(numeroDeOrden%9) {
 		  case 0:
