@@ -69,6 +69,10 @@ public class GrupoResponse implements Serializable{
 	public void setIdPedidoIndividual(Integer idPedidoIndividual) {
 		this.idPedidoIndividual = idPedidoIndividual;
 	}
+	
+	public GrupoResponse(GrupoCC grupo) {
+		this.setIdGrupo(grupo.getId());
+	}
 
 	public GrupoResponse(GrupoCC grupo,String email) throws ClienteNoPerteneceAGCCException {
 		alias=grupo.getAlias();

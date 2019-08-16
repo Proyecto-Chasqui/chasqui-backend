@@ -39,6 +39,7 @@ import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
+import chasqui.model.InvitacionAGCC;
 import chasqui.model.Pedido;
 import chasqui.service.rest.request.AceptarRequest;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
@@ -54,6 +55,7 @@ import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.GrupoResponse;
 import chasqui.service.rest.response.PedidoResponse;
 import chasqui.services.interfaces.GrupoService;
+import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.PedidoService;
 import freemarker.template.TemplateException;
 
@@ -65,6 +67,8 @@ public class GrupoListener {
 	GrupoService grupoService;
 	@Autowired
 	PedidoService pedidoService;
+	@Autowired
+	private InvitacionService invitacionService;
 
 	@POST
 	@Path("/alta")
@@ -94,12 +98,13 @@ public class GrupoListener {
 	@Produces("application/json")
 	// @Consumes(MediaType.APPLICATION_JSON)
 	public Response confirmarInvitacionGCC(
-			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString){
+			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString) throws ClienteNoPerteneceAGCCException, GrupoCCInexistenteException{
 		try {
 			String emailClienteLogueado = obtenerEmailDeContextoDeSeguridad();
 			AceptarRequest aceptarReq = this.toAceptarRequest(aceptarReqString);
 			grupoService.confirmarInvitacionGCC(aceptarReq.getIdInvitacion(), emailClienteLogueado);
-			return Response.ok().build();
+			InvitacionAGCC invitacion = invitacionService.obtenerInvitacionAGCCporID(aceptarReq.getIdInvitacion());
+			return Response.ok(toResponseSimpleGroup(grupoService.obtenerGrupo(invitacion.getIdGrupo()))).build();
 		} catch (UsuarioInexistenteException e) {
 			return Response.status(RestConstants.CLIENTE_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (IOException e) {
@@ -520,6 +525,10 @@ public class GrupoListener {
 	
 	private GrupoResponse toResponse(GrupoCC grupo, String email) throws ClienteNoPerteneceAGCCException{
 		return new GrupoResponse(grupo, email);
+	}
+	
+	private GrupoResponse toResponseSimpleGroup(GrupoCC grupo) throws ClienteNoPerteneceAGCCException{
+		return new GrupoResponse(grupo);
 	}
 
 	private List<PedidoResponse> toResponse(Map<Integer, Pedido> pedidos, Pedido pedidoIndividual)
