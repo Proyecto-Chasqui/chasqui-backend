@@ -115,7 +115,7 @@ public class ProductoListener {
 	public Response obtenerProductosConMultiplesFiltros(@Multipart(value="productoRequest", type="application/json")final String productoRequest){
 		try{
 			ByMultiplesFiltros request = toByMultiplesFiltros(productoRequest);	
-			List<Variante> productos= productoService.obtenerVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(),request.getIdMedalla(), request.getIdProductor(), request.getIdMedallaProductor(), request.getQuery(), request.getPagina(), request.getCantItems());
+			List<Variante> productos= productoService.obtenerVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(),request.getIdMedalla(), request.getIdProductor(), request.getIdMedallaProductor(), request.getQuery(), request.getPagina(), request.getCantItems(), request.getNumeroDeOrden());
 			///
 
 			Long cantidadDeVariantes = productoService.totalVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(), request.getIdMedalla(), request.getIdProductor(), request.getIdMedallaProductor(), request.getQuery());
