@@ -122,9 +122,14 @@ public class Pedido implements IPedido {
 	public void setMontoMinimo(Double montoMinimo) {
 		this.montoMinimo = montoMinimo;
 	}
-
+	//patch para error en monto actual de pedidos revividos, remover cuando se detecte el error superior.
 	public Double getMontoActual() {
-		return trim2decimals(montoActual);
+		double monto = 0.0; 
+		for (ProductoPedido p : productosEnPedido) {
+			monto = monto + (p.getCantidad() * p.getPrecio());
+		}
+		//return trim2decimals(montoActual);
+		return trim2decimals(monto);
 	}
 	
 	private Double trim2decimals(Double d) {

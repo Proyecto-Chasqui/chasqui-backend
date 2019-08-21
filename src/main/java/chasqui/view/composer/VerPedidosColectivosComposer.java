@@ -184,8 +184,8 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		try {
 			Clients.showBusy(window,"Generando el archivo, por favor espere...");
 			PedidoColectivo pedidoc = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
-			List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
 			this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+			List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
 			pedidomerge.addAll(pedidosDentroDeColectivo);
 			pedidomerge = obtenerSoloConfirmados(pedidomerge);
 			export.exportColectivos(pedidomerge);
