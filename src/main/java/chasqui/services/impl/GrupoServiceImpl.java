@@ -378,12 +378,11 @@ public class GrupoServiceImpl implements GrupoService {
 					if(p != null) {
 						if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
 							notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
-							mailService.enviarEmailCierreDePedidoColectivo(pc);
 						}
 					}
 				}
 			}
-			
+			mailService.enviarEmailCierreDePedidoColectivo(pc);
 		}
 		else{
 			throw new RequestIncorrectoException("El usuario "+emailSolicitante + " no es el administrador del grupo:"+ grupo.getAlias());
