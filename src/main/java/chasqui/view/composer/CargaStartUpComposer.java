@@ -17,6 +17,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -212,7 +213,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 				errores.add("Productor en linea " + (i+1) + " sin nombre");
 			}
 			
-			String[] sellos = cellContentToSellos(row.getCell(productor_sellos).toString());
+			String[] sellos = cellContentToSellos(safeToString(row.getCell(productor_sellos)));
 			
 			for(String sello: sellos){
 				if(!verifySelloProductor(sello)){
@@ -262,7 +263,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 				errores.add("Producto en linea " + (i+1) + " sin precio");
 			}
 			
-			String[] sellos = cellContentToSellos(row.getCell(producto_sellos).toString());
+			String[] sellos = cellContentToSellos(safeToString(row.getCell(producto_sellos)));
 			for(String sello: sellos){
 				if(!verifySelloProducto(sello)){
 					errores.add("Producto en linea " + (i+1) + " con sello invalido (" + sello + ")");
@@ -314,7 +315,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			Fabricante nuevo = new Fabricante(row.getCell(productor_nombre).toString());
 			
 			//Seteo Sellos
-			nuevo.setCaracteristicas(getSellosProductor(row.getCell(productor_sellos).toString()));
+			nuevo.setCaracteristicas(getSellosProductor(safeToString(row.getCell(productor_sellos))));
 			
 			// Seteo de la descripcion corta
 			String descripcionCorta = row.getCell(productor_descripcionCorta).toString();
@@ -357,7 +358,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			Fabricante productorDelProducto = productores.get(productores.lastIndexOf(mockFabricante));
 			
 			Producto nuevoProducto = new Producto(rowStr(row, producto_nombre), nuevaCategoria, productorDelProducto);
-			nuevoProducto.setCaracteristicas(getSellosProducto(row.getCell(producto_sellos).toString()));
+			nuevoProducto.setCaracteristicas(getSellosProducto(safeToString(row.getCell(producto_sellos))));
 			
 			Variante varianteDelProducto = new Variante();
 			varianteDelProducto.setNombre(rowStr(row, producto_nombre));
@@ -424,7 +425,11 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	}
 	
 	private String[] cellContentToSellos(String cellContent){
-		return cellContent.split(sellos_separator);
+		if(cellContent == null){
+			return new String[0];
+		}else{
+			return cellContent.split(sellos_separator);	
+		}
 	}
 	
 	private boolean verifySelloProductor(String sello){
@@ -468,6 +473,14 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		}
 			
 		return res;
+	}
+	
+	private String safeToString(Cell content){
+		if(content == null){
+			return "";
+		} else {
+			return content.toString();
+		}
 	}
 
 	
