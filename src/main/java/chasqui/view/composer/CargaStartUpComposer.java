@@ -208,7 +208,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		List<Fabricante> res = new ArrayList<Fabricante>();
 		for(int i = 1; i<=cantidadFabricantes; i++){
 			Row row = sheetProductores.getRow(i);
-			String nombre = row.getCell(productor_nombre).toString();
+			String nombre = safeToString(row.getCell(productor_nombre));
 			if(nombre == ""){
 				errores.add("Productor en linea " + (i+1) + " sin nombre");
 			}
@@ -312,17 +312,17 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		int cantidadFabricantes = sheet.getLastRowNum();
 		for(int i = 1; i<=cantidadFabricantes; i++){
 			Row row = sheet.getRow(i);
-			Fabricante nuevo = new Fabricante(row.getCell(productor_nombre).toString());
+			Fabricante nuevo = new Fabricante(safeToString(row.getCell(productor_nombre)));
 			
 			//Seteo Sellos
 			nuevo.setCaracteristicas(getSellosProductor(safeToString(row.getCell(productor_sellos))));
 			
 			// Seteo de la descripcion corta
-			String descripcionCorta = row.getCell(productor_descripcionCorta).toString();
+			String descripcionCorta = safeToString(row.getCell(productor_descripcionCorta));
 			descripcionCorta = (descripcionCorta == "") ? "Sin descripción" : descripcionCorta;
 			nuevo.setDescripcionCorta(descripcionCorta);
 			// Seteo de la descripcion larga
-			String descripcionLarga = row.getCell(productor_descripcionLarga).toString();
+			String descripcionLarga = safeToString(row.getCell(productor_descripcionLarga));
 			descripcionLarga = (descripcionLarga == "") ? "Sin descripción" : descripcionLarga;
 			nuevo.setDescripcionLarga(descripcionLarga);
 			
@@ -395,7 +395,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	
 	// Funciones para obtener valores con cierto tipo desde una celda
 	private String rowStr(Row row, int i){
-		return row.getCell(i).toString();
+		return safeToString(row.getCell(i));
 	}
 	
 	private Double rowDouble(Row row, int i){
