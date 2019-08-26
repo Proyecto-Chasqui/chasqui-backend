@@ -43,7 +43,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 
 		celdaId = new Listcell(String.valueOf(pedido.getId()));
 
-		celdaUsr = new Listcell(pedido.getCliente().getEmail());
+		celdaUsr = new Listcell(this.reducirTextoA(pedido.getCliente().getEmail(),32));
 
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 		Date d = new Date(pedido.getFechaCreacion().getMillis());
@@ -68,7 +68,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 				celdaZona.setStyle("color:red;");
 			}
 		} else {
-			celdaZona = new Listcell(zonaPedido.getNombre());
+			celdaZona = new Listcell(this.reducirTextoA(zonaPedido.getNombre(), 16));
 		}
 
 		celdaMontoMinimo = new Listcell(String.valueOf(pedido.getMontoMinimo()));
@@ -108,7 +108,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 			direccion = pedido.getDireccionEntrega().getCalle() + " " + pedido.getDireccionEntrega().getAltura();
 		}
 		if(pedido.getPuntoDeRetiro() != null){
-			direccion = "Punto de Retiro: " + pedido.getPuntoDeRetiro().getNombre();
+			direccion = this.reducirTextoA("PR: " + pedido.getPuntoDeRetiro().getNombre(),32);
 		}
 		celdaDireccion = new Listcell(direccion);
 		if(pedido.getPuntoDeRetiro() != null){
@@ -138,7 +138,18 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		}
 		return ret;
 	}
-
+	
+	private String reducirTextoA(String texto, Integer cantidadMaxima) {
+		String textoCut = texto;
+		if(textoCut==null) {
+			textoCut = "";
+		}
+		if(textoCut.length() > cantidadMaxima) {
+			textoCut = textoCut.substring(0, cantidadMaxima) + "...";
+		}
+		return textoCut;
+	}
+	
 	private void configurarAcciones(final Pedido pedido) {
 		Space espacio = new Space();
 		espacio.setSpacing("10px");
