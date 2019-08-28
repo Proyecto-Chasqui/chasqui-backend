@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -292,6 +293,22 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 			public Variante doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria criteria = session.createCriteria(Variante.class);
 				criteria.add(Restrictions.eq("id", id));
+				return (Variante) criteria.uniqueResult();
+			}
+		});
+	}
+	
+	@Override
+	public Variante obtenervariantePorCodigoProducto(final String codigoProducto, final Integer idVendedor) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<Variante>() {
+
+			@Override
+			public Variante doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Variante.class);
+				criteria.createAlias("producto", "p")
+				.createAlias("p.fabricante", "f")
+				.add(Restrictions.eq("f.idVendedor",idVendedor))
+				.add(Restrictions.like("codigo", codigoProducto, MatchMode.EXACT));
 				return (Variante) criteria.uniqueResult();
 			}
 		});

@@ -63,4 +63,5 @@ public interface ProductoDAO {
 	 */
 	public Long obtenerTotalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
 			Integer idProductor, Integer idSelloProductor, String query);
+	Variante obtenervariantePorCodigoProducto(String codigoProducto, Integer idVendedor);
 }

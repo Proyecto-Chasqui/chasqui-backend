@@ -38,6 +38,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 
 import chasqui.exceptions.StartUpException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Caracteristica;
 import chasqui.model.CaracteristicaProductor;
 import chasqui.model.Categoria;
@@ -48,6 +49,8 @@ import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.services.impl.FileSaver;
 import chasqui.services.interfaces.CaracteristicaService;
+import chasqui.services.interfaces.CategoriaService;
+import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.genericEvents.Refresher;
@@ -66,6 +69,8 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	private UsuarioService usuarioService;
 	private ProductorService productorService;
 	private CaracteristicaService caracteristicaService;
+	private ProductoService productoService;
+	private CategoriaService categoriaService;
 	
 	private Map<String, CaracteristicaProductor> caracteristicasProductor;
 	private Map<String, Caracteristica> caracteristicasProducto;
@@ -126,6 +131,8 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		productorService = (ProductorService) SpringUtil.getBean("productorService");
 		caracteristicaService = (CaracteristicaService) SpringUtil.getBean("caracteristicaService");
+		productoService = (ProductoService) SpringUtil.getBean("productoService");
+		categoriaService = (CategoriaService) SpringUtil.getBean("categoriaService");
 		fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
 
 		vendedor = (Vendedor) Executions.getCurrent().getArg().get("vendedor");
@@ -189,6 +196,9 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			e.printStackTrace();
 		} catch (StartUpException e){
 			
+		} catch (VendedorInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		binder.loadAll();
@@ -293,7 +303,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	}
 	
 	
-	private void readExcel(Workbook wb) throws IOException, EncryptedDocumentException, InvalidFormatException{
+	private void readExcel(Workbook wb) throws IOException, EncryptedDocumentException, InvalidFormatException, VendedorInexistenteException{
 		Hibernate.initialize(vendedor.getCategorias());
 		Hibernate.initialize(vendedor.getFabricantes());
 		
@@ -307,92 +317,157 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		
 	}
 	
-	private List<Fabricante> getNuevosProductoresFromSheet(Sheet sheet){
+	private List<Fabricante> getNuevosProductoresFromSheet(Sheet sheet) throws VendedorInexistenteException{
+
 		List<Fabricante> res = new ArrayList<Fabricante>();
 		int cantidadFabricantes = sheet.getLastRowNum();
 		for(int i = 1; i<=cantidadFabricantes; i++){
 			Row row = sheet.getRow(i);
-			Fabricante nuevo = new Fabricante(safeToString(row.getCell(productor_nombre)));
-			
-			//Seteo Sellos
-			nuevo.setCaracteristicas(getSellosProductor(safeToString(row.getCell(productor_sellos))));
-			
-			// Seteo de la descripcion corta
-			String descripcionCorta = safeToString(row.getCell(productor_descripcionCorta));
-			descripcionCorta = (descripcionCorta == "") ? "Sin descripción" : descripcionCorta;
-			nuevo.setDescripcionCorta(descripcionCorta);
-			// Seteo de la descripcion larga
-			String descripcionLarga = safeToString(row.getCell(productor_descripcionLarga));
-			descripcionLarga = (descripcionLarga == "") ? "Sin descripción" : descripcionLarga;
-			nuevo.setDescripcionLarga(descripcionLarga);
-			
-			productorService.guardar(nuevo);
-			vendedor.agregarProductor(nuevo);
-			usuarioService.guardarUsuario(vendedor);
-			res.add(nuevo);
+			Fabricante nuevo = crearOBuscarFabricante(safeToString(row.getCell(productor_nombre)));
+			this.crearEditarProductor(res,row, nuevo);
 		}
 		return res;
 	}
 	
 	
-	private void getNuevosProductosFromSheet(Sheet sheet, List<Fabricante> productores) throws IOException{
+	private Fabricante crearOBuscarFabricante(String nombreFabricante) throws VendedorInexistenteException {
+		Fabricante res = null;
+		res = productorService.obtenerProductorDeConNombreExacto(vendedor.getId(), nombreFabricante);
+		if(res == null) {
+			res = new Fabricante(nombreFabricante);
+		}else {
+			productorService.inicializarListasDeProducto(res);
+		}
+		return res;
+	}
+
+	private void crearEditarProductor(List<Fabricante> res, Row row, Fabricante productor) {
+		
+		
+		//Seteo Sellos
+		productor.setCaracteristicas(getSellosProductor(safeToString(row.getCell(productor_sellos))));
+		
+		// Seteo de la descripcion corta
+		String descripcionCorta = safeToString(row.getCell(productor_descripcionCorta));
+		descripcionCorta = (descripcionCorta == "") ? "Sin descripción" : descripcionCorta;
+		productor.setDescripcionCorta(descripcionCorta);
+		// Seteo de la descripcion larga
+		String descripcionLarga = safeToString(row.getCell(productor_descripcionLarga));
+		descripcionLarga = (descripcionLarga == "") ? "Sin descripción" : descripcionLarga;
+		productor.setDescripcionLarga(descripcionLarga);
+		
+		productorService.guardar(productor);
+		if(!(vendedor.contieneProductor(productor.getNombre()))) {
+			System.out.println("CREANDO PRODUCTOR: " +productor.getNombre() );
+			vendedor.agregarProductor(productor);
+		}else {
+			System.out.println("EDITANDO PRODUCTOR: " +productor.getNombre() );
+		}
+		usuarioService.guardarUsuario(vendedor);
+		res.add(productor);
+	}
+
+	private void getNuevosProductosFromSheet(Sheet sheet, List<Fabricante> productores) throws IOException, VendedorInexistenteException{
 		List<Producto> productos = new ArrayList<Producto>();
 		List<Categoria> categorias = new ArrayList<Categoria>();
 		
 		int cantidadProductos = sheet.getLastRowNum();
 		for(int i = 1; i<= cantidadProductos; i++){
 			Row row = sheet.getRow(i);
-			Categoria nuevaCategoria = new Categoria(vendedor, rowStr(row, producto_categoria));
-			if(categorias.lastIndexOf(nuevaCategoria) > -1){
-				// Esta definicion es para no tener Categorias repetidas en la lista
-				nuevaCategoria = categorias.get(categorias.lastIndexOf(nuevaCategoria));
-			} else {
+			//sistema de categorias
+			Categoria nuevaCategoria = null;
+			nuevaCategoria = categoriaService.obtenerCategoriaConNombreDe(rowStr(row, producto_categoria), vendedor.getId());
+			if(nuevaCategoria != null) {
+				System.out.println("EDITANDO NUEVA CATEGORIA: " + rowStr(row, producto_categoria));
+				this.crearCategoria(row,categorias,nuevaCategoria, false);
+			}else {
+				System.out.println("CREANDO NUEVA CATEGORIA: " + rowStr(row, producto_categoria));
+				nuevaCategoria = new Categoria(vendedor, rowStr(row, producto_categoria));
+				this.crearCategoria(row, categorias, nuevaCategoria, true);
+			}
+			
+			//sistema de productos
+			Fabricante mockFabricante = new Fabricante(rowStr(row, producto_productor));
+			Fabricante productorDelProducto = productores.get(productores.lastIndexOf(mockFabricante));
+
+			Variante variante = productoService.obtenerVariantePorCodigoProducto(rowStr(row, producto_codigo), vendedor.getId());
+			if( variante != null) {
+				System.out.println("EDITANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i);
+				productos.add(this.editarProducto(variante, row, nuevaCategoria, productorDelProducto));
+			}else {
+				System.out.println("CREANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i);
+				productos.add(this.crearNuevoProducto(row, nuevaCategoria, productorDelProducto));
+			}
+		}
+	}
+	
+	private void crearCategoria(Row row, List<Categoria> categorias, Categoria nuevaCategoria, boolean esNueva) {
+		if(categorias.lastIndexOf(nuevaCategoria) > -1){
+			// Esta definicion es para no tener Categorias repetidas en la lista
+			nuevaCategoria = categorias.get(categorias.lastIndexOf(nuevaCategoria));
+		} else {
+			if(esNueva) {
 				nuevaCategoria.setVendedor(vendedor);
 				vendedor.agregarCategoria(nuevaCategoria);
 				usuarioService.guardarUsuario(vendedor);
 				categorias.add(nuevaCategoria);
+			}else {
+				categorias.add(nuevaCategoria);
 			}
-
-			Fabricante mockFabricante = new Fabricante(rowStr(row, producto_productor));
-			
-			Fabricante productorDelProducto = productores.get(productores.lastIndexOf(mockFabricante));
-			
-			Producto nuevoProducto = new Producto(rowStr(row, producto_nombre), nuevaCategoria, productorDelProducto);
-			nuevoProducto.setCaracteristicas(getSellosProducto(safeToString(row.getCell(producto_sellos))));
-			
-			Variante varianteDelProducto = new Variante();
-			varianteDelProducto.setNombre(rowStr(row, producto_nombre));
-			varianteDelProducto.setPrecio(rowDouble(row, producto_precio));
-			varianteDelProducto.setStock(rowInt(row, producto_stock));
-			varianteDelProducto.setCodigo(rowStr(row, producto_codigo));
-			varianteDelProducto.setDescripcion(rowStr(row, producto_descripcion));
-			varianteDelProducto.setCantidadReservada(0);
-			varianteDelProducto.setDestacado(false);
-			
-			varianteDelProducto.setProducto(nuevoProducto);
-			List<Imagen> imagenes = new ArrayList<Imagen>();
-			imagenes.add(getImagenNoDisponible(varianteDelProducto.getNombre()));
-			varianteDelProducto.setImagenes(imagenes);
-			List<Variante> variantes = new ArrayList<Variante>();
-			variantes.add(varianteDelProducto);
-			nuevoProducto.setVariantes(variantes);
-			
-			nuevaCategoria.agregarProducto(nuevoProducto);
-			nuevoProducto.setCategoria(nuevaCategoria);
-			
-			productorDelProducto.agregarProducto(nuevoProducto);
-			nuevoProducto.setFabricante(productorDelProducto);
-			
-			Image imagenProductor = new Image();
-			imagenProductor.setSrc(getImagenNoDisponible(productorDelProducto.getNombre()).getPath());
-			productorDelProducto.setPathImagen(imagenProductor.getSrc());
-
-			usuarioService.guardarUsuario(vendedor);
-
-			productos.add(nuevoProducto);
 		}
 	}
+
+	private Producto editarProducto(Variante variante, Row row, Categoria nuevaCategoria, Fabricante productorDelProducto) throws IOException {
+		
+		variante.getProducto().setCaracteristicas(getSellosProducto(safeToString(row.getCell(producto_sellos))));
+		
+		variante.setNombre(rowStr(row, producto_nombre));
+		variante.setPrecio(rowDouble(row, producto_precio));
+		variante.setStock(rowInt(row, producto_stock));
+		variante.setCodigo(rowStr(row, producto_codigo));
+		variante.setDescripcion(rowStr(row, producto_descripcion));
+
+		usuarioService.guardarUsuario(vendedor);
+
+		return variante.getProducto();
+	}
 	
+	private Producto crearNuevoProducto(Row row, Categoria nuevaCategoria, Fabricante productorDelProducto) throws IOException {
+
+		Producto nuevoProducto = new Producto(rowStr(row, producto_nombre), nuevaCategoria, productorDelProducto);
+		nuevoProducto.setCaracteristicas(getSellosProducto(safeToString(row.getCell(producto_sellos))));
+		
+		Variante varianteDelProducto = new Variante();
+		varianteDelProducto.setNombre(rowStr(row, producto_nombre));
+		varianteDelProducto.setPrecio(rowDouble(row, producto_precio));
+		varianteDelProducto.setStock(rowInt(row, producto_stock));
+		varianteDelProducto.setCodigo(rowStr(row, producto_codigo));
+		varianteDelProducto.setDescripcion(rowStr(row, producto_descripcion));
+		varianteDelProducto.setCantidadReservada(0);
+		varianteDelProducto.setDestacado(false);
+		
+		varianteDelProducto.setProducto(nuevoProducto);
+		List<Imagen> imagenes = new ArrayList<Imagen>();
+		imagenes.add(getImagenNoDisponible(varianteDelProducto.getNombre()));
+		varianteDelProducto.setImagenes(imagenes);
+		List<Variante> variantes = new ArrayList<Variante>();
+		variantes.add(varianteDelProducto);
+		nuevoProducto.setVariantes(variantes);
+		
+		nuevaCategoria.agregarProducto(nuevoProducto);
+		nuevoProducto.setCategoria(nuevaCategoria);
+		productorDelProducto.agregarProducto(nuevoProducto);
+		nuevoProducto.setFabricante(productorDelProducto);
+		
+		Image imagenProductor = new Image();
+		imagenProductor.setSrc(getImagenNoDisponible(productorDelProducto.getNombre()).getPath());
+		productorDelProducto.setPathImagen(imagenProductor.getSrc());
+
+		usuarioService.guardarUsuario(vendedor);
+
+		return nuevoProducto;
+	}
+
 	// Funciones para obtener valores con cierto tipo desde una celda
 	private String rowStr(Row row, int i){
 		return safeToString(row.getCell(i));

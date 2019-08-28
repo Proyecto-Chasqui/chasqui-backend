@@ -39,6 +39,11 @@ public class FabricanteServiceImpl implements ProductorService{
 	}
 	
 	@Override
+	public Fabricante obtenerProductorDeConNombreExacto(Integer idVendedor, String busquedaPorNombreProductor) throws VendedorInexistenteException {
+		return fabricanteDAO.obtenerProductorDeConNombreExacto(idVendedor,busquedaPorNombreProductor);
+	}
+	
+	@Override
 	public void guardar(Fabricante fabricante) {
 		fabricanteDAO.guardar(fabricante);
 	}

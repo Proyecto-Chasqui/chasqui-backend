@@ -24,4 +24,7 @@ public interface ProductorService {
 	public void inicializarListasDeProducto(Fabricante fabricante);
 	
 	public void eliminar(Fabricante fabricante);
+
+	Fabricante obtenerProductorDeConNombreExacto(Integer idVendedor, String busquedaPorNombreProductor)
+			throws VendedorInexistenteException;
 }

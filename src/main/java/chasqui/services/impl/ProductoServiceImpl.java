@@ -76,6 +76,11 @@ public class ProductoServiceImpl implements ProductoService {
 	public Variante obtenerVariantePor(Integer id){
 		return productoDAO.obtenervariantePor(id);
 	}
+	
+	@Override
+	public Variante obtenerVariantePorCodigoProducto(String codigoProducto, Integer idVendedor){
+		return productoDAO.obtenervariantePorCodigoProducto(codigoProducto,idVendedor);
+	}
 
 	@Override
 	public void modificarVariante(Variante v) {

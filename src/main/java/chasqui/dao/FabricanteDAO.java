@@ -16,4 +16,6 @@ public interface FabricanteDAO {
 
 	public void delete(Fabricante fabricante);
 
+	Fabricante obtenerProductorDeConNombreExacto(Integer idVendedor, String nombreProductor);
+
 }

@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -47,6 +48,21 @@ public class FabricanteDAOHbm extends HibernateDaoSupport implements FabricanteD
 				c.add(Restrictions.like("fabricante.nombre", "%"+nombreProductor+"%"));
 				c.addOrder(Order.asc("fabricante.nombre"));
 				return (List<Fabricante>) c.list();
+			}
+		});
+	}
+	
+	@Override
+	public Fabricante obtenerProductorDeConNombreExacto(final Integer idVendedor, final String nombreProductor) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<Fabricante>() {
+
+			@Override
+			public Fabricante doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(Fabricante.class, "fabricante");
+				c.add(Restrictions.eq("fabricante.idVendedor",idVendedor));
+				c.add(Restrictions.like("fabricante.nombre", nombreProductor, MatchMode.EXACT));
+				c.addOrder(Order.asc("fabricante.nombre"));
+				return (Fabricante) c.uniqueResult();
 			}
 		});
 	}
