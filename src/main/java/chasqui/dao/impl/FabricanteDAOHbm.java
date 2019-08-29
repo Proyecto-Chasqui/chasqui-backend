@@ -90,6 +90,14 @@ public class FabricanteDAOHbm extends HibernateDaoSupport implements FabricanteD
 		this.getHibernateTemplate().delete(fabricante);
 		this.getHibernateTemplate().flush();	
 	}
+
+	@Override
+	public void guardarProductores(List<Fabricante> productores) {
+		for (Fabricante productor: productores) {
+			this.getHibernateTemplate().saveOrUpdate(productor);
+			this.getHibernateTemplate().flush();
+		}
+	}
 	
 	
 

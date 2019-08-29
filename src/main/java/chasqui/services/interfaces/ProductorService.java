@@ -27,4 +27,6 @@ public interface ProductorService {
 
 	Fabricante obtenerProductorDeConNombreExacto(Integer idVendedor, String busquedaPorNombreProductor)
 			throws VendedorInexistenteException;
+	@Transactional
+	public void guardarProductores(List<Fabricante> nuevosProductores);
 }

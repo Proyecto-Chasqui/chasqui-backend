@@ -62,4 +62,11 @@ public class FabricanteServiceImpl implements ProductorService{
 		
 	}
 
+
+	@Override
+	public void guardarProductores(List<Fabricante> productores) {
+		fabricanteDAO.guardarProductores(productores);
+		
+	}
+
 }

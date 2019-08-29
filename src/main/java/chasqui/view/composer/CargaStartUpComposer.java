@@ -47,6 +47,7 @@ import chasqui.model.Imagen;
 import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
+import chasqui.services.impl.FabricanteServiceImpl;
 import chasqui.services.impl.FileSaver;
 import chasqui.services.interfaces.CaracteristicaService;
 import chasqui.services.interfaces.CategoriaService;
@@ -314,6 +315,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
         getNuevosProductosFromSheet(sheetProductos, nuevosProductores);
     
 		usuarioService.guardarUsuario(vendedor);
+		productorService.guardarProductores(nuevosProductores);
 		
 	}
 	
@@ -343,7 +345,20 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 
 	private void crearEditarProductor(List<Fabricante> res, Row row, Fabricante productor) {
 		
-		
+		if(!(vendedor.contieneProductor(productor.getNombre()))) {
+			System.out.println("CREANDO PRODUCTOR: " +productor.getNombre() );
+			completarProductor(productor, row);
+			vendedor.agregarProductor(productor);
+		}else {
+			System.out.println("EDITANDO PRODUCTOR: " +productor.getNombre() );
+			completarProductor(vendedor.getFabricante(productor.getNombre()), row);			
+		}
+
+		usuarioService.guardarUsuario(vendedor);
+		res.add(productor);
+	}
+	
+	private void completarProductor(Fabricante productor, Row row) {
 		//Seteo Sellos
 		productor.setCaracteristicas(getSellosProductor(safeToString(row.getCell(productor_sellos))));
 		
@@ -355,16 +370,6 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		String descripcionLarga = safeToString(row.getCell(productor_descripcionLarga));
 		descripcionLarga = (descripcionLarga == "") ? "Sin descripción" : descripcionLarga;
 		productor.setDescripcionLarga(descripcionLarga);
-		
-		productorService.guardar(productor);
-		if(!(vendedor.contieneProductor(productor.getNombre()))) {
-			System.out.println("CREANDO PRODUCTOR: " +productor.getNombre() );
-			vendedor.agregarProductor(productor);
-		}else {
-			System.out.println("EDITANDO PRODUCTOR: " +productor.getNombre() );
-		}
-		usuarioService.guardarUsuario(vendedor);
-		res.add(productor);
 	}
 
 	private void getNuevosProductosFromSheet(Sheet sheet, List<Fabricante> productores) throws IOException, VendedorInexistenteException{
@@ -378,7 +383,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			Categoria nuevaCategoria = null;
 			nuevaCategoria = categoriaService.obtenerCategoriaConNombreDe(rowStr(row, producto_categoria), vendedor.getId());
 			if(nuevaCategoria != null) {
-				System.out.println("EDITANDO NUEVA CATEGORIA: " + rowStr(row, producto_categoria));
+				System.out.println("EDITANDO CATEGORIA: " + rowStr(row, producto_categoria));
 				this.crearCategoria(row,categorias,nuevaCategoria, false);
 			}else {
 				System.out.println("CREANDO NUEVA CATEGORIA: " + rowStr(row, producto_categoria));
@@ -393,10 +398,10 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			Variante variante = productoService.obtenerVariantePorCodigoProducto(rowStr(row, producto_codigo), vendedor.getId());
 			if( variante != null) {
 				System.out.println("EDITANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i);
-				productos.add(this.editarProducto(variante, row, nuevaCategoria, productorDelProducto));
+				this.editarProducto(variante, row, nuevaCategoria, productorDelProducto);
 			}else {
 				System.out.println("CREANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i);
-				productos.add(this.crearNuevoProducto(row, nuevaCategoria, productorDelProducto));
+				this.crearNuevoProducto(row, nuevaCategoria, productorDelProducto);
 			}
 		}
 	}
@@ -418,16 +423,26 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	}
 
 	private Producto editarProducto(Variante variante, Row row, Categoria nuevaCategoria, Fabricante productorDelProducto) throws IOException {
-		
-		variante.getProducto().setCaracteristicas(getSellosProducto(safeToString(row.getCell(producto_sellos))));
-		
-		variante.setNombre(rowStr(row, producto_nombre));
-		variante.setPrecio(rowDouble(row, producto_precio));
-		variante.setStock(rowInt(row, producto_stock));
-		variante.setCodigo(rowStr(row, producto_codigo));
-		variante.setDescripcion(rowStr(row, producto_descripcion));
-
-		usuarioService.guardarUsuario(vendedor);
+		Variante varianteEnVendedor = vendedor.getProductoConCodigo(variante.getCodigo()).getVariantes().get(0);
+		Producto productoDeVariante = varianteEnVendedor.getProducto();
+		productoDeVariante.setCaracteristicas(getSellosProducto(safeToString(row.getCell(producto_sellos))));
+		productoDeVariante.setNombre(rowStr(row, producto_nombre));
+		/*
+		if(productoDeVariante.getFabricante().getId() != productorDelProducto.getId()) {
+			productoDeVariante.getFabricante().eliminarProducto(varianteEnVendedor.getProducto());
+			productorDelProducto.agregarProducto(productoDeVariante);
+			productoDeVariante.setFabricante(productorDelProducto);
+		}*/
+		varianteEnVendedor.setNombre(rowStr(row, producto_nombre));
+		varianteEnVendedor.setPrecio(rowDouble(row, producto_precio));
+		varianteEnVendedor.setStock(rowInt(row, producto_stock));
+		varianteEnVendedor.setCodigo(rowStr(row, producto_codigo));
+		varianteEnVendedor.setDescripcion(rowStr(row, producto_descripcion));
+		/*if(productoDeVariante.getCategoria().getId() != nuevaCategoria.getId()) {
+			productoDeVariante.getCategoria().eliminarProducto(productoDeVariante);
+			productoDeVariante.setCategoria(nuevaCategoria);
+			nuevaCategoria.agregarProducto(productoDeVariante);
+		}*/
 
 		return variante.getProducto();
 	}
@@ -462,9 +477,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		Image imagenProductor = new Image();
 		imagenProductor.setSrc(getImagenNoDisponible(productorDelProducto.getNombre()).getPath());
 		productorDelProducto.setPathImagen(imagenProductor.getSrc());
-
-		usuarioService.guardarUsuario(vendedor);
-
+		
 		return nuevoProducto;
 	}
 

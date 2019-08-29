@@ -18,4 +18,6 @@ public interface FabricanteDAO {
 
 	Fabricante obtenerProductorDeConNombreExacto(Integer idVendedor, String nombreProductor);
 
+	public void guardarProductores(List<Fabricante> productores);
+
 }
