@@ -315,7 +315,6 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
         getNuevosProductosFromSheet(sheetProductos, nuevosProductores);
     
 		usuarioService.guardarUsuario(vendedor);
-		productorService.guardarProductores(nuevosProductores);
 		
 	}
 	
@@ -334,11 +333,11 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	
 	private Fabricante crearOBuscarFabricante(String nombreFabricante) throws VendedorInexistenteException {
 		Fabricante res = null;
-		res = productorService.obtenerProductorDeConNombreExacto(vendedor.getId(), nombreFabricante);
+		res = vendedor.getFabricante(nombreFabricante);
 		if(res == null) {
 			res = new Fabricante(nombreFabricante);
 		}else {
-			productorService.inicializarListasDeProducto(res);
+			//productorService.inicializarListasDeProducto(res);
 		}
 		return res;
 	}
@@ -427,24 +426,24 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		Producto productoDeVariante = varianteEnVendedor.getProducto();
 		productoDeVariante.setCaracteristicas(getSellosProducto(safeToString(row.getCell(producto_sellos))));
 		productoDeVariante.setNombre(rowStr(row, producto_nombre));
-		/*
-		if(productoDeVariante.getFabricante().getId() != productorDelProducto.getId()) {
-			productoDeVariante.getFabricante().eliminarProducto(varianteEnVendedor.getProducto());
+		
+		if(!productoDeVariante.getFabricante().getId().equals(productorDelProducto.getId())) {
+			productoDeVariante.getFabricante().eliminarProducto(productoDeVariante);
 			productorDelProducto.agregarProducto(productoDeVariante);
 			productoDeVariante.setFabricante(productorDelProducto);
-		}*/
+		}
 		varianteEnVendedor.setNombre(rowStr(row, producto_nombre));
 		varianteEnVendedor.setPrecio(rowDouble(row, producto_precio));
 		varianteEnVendedor.setStock(rowInt(row, producto_stock));
 		varianteEnVendedor.setCodigo(rowStr(row, producto_codigo));
 		varianteEnVendedor.setDescripcion(rowStr(row, producto_descripcion));
-		/*if(productoDeVariante.getCategoria().getId() != nuevaCategoria.getId()) {
+		if(!productoDeVariante.getCategoria().getId().equals(nuevaCategoria.getId())) {
 			productoDeVariante.getCategoria().eliminarProducto(productoDeVariante);
 			productoDeVariante.setCategoria(nuevaCategoria);
 			nuevaCategoria.agregarProducto(productoDeVariante);
-		}*/
+		}
 
-		return variante.getProducto();
+		return varianteEnVendedor.getProducto();
 	}
 	
 	private Producto crearNuevoProducto(Row row, Categoria nuevaCategoria, Fabricante productorDelProducto) throws IOException {
