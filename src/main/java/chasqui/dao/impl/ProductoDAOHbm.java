@@ -2,6 +2,7 @@ package chasqui.dao.impl;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Random;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -11,6 +12,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -25,7 +27,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 	
 	@Override
 	public List<Variante> obtenerVariantesPorMultiplesFiltros(final Integer idVendedor, final Integer idCategoria, final Integer idMedalla, final Integer idProductor, final Integer idSelloProductor,final String query, final Integer pagina,
-			final Integer cantidadDeItems) {
+			final Integer cantidadDeItems, final Integer numeroDeOrden) {
 		
 		final Integer inicio = calcularInicio(pagina,cantidadDeItems);
 		final Integer fin = calcularFin(pagina,cantidadDeItems);
@@ -58,15 +60,51 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				 }
 				 c.add(Restrictions.sqlRestriction("( STOCK - RESERVADOS) > 0"))
 				 //.addOrder(Order.asc("id"))
-				 .addOrder(Order.desc("variante.destacado"))
-				 .addOrder(Order.asc("producto.nombre"))
-				 .setFirstResult(inicio )
+				 .addOrder(Order.desc("variante.destacado"));
+				 definirOrdenRandom(c, numeroDeOrden);
+				 c.setFirstResult(inicio)
 				 .setMaxResults(cantidadDeItems);
 				return (List<Variante>)c.list();
 			}
 		});
 	}
-
+	
+	private void definirOrdenRandom(Criteria c, Integer numeroDeOrden) {
+		if(numeroDeOrden == null) {
+			numeroDeOrden = 0;
+		}
+		System.out.print(numeroDeOrden%10);
+		switch(numeroDeOrden%9) {
+		  case 0:
+			  c.addOrder(Order.asc("producto.nombre"));
+		    break;
+		  case 1:
+			  c.addOrder(Order.asc("producto.categoria"));
+		    break;
+		  case 2:
+			  c.addOrder(Order.asc("producto.fabricante"));
+			break;
+		  case 3:
+			  c.addOrder(Order.desc("variante.stock"));
+			  break;
+		  case 4:
+			  c.addOrder(Order.desc("producto.nombre"));
+		    break;
+		  case 5:
+			  c.addOrder(Order.desc("producto.categoria"));
+		    break;
+		  case 6:
+			  c.addOrder(Order.desc("producto.fabricante"));
+			break;
+		  case 7:
+			  c.addOrder(Order.desc("variante.codigo"));
+		  case 8:
+			  c.addOrder(Order.asc("variante.codigo"));
+		  default:
+			  c.addOrder(Order.asc("id"));
+		}
+	}
+	
 
 	@Override
 	public Long obtenerTotalVariantesPorMultiplesFiltros(final Integer idVendedor, final Integer idCategoria, final Integer idMedalla, final Integer idProductor, final Integer idSelloProductor,final String query) {

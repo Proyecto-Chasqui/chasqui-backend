@@ -7,6 +7,7 @@ public class ByMultiplesFiltros extends ProductoRequest{
 	private Integer idMedalla;
 	private Integer idProductor;
 	private Integer idMedallaProductor;
+	private Integer numeroDeOrden;
 	private String query;
 	
 	public Integer getIdCategoria() {
@@ -58,7 +59,14 @@ public class ByMultiplesFiltros extends ProductoRequest{
 								   + " pagina: "+ this.getPagina()
 								   + " precio: "+this.getPrecio()
 								   + " cantidad de items: "+this.getCantItems()
+								   + " numero de orden: " +this.getNumeroDeOrden()
 								   +" ]";
+	}
+	public Integer getNumeroDeOrden() {
+		return numeroDeOrden;
+	}
+	public void setNumeroDeOrden(Integer numeroDeOrden) {
+		this.numeroDeOrden = numeroDeOrden;
 	}
 
 

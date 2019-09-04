@@ -186,8 +186,8 @@ public class ProductoServiceImpl implements ProductoService {
 
 	@Override
 	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor,Integer idSelloProductor, String query, Integer pagina, Integer cantItems) {
-		return productoDAO.obtenerVariantesPorMultiplesFiltros(idVendedor, idCategoria, idMedalla, idProductor, idSelloProductor, query, pagina, cantItems);
+			Integer idProductor,Integer idSelloProductor, String query, Integer pagina, Integer cantItems, Integer numeroDeOrden) {
+		return productoDAO.obtenerVariantesPorMultiplesFiltros(idVendedor, idCategoria, idMedalla, idProductor, idSelloProductor, query, pagina, cantItems, numeroDeOrden);
 	}
 
 	@Override

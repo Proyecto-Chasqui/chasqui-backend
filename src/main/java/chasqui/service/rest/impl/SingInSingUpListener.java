@@ -76,7 +76,7 @@ public class SingInSingUpListener{
 	}
 
 	private Response toMailResponse(String usuarioDestino) {
-		MailResponse response = new MailResponse(usuarioDestino); 
+		MailResponse response = new MailResponse(usuarioDestino, usuarioService.existeUsuarioCon(usuarioDestino)); 
 		return Response.ok(response, MediaType.APPLICATION_JSON).build();
 	}
 

@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="configuracionPortadaWindow" style="text-align: center; font-weight:bold;" border="normal" title="Configuración de portada" position="center,top"
+<window id="configuracionPortadaWindow" style="text-align: center; font-weight:bold;" border="normal" title="Configuración de pagina de bienvenida" position="center,top"
 apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 	<tabbox>
