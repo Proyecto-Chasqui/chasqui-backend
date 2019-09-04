@@ -1,5 +1,7 @@
 package chasqui.view.composer;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,12 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import chasqui.dtos.ProductoDTO;
+import chasqui.misc.export.RootDataVendorsXlsExport;
+import chasqui.model.Producto;
 import chasqui.model.Vendedor;
+import chasqui.services.interfaces.CaracteristicaService;
+import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.view.renders.UsuarioRenderer;
@@ -38,6 +45,9 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 	private ConfiguracionEstrategiasComposer composerEstrategias;
 	private Component vcomp;
 	private AdministracionComposer admComposer;
+	private RootDataVendorsXlsExport export;
+	private ProductorService productorService;
+	private CaracteristicaService caracteristicaService;
 	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
@@ -54,10 +64,13 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		composerEstrategias = (ConfiguracionEstrategiasComposer) Executions.getCurrent().getSession().getAttribute("configuracionEstrategiasComposer");
 		comp.addEventListener(Events.ON_NOTIFY, new AccionEventListener(this));
 		vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
+		productorService = (ProductorService) SpringUtil.getBean("productorService");
+		caracteristicaService = (CaracteristicaService) SpringUtil.getBean("caracteristicaService");
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		usuarios = vendedorService.obtenerVendedores(); //TODO obtener todos los vendedores aunque no tengan configurado el monto minimom y la fecha! hacer servicio ad-hoc en vendedor service
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		usuarios.add(usuarioLogueado);
+		export = new RootDataVendorsXlsExport();
 		binder.loadAll();
 	}
 	
@@ -170,6 +183,25 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		Window windowCargaStartUp = (Window) Executions.createComponents("/cargaStartup.zul", this.self, params);
 		windowCargaStartUp.doModal();
 	}
+
+
+	public void onExportar(Vendedor vendedor) throws IOException {
+		usuarioService.inicializarListasDe(vendedor);
+		usuarioService.inicializarListasDe(vendedor);
+		HashMap<String,List<?>> map = new HashMap<String,List<?>>();
+		map.put("Productores", productorService.obtenerProductores(vendedor.getId()));
+		map.put("Productos",crearProductosDTO(vendedor.obtenerProductos()));
+		export.resetSheets();
+		export.exportarTodos(map,vendedor.getNombre());
+	}
+	
+	private List<ProductoDTO> crearProductosDTO(List<Producto> obtenerProductos) {
+		ArrayList<ProductoDTO> productos = new ArrayList<ProductoDTO>();
+		for(Producto p : obtenerProductos) {
+			productos.add(new ProductoDTO(p));
+		}
+		return productos;
+	}
 	
 }
 
@@ -198,7 +230,11 @@ class AccionEventListener implements EventListener<Event>{
 			}			
 			if(param.get("accion").equals("cargarStartUp")){
 				this.composer.onCargarStartUp((Vendedor)param.get("usuario"));
-			}			
+			}
+			
+			if(param.get("accion").equals("exportar")){
+				this.composer.onExportar((Vendedor)param.get("usuario"));
+			}
 		}		
 	}
 }

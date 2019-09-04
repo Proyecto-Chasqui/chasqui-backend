@@ -72,6 +72,18 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 
 		cargarStartUp.setParent(hbox);
 		
+		//Boton exportar
+		
+		Toolbarbutton exportar = new Toolbarbutton();
+		exportar.setTooltiptext("Exportar");
+		exportar.setImage("/imagenes/upload.png");		
+				
+		Map<String,Object> mapExportar= new HashMap<String,Object>();
+		mapExportar.put("accion", "exportar");
+		mapExportar.put("usuario", u);
+		exportar.addForward(Events.ON_CLICK, usuariosActualesWindow, Events.ON_NOTIFY, mapExportar); 
+
+		exportar.setParent(hbox);
 		
 		// Boton eliminar vendedor
 		
