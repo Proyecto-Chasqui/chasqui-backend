@@ -76,7 +76,7 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 		
 		Toolbarbutton exportar = new Toolbarbutton();
 		exportar.setTooltiptext("Exportar");
-		exportar.setImage("/imagenes/upload.png");		
+		exportar.setImage("/imagenes/download_data.png");		
 				
 		Map<String,Object> mapExportar= new HashMap<String,Object>();
 		mapExportar.put("accion", "exportar");
