@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -186,7 +189,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 			PedidoColectivo pedidoc = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
 			this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
 			List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
-			pedidomerge.addAll(pedidosDentroDeColectivo);
+			pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
 			pedidomerge = obtenerSoloConfirmados(pedidomerge);
 			export.exportColectivos(pedidomerge);
 			Clients.clearBusy(window);
@@ -208,10 +211,10 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 				pedidos.add(p);
 			}
 		}
-		
 		return pedidos;
 	}
 	
+
 	private boolean pedidoEnEstadoConfirmado(Pedido p) {
 		return p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)
 				|| p.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO);
@@ -228,7 +231,8 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		for(Pedido p : pedidosgenerados){
 			if(this.pedidoEnEstadoConfirmado(p)){
 				for(ProductoPedido pp : p.getProductosEnPedido()){
-					pedidogeneralgrupal.agregarProductoPedido(pp, null);
+					ProductoPedido ppcopia = copiarProducto(pp);
+					pedidogeneralgrupal.agregarProductoPedido(ppcopia, null);
 				}
 			}
 		}
@@ -238,7 +242,18 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		return pedidoGrupalCompleto;
 		
 	}
-
+	
+	private ProductoPedido copiarProducto(ProductoPedido pp) {
+		ProductoPedido ppc = new ProductoPedido();
+		ppc.setCantidad(pp.getCantidad());
+		ppc.setIdVariante(pp.getIdVariante());
+		ppc.setNombreProductor(pp.getNombreProductor());
+		ppc.setImagen(pp.getImagen());
+		ppc.setNombreProducto(pp.getNombreProducto());
+		ppc.setNombreVariante(pp.getNombreVariante());
+		ppc.setPrecio(pp.getPrecio());
+		return ppc;
+	}
 
 	public List<String> getEstados() {
 		return estados;
@@ -286,5 +301,7 @@ class VerPedidoColectivoEventListener implements EventListener<Event>{
 	}
 	
 }
+
+
 
 
