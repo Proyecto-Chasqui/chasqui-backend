@@ -275,8 +275,15 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		if(textboxCodigo == null || textboxCodigo.getValue().equals("")){
 			throw new WrongValueException(textboxCodigo,"Se debe escribir un codigo de producto	");
 		}
+		if(existeCodigo()) {
+			throw new WrongValueException(textboxCodigo,"El código del producto ya existe");
+		}
 	}
 	
+	private boolean existeCodigo() {
+		return false;
+	}
+
 	public void onEliminarVariante(Variante v){
 		model.getVariantes().remove(v);
 		this.binder.loadAll();
@@ -489,7 +496,9 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	
 	public void onUpload$uploadImagen(UploadEvent evt){
 			
-			
+		if(imagenes.size() == Constantes.CANT_MAX_IMAGENES_VARIEDAD){
+			throw new WrongValueException(listImagenes,"No se pueden agregar mas de 3 imágenes por producto");
+		}else {
 			Media media = evt.getMedia();
 			Image image = new Image();
 			if (media instanceof org.zkoss.image.Image) {
@@ -497,9 +506,6 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			} else {
 				Messagebox.show("El archivo no es una imagen o es demasiado grande","Error", Messagebox.OK, Messagebox.ERROR);
 				return;
-			}
-			if(imagenes.size() == Constantes.CANT_MAX_IMAGENES_VARIEDAD){
-				Messagebox.show("Solo está permitido hasta 3 imagenes por variedad del producto.");
 			}
 			
 			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
@@ -509,6 +515,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			imagen.setPreview(false);
 			imagenes.add(imagen);
 			binder.loadAll();
+		}
 	}
 
 	
