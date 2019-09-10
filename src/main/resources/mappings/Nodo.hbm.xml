@@ -15,7 +15,7 @@
         
         <property name="emailAdministradorNodo" type="java.lang.String" column="EMAILADMIN"/>
     
-        <many-to-one name="direccionEntrega" class="chasqui.model.Direccion" lazy="false" column="ID_DIRECCION"/>        
+        <many-to-one name="direccionDelNodo" class="chasqui.model.Direccion" lazy="false" column="ID_DIRECCION"/>        
         
     </joined-subclass>
 </hibernate-mapping>

@@ -63,12 +63,12 @@ public class NodoServiceImpl implements NodoService {
 				nodo.setAlias(alias);
 				nodo.setEmailAdministradorNodo(emailClienteAdministrador);
 
-				Direccion domicilioEntrega = new Direccion();
-				domicilioEntrega.setAltura(altura);
-				domicilioEntrega.setCalle(calle);
-				domicilioEntrega.setLocalidad(localidad);
+				Direccion direccionDelNodo = new Direccion();
+				direccionDelNodo.setAltura(altura);
+				direccionDelNodo.setCalle(calle);
+				direccionDelNodo.setLocalidad(localidad);
 
-				nodo.setDireccionEntrega(domicilioEntrega);
+				nodo.setDireccionDelNodo(direccionDelNodo);
 
 				Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(idVendedor);
 				nodo.setVendedor(vendedor);
@@ -93,12 +93,12 @@ public class NodoServiceImpl implements NodoService {
 
 			nodo = new Nodo(administrador, alias, descripcion);
 
-			Direccion domicilioEntrega = new Direccion();
-			domicilioEntrega.setAltura(altura);
-			domicilioEntrega.setCalle(calle);
-			domicilioEntrega.setLocalidad(localidad);
+			Direccion direccionDelNodo = new Direccion();
+			direccionDelNodo.setAltura(altura);
+			direccionDelNodo.setCalle(calle);
+			direccionDelNodo.setLocalidad(localidad);
 
-			nodo.setDireccionEntrega(domicilioEntrega);
+			nodo.setDireccionDelNodo(direccionDelNodo);
 			nodo.setEmailAdministradorNodo(emailClienteAdministrador);
 			Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(idVendedor);
 			nodo.setVendedor(vendedor);

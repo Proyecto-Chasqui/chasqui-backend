@@ -48,8 +48,8 @@ public class SolicitudRenderer implements ListitemRenderer<Nodo>{
 		Listcell c1 = new Listcell(String.valueOf(nodo.getAlias()));
 		Listcell c2 = new Listcell(String.valueOf(nodo.getEstado()));
 		Listcell c3;
-		if (nodo.getDireccionEntrega()!=null){
-			 c3 = new Listcell(nodo.getDireccionEntrega().getCalle() + " " + nodo.getDireccionEntrega().getAltura());
+		if (nodo.getDireccionDelNodo()!=null){
+			 c3 = new Listcell(nodo.getDireccionDelNodo().getCalle() + " " + nodo.getDireccionDelNodo().getAltura());
 		}
 		else{
 			 c3 = new Listcell("");

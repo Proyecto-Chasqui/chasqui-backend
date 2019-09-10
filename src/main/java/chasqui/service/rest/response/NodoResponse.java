@@ -15,7 +15,7 @@ public class NodoResponse implements Serializable {
 	private String alias;
 	private String estado;
 	private String tipo;
-	private Direccion domicilioEntrega;
+	private Direccion direccionDelNodo;
 	private String email; 
 	
 	private static final long serialVersionUID = 3281477518344064501L;
@@ -31,7 +31,7 @@ public class NodoResponse implements Serializable {
 		email 	  = nodo.getAdministrador().getEmail();
 		estado    = nodo.getEstado();
 		tipo      = nodo.getTipo();
-		domicilioEntrega = nodo.getDireccionEntrega();
+		setDireccionDelNodo(nodo.getDireccionDelNodo());
 	}
 	
 	/*Getters & setters*/
@@ -60,21 +60,21 @@ public class NodoResponse implements Serializable {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-
-	public Direccion getDomicilioEntrega() {
-		return domicilioEntrega;
-	}
-
-	public void setDomicilioEntrega(Direccion domicilioEntrega) {
-		this.domicilioEntrega = domicilioEntrega;
-	}
-
+	
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Direccion getDireccionDelNodo() {
+		return direccionDelNodo;
+	}
+
+	public void setDireccionDelNodo(Direccion direccionDelNodo) {
+		this.direccionDelNodo = direccionDelNodo;
 	}
 
 	

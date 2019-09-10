@@ -8,7 +8,7 @@ public class Nodo extends GrupoCC{
 	private String estado;
 	private String tipo;
 	private String emailAdministradorNodo;
-	private Direccion direccionEntrega;
+	private Direccion direccionDelNodo;
 	
 	//Constructor
 	public Nodo () {}
@@ -84,12 +84,12 @@ public class Nodo extends GrupoCC{
 		this.emailAdministradorNodo = emailAdministradorNodo;
 	}
 
-	public Direccion getDireccionEntrega() {
-		return direccionEntrega;
+	public Direccion getDireccionDelNodo() {
+		return direccionDelNodo;
 	}
 
-	public void setDireccionEntrega(Direccion direccionEntrega) {
-		this.direccionEntrega = direccionEntrega;
+	public void setDireccionDelNodo(Direccion direccionDelNodo) {
+		this.direccionDelNodo = direccionDelNodo;
 	}
 	
 	
