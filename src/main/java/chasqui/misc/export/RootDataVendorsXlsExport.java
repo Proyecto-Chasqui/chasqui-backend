@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.jsoup.Jsoup;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zul.Filedownload;
 
@@ -166,7 +167,7 @@ public class RootDataVendorsXlsExport {
 		}
 		row.getCell(1).setCellValue(text);
 		row.getCell(2).setCellValue(f.getDescripcionCorta());
-		row.getCell(3).setCellValue(f.getDescripcionLarga());
+		row.getCell(3).setCellValue(Jsoup.parse(f.getDescripcionLarga()).text());
 
 		//row.getCell(4).setCellValue(f.getIdVendedor());
 	}
@@ -182,7 +183,7 @@ public class RootDataVendorsXlsExport {
 		row.getCell(4).setCellValue(p.getCategoria());
 		row.getCell(5).setCellValue(p.getStock());
 		row.getCell(6).setCellValue(p.getCodigoInterno());
-		row.getCell(7).setCellValue(p.getDescripcion());
+		row.getCell(7).setCellValue(Jsoup.parse(p.getDescripcion()).text());
 	}
 	
 	
