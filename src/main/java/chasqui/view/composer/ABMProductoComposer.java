@@ -275,12 +275,24 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		if(textboxCodigo == null || textboxCodigo.getValue().equals("")){
 			throw new WrongValueException(textboxCodigo,"Se debe escribir un codigo de producto	");
 		}
-		if(existeCodigo()) {
+		if(existeCodigo(textboxCodigo.getValue())) {
 			throw new WrongValueException(textboxCodigo,"El código del producto ya existe");
 		}
 	}
 	
-	private boolean existeCodigo() {
+	private boolean existeCodigo(String codigo) {
+		List<Producto> variante = usuario.getProductosConCodigo(codigo);
+		if(modoEdicion) {
+			if(model.getId()==null) {			
+				return variante.size()>=1;
+			}else {
+				if(model.getVariantes().get(0).getCodigo().equals(codigo)) {
+					return variante.size()>1;
+				} else {
+					return variante.size()>=1;
+				}
+			}
+		}
 		return false;
 	}
 
