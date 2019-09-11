@@ -12,12 +12,14 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.dtos.ProductoDTO;
 import chasqui.misc.export.RootDataVendorsXlsExport;
@@ -185,7 +187,33 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 	}
 
 
-	public void onExportar(Vendedor vendedor) throws IOException {
+	public void onExportar(final Vendedor vendedor) throws IOException {
+		Messagebox.show(
+				"Va a exportar los datos de " + vendedor.getNombre() + " ¿es correcto?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Si","No"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						exportar(vendedor);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido");
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
+				}
+			}
+			});
+
+	}
+	
+	private void exportar(Vendedor vendedor) throws IOException {
 		usuarioService.inicializarListasDe(vendedor);
 		usuarioService.inicializarListasDe(vendedor);
 		HashMap<String,List<?>> map = new HashMap<String,List<?>>();

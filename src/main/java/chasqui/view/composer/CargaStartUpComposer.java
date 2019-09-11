@@ -29,6 +29,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
@@ -104,6 +106,9 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	
 	private String sellos_separator = ",";
 	
+	private String stateText = "";
+	
+	private Component component;
 	// Errores
 	
 	List<String> errores = new ArrayList<String>();
@@ -128,6 +133,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
+		component = comp;
 		// obtenerVendedorPorID
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		productorService = (ProductorService) SpringUtil.getBean("productorService");
@@ -187,18 +193,26 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 			uploadStartUp.setVisible(false);
 			listboxErrores.setVisible(false);
 		} catch (EncryptedDocumentException e) {
-			// TODO Auto-generated catch block
+			Clients.showNotification("Algo sucedio con la encriptación del documento" + stateText + "<br/> error:" + e, "error", component, "middle_center",
+					50000, true);
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
+			Clients.showNotification("Algo sucedio con el formato del documento" + stateText + "<br/> error:" + e, "error", component, "middle_center",
+					50000, true);
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Clients.showNotification("Algo sucedio en el upload del documento" + stateText + "<br/> error:" + e, "error", component, "middle_center",
+					50000, true);
 			e.printStackTrace();
 		} catch (StartUpException e){
 			
 		} catch (VendedorInexistenteException e) {
-			// TODO Auto-generated catch block
+			Clients.showNotification("El vendedor seleccionado no existe, ¿F5?" + stateText + "<br/> error:" + e, "error", component, "middle_center",
+					50000, true);
+			e.printStackTrace();
+		} catch (Exception e) {
+			Clients.showNotification("Algo sucedio al estar " + stateText + "<br/> error: "+ e, "error", component, "middle_center",
+					50000, true);
 			e.printStackTrace();
 		}
 		
@@ -218,83 +232,100 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		int cantidadFabricantes = sheetProductores.getLastRowNum();
 		List<Fabricante> res = new ArrayList<Fabricante>();
 		for(int i = 1; i<=cantidadFabricantes; i++){
-			Row row = sheetProductores.getRow(i);
-			String nombre = safeToString(row.getCell(productor_nombre));
-			if(nombre == ""){
-				errores.add("Productor en linea " + (i+1) + " sin nombre");
-			}
-			
-			String[] sellos = cellContentToSellos(safeToString(row.getCell(productor_sellos)));
-			
-			for(String sello: sellos){
-				if(!verifySelloProductor(sello)){
-					errores.add("Productor en linea " + (i+1) + " con sello invalido (" + sello + ")");
+			if(!filaEnBlancoProductores(sheetProductores.getRow(i))) {
+				Row row = sheetProductores.getRow(i);
+				String nombre = safeToString(row.getCell(productor_nombre));
+				if(nombre == ""){
+					errores.add("Productor en linea " + (i+1) + " sin nombre");
 				}
-			}
 			
-			res.add(new Fabricante(nombre));
+				String[] sellos = cellContentToSellos(safeToString(row.getCell(productor_sellos)));
+			
+				for(String sello: sellos){
+					if(!verifySelloProductor(sello)){
+						errores.add("Productor en linea " + (i+1) + " con sello invalido (" + sello + ")");
+					}
+				}
+				res.add(new Fabricante(nombre));
+			}						
 		}
 		return res;
 	}
 	
 	
+	private boolean filaEnBlancoProductores(Row row) {
+		try {
+			String nombreproductor = safeToString(row.getCell(productor_nombre));
+			String sellosproductor = safeToString(row.getCell(productor_sellos));
+			String descripcionCorta = safeToString(row.getCell(productor_descripcionCorta));
+			String descripcionLarga = safeToString(row.getCell(productor_descripcionLarga));
+			
+			return nombreproductor == "" && sellosproductor == "" && descripcionCorta == "" && descripcionLarga=="";
+		}catch (NullPointerException e) {
+			return true;
+		}
+	}
+
 	private void verifyProductos(Sheet sheetProductos, List<Fabricante> productores) throws StartUpException{
 		
 		int cantidadProductos = sheetProductos.getLastRowNum();
 		for(int i = 1; i<= cantidadProductos; i++){
 			Row row = sheetProductos.getRow(i);
-			
-			// Verificacion de categoria
-			try{
-				rowStr(row, producto_categoria);
-			} catch (Exception e){
-				errores.add("Categoria en linea " + (i+1) + " sin nombre");
-			}
-			
-			// Verificación del productor 
-			Fabricante mockFabricante = new Fabricante(rowStr(row, producto_productor));
-			
-			if(productores.lastIndexOf(mockFabricante) < 0){
-				errores.add("Productor en linea " + (i+1) + " de la lista de productos no presente en la lista de Productores");
-			}
-			
-			// Verificacion del producto
-			try{
-				rowStr(row, producto_nombre);
-			} catch (Exception e){
-				errores.add("Producto en linea " + (i+1) + " sin nombre");
-			}
-			
-			try{
-				Double precio = rowDouble(row, producto_precio);
-				if(precio < 0){
-					errores.add("Producto en linea " + (i+1) + " con precio negativo");
+			if(!filaEnBlancoProducto(row)) {
+				// Verificacion de categoria
+				try{
+					rowStr(row, producto_categoria);
+				} catch (Exception e){
+					errores.add("Categoria en linea " + (i+1) + " sin nombre");
 				}
-			} catch (Exception e){
-				errores.add("Producto en linea " + (i+1) + " sin precio");
-			}
-			
-			String[] sellos = cellContentToSellos(safeToString(row.getCell(producto_sellos)));
-			for(String sello: sellos){
-				if(!verifySelloProducto(sello)){
-					errores.add("Producto en linea " + (i+1) + " con sello invalido (" + sello + ")");
+				
+				// Verificación del productor 
+				Fabricante mockFabricante = new Fabricante(rowStr(row, producto_productor));
+				
+				if(productores.lastIndexOf(mockFabricante) < 0){
+					errores.add("Productor en linea " + (i+1) + " de la lista de productos no presente en la lista de Productores");
 				}
-			}
-			
-			try{
-				int stock = rowInt(row, producto_stock);
-				if(stock < 0){
-					errores.add("Producto en linea " + (i+1) + " con stock negativo");
+				
+				// Verificacion del producto
+				try{
+					rowStr(row, producto_nombre);
+				} catch (Exception e){
+					errores.add("Producto en linea " + (i+1) + " sin nombre");
 				}
-			} catch (Exception e){
-				errores.add("Producto en linea " + (i+1) + " sin stock");
-			}
-			
-			
-			try{
-				rowStr(row, producto_codigo);
-			} catch (Exception e){
-				errores.add("Producto en linea " + (i+1) + " sin codigo");
+				
+				try{
+					Double precio = rowDouble(row, producto_precio);
+					if(precio < 0){
+						errores.add("Producto en linea " + (i+1) + " con precio negativo");
+					}
+				} catch (Exception e){
+					errores.add("Producto en linea " + (i+1) + " sin precio");
+				}
+				
+				String[] sellos = cellContentToSellos(safeToString(row.getCell(producto_sellos)));
+				for(String sello: sellos){
+					if(!verifySelloProducto(sello)){
+						errores.add("Producto en linea " + (i+1) + " con sello invalido (" + sello + ")");
+					}
+				}
+				
+				try{
+					int stock = rowInt(row, producto_stock);
+					if(stock < 0){
+						errores.add("Producto en linea " + (i+1) + " con stock negativo");
+					}
+				} catch (Exception e){
+					errores.add("Producto en linea " + (i+1) + " sin stock");
+				}
+				
+				
+				try{
+					if(rowStr(row, producto_codigo).equals("")) {
+						errores.add("Producto en linea " + (i+1) + " sin codigo de producto");
+					}
+				} catch (Exception e){
+					errores.add("Producto en linea " + (i+1) + " sin codigo");
+				}
 			}
 		}
 		
@@ -304,15 +335,37 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 	}
 	
 	
-	private void readExcel(Workbook wb) throws IOException, EncryptedDocumentException, InvalidFormatException, VendedorInexistenteException{
+	private boolean filaEnBlancoProducto(Row row) {
+		boolean result = true;
+		try {
+			String [] strings= {safeToString(row.getCell(producto_nombre)),
+								safeToString(row.getCell(producto_precio)),
+								safeToString(row.getCell(producto_sellos)),
+								safeToString(row.getCell(producto_productor)), 
+								safeToString(row.getCell(producto_categoria)),
+								safeToString(row.getCell(producto_stock)),
+								safeToString(row.getCell(producto_codigo)),
+								safeToString(row.getCell(producto_descripcion))};
+			for (String string : strings) {
+				result = result && string == "" || string == null;
+			}
+		}catch (NullPointerException e) {
+			result = true;
+		}
+		return result;
+	}
+
+	private void readExcel(Workbook wb) throws VendedorInexistenteException, IOException {
 		Hibernate.initialize(vendedor.getCategorias());
 		Hibernate.initialize(vendedor.getFabricantes());
 		
         Sheet sheetProductores = wb.getSheetAt(productor_sheet);
         Sheet sheetProductos = wb.getSheetAt(producto_sheet);
         
-        List<Fabricante> nuevosProductores = getNuevosProductoresFromSheet(sheetProductores);
-        getNuevosProductosFromSheet(sheetProductos, nuevosProductores);
+        List<Fabricante> nuevosProductores;
+	
+		nuevosProductores = getNuevosProductoresFromSheet(sheetProductores);
+		getNuevosProductosFromSheet(sheetProductos, nuevosProductores);        
     
 		usuarioService.guardarUsuario(vendedor);
 		
@@ -324,8 +377,10 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		int cantidadFabricantes = sheet.getLastRowNum();
 		for(int i = 1; i<=cantidadFabricantes; i++){
 			Row row = sheet.getRow(i);
-			Fabricante nuevo = crearOBuscarFabricante(safeToString(row.getCell(productor_nombre)));
-			this.crearEditarProductor(res,row, nuevo);
+			if(!filaEnBlancoProductores(row)) {
+				Fabricante nuevo = crearOBuscarFabricante(safeToString(row.getCell(productor_nombre)));
+				this.crearEditarProductor(res,row, nuevo);
+			}
 		}
 		return res;
 	}
@@ -346,10 +401,12 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		
 		if(!(vendedor.contieneProductor(productor.getNombre()))) {
 			System.out.println("CREANDO PRODUCTOR: " +productor.getNombre() );
+			stateText = "CREANDO PRODUCTOR: " +productor.getNombre();
 			completarProductor(productor, row);
 			vendedor.agregarProductor(productor);
 		}else {
 			System.out.println("EDITANDO PRODUCTOR: " +productor.getNombre() );
+			stateText = "EDITANDO PRODUCTOR: " +productor.getNombre();
 			completarProductor(vendedor.getFabricante(productor.getNombre()), row);			
 		}
 
@@ -378,29 +435,33 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		int cantidadProductos = sheet.getLastRowNum();
 		for(int i = 1; i<= cantidadProductos; i++){
 			Row row = sheet.getRow(i);
-			//sistema de categorias
-			Categoria nuevaCategoria = null;
-			nuevaCategoria = categoriaService.obtenerCategoriaConNombreDe(rowStr(row, producto_categoria), vendedor.getId());
-			if(nuevaCategoria != null) {
-				System.out.println("EDITANDO CATEGORIA: " + rowStr(row, producto_categoria));
-				this.crearCategoria(row,categorias,nuevaCategoria, false);
-			}else {
-				System.out.println("CREANDO NUEVA CATEGORIA: " + rowStr(row, producto_categoria));
-				nuevaCategoria = new Categoria(vendedor, rowStr(row, producto_categoria));
-				this.crearCategoria(row, categorias, nuevaCategoria, true);
-			}
-			
-			//sistema de productos
-			Fabricante mockFabricante = new Fabricante(rowStr(row, producto_productor));
-			Fabricante productorDelProducto = productores.get(productores.lastIndexOf(mockFabricante));
-
-			Variante variante = productoService.obtenerVariantePorCodigoProducto(rowStr(row, producto_codigo), vendedor.getId());
-			if( variante != null) {
-				System.out.println("EDITANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i);
-				this.editarProducto(variante, row, nuevaCategoria, productorDelProducto);
-			}else {
-				System.out.println("CREANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i);
-				this.crearNuevoProducto(row, nuevaCategoria, productorDelProducto);
+			if(!filaEnBlancoProducto(row)) {
+				//sistema de categorias
+				Categoria nuevaCategoria = null;
+				nuevaCategoria = categoriaService.obtenerCategoriaConNombreDe(rowStr(row, producto_categoria), vendedor.getId());
+				if(nuevaCategoria != null) {
+					System.out.println("EDITANDO CATEGORIA: " + rowStr(row, producto_categoria));
+					this.crearCategoria(row,categorias,nuevaCategoria, false);
+				}else {
+					System.out.println("CREANDO NUEVA CATEGORIA: " + rowStr(row, producto_categoria));
+					nuevaCategoria = new Categoria(vendedor, rowStr(row, producto_categoria));
+					this.crearCategoria(row, categorias, nuevaCategoria, true);
+				}
+				
+				//sistema de productos
+				Fabricante mockFabricante = new Fabricante(rowStr(row, producto_productor));
+				Fabricante productorDelProducto = productores.get(productores.lastIndexOf(mockFabricante));
+	
+				Variante variante = productoService.obtenerVariantePorCodigoProducto(rowStr(row, producto_codigo), vendedor.getId());
+				if( variante != null) {
+					System.out.println("EDITANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i);
+					stateText = "EDITANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i;
+					this.editarProducto(variante, row, nuevaCategoria, productorDelProducto);
+				}else {
+					System.out.println("CREANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i);
+					stateText = "CREANDO PRODUCTO: " + rowStr(row, producto_nombre) + " LINEA: " + i;
+					this.crearNuevoProducto(row, nuevaCategoria, productorDelProducto);
+				}
 			}
 		}
 	}
