@@ -103,4 +103,15 @@ public class Constantes {
 	public static final String ZONA_NO_NECESARIA = "---";
 	public static final String AVISO_PEDIDO_VENCIDO = "notificar_vencimiento";
 	
+	//estados de las solicitudes de creacion de nodos
+	public static final String SOLICITUD_NODO_EN_GESTION = "solicitud_nodo_en_gestion";
+	public static final String SOLICITUD_NODO_APROBADO = "solicitud_nodo_aprobado";
+	public static final String SOLICITUD_NODO_RECHAZADO = "solicitud_nodo_rechazado";
+	public static final String SOLICITUD_NODO_CANCELADO = "solicitud_nodo_cancelado";
+	
+	//estados de las solicitudes de pertenencia a nodo
+	public static final String SOLICITUD_PERTENENCIA_NODO_ENVIADO = "solicitud_pertenencia_nodo_enviado";
+	public static final String SOLICITUD_PERTENENCIA_NODO_ACEPTADO = "solicitud_pertenencia_nodo_aceptado";
+	public static final String SOLICITUD_PERTENENCIA_NODO_RECHAZADO = "solicitud_pertenencia_nodo_rechazado";
+	public static final String SOLICITUD_PERTENENCIA_NODO_CANCELADO = "solicitud_pertenencia_nodo_cancelado";
 }

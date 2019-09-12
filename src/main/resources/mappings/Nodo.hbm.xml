@@ -10,10 +10,9 @@
         
         <property name="estado" type="java.lang.String" column="ESTADO"/>
         
-        
-        <property name="tipo" type="java.lang.String" column="TIPO"/>
-        
         <property name="emailAdministradorNodo" type="java.lang.String" column="EMAILADMIN"/>
+        
+        <property name="barrio" type="java.lang.String" column="BARRIO"/>
     
         <many-to-one name="direccionDelNodo" class="chasqui.model.Direccion" lazy="false" column="ID_DIRECCION"/>        
         

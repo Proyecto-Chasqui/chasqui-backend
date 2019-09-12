@@ -5,17 +5,16 @@ import chasqui.view.composer.Constantes;
 public class Nodo extends GrupoCC{
 	
 	private Integer id;
-	private String estado;
 	private String tipo;
 	private String emailAdministradorNodo;
 	private Direccion direccionDelNodo;
+	private String barrio;
 	
 	//Constructor
 	public Nodo () {}
 	
 	public Nodo (Cliente administrador, String alias, String descripcion) {
 		super(administrador, alias, descripcion);
-		this.estado = Constantes.ESTADO_NODO_SOLICITADO;
 		this.setTipo(Constantes.NODO_ABIERTO);
 	}
 
@@ -27,37 +26,10 @@ public class Nodo extends GrupoCC{
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	public String getEstado() {
-		return estado;
-	}
-	
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
 //
 //	public void setEstado(String estado) {
 //		this.estado = estado;
 //	}
-	
-	//Methods
-	public void aprobarNodo() {
-		if(estado.equals(Constantes.ESTADO_NODO_SOLICITADO)){
-			estado = Constantes.ESTADO_NODO_APROBADO;	
-		}
-		else{
-			//TODO levantar excepcion
-		}
-	}
-
-	public void cancelarAprobacion(){
-		if(estado.equals(Constantes.ESTADO_NODO_APROBADO)){
-			estado = Constantes.ESTADO_NODO_SOLICITADO;	
-		}
-		else{
-			//TODO levantar excepcion
-		}
-	}
 
 	public String getTipo() {
 		return tipo;
@@ -90,6 +62,14 @@ public class Nodo extends GrupoCC{
 
 	public void setDireccionDelNodo(Direccion direccionDelNodo) {
 		this.direccionDelNodo = direccionDelNodo;
+	}
+
+	public String getBarrio() {
+		return barrio;
+	}
+
+	public void setBarrio(String barrio) {
+		this.barrio = barrio;
 	}
 	
 	

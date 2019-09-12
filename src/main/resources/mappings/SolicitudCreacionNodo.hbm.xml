@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="chasqui.model.SolicitudCreacionNodo" table="SOLICITUD_CREACION_NODO">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
+	            <param name="sequence_name">SOLICITUD_CREACION_NODO_SEQUENCE</param>
+	            <param name="optimizer">none</param>
+	            <param name="increment_size">1</param> 
+         	</generator>
+        </id>
+        
+		<many-to-one name="usuarioSolicitante" class="chasqui.model.Cliente" cascade="none">
+			<column name="USUARIO_SOLICITANTE" />
+		</many-to-one>
+		
+        <property name="nombreNodo" type="java.lang.String" column="NOMBRE_NODO"/>
+        
+        <many-to-one name="domicilio" class="chasqui.model.Direccion"
+			fetch="join" not-null="false" not-found="ignore">
+			<column name="DIRECCION_NODO" />
+		</many-to-one>
+		
+        <property name="tipoNodo" type="java.lang.String" column="TIPO_NODO"/>
+        <property name="barrio" type="java.lang.String" column="BARRIO"/>
+        <property name="descripcion" type="java.lang.String" column="DESCRIPCION"/>
+        <property name="estado" type="java.lang.String" column="ESTADO"/>
+        
+    </class>
+</hibernate-mapping>

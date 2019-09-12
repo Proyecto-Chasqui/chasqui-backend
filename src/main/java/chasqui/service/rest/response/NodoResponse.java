@@ -13,7 +13,6 @@ public class NodoResponse implements Serializable {
 	 */
 	
 	private String alias;
-	private String estado;
 	private String tipo;
 	private Direccion direccionDelNodo;
 	private String email; 
@@ -29,7 +28,6 @@ public class NodoResponse implements Serializable {
 		
 		alias     = nodo.getAlias();
 		email 	  = nodo.getAdministrador().getEmail();
-		estado    = nodo.getEstado();
 		tipo      = nodo.getTipo();
 		setDireccionDelNodo(nodo.getDireccionDelNodo());
 	}
@@ -42,14 +40,6 @@ public class NodoResponse implements Serializable {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
-	}
-
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
 	}
 
 	public String getTipo() {

@@ -74,19 +74,6 @@ public class SolicitudesNodosComposer  extends GenericForwardComposer<Component>
 		this.nodosSolicitados = nodos;
 	}
 
-	
-	
-	public void onClick$confirmarEntregabtn(){
-		for(Nodo n : this.nodosSolicitados){
-			if(n.getEstado().equals(Constantes.ESTADO_NODO_APROBADO)){
-				n.aprobarNodo();
-				//TODO hay que guardar el nodo confirmado
-			}
-		}
-		this.binder.loadAll();
-	}
-	
-
 	public List<String> getEstados() {
 		return estados;
 	}

@@ -46,7 +46,6 @@ public class SolicitudRenderer implements ListitemRenderer<Nodo>{
 		
 		final Checkbox c = new Checkbox("Autorizado");
 		Listcell c1 = new Listcell(String.valueOf(nodo.getAlias()));
-		Listcell c2 = new Listcell(String.valueOf(nodo.getEstado()));
 		Listcell c3;
 		if (nodo.getDireccionDelNodo()!=null){
 			 c3 = new Listcell(nodo.getDireccionDelNodo().getCalle() + " " + nodo.getDireccionDelNodo().getAltura());
@@ -56,12 +55,6 @@ public class SolicitudRenderer implements ListitemRenderer<Nodo>{
 		}
 		Listcell c4 = new Listcell(nombre + " " + apellido);
 		Listcell c5 = new Listcell(nodo.getEmailAdministradorNodo());
-		if(nodo.getEstado().equals("APROBADO")){
-			c2.setStyle("color:green;");
-		}else{
-			//"SOLICITADO" el estado es solicitado
-			c2.setStyle("color:red;");
-		}
 		Listcell c6 = new Listcell(telefono);
 		Listcell c7 = new Listcell(celular);
 		Listcell c100 = new Listcell(); //Se usa como padre de las demas
@@ -77,18 +70,7 @@ public class SolicitudRenderer implements ListitemRenderer<Nodo>{
 		params2.put("nodo", nodo);
 		Space s = new Space();
 		s.setSpacing("10px");
-		
-		c.addEventListener(Events.ON_CHECK,new EventListener<Event>() {
-
-			@Override
-			public void onEvent(Event event) throws Exception {
-				if(c.isChecked()){
-					nodo.aprobarNodo();
-				}else{
-					nodo.cancelarAprobacion();
-				}				
-			}
-		});		
+	
 		
 		Hlayout hbox = new Hlayout();
 		//b.setParent(hbox);
@@ -96,7 +78,6 @@ public class SolicitudRenderer implements ListitemRenderer<Nodo>{
 		s.setParent(hbox);
 		hbox.setParent(c100);
 		c1.setParent(item);
-		c2.setParent(item);
 		c3.setParent(item);
 		c4.setParent(item);
 		c5.setParent(item);

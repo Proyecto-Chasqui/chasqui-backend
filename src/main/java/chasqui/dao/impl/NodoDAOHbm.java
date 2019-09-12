@@ -26,7 +26,6 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 	public void aprobarNodo(Integer id) {
 		// TODO Auto-generated method stub
 		Nodo nodo = this.obtenerNodoPorId(id);
-		nodo.setEstado(Constantes.ESTADO_NODO_APROBADO);
 		this.getHibernateTemplate().saveOrUpdate(nodo);
 		this.getHibernateTemplate().flush();
 	}

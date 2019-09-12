@@ -4,16 +4,17 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.Cliente;
+import chasqui.model.Direccion;
 import chasqui.model.Nodo;
+import chasqui.model.Usuario;
 
 public interface NodoService {
-
-	@Transactional
-	void aprobarNodoPorId(Integer id) throws NodoInexistenteException;
 
 	@Transactional
 	public void guardarNodo(Nodo nodo);
@@ -28,12 +29,28 @@ public interface NodoService {
 
 	@Transactional
 	void eliminarNodo(Integer id);
-	
-	@Transactional
-	void aprobarNodoPorAlias(String alias);
 
 	Nodo obtenerNodoPorAlias(String alias) throws NodoInexistenteException;
 
 	void altaNodoSinUsuario(String alias, String emailClienteAdministrador, String localidad, String calle, int altura,
 			String telefono, int idVendedor, String descripcion) throws NodoYaExistenteException, VendedorInexistenteException;
+	/**
+	 * Crea una solicitud de creación de nodo en estado "En_gestion"
+	 * @param usuario
+	 * @param nombre
+	 * @param direccion
+	 * @param tipo
+	 * @param barrio
+	 * @param descripcion
+	 * @throws DireccionesInexistentes 
+	 */
+	void crearSolicitudDeCreacionNodo(Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio,
+			String descripcion) throws DireccionesInexistentes;
+	/**
+	 * Crea una solicitud para pertenecer a un nodo en estado "enviado"
+	 * Valida que el nodo enviado sea de tipo "abierto"
+	 * @param nodo
+	 * @param usuario
+	 */
+	void crearSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario);
 }

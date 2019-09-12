@@ -5,6 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.dao.impl.NodoDAOHbm;
+import chasqui.dao.impl.SolicitudCreacionNodoDAOHbm;
+import chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm;
+import chasqui.exceptions.DireccionesInexistentes;
+import chasqui.exceptions.NodoCerradoException;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
@@ -12,6 +16,9 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Nodo;
+import chasqui.model.SolicitudCreacionNodo;
+import chasqui.model.SolicitudPertenenciaNodo;
+import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.UsuarioService;
@@ -23,14 +30,33 @@ public class NodoServiceImpl implements NodoService {
 	NodoDAOHbm nodoDAO;
 	@Autowired
 	UsuarioService usuarioService;
+	@Autowired
+	SolicitudCreacionNodoDAOHbm solicitudCreacionNodoDAO;
+	@Autowired
+	SolicitudPertenenciaNodoDAOHbm solicitudPertenenciaNodoDAO;
 
 	@Override
-	public void aprobarNodoPorId(Integer id) throws NodoInexistenteException {
-		Nodo nodo = nodoDAO.obtenerNodoPorId(id);
-		if (nodo == null)
-			throw new NodoInexistenteException(id);
-		nodo.aprobarNodo();
-		nodoDAO.guardarNodo(nodo);
+	public void crearSolicitudDeCreacionNodo(Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) throws DireccionesInexistentes {
+		validarDireccion(usuario,direccion);
+		solicitudCreacionNodoDAO.guardar(new SolicitudCreacionNodo(usuario, nombre, direccion, tipo, barrio, descripcion));
+	}
+	
+	private void validarDireccion(Cliente usuario, Direccion direccion) throws DireccionesInexistentes {
+		if(usuario.contieneDireccion(direccion.getId())) {
+			throw new DireccionesInexistentes();
+		}
+	}
+
+	@Override
+	public void crearSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario) throws NodoCerradoException{
+		validarNodo(nodo);
+		solicitudPertenenciaNodoDAO.guardar(new SolicitudPertenenciaNodo(nodo, usuario));
+	}
+
+	private void validarNodo(Nodo nodo) throws NodoCerradoException{
+		if(nodo.getTipo().equals(Constantes.NODO_CERRADO)){
+			throw new NodoCerradoException();
+		}
 	}
 
 	@Override
@@ -73,7 +99,6 @@ public class NodoServiceImpl implements NodoService {
 				Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(idVendedor);
 				nodo.setVendedor(vendedor);
 				nodo.setTipo(Constantes.NODO_ABIERTO);
-				nodo.setEstado(Constantes.ESTADO_NODO_SOLICITADO_SIN_ADMIN);
 				nodoDAO.guardarNodo(nodo);
 			}
 	}
@@ -110,13 +135,6 @@ public class NodoServiceImpl implements NodoService {
 	@Override
 	public void eliminarNodo(Integer id) {
 		nodoDAO.eliminarNodo(id);
-	}
-
-	@Override
-	public void aprobarNodoPorAlias(String alias) {
-		Nodo nodo = nodoDAO.obtenerNodoPorAlias(alias);
-		nodo.aprobarNodo();
-		nodoDAO.guardarNodo(nodo);
 	}
 
 	@Override
