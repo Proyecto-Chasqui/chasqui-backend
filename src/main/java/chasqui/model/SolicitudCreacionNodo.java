@@ -5,6 +5,7 @@ import chasqui.view.composer.Constantes;
 public class SolicitudCreacionNodo {
 	
 	private Integer id;
+	private Integer idVendedor;
 	private Usuario usuarioSolicitante;
 	private String nombreNodo;
 	private Direccion domicilio;
@@ -15,7 +16,8 @@ public class SolicitudCreacionNodo {
 	
 	public SolicitudCreacionNodo() {}
 	
-	public SolicitudCreacionNodo(Usuario usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) {
+	public SolicitudCreacionNodo(Integer idVendedor, Usuario usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) {
+		this.idVendedor = idVendedor;
 		this.usuarioSolicitante = usuario;
 		this.nombreNodo = nombre;
 		this.domicilio = direccion;
@@ -87,6 +89,14 @@ public class SolicitudCreacionNodo {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public Integer getIdVendedor() {
+		return idVendedor;
+	}
+
+	public void setIdVendedor(Integer idVendedor) {
+		this.idVendedor = idVendedor;
 	}
 	
 }

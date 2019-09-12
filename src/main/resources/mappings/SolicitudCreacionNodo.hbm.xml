@@ -11,7 +11,7 @@
 	            <param name="increment_size">1</param> 
          	</generator>
         </id>
-        
+        <property name="idVendedor" type="java.lang.Integer" column="ID_VENDEDOR"/>
 		<many-to-one name="usuarioSolicitante" class="chasqui.model.Cliente" cascade="none">
 			<column name="USUARIO_SOLICITANTE" />
 		</many-to-one>

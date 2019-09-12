@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import chasqui.dao.impl.NodoDAOHbm;
 import chasqui.dao.impl.SolicitudCreacionNodoDAOHbm;
 import chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm;
+import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.NodoCerradoException;
 import chasqui.exceptions.NodoInexistenteException;
@@ -22,6 +23,7 @@ import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
 
 public class NodoServiceImpl implements NodoService {
@@ -31,19 +33,24 @@ public class NodoServiceImpl implements NodoService {
 	@Autowired
 	UsuarioService usuarioService;
 	@Autowired
+	VendedorService vendedorService;
+	@Autowired
 	SolicitudCreacionNodoDAOHbm solicitudCreacionNodoDAO;
 	@Autowired
 	SolicitudPertenenciaNodoDAOHbm solicitudPertenenciaNodoDAO;
 
 	@Override
-	public void crearSolicitudDeCreacionNodo(Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) throws DireccionesInexistentes {
-		validarDireccion(usuario,direccion);
-		solicitudCreacionNodoDAO.guardar(new SolicitudCreacionNodo(usuario, nombre, direccion, tipo, barrio, descripcion));
+	public void crearSolicitudDeCreacionNodo(Integer idVendedor, Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException{
+		validar(usuario,direccion,idVendedor);
+		solicitudCreacionNodoDAO.guardar(new SolicitudCreacionNodo(idVendedor,usuario, nombre, direccion, tipo, barrio, descripcion));
 	}
 	
-	private void validarDireccion(Cliente usuario, Direccion direccion) throws DireccionesInexistentes {
-		if(usuario.contieneDireccion(direccion.getId())) {
+	private void validar(Cliente usuario, Direccion direccion,Integer idVendedor) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException {
+		if(!usuario.contieneDireccion(direccion.getId())) {
 			throw new DireccionesInexistentes();
+		}
+		if(!vendedorService.obtenerVendedorPorId(idVendedor).getEstrategiasUtilizadas().isNodos()) {
+			throw new ConfiguracionDeVendedorException("");
 		}
 	}
 

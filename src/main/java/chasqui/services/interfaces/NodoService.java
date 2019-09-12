@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
@@ -36,6 +37,7 @@ public interface NodoService {
 			String telefono, int idVendedor, String descripcion) throws NodoYaExistenteException, VendedorInexistenteException;
 	/**
 	 * Crea una solicitud de creación de nodo en estado "En_gestion"
+	 * Valida que el vendedor tenga la estrategia de venta "nodos" y verifica que la direccion corresponda al usuario
 	 * @param usuario
 	 * @param nombre
 	 * @param direccion
@@ -44,8 +46,9 @@ public interface NodoService {
 	 * @param descripcion
 	 * @throws DireccionesInexistentes 
 	 */
-	void crearSolicitudDeCreacionNodo(Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio,
-			String descripcion) throws DireccionesInexistentes;
+	void crearSolicitudDeCreacionNodo(Integer idVendedor, Cliente usuario, String nombre, Direccion direccion,
+			String tipo, String barrio, String descripcion)
+			throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException;
 	/**
 	 * Crea una solicitud para pertenecer a un nodo en estado "enviado"
 	 * Valida que el nodo enviado sea de tipo "abierto"
@@ -53,4 +56,6 @@ public interface NodoService {
 	 * @param usuario
 	 */
 	void crearSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario);
+
+
 }
