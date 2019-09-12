@@ -8,7 +8,7 @@
             <column name="ID" />
         </key>
         
-        <property name="estado" type="java.lang.String" column="ESTADO"/>
+        <property name="tipo" type="java.lang.String" column="TIPO"/>
         
         <property name="emailAdministradorNodo" type="java.lang.String" column="EMAILADMIN"/>
         

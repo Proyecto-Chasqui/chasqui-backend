@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import chasqui.dao.SolicitudCreacionNodoDAO;
+import chasqui.dao.SolicitudPertenenciaNodoDAO;
 import chasqui.dao.impl.NodoDAOHbm;
 import chasqui.dao.impl.SolicitudCreacionNodoDAOHbm;
 import chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm;
@@ -35,9 +37,9 @@ public class NodoServiceImpl implements NodoService {
 	@Autowired
 	VendedorService vendedorService;
 	@Autowired
-	SolicitudCreacionNodoDAOHbm solicitudCreacionNodoDAO;
+	SolicitudCreacionNodoDAO solicitudCreacionNodoDAO;
 	@Autowired
-	SolicitudPertenenciaNodoDAOHbm solicitudPertenenciaNodoDAO;
+	SolicitudPertenenciaNodoDAO solicitudPertenenciaNodoDAO;
 
 	@Override
 	public void crearSolicitudDeCreacionNodo(Integer idVendedor, Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException{
@@ -46,6 +48,10 @@ public class NodoServiceImpl implements NodoService {
 	}
 	
 	private void validar(Cliente usuario, Direccion direccion,Integer idVendedor) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException {
+		if(direccion == null) {
+			throw new DireccionesInexistentes();
+		}
+		
 		if(!usuario.contieneDireccion(direccion.getId())) {
 			throw new DireccionesInexistentes();
 		}
@@ -150,6 +156,11 @@ public class NodoServiceImpl implements NodoService {
 		if (nodo == null)
 			throw new NodoInexistenteException(alias);
 		return nodo;
+	}
+
+	@Override
+	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDe(String email, Integer idVendedor) throws UsuarioInexistenteException {
+		return solicitudCreacionNodoDAO.obtenerSolicitudesDeCreacionDe(usuarioService.obtenerClientePorEmail(email).getId(), idVendedor);
 	}
 
 }

@@ -13,6 +13,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Nodo;
+import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.Usuario;
 
 public interface NodoService {
@@ -55,7 +56,17 @@ public interface NodoService {
 	 * @param nodo
 	 * @param usuario
 	 */
+	@Transactional
 	void crearSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario);
+	
+	/**
+	 * Retorna todas las solicitudes de creacion de nodo para el usuario
+	 * @param email
+	 * @param idVendedor
+	 * @return
+	 * @throws UsuarioInexistenteException 
+	 */
+	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDe(String email, Integer idVendedor) throws UsuarioInexistenteException;
 
 
 }
