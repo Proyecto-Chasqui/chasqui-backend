@@ -2,6 +2,8 @@ package chasqui.dao;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import chasqui.model.SolicitudCreacionNodo;
 
 public interface SolicitudCreacionNodoDAO {
@@ -9,6 +11,7 @@ public interface SolicitudCreacionNodoDAO {
 	 * Guarda la solicitud
 	 * @param solicitud
 	 */
+	@Transactional
 	public void guardar(SolicitudCreacionNodo solicitud);
 	
 	/**

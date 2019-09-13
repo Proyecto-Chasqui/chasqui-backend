@@ -17,6 +17,7 @@ public class SolicitudCreacionNodoResponse {
 		this.id = solicitud.getId();
 		this.nombreNodo = solicitud.getNombreNodo();
 		this.domicilio = solicitud.getDomicilio();
+		this.domicilio.setGeoUbicacion(null);
 		this.tipoNodo= solicitud.getTipoNodo();
 		this.barrio= solicitud.getBarrio();
 		this.descripcion = solicitud.getDescripcion();

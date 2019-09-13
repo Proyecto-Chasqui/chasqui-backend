@@ -86,6 +86,8 @@
 				<value>classpath*:mappings/DataMultimedia.hbm.xml</value>
 				<value>classpath*:mappings/DataPortada.hbm.xml</value>
 				<value>classpath*:mappings/DataContacto.hbm.xml</value>
+				<value>classpath*:mappings/SolicitudPertenenciaNodo.hbm.xml</value>
+				<value>classpath*:mappings/SolicitudCreacionNodo.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

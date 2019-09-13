@@ -42,7 +42,7 @@ import chasqui.services.interfaces.VendedorService;
 
 @Service
 @Path("/nodo")
-public class NodoListener{
+public class NodoListener {
 
 	@Autowired
 	NodoService nodoService;
@@ -68,8 +68,7 @@ public class NodoListener{
 	@POST
 	@Path("/alta")
 	@Produces("application/json")
-	private Response solicitudDeCreacionNodo(
-			@Multipart(value = "grupoRequest", type = "application/json") final String solicitudCreacionNodoRequest) {
+	public Response solicitudDeCreacionNodo(@Multipart(value = "solicitudCreacionNodoRequest", type = "application/json") final String solicitudCreacionNodoRequest) {
 		NodoSolicitudCreacionRequest request;
 		try {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
