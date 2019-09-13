@@ -14,6 +14,8 @@ import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.NodoCerradoException;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
+import chasqui.exceptions.SolicitudCreacionNodoException;
+import chasqui.exceptions.SolicitudCreacionNodoEnGestionExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
@@ -42,22 +44,10 @@ public class NodoServiceImpl implements NodoService {
 	SolicitudPertenenciaNodoDAO solicitudPertenenciaNodoDAO;
 
 	@Override
-	public void crearSolicitudDeCreacionNodo(Integer idVendedor, Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException{
+	public void crearSolicitudDeCreacionNodo(Integer idVendedor, Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException, SolicitudCreacionNodoEnGestionExistenteException, NodoYaExistenteException{
 		validar(usuario,direccion,idVendedor);
+		validarNombreNodo(nombre,idVendedor);
 		solicitudCreacionNodoDAO.guardar(new SolicitudCreacionNodo(idVendedor,usuario, nombre, direccion, tipo, barrio, descripcion));
-	}
-	
-	private void validar(Cliente usuario, Direccion direccion,Integer idVendedor) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException {
-		if(direccion == null) {
-			throw new DireccionesInexistentes();
-		}
-		
-		if(!usuario.contieneDireccion(direccion.getId())) {
-			throw new DireccionesInexistentes();
-		}
-		if(!vendedorService.obtenerVendedorPorId(idVendedor).getEstrategiasUtilizadas().isNodos()) {
-			throw new ConfiguracionDeVendedorException("");
-		}
 	}
 
 	@Override
@@ -66,11 +56,6 @@ public class NodoServiceImpl implements NodoService {
 		solicitudPertenenciaNodoDAO.guardar(new SolicitudPertenenciaNodo(nodo, usuario));
 	}
 
-	private void validarNodo(Nodo nodo) throws NodoCerradoException{
-		if(nodo.getTipo().equals(Constantes.NODO_CERRADO)){
-			throw new NodoCerradoException();
-		}
-	}
 
 	@Override
 	public List<Nodo> obtenerNodosDelVendedor(Integer idVendedor) throws VendedorInexistenteException {
@@ -90,6 +75,7 @@ public class NodoServiceImpl implements NodoService {
 	public void guardarNodo(Nodo nodo) {
 		nodoDAO.guardarNodo(nodo);
 	}
+	@Deprecated
 	@Override
 	public void altaNodoSinUsuario(String alias, String emailClienteAdministrador, String localidad, String calle, int altura, String telefono, int idVendedor, String descripcion) throws NodoYaExistenteException, VendedorInexistenteException{
 		Nodo nodo;
@@ -115,7 +101,7 @@ public class NodoServiceImpl implements NodoService {
 				nodoDAO.guardarNodo(nodo);
 			}
 	}
-	
+	@Deprecated
 	@Override
 	public void altaNodo(String alias, String emailClienteAdministrador, String localidad, String calle, int altura,
 			String telefono, int idVendedor, String descripcion) throws UsuarioInexistenteException, NodoYaExistenteException, VendedorInexistenteException {
@@ -135,7 +121,7 @@ public class NodoServiceImpl implements NodoService {
 			direccionDelNodo.setAltura(altura);
 			direccionDelNodo.setCalle(calle);
 			direccionDelNodo.setLocalidad(localidad);
-
+			
 			nodo.setDireccionDelNodo(direccionDelNodo);
 			nodo.setEmailAdministradorNodo(emailClienteAdministrador);
 			Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(idVendedor);
@@ -163,4 +149,111 @@ public class NodoServiceImpl implements NodoService {
 		return solicitudCreacionNodoDAO.obtenerSolicitudesDeCreacionDe(usuarioService.obtenerClientePorEmail(email).getId(), idVendedor);
 	}
 
+	@Override
+	public void editarSolicitudDeCreacionNodo(Integer idVendedor, Cliente cliente, Integer idSolicitud,
+			String nombreNodo, Direccion obtenerDireccionConId, String tipoNodo, String barrio, String descripcion) throws SolicitudCreacionNodoException, NodoYaExistenteException {
+		SolicitudCreacionNodo solicitud = solicitudCreacionNodoDAO.obtenerSolitudCreacionNodo(idSolicitud, cliente.getId(), idVendedor);
+		validarSolicitud(solicitud);
+		validarNombreNodoAlEditar(nombreNodo, idVendedor, solicitud.getId());
+		solicitud.setBarrio(barrio);
+		solicitud.setDescripcion(descripcion);
+		solicitud.setDomicilio(obtenerDireccionConId);
+		solicitud.setNombreNodo(nombreNodo);
+		solicitud.setTipoNodo(tipoNodo);
+		solicitudCreacionNodoDAO.guardar(solicitud);
+	}
+
+
+	@Override
+	public void cancelarSolicitudDeCreacionNodo(Integer idSolicitud, Integer idVendedor, Integer idCliente) throws SolicitudCreacionNodoException, VendedorInexistenteException, ConfiguracionDeVendedorException {
+		SolicitudCreacionNodo solicitud = solicitudCreacionNodoDAO.obtenerSolitudCreacionNodo(idSolicitud, idCliente, idVendedor);
+		validarEstrategiaNodoActiva(idVendedor);
+		validarSolicitud(solicitud);
+		solicitud.setEstado(Constantes.SOLICITUD_NODO_CANCELADO);
+		solicitudCreacionNodoDAO.guardar(solicitud);
+	}
+	
+	/**
+	 * Sección de validaciones internas
+	 */
+	
+	private void validarNombreNodo(String nombre, Integer idVendedor) throws NodoYaExistenteException {
+		List<SolicitudCreacionNodo> solicitudes = solicitudCreacionNodoDAO.obtenerSolicitudesDeCreacionEnGestionDe(idVendedor);
+		List<Nodo> nodos = nodoDAO.obtenerNodosDelVendedor(idVendedor);
+		validarNombreDeSolicitudes(solicitudes, nombre);
+		validarNombreDeNodos(nodos, nombre);
+	}
+	
+	
+
+	private void validarNombreDeNodos(List<Nodo> nodos, String nombre) throws NodoYaExistenteException {
+		for(Nodo nodo: nodos) {
+			if(nodo.getAlias().equals(nombre)) {
+				throw new NodoYaExistenteException("El nombre ya existe, por favor elija otro");
+			}
+		}
+	}
+
+	private void validarNombreDeSolicitudes(List<SolicitudCreacionNodo> solicitudes, String nombre) throws NodoYaExistenteException {
+		for(SolicitudCreacionNodo solicitud: solicitudes) {
+			if(solicitud.getNombreNodo().equals(nombre)) {
+				throw new NodoYaExistenteException("El nombre ya fue solicitado, por favor elija otro");
+			}
+		}
+	}
+
+	private void validarSolicitud(SolicitudCreacionNodo solicitud) throws SolicitudCreacionNodoException {
+		if(!solicitud.getEstado().equals(Constantes.SOLICITUD_NODO_EN_GESTION)) {
+			throw new SolicitudCreacionNodoException();
+		}
+	}
+	
+	private void validarNombreNodoAlEditar(String nombreNodo, Integer idVendedor, Integer idSolicitud) throws NodoYaExistenteException {
+		List<SolicitudCreacionNodo> solicitudes = solicitudCreacionNodoDAO.obtenerSolicitudesDeCreacionEnGestionDe(idVendedor);
+		List<Nodo> nodos = nodoDAO.obtenerNodosDelVendedor(idVendedor);
+		validarNombreDeSolicitudesAlEditar(solicitudes, nombreNodo,idSolicitud);
+		validarNombreDeNodos(nodos, nombreNodo);
+		
+	}
+
+	private void validarNombreDeSolicitudesAlEditar(List<SolicitudCreacionNodo> solicitudes, String nombreNodo, Integer IdSolicitud) throws NodoYaExistenteException {
+		for(SolicitudCreacionNodo solicitud: solicitudes) {
+			if(!solicitud.getId().equals(IdSolicitud)) {
+				if(solicitud.getNombreNodo().equals(nombreNodo)) {
+					throw new NodoYaExistenteException("El nombre ya fue solicitado, por favor elija otro");
+				}
+			}
+		}
+		
+	}
+	
+
+	private void validarNodo(Nodo nodo) throws NodoCerradoException{
+		if(nodo.getTipo().equals(Constantes.NODO_CERRADO)){
+			throw new NodoCerradoException();
+		}
+	}
+	
+	private void validarEstrategiaNodoActiva(Integer idVendedor) throws VendedorInexistenteException, ConfiguracionDeVendedorException {
+		if(!vendedorService.obtenerVendedorPorId(idVendedor).getEstrategiasUtilizadas().isNodos()) {
+			throw new ConfiguracionDeVendedorException("Acción denegada");
+		}
+	}
+	
+
+	private void validar(Cliente usuario, Direccion direccion,Integer idVendedor) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException, SolicitudCreacionNodoEnGestionExistenteException {
+		if(direccion == null) {
+			throw new DireccionesInexistentes();
+		}
+		
+		if(!usuario.contieneDireccion(direccion.getId())) {
+			throw new DireccionesInexistentes();
+		}
+		
+		validarEstrategiaNodoActiva(idVendedor);
+		
+		if(solicitudCreacionNodoDAO.obtenerSolitudCreacionNodoEnGestion(usuario.getId(), idVendedor)!= null) {
+			throw new SolicitudCreacionNodoEnGestionExistenteException();
+		}
+	}
 }

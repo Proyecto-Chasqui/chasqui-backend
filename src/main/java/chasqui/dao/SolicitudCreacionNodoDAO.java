@@ -21,5 +21,11 @@ public interface SolicitudCreacionNodoDAO {
 	 * @return
 	 */
 	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDe(Integer idCliente, final Integer idVendedor);
+
+	public SolicitudCreacionNodo obtenerSolitudCreacionNodoEnGestion(Integer idCliente, final Integer idVendedor);
+
+	public SolicitudCreacionNodo obtenerSolitudCreacionNodo(Integer idSolicitud, Integer idCliente, Integer idVendedor);
+
+	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionEnGestionDe(Integer idVendedor);
 	
 }

@@ -8,6 +8,8 @@ import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
+import chasqui.exceptions.SolicitudCreacionNodoException;
+import chasqui.exceptions.SolicitudCreacionNodoEnGestionExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
@@ -46,10 +48,12 @@ public interface NodoService {
 	 * @param barrio
 	 * @param descripcion
 	 * @throws DireccionesInexistentes 
+	 * @throws SolicitudCreacionNodoEnGestionExistenteException 
+	 * @throws NodoYaExistenteException 
 	 */
 	void crearSolicitudDeCreacionNodo(Integer idVendedor, Cliente usuario, String nombre, Direccion direccion,
 			String tipo, String barrio, String descripcion)
-			throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException;
+			throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException, SolicitudCreacionNodoEnGestionExistenteException, NodoYaExistenteException;
 	/**
 	 * Crea una solicitud para pertenecer a un nodo en estado "enviado"
 	 * Valida que el nodo enviado sea de tipo "abierto"
@@ -67,6 +71,35 @@ public interface NodoService {
 	 * @throws UsuarioInexistenteException 
 	 */
 	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDe(String email, Integer idVendedor) throws UsuarioInexistenteException;
+	/**
+	 * Edita la solicitud con los datos enviados
+	 * Solo permite editar solicitudes en estado de "gestion".
+	 * @param idVendedor
+	 * @param cliente
+	 * @param idSolicitud
+	 * @param nombreNodo
+	 * @param obtenerDireccionConId
+	 * @param tipoNodo
+	 * @param barrio
+	 * @param descripcion
+	 * @return
+	 * @throws SolicitudCreacionNodoException
+	 * @throws NodoYaExistenteException 
+	 * @throws DireccionesInexistentes 
+	 */
+	@Transactional
+	public void editarSolicitudDeCreacionNodo(Integer idVendedor, Cliente cliente, Integer idSolicitud,
+			String nombreNodo, Direccion obtenerDireccionConId, String tipoNodo, String barrio, String descripcion) throws SolicitudCreacionNodoException, NodoYaExistenteException;
+	/**
+	 * Cancela la solicitud, valida que el vendedor tenga la estrategia nodos activa para emplear la accion.
+	 * @param idSolicitud
+	 * @param idVendedor
+	 * @param id
+	 * @throws SolicitudCreacionNodoException
+	 * @throws ConfiguracionDeVendedorException 
+	 * @throws VendedorInexistenteException 
+	 */
+	public void cancelarSolicitudDeCreacionNodo(Integer idSolicitud, Integer idVendedor, Integer id) throws SolicitudCreacionNodoException, VendedorInexistenteException, ConfiguracionDeVendedorException;
 
 
 }

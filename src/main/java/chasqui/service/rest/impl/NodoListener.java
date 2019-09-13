@@ -24,13 +24,19 @@ import org.springframework.stereotype.Service;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
+import chasqui.exceptions.NodoYaExistenteException;
 import chasqui.exceptions.RequestIncorrectoException;
+import chasqui.exceptions.SolicitudCreacionNodoException;
+import chasqui.exceptions.SolicitudCreacionNodoEnGestionExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
+import chasqui.model.Direccion;
 import chasqui.model.Nodo;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
+import chasqui.service.rest.request.CancelarSolicitudCreacionNodoRequest;
+import chasqui.service.rest.request.EditarSolicitudCreacionNodoRequest;
 import chasqui.service.rest.request.GrupoRequest;
 import chasqui.service.rest.request.NodoSolicitudCreacionRequest;
 import chasqui.service.rest.response.ChasquiError;
@@ -85,10 +91,16 @@ public class NodoListener {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();			
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();	
+		} catch (SolicitudCreacionNodoEnGestionExistenteException e) {
+			return Response.status(406).entity(new ChasquiError("Ya posee una solicitud de creación de nodo, solo se permite gestionar una por vez")).build();
+		} catch (NodoYaExistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (Exception e) {
+			return Response.status(406).entity(new ChasquiError("error interno")).build();
 		}
 	}
 
-	private void crearSolicitudDeCreacionDeNodo(NodoSolicitudCreacionRequest request, String emailAdministrador) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException, UsuarioInexistenteException {
+	private void crearSolicitudDeCreacionDeNodo(NodoSolicitudCreacionRequest request, String emailAdministrador) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException, UsuarioInexistenteException, SolicitudCreacionNodoEnGestionExistenteException, NodoYaExistenteException {
 		Cliente cliente = usuarioService.obtenerClientePorEmail(emailAdministrador);
 		nodoService.crearSolicitudDeCreacionNodo(request.getIdVendedor(),
 				cliente,
@@ -125,6 +137,82 @@ public class NodoListener {
 			return null;
 
 	}
+	
+	@POST
+	@Path("/editarSolicitudDeCreacion")
+	@Produces("application/json")
+	public Response editarSolicitudDeCreacion(@Multipart(value = "editarSolicitudDeCreacion", type = "application/json") final String editarSolicitudDeCreacion) {
+		EditarSolicitudCreacionNodoRequest request;
+		try {
+			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
+			request = this.toEditNodoCreacionRequest(editarSolicitudDeCreacion);
+			this.editarSolicitudDeCreacionDeNodo(request,emailAdministrador);
+			return Response.ok().build();
+		} catch (IOException e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (UsuarioInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (SolicitudCreacionNodoException e) {
+			return Response.status(406).entity(new ChasquiError("La solicitud no esta en etapa de gestión")).build();
+		} catch (DireccionesInexistentes e) {
+			return Response.status(406).entity(new ChasquiError("La dirección seleccionada no pertenece al usuario")).build();
+		} catch (NodoYaExistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
+		}
+	}
+	
+	@POST
+	@Path("/cancelarSolicitudDeCreacion")
+	@Produces("application/json")
+	public Response cancelarSolicitudDeCreacion(@Multipart(value = "cancelarSolicitudDeCreacion", type = "application/json") final String cancelarSolicitudDeCreacion) {
+		CancelarSolicitudCreacionNodoRequest request;
+		try {
+			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
+			request = this.toCancelarNodoCreacionRequest(cancelarSolicitudDeCreacion);
+			this.cancelarSolicitudDeCreacionDeNodo(request,emailAdministrador);
+			return Response.ok().build();
+		} catch (IOException e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (UsuarioInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (SolicitudCreacionNodoException e) {
+			return Response.status(406).entity(new ChasquiError("La solicitud no esta en etapa de gestión")).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
+		}
+	}
+
+
+	private void cancelarSolicitudDeCreacionDeNodo(CancelarSolicitudCreacionNodoRequest request,
+			String emailAdministrador) throws UsuarioInexistenteException, SolicitudCreacionNodoException, VendedorInexistenteException, ConfiguracionDeVendedorException {
+		Cliente cliente = usuarioService.obtenerClientePorEmail(emailAdministrador);
+		nodoService.cancelarSolicitudDeCreacionNodo(request.getIdSolicitud(), request.getIdVendedor(), cliente.getId());		
+	}
+
+
+	private void editarSolicitudDeCreacionDeNodo(EditarSolicitudCreacionNodoRequest request, String emailAdministrador) throws UsuarioInexistenteException, SolicitudCreacionNodoException, DireccionesInexistentes, NodoYaExistenteException {
+		Cliente cliente = usuarioService.obtenerClientePorEmail(emailAdministrador);
+		validarDireccion(cliente, request.getIdDomicilio());
+		nodoService.editarSolicitudDeCreacionNodo(request.getIdVendedor(),
+				cliente,
+				request.getIdSolicitud(),
+				request.getNombreNodo(),
+				cliente.obtenerDireccionConId(request.getIdDomicilio()),
+				request.getTipoNodo(),
+				request.getBarrio(),
+				request.getDescripcion());
+		
+	}
+	
+	
+	private void validarDireccion(Cliente cliente, Integer idDomicilio) throws DireccionesInexistentes {
+		if(!cliente.contieneDireccion(idDomicilio)) {
+			throw new DireccionesInexistentes();
+		}		
+		
+	}
 
 	private List<SolicitudCreacionNodoResponse> toResponseSolicitudes(List<SolicitudCreacionNodo> solicitudes) {
 		List<SolicitudCreacionNodoResponse> response = new ArrayList<SolicitudCreacionNodoResponse>();
@@ -147,5 +235,21 @@ public class NodoListener {
 	protected String obtenerEmailDeContextoDeSeguridad() {
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 
+	}
+	
+	private CancelarSolicitudCreacionNodoRequest toCancelarNodoCreacionRequest(String cancelarSolicitudDeCreacion) throws JsonParseException, JsonMappingException, IOException {
+		CancelarSolicitudCreacionNodoRequest request = new CancelarSolicitudCreacionNodoRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		request = mapper.readValue(cancelarSolicitudDeCreacion, CancelarSolicitudCreacionNodoRequest.class);
+		return request;
+	}
+
+	private EditarSolicitudCreacionNodoRequest toEditNodoCreacionRequest(String editarSolicitudDeCreacion) throws JsonParseException, JsonMappingException, IOException {
+		EditarSolicitudCreacionNodoRequest request = new EditarSolicitudCreacionNodoRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		request = mapper.readValue(editarSolicitudDeCreacion, EditarSolicitudCreacionNodoRequest.class);
+		return request;
 	}
 }
