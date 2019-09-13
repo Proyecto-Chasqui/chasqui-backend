@@ -18,6 +18,7 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
@@ -41,7 +42,7 @@ import chasqui.services.interfaces.VendedorService;
 
 @Service
 @Path("/nodo")
-public class NodoListener extends GrupoListener{
+public class NodoListener{
 
 	@Autowired
 	NodoService nodoService;
@@ -142,5 +143,10 @@ public class NodoListener extends GrupoListener{
 			response.add(new NodoResponse(nodo));
 		}
 		return response;
+	}
+	
+	protected String obtenerEmailDeContextoDeSeguridad() {
+		return SecurityContextHolder.getContext().getAuthentication().getName();
+
 	}
 }

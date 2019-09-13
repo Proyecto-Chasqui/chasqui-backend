@@ -17,7 +17,6 @@ public class NodoSolicitudCreacionRequest implements Serializable{
 	private String tipoNodo;
 	private String barrio;
 	private String descripcion;
-	private String estado;
 	
 	public NodoSolicitudCreacionRequest() {
 		
@@ -61,14 +60,6 @@ public class NodoSolicitudCreacionRequest implements Serializable{
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
-	}
-
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
 	}
 
 	public Integer getIdDomicilio() {
