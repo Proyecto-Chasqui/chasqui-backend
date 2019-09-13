@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,6 +241,12 @@ public class XlsExporter {
 	private void loadInfoInTable(Pedido pedido) {
 
 		ArrayList<ProductoPedido> productos = new ArrayList<ProductoPedido>(pedido.getProductosEnPedido());
+		productos.sort(new Comparator<ProductoPedido>() {
+			@Override
+			public int compare(ProductoPedido o1, ProductoPedido o2) {
+				return o1.getNombreProducto().compareTo(o2.getNombreProducto());
+			}
+		});
 		for (int i = 0; i < productos.size(); i++) {
 			Row row = sheet.getRow(2 + i);
 			ProductoPedido p = productos.get(i);
