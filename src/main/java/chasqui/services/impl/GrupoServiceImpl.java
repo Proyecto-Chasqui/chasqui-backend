@@ -585,8 +585,12 @@ public class GrupoServiceImpl implements GrupoService {
 	}
 	
 
-	private boolean pedidoEnEstadoInactivo(Pedido pedido) {		
-		return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_INEXISTENTE);
+	private boolean pedidoEnEstadoInactivo(Pedido pedido) {
+		if(pedido != null) {
+			return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_INEXISTENTE);
+		}else {
+			return true;
+		}
 	}
 
 	/*
