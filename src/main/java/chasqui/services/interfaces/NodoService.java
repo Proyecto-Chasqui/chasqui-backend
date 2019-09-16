@@ -100,6 +100,12 @@ public interface NodoService {
 	 * @throws VendedorInexistenteException 
 	 */
 	public void cancelarSolicitudDeCreacionNodo(Integer idSolicitud, Integer idVendedor, Integer id) throws SolicitudCreacionNodoException, VendedorInexistenteException, ConfiguracionDeVendedorException;
+	/**
+	 * Obtiene todos las solicitudes de creacion de nodos para un vendedor determinado, independientemente de su estado.
+	 * @param id
+	 * @return
+	 */
+	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDeVendedor(Integer id);
 
 
 }

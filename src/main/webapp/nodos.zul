@@ -1,0 +1,88 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./nodosWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui.ico"?>
+<zk>
+<window id="nodosWindow"  border="normal" apply="chasqui.view.composer.NodosComposer" sizable="false" width="100%"
+style="overflow:auto">
+<!--
+<div align="center">
+	<hbox>
+		<label value="${c:l('zk.nodo.label.filtro')}"/>
+		<datebox id="desde"/>
+		<space spacing="10px"/>
+		<label value="${c:l('zk.nodo.label.filtro')}"/>
+		<datebox id="hasta"/>	
+		<space spacing="10px"/>
+		<button label="Buscar"/>
+	</hbox>
+</div>
+-->
+<tabbox>
+	<tabs>
+		<tab label="Pedidos"/>
+		<tab label="Nodos"/>
+		<tab label="Solicitudes"/>
+	</tabs>
+	<tabpanels>
+		<tabpanel>
+			<separator spacing="15px"/>
+				<listbox  id="listboxSolicitudesNodos" model="@{nodosWindow$composer.nodosSolicitados}" mold="paging" rows="10" pageSize="10" >
+					<listhead>
+						<listheader align="center" label="Alias"/>
+						<listheader align="center" label="Domicilio"/>
+						<listheader align="center" label="Coordinador"/>
+						<listheader align="center" label="Mail"/>
+						<listheader align="center" label="Tel.Fijo"/>
+						<listheader align="center" label="Celular" />
+						<listheader align="center" label="Acciones"/>
+					</listhead>		
+				</listbox>
+			<separator spacing="10px"/>
+			<div align="center">
+				<button label="${c:l('zk.button.label.guardar')}" id="confirmarEntregabtn" visible="false"/>
+			</div>
+		</tabpanel>
+		<tabpanel>
+			<separator spacing="15px"/>
+				<listbox  id="listboxSolicitudesNodos2" model="@{nodosWindow$composer.nodosSolicitados}" mold="paging" rows="10" pageSize="10" >
+					<listhead>
+						<listheader align="center" label="Alias"/>
+						<listheader align="center" label="Estado"/>
+						<listheader align="center" label="Domicilio"/>
+						<listheader align="center" label="Coordinador"/>
+						<listheader align="center" label="Mail"/>
+						<listheader align="center" label="Tel.Fijo"/>
+						<listheader align="center" label="Celular" />
+						<listheader align="center" label="Acciones"/>
+					</listhead>		
+					</listbox>
+				<separator spacing="10px"/>
+			<div align="center">
+				<button label="${c:l('zk.button.label.guardar')}" id="confirmarEntregabtn2" visible="false"/>
+			</div>
+		</tabpanel>
+		<tabpanel>
+					<separator spacing="15px"/>
+						<listbox  id="listboxSolicitudesCreacionNodos" model="@{nodosWindow$composer.solicitudesCreacionNodos}" mold="paging" rows="10" pageSize="10" >
+							<listhead>
+								<listheader align="center" label="Estado"/>
+								<listheader align="center" label="Coordinador"/>
+								<listheader align="center" label="Mail"/>
+								<listheader align="center" label="Tel.Fijo"/>
+								<listheader align="center" label="Celular" />
+								<listheader align="center" label="Barrio" />
+								<listheader align="center" label="Acciones"/>
+							</listhead>		
+						</listbox>
+					<separator spacing="10px"/>
+			<div align="center">
+				<button label="${c:l('zk.button.label.guardar')}" id="confirmarEntregabtn3" visible="false"/>
+			</div>
+		</tabpanel>
+	</tabpanels>
+</tabbox>
+<separator spacing="10px"/>
+</window>
+</zk>

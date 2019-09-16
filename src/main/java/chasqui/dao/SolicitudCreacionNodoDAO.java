@@ -27,5 +27,7 @@ public interface SolicitudCreacionNodoDAO {
 	public SolicitudCreacionNodo obtenerSolitudCreacionNodo(Integer idSolicitud, Integer idCliente, Integer idVendedor);
 
 	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionEnGestionDe(Integer idVendedor);
+
+	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDe(Integer idVendedor);
 	
 }

@@ -13,31 +13,37 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Nodo;
 import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
+import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.Vendedor;
 import chasqui.service.rest.request.DireccionRequest;
 import chasqui.service.rest.request.SingUpRequest;
 import chasqui.services.interfaces.NodoService;
 import chasqui.view.renders.PedidoRenderer;
+import chasqui.view.renders.SolicitudCreacionNodosRenderer;
 import chasqui.view.renders.SolicitudRenderer;
 
 @SuppressWarnings({"serial","deprecation","unused"})
-public class SolicitudesNodosComposer  extends GenericForwardComposer<Component>{
+public class NodosComposer  extends GenericForwardComposer<Component>{
 	
 	private Datebox desde;
 	private Datebox hasta;
 	private Listbox listboxSolicitudesNodos;
+	private Listbox listboxSolicitudesCreacionNodos;
 	private Button confirmarEntregabtn;
 	private AnnotateDataBinder binder;
 	
@@ -47,6 +53,7 @@ public class SolicitudesNodosComposer  extends GenericForwardComposer<Component>
 	
 	private NodoService nodoService;
 	private Vendedor vendedorLogueado;
+	private List<SolicitudCreacionNodo> solicitudesCreacionNodos;
 	
 	
 	public void doAfterCompose(Component c) throws Exception{
@@ -54,11 +61,13 @@ public class SolicitudesNodosComposer  extends GenericForwardComposer<Component>
 		if(vendedorLogueado != null){
 			super.doAfterCompose(c);
 			nodoService = (NodoService) SpringUtil.getBean("nodoService");
-			c.addEventListener(Events.ON_USER, new SolicitudEventListener(this));
+			c.addEventListener(Events.ON_NOTIFY, new SolicitudEventListener(this));
 			binder = new AnnotateDataBinder(c);
 			nodosSolicitados = new ArrayList<Nodo>();
 			nodosSolicitados = nodoService.obtenerNodosDelVendedor(vendedorLogueado.getId());
+			solicitudesCreacionNodos = nodoService.obtenerSolicitudesDeCreacionDeVendedor(vendedorLogueado.getId());
 			listboxSolicitudesNodos.setItemRenderer(new SolicitudRenderer((Window) c));
+			listboxSolicitudesCreacionNodos.setItemRenderer( new SolicitudCreacionNodosRenderer((Window) c));
 			binder.loadAll();
 			
 		}
@@ -90,20 +99,64 @@ public class SolicitudesNodosComposer  extends GenericForwardComposer<Component>
 		this.estadoSeleccionado = estadoSeleccionado;
 	}
 
+
+	public List<SolicitudCreacionNodo> getSolicitudesCreacionNodos() {
+		return solicitudesCreacionNodos;
+	}
+
+
+	public void setSolicitudesCreacionNodos(List<SolicitudCreacionNodo> solicitudesCreacionNodos) {
+		this.solicitudesCreacionNodos = solicitudesCreacionNodos;
+	}
+
+
+	public Listbox getListboxSolicitudesCreacionNodos() {
+		return listboxSolicitudesCreacionNodos;
+	}
+
+
+	public void setListboxSolicitudesCreacionNodos(Listbox listboxSolicitudesCreacionNodos) {
+		this.listboxSolicitudesCreacionNodos = listboxSolicitudesCreacionNodos;
+	}
+
+
+	public void abrirPopUpGestion(SolicitudCreacionNodo solicitud) {
+		Messagebox.show(
+				"Lograste abrir"  + solicitud.getNombreNodo(),
+				"ventana",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
+	    		new String[] {"Aceptar","Cancelar"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					binder.loadAll();
+					Clients.showNotification("cliceaste en si");
+				case "NO":
+				}
+			}
+
+			});
+		
+	}
+
 	
 }
 
 class SolicitudEventListener implements EventListener<Event>{
 
-	SolicitudesNodosComposer composer;
+	NodosComposer composer;
 	
-	public SolicitudEventListener(SolicitudesNodosComposer c){
+	public SolicitudEventListener(NodosComposer c){
 		this.composer = c;
 	}
 	
 	public void onEvent(Event event) throws Exception {
 		Map<String,Object> params = (Map<String,Object>) event.getData();
-		Nodo nodo = (Nodo) params.get("nodo");
+		SolicitudCreacionNodo solicitud = (SolicitudCreacionNodo) params.get("solicitud");
+		composer.abrirPopUpGestion(solicitud);
 		//composer.onAutorizar(nodo);
 		
 	}

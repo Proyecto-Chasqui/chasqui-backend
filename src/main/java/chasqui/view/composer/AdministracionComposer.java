@@ -196,10 +196,10 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 			radioPedidosColectivos.setVisible(true);
 		}
 		if(estrategias.isNodos()){
-			//cellRadioSolicitudesNodos.setVisible(true);
-			//radioSolicitudesNodos.setVisible(true);
-			cellRadioPedidos.setVisible(true);
-			radioPedidos.setVisible(true);
+			cellRadioSolicitudesNodos.setVisible(true);
+			radioSolicitudesNodos.setVisible(true);
+			//cellRadioPedidos.setVisible(true);
+			//radioPedidos.setVisible(true);
 		}
 	}
 	
@@ -209,7 +209,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		radioSolicitudesNodos.setVisible(b);
 		cellRadioPedidos.setVisible(b);
 		cellRadioPedidosColectivos.setVisible(b);
-		cellRadioSolicitudesNodos.setVisible(b);
+		//cellRadioSolicitudesNodos.setVisible(b);
 
 	}
 	

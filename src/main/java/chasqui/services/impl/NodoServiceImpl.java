@@ -256,4 +256,9 @@ public class NodoServiceImpl implements NodoService {
 			throw new SolicitudCreacionNodoEnGestionExistenteException();
 		}
 	}
+
+	@Override
+	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDeVendedor(Integer idVendedor) {
+		return solicitudCreacionNodoDAO.obtenerSolicitudesDeCreacionDe(idVendedor);
+	}
 }

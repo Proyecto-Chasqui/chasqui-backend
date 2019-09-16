@@ -7,93 +7,103 @@
 <window title="Alta/Edición de Nodos" id="nodoWindow" position="center,top"
 apply="chasqui.view.composer.ABMNodoComposer" border="normal" width="42%" sizable="true" closable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
-<listbox id="enter">
-	<listhead>
-		<listheader/>
-		<listheader/>
-	</listhead>
-	
-	<listitem>
-		<listcell>
-			<label value="${c:l('zk.listcell.label.abmNodo.alias')}*"/>
-		</listcell>
-		<listcell>
-			<textbox width="150px" placeholder="Nodo Ejemplo" id="txtAlias" maxlength="100"/>	
-		</listcell>
-	</listitem>
-	
-	<listitem>
-		<listcell>
-			<label value="${c:l('zk.listcell.label.abmNodo.emailadmin')}*"/>
-		</listcell>
-		<listcell>
-			<textbox id="txtEmailAdmin" width="150px" placeholder="ejemplo@mail.com" tabbable="false"
-                constraint="/.+@.+\.[a-z]+/: Por favor ingrese un email valido" maxlength="50"
-                 forward="onChange=nodoWindow$composer.onBorrarDireccionAlEditarMail"/>
-			<button label="Obtener Datos" style="font-weight:bold; color:black" id="buttonConfirmarUsuario" />			
-		</listcell>
-	</listitem>
-	
-	<listitem>
-			<listcell label="Direccion de Entrega"/>
-			<listcell>
-					<combobox width="150px" placeholder="Se Necesitan Datos" id="comboDirecciones" readonly="true" model="@{nodoWindow$composer.direcciones}"
-				selectedItem="@{nodoWindow$composer.direccionSeleccionada}"
-				forward="onSelect=nodoWindow$composer.onCompletarDireccionAlSeleccionar"
-				itemRenderer="chasqui.view.renders.ComboDireccionRenderer"/>
-				<toolbarbutton id="buttonCrearNuevaDireccion"  image="/imagenes/plus.png" />
-			</listcell>
-	</listitem>
-	 
-	<listitem>
-		<listcell>
-			<label value="${c:l('zk.listcell.label.abmNodo.calle')}*"/>
-		</listcell>
-		<listcell>
-			<textbox width="150px" id="txtCalle" maxlength="50"/>
-		</listcell>
-	</listitem>
-	
-	<listitem>
-		<listcell>
-			<label value="${c:l('zk.listcell.label.abmNodo.altura')}*"/>
-		</listcell>
-		<listcell>
-			<intbox width="150px" id="intBoxAltura" maxlength="5"/>
-		</listcell>
-	</listitem>
-	
-	<listitem>
-		<listcell>
-			<label value="${c:l('zk.listcell.label.abmNodo.localidad')}*"/>
-		</listcell>
-		<listcell>
-			<textbox width="150px" id="txtLocalidad" maxlength="50"/>
-		</listcell>
-	</listitem>
-	
-	<listitem>
-		<listcell>
-			<label value="${c:l('zk.listcell.label.abmNodo.telefono')}*"/>
-		</listcell>
-		<listcell>
-			<textbox width="150px" id="txtTelefono" maxlength="15"/>
-		</listcell>
-	</listitem>
-	
-	<listitem visible="false">
-		<listcell>
-			<label value="Descripción"/>
-		</listcell>
-		<listcell>
-		<div>
-			<ckeditor width="100%" height="100px" id="txtDescripcion" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
-		</div>
-		</listcell>
-	</listitem>
-	
-</listbox>
-
+<tabbox>
+	<tabs>
+		<tab label="Imágenes"/>
+		<tab label="Textos"/>
+		<tab label="Contacto"/>
+	</tabs>
+	<tabpanels>
+		<tabpanel>
+			<listbox id="enter">
+				<listhead>
+					<listheader/>
+					<listheader/>
+				</listhead>
+				
+				<listitem>
+					<listcell>
+						<label value="${c:l('zk.listcell.label.abmNodo.alias')}*"/>
+					</listcell>
+					<listcell>
+						<textbox width="150px" placeholder="Nodo Ejemplo" id="txtAlias" maxlength="100"/>	
+					</listcell>
+				</listitem>
+				
+				<listitem>
+					<listcell>
+						<label value="${c:l('zk.listcell.label.abmNodo.emailadmin')}*"/>
+					</listcell>
+					<listcell>
+						<textbox id="txtEmailAdmin" width="150px" placeholder="ejemplo@mail.com" tabbable="false"
+			                constraint="/.+@.+\.[a-z]+/: Por favor ingrese un email valido" maxlength="50"
+			                 forward="onChange=nodoWindow$composer.onBorrarDireccionAlEditarMail"/>
+						<button label="Obtener Datos" style="font-weight:bold; color:black" id="buttonConfirmarUsuario" />			
+					</listcell>
+				</listitem>
+				
+				<listitem>
+						<listcell label="Direccion de Entrega"/>
+						<listcell>
+								<combobox width="150px" placeholder="Se Necesitan Datos" id="comboDirecciones" readonly="true" model="@{nodoWindow$composer.direcciones}"
+							selectedItem="@{nodoWindow$composer.direccionSeleccionada}"
+							forward="onSelect=nodoWindow$composer.onCompletarDireccionAlSeleccionar"
+							itemRenderer="chasqui.view.renders.ComboDireccionRenderer"/>
+							<toolbarbutton id="buttonCrearNuevaDireccion"  image="/imagenes/plus.png" />
+						</listcell>
+				</listitem>
+				 
+				<listitem>
+					<listcell>
+						<label value="${c:l('zk.listcell.label.abmNodo.calle')}*"/>
+					</listcell>
+					<listcell>
+						<textbox width="150px" id="txtCalle" maxlength="50"/>
+					</listcell>
+				</listitem>
+				
+				<listitem>
+					<listcell>
+						<label value="${c:l('zk.listcell.label.abmNodo.altura')}*"/>
+					</listcell>
+					<listcell>
+						<intbox width="150px" id="intBoxAltura" maxlength="5"/>
+					</listcell>
+				</listitem>
+				
+				<listitem>
+					<listcell>
+						<label value="${c:l('zk.listcell.label.abmNodo.localidad')}*"/>
+					</listcell>
+					<listcell>
+						<textbox width="150px" id="txtLocalidad" maxlength="50"/>
+					</listcell>
+				</listitem>
+				
+				<listitem>
+					<listcell>
+						<label value="${c:l('zk.listcell.label.abmNodo.telefono')}*"/>
+					</listcell>
+					<listcell>
+						<textbox width="150px" id="txtTelefono" maxlength="15"/>
+					</listcell>
+				</listitem>
+				
+				<listitem visible="false">
+					<listcell>
+						<label value="Descripción"/>
+					</listcell>
+					<listcell>
+					<div>
+						<ckeditor width="100%" height="100px" id="txtDescripcion" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
+					</div>
+					</listcell>
+				</listitem>
+				
+			</listbox>
+		</tabpanel>
+	</tabpanels>
+</tabbox>
 <separator spacing="15px"/>
 <div align="center">
 	<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>

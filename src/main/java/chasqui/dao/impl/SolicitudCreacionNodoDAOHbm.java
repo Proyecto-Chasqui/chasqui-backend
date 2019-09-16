@@ -92,6 +92,22 @@ public class SolicitudCreacionNodoDAOHbm extends HibernateDaoSupport implements 
 			   }
 		});
 	}
+
+	@Override
+	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDe(final Integer idVendedor) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<SolicitudCreacionNodo>>() {
+
+			   @Override
+			   public List<SolicitudCreacionNodo> doInHibernate(Session session) throws HibernateException, SQLException {
+			    Criteria criteria = session.createCriteria(SolicitudCreacionNodo.class, "solicitud");
+			    criteria.add(Restrictions.eq("solicitud.idVendedor", idVendedor));
+
+			    List<SolicitudCreacionNodo> resultado = (List<SolicitudCreacionNodo>) criteria.list();
+			    
+			    return resultado; 
+			   }
+		});
+	}
 	
 	
 

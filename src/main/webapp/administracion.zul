@@ -70,7 +70,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		forward="onClick=administracionWindow$composer.onCrearProducto"/>
 	<toolbarbutton label="Nuevo Productor" visible="false" id="agregarProductorButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		forward="onClick=administracionWindow$composer.onCrearProductor"/>	
-	<toolbarbutton label="Nuevo Nodo" visible="false" id="agregarNodoButton" image="/imagenes/plus.png" tooltiptext="Agregar nodo"
+	<toolbarbutton label="Nuevo Nodo" visible="true" id="agregarNodoButton" image="/imagenes/plus.png" tooltiptext="Agregar nodo"
 		forward="onClick=administracionWindow$composer.onCrearNodo"/>	
 </hbox>
 <hbox height="100%">
@@ -127,7 +127,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 					</listcell>
 				</listitem>
 				<listitem>
-					<listcell id="cellRadioSolicitudesNodos" >
+					<listcell id="cellRadioSolicitudesNodos" visible="true" >
 						<radio label="Nodos" style="font-size:15px" id="radioSolicitudesNodos" radiogroup="v1"/>
 					</listcell>
 				</listitem>
@@ -194,8 +194,8 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		<div id="divPedidosColectivos" visible="false">
 			<include id="pedidosColectivosInclude" visible="false" src="/verHistorialPedidosColectivos.zul"/>
 		</div>
-		<div id="divSolicitudesNodos" visible="false">
-			<include id="solicitudesNodosInclude" visible="false" src="/solicitudesNodos.zul"/>
+		<div id="divSolicitudesNodos" visible="true">
+			<include id="solicitudesNodosInclude" visible="false" src="/nodos.zul"/>
 		</div>
 		<div id="divProductores" visible="false">
 			<vbox>
