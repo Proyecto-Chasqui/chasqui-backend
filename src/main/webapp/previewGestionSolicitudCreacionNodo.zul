@@ -1,0 +1,86 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./solicitudCreacionNodoWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window title="Detalle de la solicitud del nodo" border="normal" id="solicitudCreacionNodoWindow" closable="true" sizable="true"
+apply="chasqui.view.composer.GestionSolicitudCreacionNodoComposer" width="30%">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<tabbox>
+	<tabs>
+		<tab label="Detalles del cliente"/>
+		<tab label="Detalles del nodo"/>
+	</tabs>
+	<tabpanels>
+		<tabpanel>
+			<listbox width="100%">
+				<listhead>
+					<listheader width="40%" label="Campo" align="center"/>
+					<listheader label="Detalle" align="center"/>
+				</listhead>
+				<listitem>
+					<listcell label="Usuario Solicitante"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.cliente}"/>
+				</listitem>
+				<listitem>
+					<listcell label="E-mail"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.mail}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Teléfono fijo"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.telfijo}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Teléfono celular"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.celular}"/>
+				</listitem>
+			</listbox>
+		</tabpanel>
+		<tabpanel>
+			<listbox width="100%">
+				<listhead>
+					<listheader width="40%" label="Campo" align="center"/>
+					<listheader label="Detalle"  align="center"/>
+				</listhead>
+				<listitem>
+					<listcell label="Nombre Nodo" />
+					<listcell label="@{solicitudCreacionNodoWindow$composer.nombreNodo}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Dirección"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.direccion}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Barrio"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.barrio}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Tipo nodo"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.tipoNodo}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Descripción del nodo"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.descripcion}"/>
+				</listitem>
+			</listbox>
+		</tabpanel>
+	</tabpanels>
+</tabbox>
+<separator spacing="15px" visible="true"/>
+<div align="center">
+	<button label="Aceptar Solicitud" id="confirmarEntregabtn" />
+	<button label="Rechazar Solicitud" id="exportarTodosbtn" />        
+	<button label="Salir" id="exportarSeleccionados"/>
+</div>
+<separator spacing="15px" visible="true"/>
+
+</window>
+</zk>
+
+
+
+
+
+
+

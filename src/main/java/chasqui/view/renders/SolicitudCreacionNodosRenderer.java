@@ -29,10 +29,6 @@ public class SolicitudCreacionNodosRenderer implements ListitemRenderer<Solicitu
 	}
 	
 	public void render(Listitem item, final SolicitudCreacionNodo solicitud, int arg2) throws Exception {
-		/*
-		 * Aca se define tanto lo que se va a mostrar como su orden.
-		 * En este caso, la informacion de los nodos
-		**/
 		
 		String estado;
 		String cliente;

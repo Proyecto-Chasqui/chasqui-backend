@@ -42,6 +42,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	
 	private Datebox desde;
 	private Datebox hasta;
+	@Deprecated
 	private Listbox listboxSolicitudesNodos;
 	private Listbox listboxSolicitudesCreacionNodos;
 	private Button confirmarEntregabtn;
@@ -121,25 +122,10 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 
 
 	public void abrirPopUpGestion(SolicitudCreacionNodo solicitud) {
-		Messagebox.show(
-				"Lograste abrir"  + solicitud.getNombreNodo(),
-				"ventana",
-	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.NO},
-	    		new String[] {"Aceptar","Cancelar"},
-	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
-
-			public void onEvent(ClickEvent event) throws Exception {
-				String edata= event.getData().toString();
-				switch (edata){
-				case "YES":
-					binder.loadAll();
-					Clients.showNotification("cliceaste en si");
-				case "NO":
-				}
-			}
-
-			});
-		
+		HashMap<String,Object>params = new HashMap<String,Object>();
+		params.put("solicitud", solicitud);
+		Window w = (Window) Executions.createComponents("/previewGestionSolicitudCreacionNodo.zul", this.self, params);
+		w.doModal();
 	}
 
 	
