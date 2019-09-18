@@ -17,6 +17,15 @@ public class Nodo extends GrupoCC{
 		super(administrador, alias, descripcion);
 		this.setTipo(Constantes.NODO_ABIERTO);
 	}
+	//creacion de nodo via solicitud.
+	public Nodo (SolicitudCreacionNodo solicitud, Vendedor vendedor) {
+		super((Cliente)solicitud.getUsuarioSolicitante(), solicitud.getNombreNodo(), solicitud.getDescripcion());
+		this.setBarrio(solicitud.getBarrio());
+		this.setEmailAdministradorNodo(solicitud.getUsuarioSolicitante().getEmail());
+		this.setDireccionDelNodo(solicitud.getDomicilio());
+		this.setTipo(solicitud.getTipoNodo());
+		this.setVendedor(vendedor);
+	}
 
 	//Gets & Sets
 	public Integer getId() {

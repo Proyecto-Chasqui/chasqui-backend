@@ -264,15 +264,7 @@ public class NodoServiceImpl implements NodoService {
 
 	@Override
 	public void aceptarSolicitud(SolicitudCreacionNodo solicitud) throws VendedorInexistenteException {
-		Nodo nodo = new Nodo();
-		nodo.setAdministrador((Cliente) solicitud.getUsuarioSolicitante());
-		nodo.setAlias(solicitud.getNombreNodo());
-		nodo.setBarrio(solicitud.getBarrio());
-		nodo.setDescripcion(solicitud.getDescripcion());
-		nodo.setEmailAdministradorNodo(solicitud.getUsuarioSolicitante().getEmail());
-		nodo.setDireccionDelNodo(solicitud.getDomicilio());
-		nodo.setTipo(solicitud.getTipoNodo());
-		nodo.setVendedor(vendedorService.obtenerVendedorPorId(solicitud.getIdVendedor()));
+		Nodo nodo = new Nodo(solicitud, vendedorService.obtenerVendedorPorId(solicitud.getIdVendedor()));
 		solicitud.setEstado(Constantes.SOLICITUD_NODO_APROBADO);
 		solicitudCreacionNodoDAO.guardar(solicitud);
 		nodoDAO.guardarNodo(nodo);		

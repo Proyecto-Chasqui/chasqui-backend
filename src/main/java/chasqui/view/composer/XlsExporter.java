@@ -109,7 +109,7 @@ public class XlsExporter {
 	public void exportColectivos(List<Pedido> pedidos) throws Exception{
 		for (Pedido p : pedidos) {
 			if(page<1){
-				doHeader(p,"Resumen Grupal de ");
+				doHeader(p,"Resumen Colectivo de ");
 			}else{
 				doHeader(p,"Pedido de ");
 			}

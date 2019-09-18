@@ -24,30 +24,30 @@ style="overflow:auto">
 		<tab label="Pedidos" image="/imagenes/pedidosNodo.png"/>
 		<tab label="Nodos" image="/imagenes/nodos.png"/>
 		<tab label="Solicitudes" image="/imagenes/solicitud.png"/>
-		
 	</tabs>
 	<tabpanels>
 		<tabpanel>
 			<separator spacing="15px"/>
-				<listbox  id="listboxSolicitudesNodos" model="@{nodosWindow$composer.nodosSolicitados}" mold="paging" rows="10" pageSize="10" >
+				<listbox  id="listboxPedidosNodo" model="@{nodosWindow$composer.pedidosNodos}" mold="paging" rows="10" pageSize="10" >
 					<listhead>
-						<listheader align="center" label="Alias"/>
-						<listheader align="center" label="Domicilio"/>
-						<listheader align="center" label="Coordinador"/>
-						<listheader align="center" label="e-mail"/>
-						<listheader align="center" label="Tel.Fijo"/>
-						<listheader align="center" label="Celular" />
-						<listheader align="center" label="Acciones"/>
+							<listheader label="ID" align="center" visible="true"/>
+							<listheader label="Nombre Nodo" align="center" visible="true"></listheader>
+							<listheader label="Coordinador" align="center" visible="true"></listheader>
+							<listheader label="Fecha Creación" align="center"/>
+							<listheader label="Fecha Cierre" align="center"/>
+							<listheader label="Zona" align="center"/>
+							<listheader label="Monto Minimo" align="center" visible="false"/>
+							<listheader label="Monto Final" align="center"/>
+							<listheader label="Estado" align="center"/>
+							<listheader label="Dir. de Entrega" align="center"/>
+							<listheader label="Acciones" align="center" hflex="4"/>
 					</listhead>		
 				</listbox>
 			<separator spacing="10px"/>
-			<div align="center">
-				<button label="${c:l('zk.button.label.guardar')}" id="confirmarEntregabtn" visible="false"/>
-			</div>
 		</tabpanel>
 		<tabpanel>
 			<separator spacing="15px"/>
-				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodosSolicitados}" mold="paging" rows="10" pageSize="10" >
+				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}" mold="paging" rows="10" pageSize="10" >
 					<listhead>
 						<listheader align="center" label="Nombre Nodo"/>
 						<listheader align="center" label="Tipo"/>
@@ -60,11 +60,8 @@ style="overflow:auto">
 						<listheader align="center" label="Acciones" />
 						
 					</listhead>		
-					</listbox>
+				</listbox>
 				<separator spacing="10px"/>
-			<div align="center">
-				<button label="${c:l('zk.button.label.guardar')}" id="confirmarEntregabtn2" visible="false"/>
-			</div>
 		</tabpanel>
 		<tabpanel>
 					<separator spacing="15px"/>
@@ -80,9 +77,6 @@ style="overflow:auto">
 							</listhead>		
 						</listbox>
 					<separator spacing="10px"/>
-			<div align="center">
-				<button label="${c:l('zk.button.label.guardar')}" id="confirmarEntregabtn3" visible="false"/>
-			</div>
 		</tabpanel>
 	</tabpanels>
 </tabbox>

@@ -6,11 +6,14 @@ import java.util.Map;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
@@ -105,13 +108,16 @@ public class GestionSolicitudCreacionNodoComposer extends GenericForwardComposer
 		return "N/D";
 	}
 	
-	public void onClick$aceptarSolicitudBtn() {
+	private void aceptarSolicitud() {
 		Map<String,Object>params1 = new HashMap<String,Object>();
 		params1.put("accion", "actualizardata");
 		params1.put("solicitud", solicitud);
 		try {
 			nodoService.aceptarSolicitud(solicitud);
 			Events.sendEvent(Events.ON_NOTIFY,this.self.getParent(),params1);
+			Clients.showNotification("Solicitud aceptada, puede ver el nodo " +solicitud.getNombreNodo() +" creado en la sección Nodos" ,
+					"info", this.self.getParent(), "middle_center",
+					10000, true);
 			this.self.detach();
 		} catch (VendedorInexistenteException e) {
 			Clients.showNotification("ocurrio un error");
@@ -119,18 +125,77 @@ public class GestionSolicitudCreacionNodoComposer extends GenericForwardComposer
 		}
 	}
 	
-	public void onClick$rechazarSolicitudBtn() {
+	public void onClick$aceptarSolicitudBtn() {
+		Messagebox.show(
+				"¿Esta seguro de aceptar la solicitud para el nodo "+solicitud.getNombreNodo()+"? Esta acción no se puede revertir.",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Si","No"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				Object eventclick = event.getData();
+				if(eventclick != null) {
+					String edata= event.getData().toString();
+					switch (edata){
+					case "YES":
+						try {
+							aceptarSolicitud();
+						} catch (Exception e) {
+							Clients.showNotification("Ocurrio un error desconocido", "error", component, "middle_center", 3000);
+							e.printStackTrace();						
+						}
+						break;
+					case "ABORT":
+					}
+				}
+			}
+			});
+	}
+	
+	private void rechazarSolicitud() {
 		Map<String,Object>params1 = new HashMap<String,Object>();
 		params1.put("accion", "actualizardata");
 		params1.put("solicitud", solicitud);
 		try {
 			nodoService.rechazarSolicitud(solicitud);
+			Clients.showNotification("Solicitud rechazada" ,
+					"info", this.self.getParent(), "middle_center",
+					10000, true);
 			Events.sendEvent(Events.ON_NOTIFY,this.self.getParent(),params1);
 			this.self.detach();
 		} catch (Exception e) {
 			Clients.showNotification("ocurrio un error");
 			e.printStackTrace();
 		}
+	}
+	
+	public void onClick$rechazarSolicitudBtn() {
+		Messagebox.show(
+				"¿Esta seguro de rechazar la solicitud para el nodo "+solicitud.getNombreNodo()+"? Esta acción no se puede revertir.",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Si","No"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				Object eventclick = event.getData();
+				if(eventclick != null) {
+					String edata= event.getData().toString();
+					switch (edata){
+					case "YES":
+						try {
+							rechazarSolicitud();
+						} catch (Exception e) {
+							Clients.showNotification("Ocurrio un error desconocido", "error", component, "middle_center", 3000);
+							e.printStackTrace();						
+						}
+						break;
+					case "ABORT":
+					}
+				}
+			}
+			});
 	}
 	
 	public void onClick$salirBtn() {

@@ -43,9 +43,6 @@ public class GrupoCC {
 
 	public GrupoCC(Cliente administrador, String alias, String descripcion) {
 		this.administrador = administrador;
-		Direccion dirAdmin = administrador.obtenerDireccionPredeterminada();
-		
-		//this.setDomicilioEntrega((dirAdmin == null) ? null : new Direccion(dirAdmin)); //TODO la relación con Dirección se deja en Nodo 2017.09.21
 		this.setAlias(alias);
 		this.setDescripcion(descripcion);
 		this.pedidosHabilitados = true;

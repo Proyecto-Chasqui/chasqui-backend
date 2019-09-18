@@ -54,6 +54,7 @@ public class SolicitudCreacionNodosRenderer implements ListitemRenderer<Solicitu
 		c.addForward(Events.ON_CLICK, solicitudCreacionNodoWindow, Events.ON_NOTIFY, params1);
 		
 		Listcell c1 = new Listcell(String.valueOf(estado));
+		this.aplicarEstiloAEstado(solicitud.getEstado(), c1);
 		Listcell c2 = new Listcell(String.valueOf(cliente));
 		Listcell c3 = new Listcell(String.valueOf(mail));
 		Listcell c4 = new Listcell(String.valueOf(telfijo));
@@ -75,18 +76,34 @@ public class SolicitudCreacionNodosRenderer implements ListitemRenderer<Solicitu
 		c100.setParent(item); //Padre de las demas
 	}
 
+	private void aplicarEstiloAEstado(String estado, Listcell c1) {
+		if(estado.equals(Constantes.SOLICITUD_NODO_EN_GESTION)) {
+			c1.setStyle("color:#34B65A;");
+		}
+		if(estado.equals(Constantes.SOLICITUD_NODO_APROBADO)) {
+			c1.setStyle("color:#3371FF;");
+		}
+		if(estado.equals(Constantes.SOLICITUD_NODO_RECHAZADO)) {
+			c1.setStyle("color:#FF3333;");
+		}
+		if(estado.equals(Constantes.SOLICITUD_NODO_CANCELADO)) {
+			c1.setStyle("color:#FF9F33;");
+		}
+		
+	}
+
 	private String renderizarEstado(String estado) {
 		if(estado.equals(Constantes.SOLICITUD_NODO_EN_GESTION)) {
 			return "EN GESTIÓN";
 		}
 		if(estado.equals(Constantes.SOLICITUD_NODO_APROBADO)) {
-			return "APROBADO";
+			return "APROBADA";
 		}
 		if(estado.equals(Constantes.SOLICITUD_NODO_RECHAZADO)) {
-			return "RECHAZADO";
+			return "RECHAZADA";
 		}
 		if(estado.equals(Constantes.SOLICITUD_NODO_CANCELADO)) {
-			return "CANCELADO";
+			return "CANCELADA";
 		}
 		return "N/D";
 	}

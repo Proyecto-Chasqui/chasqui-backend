@@ -52,6 +52,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		
 		Listcell c1 = new Listcell(String.valueOf(nombreNodo));
 		Listcell c2 = new Listcell(String.valueOf(tipo));
+		this.aplicarEstiloATipo(nodo.getTipo(),c2);
 		Listcell c3 = new Listcell(String.valueOf(cliente));
 		Listcell c4 = new Listcell(String.valueOf(mail));
 		Listcell c5 = new Listcell(String.valueOf(telfijo));
@@ -76,6 +77,14 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		c8.setParent(item);
 		c100.setParent(item); //Padre de las demas
 		
+	}
+	
+	private void aplicarEstiloATipo(String tipo, Listcell c2) {
+		if(tipo.equals(Constantes.NODO_ABIERTO)) {
+			c2.setStyle("color:#3371FF;");
+		} else {
+			c2.setStyle("color:#34B65A;");
+		}	
 	}
 	private String renderizarTipo(String tipo) {
 		return tipo.equals(Constantes.NODO_ABIERTO) ?  "ABIERTO" : "CERRADO";
