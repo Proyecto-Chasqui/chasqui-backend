@@ -106,6 +106,19 @@ public interface NodoService {
 	 * @return
 	 */
 	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDeVendedor(Integer id);
+	
+	/**
+	 * Cambia el estado de la solicitud a Aceptada, y ejecuta la creación del nodo con los datos contenidos en la misma
+	 * @param solicitud
+	 * @throws VendedorInexistenteException 
+	 */
+	public void aceptarSolicitud(SolicitudCreacionNodo solicitud) throws VendedorInexistenteException;
+	
+	/**
+	 * Cambia el estado de la solicitud a Rechazado
+	 * @param solicitud
+	 */
+	public void rechazarSolicitud(SolicitudCreacionNodo solicitud);
 
 
 }

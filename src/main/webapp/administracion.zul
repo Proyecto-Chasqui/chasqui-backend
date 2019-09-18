@@ -70,8 +70,6 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		forward="onClick=administracionWindow$composer.onCrearProducto"/>
 	<toolbarbutton label="Nuevo Productor" visible="false" id="agregarProductorButton" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		forward="onClick=administracionWindow$composer.onCrearProductor"/>	
-	<toolbarbutton label="Nuevo Nodo" visible="true" id="agregarNodoButton" image="/imagenes/plus.png" tooltiptext="Agregar nodo"
-		forward="onClick=administracionWindow$composer.onCrearNodo"/>	
 </hbox>
 <hbox height="100%">
 	<div width="28%" height="100%">

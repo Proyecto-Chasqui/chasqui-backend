@@ -33,6 +33,7 @@ import chasqui.model.Vendedor;
 import chasqui.service.rest.request.DireccionRequest;
 import chasqui.service.rest.request.SingUpRequest;
 import chasqui.services.interfaces.NodoService;
+import chasqui.view.renders.NodoRenderer;
 import chasqui.view.renders.PedidoRenderer;
 import chasqui.view.renders.SolicitudCreacionNodosRenderer;
 import chasqui.view.renders.SolicitudRenderer;
@@ -45,6 +46,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	@Deprecated
 	private Listbox listboxSolicitudesNodos;
 	private Listbox listboxSolicitudesCreacionNodos;
+	private Listbox listboxNodos;
 	private Button confirmarEntregabtn;
 	private AnnotateDataBinder binder;
 	
@@ -69,6 +71,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 			solicitudesCreacionNodos = nodoService.obtenerSolicitudesDeCreacionDeVendedor(vendedorLogueado.getId());
 			listboxSolicitudesNodos.setItemRenderer(new SolicitudRenderer((Window) c));
 			listboxSolicitudesCreacionNodos.setItemRenderer( new SolicitudCreacionNodosRenderer((Window) c));
+			listboxNodos.setItemRenderer(new NodoRenderer((Window) c));
 			binder.loadAll();
 			
 		}
@@ -119,13 +122,32 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	public void setListboxSolicitudesCreacionNodos(Listbox listboxSolicitudesCreacionNodos) {
 		this.listboxSolicitudesCreacionNodos = listboxSolicitudesCreacionNodos;
 	}
-
+	
+	public void actualizarData() {
+		Clients.showNotification("se opero con exito");
+		binder.loadAll();
+	}
 
 	public void abrirPopUpGestion(SolicitudCreacionNodo solicitud) {
 		HashMap<String,Object>params = new HashMap<String,Object>();
 		params.put("solicitud", solicitud);
 		Window w = (Window) Executions.createComponents("/previewGestionSolicitudCreacionNodo.zul", this.self, params);
 		w.doModal();
+	}
+
+
+	public Listbox getListboxNodos() {
+		return listboxNodos;
+	}
+
+
+	public void setListboxNodos(Listbox listboxNodos) {
+		this.listboxNodos = listboxNodos;
+	}
+
+
+	public void abrirDetalleNodo(Nodo nodo) {
+		Clients.showNotification("Detalle de nodos -en desarrollo-");
 	}
 
 	
@@ -140,10 +162,24 @@ class SolicitudEventListener implements EventListener<Event>{
 	}
 	
 	public void onEvent(Event event) throws Exception {
+		
 		Map<String,Object> params = (Map<String,Object>) event.getData();
+		
+		String accion = (String) params.get(PedidosComposer.ACCION_KEY);
+		
 		SolicitudCreacionNodo solicitud = (SolicitudCreacionNodo) params.get("solicitud");
-		composer.abrirPopUpGestion(solicitud);
-		//composer.onAutorizar(nodo);
+		Nodo nodo = (Nodo) params.get("nodo");
+		if (accion.equals("actualizardata")) {
+			composer.actualizarData();			
+		}
+		
+		if(accion.equals("gestionar")){
+			composer.abrirPopUpGestion(solicitud);	
+		}
+		
+		if(accion.equals("detallenodo")) {
+			composer.abrirDetalleNodo(nodo);
+		}
 		
 	}
 	

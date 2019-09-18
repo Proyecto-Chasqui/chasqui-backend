@@ -21,9 +21,10 @@ style="overflow:auto">
 -->
 <tabbox>
 	<tabs>
-		<tab label="Pedidos"/>
-		<tab label="Nodos"/>
-		<tab label="Solicitudes"/>
+		<tab label="Pedidos" image="/imagenes/pedidosNodo.png"/>
+		<tab label="Nodos" image="/imagenes/nodos.png"/>
+		<tab label="Solicitudes" image="/imagenes/solicitud.png"/>
+		
 	</tabs>
 	<tabpanels>
 		<tabpanel>
@@ -33,7 +34,7 @@ style="overflow:auto">
 						<listheader align="center" label="Alias"/>
 						<listheader align="center" label="Domicilio"/>
 						<listheader align="center" label="Coordinador"/>
-						<listheader align="center" label="Mail"/>
+						<listheader align="center" label="e-mail"/>
 						<listheader align="center" label="Tel.Fijo"/>
 						<listheader align="center" label="Celular" />
 						<listheader align="center" label="Acciones"/>
@@ -46,16 +47,18 @@ style="overflow:auto">
 		</tabpanel>
 		<tabpanel>
 			<separator spacing="15px"/>
-				<listbox  id="listboxSolicitudesNodos2" model="@{nodosWindow$composer.nodosSolicitados}" mold="paging" rows="10" pageSize="10" >
+				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodosSolicitados}" mold="paging" rows="10" pageSize="10" >
 					<listhead>
-						<listheader align="center" label="Alias"/>
-						<listheader align="center" label="Estado"/>
-						<listheader align="center" label="Domicilio"/>
+						<listheader align="center" label="Nombre Nodo"/>
+						<listheader align="center" label="Tipo"/>
 						<listheader align="center" label="Coordinador"/>
-						<listheader align="center" label="Mail"/>
+						<listheader align="center" label="e-mail"/>
 						<listheader align="center" label="Tel.Fijo"/>
-						<listheader align="center" label="Celular" />
-						<listheader align="center" label="Acciones"/>
+						<listheader align="center" label="Celular"/>
+						<listheader align="center" label="Dirección"/>
+						<listheader align="center" label="Barrio" />
+						<listheader align="center" label="Acciones" />
+						
 					</listhead>		
 					</listbox>
 				<separator spacing="10px"/>
@@ -69,7 +72,7 @@ style="overflow:auto">
 							<listhead>
 								<listheader align="center" label="Estado"/>
 								<listheader align="center" label="Coordinador"/>
-								<listheader align="center" label="Mail"/>
+								<listheader align="center" label="e-mail"/>
 								<listheader align="center" label="Tel.Fijo"/>
 								<listheader align="center" label="Celular" />
 								<listheader align="center" label="Barrio" />

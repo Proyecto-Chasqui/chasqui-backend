@@ -66,7 +66,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Toolbarbutton agregarButton;
 	private Toolbarbutton agregarProductoButton;
 	private Toolbarbutton agregarProductorButton;
-	private Toolbarbutton agregarNodoButton;
 	private Toolbarbutton logout;
 	private List<Producto> productosFiltrados;
 	private Producto productoSeleccionado;
@@ -217,7 +216,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divProducto.setVisible(false);
 		agregarProductoButton.setVisible(false);
 		agregarProductorButton.setVisible(false);
-		agregarNodoButton.setVisible(false);
 		configuracionInclude.setVisible(false);
 		divProductores.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
@@ -239,7 +237,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divProducto.setVisible(false);
 		agregarProductoButton.setVisible(false);
 		agregarProductorButton.setVisible(false);
-		agregarNodoButton.setVisible(false);
 		configuracionInclude.setVisible(false);
 		divProductores.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
@@ -276,7 +273,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divSolicitudesNodos.setVisible(false);
 		solicitudesNodosInclude.setVisible(false);
 		agregarProductoButton.setVisible(true);
-		agregarNodoButton.setVisible(false);
 		divProducto.setVisible(true);
 		pedidosColectivosInclude.setVisible(false);
 		divPedidosColectivos.setVisible(false);
@@ -289,7 +285,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		agregarProductorButton.setVisible(false);
 		agregarButton.setVisible(false);
 		agregarProductoButton.setVisible(false);
-		agregarNodoButton.setVisible(false);
 		divCategoria.setVisible(false);
 		divProducto.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
@@ -314,7 +309,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		agregarButton.setVisible(false);
 		agregarProductoButton.setVisible(false);
 		agregarProductorButton.setVisible(false);
-		agregarNodoButton.setVisible(false);
 		configuracionInclude.setVisible(false);
 		divProductores.setVisible(false);
 		divPedidos.setVisible(false);
@@ -338,7 +332,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divCategoria.setVisible(false);
 		agregarButton.setVisible(false);
 		agregarProductoButton.setVisible(false);
-		agregarNodoButton.setVisible(false);
 		configuracionInclude.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
@@ -360,7 +353,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divCategoria.setVisible(false);
 		agregarButton.setVisible(false);
 		agregarProductoButton.setVisible(false);
-		agregarNodoButton.setVisible(false);
 		configuracionInclude.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
@@ -382,7 +374,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divCategoria.setVisible(false);
 		agregarButton.setVisible(false);
 		agregarProductoButton.setVisible(false);
-		agregarNodoButton.setVisible(false);
 		configuracionInclude.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
@@ -404,7 +395,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divCategoria.setVisible(false);
 		agregarButton.setVisible(false);
 		agregarProductoButton.setVisible(false);
-		agregarNodoButton.setVisible(true);
 		configuracionInclude.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);

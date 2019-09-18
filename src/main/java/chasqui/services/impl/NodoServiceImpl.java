@@ -261,4 +261,26 @@ public class NodoServiceImpl implements NodoService {
 	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDeVendedor(Integer idVendedor) {
 		return solicitudCreacionNodoDAO.obtenerSolicitudesDeCreacionDe(idVendedor);
 	}
+
+	@Override
+	public void aceptarSolicitud(SolicitudCreacionNodo solicitud) throws VendedorInexistenteException {
+		Nodo nodo = new Nodo();
+		nodo.setAdministrador((Cliente) solicitud.getUsuarioSolicitante());
+		nodo.setAlias(solicitud.getNombreNodo());
+		nodo.setBarrio(solicitud.getBarrio());
+		nodo.setDescripcion(solicitud.getDescripcion());
+		nodo.setEmailAdministradorNodo(solicitud.getUsuarioSolicitante().getEmail());
+		nodo.setDireccionDelNodo(solicitud.getDomicilio());
+		nodo.setTipo(solicitud.getTipoNodo());
+		nodo.setVendedor(vendedorService.obtenerVendedorPorId(solicitud.getIdVendedor()));
+		solicitud.setEstado(Constantes.SOLICITUD_NODO_APROBADO);
+		solicitudCreacionNodoDAO.guardar(solicitud);
+		nodoDAO.guardarNodo(nodo);		
+	}
+	
+	@Override
+	public void rechazarSolicitud(SolicitudCreacionNodo solicitud){
+		solicitud.setEstado(Constantes.SOLICITUD_NODO_RECHAZADO);
+		solicitudCreacionNodoDAO.guardar(solicitud);	
+	}
 }

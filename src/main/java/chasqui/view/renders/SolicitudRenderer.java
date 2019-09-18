@@ -14,7 +14,7 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.Window;
 
 import chasqui.model.Nodo;
-
+@Deprecated
 public class SolicitudRenderer implements ListitemRenderer<Nodo>{
 
 	private Window solicitudNodoWindow;
