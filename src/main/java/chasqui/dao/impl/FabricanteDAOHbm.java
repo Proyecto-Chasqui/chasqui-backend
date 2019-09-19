@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -50,6 +51,21 @@ public class FabricanteDAOHbm extends HibernateDaoSupport implements FabricanteD
 			}
 		});
 	}
+	
+	@Override
+	public Fabricante obtenerProductorDeConNombreExacto(final Integer idVendedor, final String nombreProductor) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<Fabricante>() {
+
+			@Override
+			public Fabricante doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(Fabricante.class, "fabricante");
+				c.add(Restrictions.eq("fabricante.idVendedor",idVendedor));
+				c.add(Restrictions.like("fabricante.nombre", nombreProductor, MatchMode.EXACT));
+				c.addOrder(Order.asc("fabricante.nombre"));
+				return (Fabricante) c.uniqueResult();
+			}
+		});
+	}
 
 	@Override
 	public void guardar(Fabricante f) {
@@ -73,6 +89,14 @@ public class FabricanteDAOHbm extends HibernateDaoSupport implements FabricanteD
 	public void delete(Fabricante fabricante) {
 		this.getHibernateTemplate().delete(fabricante);
 		this.getHibernateTemplate().flush();	
+	}
+
+	@Override
+	public void guardarProductores(List<Fabricante> productores) {
+		for (Fabricante productor: productores) {
+			this.getHibernateTemplate().saveOrUpdate(productor);
+			this.getHibernateTemplate().flush();
+		}
 	}
 	
 	

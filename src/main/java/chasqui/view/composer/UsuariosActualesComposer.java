@@ -1,5 +1,7 @@
 package chasqui.view.composer;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,14 +12,21 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
+import chasqui.dtos.ProductoDTO;
+import chasqui.misc.export.RootDataVendorsXlsExport;
+import chasqui.model.Producto;
 import chasqui.model.Vendedor;
+import chasqui.services.interfaces.CaracteristicaService;
+import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.view.renders.UsuarioRenderer;
@@ -38,6 +47,9 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 	private ConfiguracionEstrategiasComposer composerEstrategias;
 	private Component vcomp;
 	private AdministracionComposer admComposer;
+	private RootDataVendorsXlsExport export;
+	private ProductorService productorService;
+	private CaracteristicaService caracteristicaService;
 	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
@@ -54,10 +66,13 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		composerEstrategias = (ConfiguracionEstrategiasComposer) Executions.getCurrent().getSession().getAttribute("configuracionEstrategiasComposer");
 		comp.addEventListener(Events.ON_NOTIFY, new AccionEventListener(this));
 		vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
+		productorService = (ProductorService) SpringUtil.getBean("productorService");
+		caracteristicaService = (CaracteristicaService) SpringUtil.getBean("caracteristicaService");
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		usuarios = vendedorService.obtenerVendedores(); //TODO obtener todos los vendedores aunque no tengan configurado el monto minimom y la fecha! hacer servicio ad-hoc en vendedor service
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		usuarios.add(usuarioLogueado);
+		export = new RootDataVendorsXlsExport();
 		binder.loadAll();
 	}
 	
@@ -164,14 +179,68 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		this.altaUsuarioWindow = altaUsuarioWindow;
 	}
 
+	public void onCargarStartUp(Vendedor v){
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("vendedor", v);
+		Window windowCargaStartUp = (Window) Executions.createComponents("/cargaStartup.zul", this.self, params);
+		windowCargaStartUp.doModal();
+	}
+
+
+	public void onExportar(final Vendedor vendedor) throws IOException {
+		Messagebox.show(
+				"Va a exportar los datos de " + vendedor.getNombre() + " ¿es correcto?",
+				"Pregunta",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Si","No"},
+	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata= event.getData().toString();
+				switch (edata){
+				case "YES":
+					try {
+						exportar(vendedor);
+					} catch (Exception e) {
+						Clients.showNotification("Ocurrio un error desconocido");
+						e.printStackTrace();						
+					}
+					break;
+				case "ABORT":
+				}
+			}
+			});
+
+	}
+	
+	private void exportar(Vendedor vendedor) throws IOException {
+		usuarioService.inicializarListasDe(vendedor);
+		usuarioService.inicializarListasDe(vendedor);
+		HashMap<String,List<?>> map = new HashMap<String,List<?>>();
+		map.put("Productores", productorService.obtenerProductores(vendedor.getId()));
+		map.put("Productos",crearProductosDTO(vendedor.obtenerProductos()));
+		export.resetSheets();
+		export.exportarTodos(map,vendedor.getNombre());
+	}
+	
+	private List<ProductoDTO> crearProductosDTO(List<Producto> obtenerProductos) {
+		ArrayList<ProductoDTO> productos = new ArrayList<ProductoDTO>();
+		for(Producto p : obtenerProductos) {
+			productos.add(new ProductoDTO(p));
+		}
+		return productos;
+	}
+	
 }
 
 class AccionEventListener implements EventListener<Event>{
 	
-	UsuariosActualesComposer composer;
+	private UsuariosActualesComposer composer;
+	
 	public AccionEventListener(UsuariosActualesComposer c){
 		this.composer = c;
 	}
+	
 	public void onEvent(Event event) throws Exception {
 		if(event.getName().equals(Events.ON_NOTIFY)){
 			@SuppressWarnings("unchecked")
@@ -186,10 +255,14 @@ class AccionEventListener implements EventListener<Event>{
 			}
 			if(param.get("accion").equals("editarEstrategias")){
 				composer.editarEstrategias((Vendedor)param.get("usuario"));
+			}			
+			if(param.get("accion").equals("cargarStartUp")){
+				this.composer.onCargarStartUp((Vendedor)param.get("usuario"));
 			}
 			
-		}
-		
+			if(param.get("accion").equals("exportar")){
+				this.composer.onExportar((Vendedor)param.get("usuario"));
+			}
+		}		
 	}
-	
 }

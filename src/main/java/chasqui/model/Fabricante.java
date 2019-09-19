@@ -168,7 +168,9 @@ public class Fabricante {
 
 	private boolean ProductoExiste(Producto model) {
 		for(Producto p: this.productos){
-			if(p.getId().equals(model.getId())){
+			if(model.getId() == null){
+				return false;
+			} else if(p.getId().equals(model.getId())){
 				return true;
 			}
 		}
@@ -186,6 +188,11 @@ public class Fabricante {
 	public void setCaracteristicas(List<CaracteristicaProductor> caracteristicas) {
 		this.caracteristicas = caracteristicas;
 	}
-
+	
+	@Override
+	public boolean equals(Object obj) {
+		Fabricante f = (Fabricante)obj;
+		return this.nombre.equals(f.getNombre());
+	}
 
 }

@@ -467,5 +467,35 @@ public class Vendedor extends Usuario{
 	public void setDataMultimedia(DataMultimedia dataMultimedia) {
 		this.dataMultimedia = dataMultimedia;
 	}
+	
+	public Producto getProductoConCodigo(String codigo) {
+		Producto productoRes= null;
+		for(Producto pr: this.getProductos()) {
+			if(pr.getVariantes().get(0).getCodigo().equals(codigo)) {
+				return pr;
+			} 
+		}
+		return productoRes;
+	}
+	
+	public List<Producto> getProductosConCodigo(String codigo) {
+		List<Producto> productosRes= new ArrayList<Producto>();
+		for(Producto pr: this.getProductos()) {
+			if(pr.getVariantes().get(0).getCodigo().equals(codigo)) {
+				productosRes.add(pr);
+			} 
+		}
+		return productosRes;
+	}
+	
+	public Fabricante getFabricante(String nombre) {
+		Fabricante fabricanteRes= null;
+		for(Fabricante fb: this.getFabricantes()) {
+			if(fb.getNombre().equals(nombre)) {
+				return fb;
+			} 
+		}
+		return fabricanteRes;
+	}
 
 }

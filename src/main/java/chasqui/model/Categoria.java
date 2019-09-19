@@ -57,7 +57,11 @@ public class Categoria {
 		this.vendedor = vendedor;
 	}
 	
-
+	@Override
+	public boolean equals(Object obj) {
+		Categoria f = (Categoria)obj;
+		return this.nombre.equals(f.getNombre());
+	}
 
 	//METHODS
 

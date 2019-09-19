@@ -24,5 +24,12 @@ public class CategoriaServiceImpl implements CategoriaService {
 		}
 		return resultado;
 	}
+	
+	@Override
+	public Categoria obtenerCategoriaConNombreDe(String nombre, Integer idVendedor) throws VendedorInexistenteException {
+		return categoriaDAO.obtenerCategoriaConNombreDe(nombre, idVendedor);
+	}
+	
+	
 
 }

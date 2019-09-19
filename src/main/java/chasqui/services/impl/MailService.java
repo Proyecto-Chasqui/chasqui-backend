@@ -128,7 +128,7 @@ public class MailService {
 		params.put("mailOrigen",clienteOrigen.getEmail());
 		
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
-		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro" );
+		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misGrupos/invitaciones" );
 		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
 		params.put("catalogoVendedor", catalogo);
 		

@@ -378,12 +378,11 @@ public class GrupoServiceImpl implements GrupoService {
 					if(p != null) {
 						if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
 							notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
-							mailService.enviarEmailCierreDePedidoColectivo(pc);
 						}
 					}
 				}
 			}
-			
+			mailService.enviarEmailCierreDePedidoColectivo(pc);
 		}
 		else{
 			throw new RequestIncorrectoException("El usuario "+emailSolicitante + " no es el administrador del grupo:"+ grupo.getAlias());
@@ -586,8 +585,12 @@ public class GrupoServiceImpl implements GrupoService {
 	}
 	
 
-	private boolean pedidoEnEstadoInactivo(Pedido pedido) {		
-		return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_INEXISTENTE);
+	private boolean pedidoEnEstadoInactivo(Pedido pedido) {
+		if(pedido != null) {
+			return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_INEXISTENTE);
+		}else {
+			return true;
+		}
 	}
 
 	/*

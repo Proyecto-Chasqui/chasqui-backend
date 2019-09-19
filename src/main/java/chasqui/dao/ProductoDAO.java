@@ -46,9 +46,6 @@ public interface ProductoDAO {
 	@Deprecated
 	Long totalVariantesBajoMultiplesFiltros(Integer idCategoria, Integer idMedalla, Integer idProductor);
 	
-	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor, Integer idSelloProductor, String query, Integer pagina, Integer cantidadDeItems);
-	
 	/**
 	 * @return Obtiene el total de productos (objeto Variante) que resultarian de ejecutar una busqueda con los mismos filtros.
 	 * 
@@ -63,4 +60,10 @@ public interface ProductoDAO {
 	 */
 	public Long obtenerTotalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
 			Integer idProductor, Integer idSelloProductor, String query);
+
+	Variante obtenervariantePorCodigoProducto(String codigoProducto, Integer idVendedor);
+
+	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
+			Integer idProductor, Integer idSelloProductor, String query, Integer pagina, Integer cantidadDeItems,
+			Integer numeroDeOrden);
 }
