@@ -171,7 +171,10 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 
 
 	public void abrirDetalleNodo(Nodo nodo) {
-		Clients.showNotification("Detalle de nodos -en desarrollo-");
+		HashMap<String,Object>params = new HashMap<String,Object>();
+		params.put("nodo", nodo);
+		Window w = (Window) Executions.createComponents("/detalleNodo.zul", this.self, params);
+		w.doModal();
 	}
 
 	public Listbox getListboxPedidosNodo() {

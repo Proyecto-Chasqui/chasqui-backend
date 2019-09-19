@@ -99,10 +99,10 @@ public class GestionSolicitudCreacionNodoComposer extends GenericForwardComposer
 		}
 		
 		if(estado.equals(Constantes.NODO_ABIERTO)) {
-			return "NODO ABIERTO";
+			return "ABIERTO";
 		}
 		if(estado.equals(Constantes.NODO_CERRADO)) {
-			return "NODO CERRADO";
+			return "CERRADO";
 		}
 		
 		return "N/D";

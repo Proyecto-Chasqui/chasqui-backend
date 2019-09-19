@@ -1,0 +1,122 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./infoNodoWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window title="Detalle del nodo" border="normal" id="infoNodoWindow" closable="true" sizable="true"
+apply="chasqui.view.composer.InfoNodoComposer" width="510px">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<tabbox>
+	<tabs>
+		<tab label="Coordinador"/>
+		<tab label="Detalles del nodo"/>
+		<tab label="Usuarios del nodo"/>
+		<tab label="Detalles del consumo"/>
+	</tabs>
+	<tabpanels>
+		<tabpanel>
+			<listbox width="100%">
+				<listhead>
+					<listheader width="40%" label="Campo" align="center"/>
+					<listheader label="Detalle" align="center"/>
+				</listhead>
+				<listitem>
+					<listcell label="Usuario Solicitante"/>
+					<listcell label="@{infoNodoWindow$composer.cliente}"/>
+				</listitem>
+				<listitem>
+					<listcell label="E-mail"/>
+					<listcell label="@{infoNodoWindow$composer.mail}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Teléfono fijo"/>
+					<listcell label="@{infoNodoWindow$composer.telfijo}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Teléfono celular"/>
+					<listcell label="@{infoNodoWindow$composer.celular}"/>
+				</listitem>
+			</listbox>
+		</tabpanel>
+		<tabpanel>
+			<listbox width="100%">
+				<listhead>
+					<listheader width="40%" label="Campo" align="center"/>
+					<listheader label="Detalle"  align="center"/>
+				</listhead>
+				<listitem>
+					<listcell label="Nombre Nodo" />
+					<listcell label="@{infoNodoWindow$composer.nombreNodo}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Dirección"/>
+					<listcell label="@{infoNodoWindow$composer.direccion}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Barrio"/>
+					<listcell label="@{infoNodoWindow$composer.barrio}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Tipo nodo"/>
+					<listcell label="@{infoNodoWindow$composer.tipoNodo}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Descripción del nodo"/>
+					<listcell label="@{infoNodoWindow$composer.descripcion}"/>
+				</listitem>
+			</listbox>
+		</tabpanel>
+		<tabpanel>
+				<listbox  span="true" id="listboxUsuarios"  model="@{infoNodoWindow$composer.clientes}" mold="paging" pageSize="5" rows="5">
+					<listhead>
+						<listheader label="Nombre" align="center"/>
+						<listheader label="E-mail" align="center"/>
+						<listheader label="Tel.Fijo" align="center"/>
+						<listheader label="Celular" align="center"/>
+					</listhead>		
+				</listbox>
+		</tabpanel>
+		<tabpanel>
+			<listbox width="100%">
+				<listhead>
+					<listheader width="40%" label="Campo" align="center"/>
+					<listheader label="Detalle"  align="center"/>
+				</listhead>
+				<listitem>
+					<listcell label="Fecha ultimo consumo" />
+					<listcell label="@{infoNodoWindow$composer.fechaUltimoConsumo}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Ultimo comsumo"/>
+					<listcell label="@{infoNodoWindow$composer.totalUltimoConsumo}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Total ultimos 3 consumos"/>
+					<listcell label="@{infoNodoWindow$composer.totalUltimos3Consumos}"/>
+				</listitem>
+				<listitem>
+					<listcell label="Total consumido hasta la fecha"/>
+					<listcell label="@{infoNodoWindow$composer.totalHastaLaFecha}"/>
+				</listitem>
+
+
+			</listbox>
+		</tabpanel>
+	</tabpanels>
+</tabbox>
+<separator spacing="15px" visible="true"/>
+<div align="center">  
+	<button label="Salir" id="salirBtn"/>
+</div>
+<separator spacing="15px" visible="true"/>
+
+</window>
+</zk>
+
+
+
+
+
+
+
