@@ -26,7 +26,7 @@ public class PedidoDTO {
 		this.username = pedido.getCliente().getUsername();
 		this.zona = pedido.getZona();
 		domicilio = pedido.getDireccionEntrega();
-		montoTotal = pedido.getMontoTotal();
+		montoTotal = pedido.getMontoActual();
 		pedidosIndividuales = new ArrayList<PedidoIndividualDTO>();
 		esIndividual = !pedido.getPerteneceAPedidoGrupal()&&pedido.getPuntoDeRetiro()==null;
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
