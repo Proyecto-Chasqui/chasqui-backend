@@ -1,8 +1,11 @@
 package chasqui.view.renders;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hlayout;
@@ -26,8 +29,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		String tipo;
 		String cliente;
 		String mail;
-		String telfijo;
-		String celular;
+		String fechaCreacion;
 		String barrio;
 		String nombreNodo;
 		String direccion;
@@ -37,8 +39,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		direccion = nodo.getDireccionDelNodo().toString();
 		cliente = datacliente.getNombre() + " " + datacliente.getApellido();
 		mail = datacliente.getEmail();
-		telfijo = (datacliente.getTelefonoFijo().equals(""))? "N/D" : datacliente.getTelefonoFijo();
-		celular = (datacliente.getTelefonoMovil().equals(""))? "N/D" : datacliente.getTelefonoMovil();
+		fechaCreacion = this.parsearFechaDeModificacion(nodo.getFechaCreacion());
 		barrio = nodo.getBarrio();
 		
 		Map<String,Object>params1 = new HashMap<String,Object>();
@@ -47,18 +48,17 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		params1.put("nodo", nodo);
 		c.setTooltiptext(Labels.getLabel("Ver detalles del nodo"));
 		c.setImage("/imagenes/editar.png");
-		c.setLabel("Ver Detalles");
+		c.setLabel("Ver mas información");
 		c.addForward(Events.ON_CLICK, nodoWindow, Events.ON_NOTIFY, params1);
 		
 		Listcell c1 = new Listcell(String.valueOf(nombreNodo));
-		Listcell c2 = new Listcell(String.valueOf(tipo));
-		this.aplicarEstiloATipo(nodo.getTipo(),c2);
-		Listcell c3 = new Listcell(String.valueOf(cliente));
-		Listcell c4 = new Listcell(String.valueOf(mail));
-		Listcell c5 = new Listcell(String.valueOf(telfijo));
-		Listcell c6 = new Listcell(String.valueOf(celular));
-		Listcell c7 = new Listcell(String.valueOf(direccion));
-		Listcell c8 = new Listcell(String.valueOf(barrio));
+		Listcell c2 = new Listcell(String.valueOf(fechaCreacion));
+		Listcell c3 = new Listcell(String.valueOf(tipo));
+		this.aplicarEstiloATipo(nodo.getTipo(),c3);
+		Listcell c4 = new Listcell(String.valueOf(cliente));
+		Listcell c5 = new Listcell(String.valueOf(mail));
+		Listcell c6 = new Listcell(String.valueOf(direccion));
+		Listcell c7 = new Listcell(String.valueOf(barrio));
 		
 
 		Listcell c100 = new Listcell(); //Se usa como padre de las demas
@@ -74,10 +74,19 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		c5.setParent(item);
 		c6.setParent(item);
 		c7.setParent(item);
-		c8.setParent(item);
 		c100.setParent(item); //Padre de las demas
 		
 	}
+	
+	private String parsearFechaDeModificacion(DateTime fechaCreacion) {
+		if(fechaCreacion != null) {
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			Date d = new Date( fechaCreacion.getMillis());
+			return format.format(d);	
+		}
+		return "N/D";
+	}
+
 	
 	private void aplicarEstiloATipo(String tipo, Listcell c2) {
 		if(tipo.equals(Constantes.NODO_ABIERTO)) {

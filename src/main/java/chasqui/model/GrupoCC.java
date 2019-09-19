@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.InvitacionExistenteException;
@@ -36,9 +38,28 @@ public class GrupoCC {
 	private Vendedor vendedor;
 
 	private List<MiembroDeGCC> cache;
+	
+	private DateTime fechaCreacion;
+	
+	private boolean esNodo = false;
 
 	// Constructor
 	public GrupoCC() {
+	}
+	
+	public GrupoCC(Cliente administrador, String alias, String descripcion, boolean esNodo) {
+		this.administrador = administrador;
+		this.setAlias(alias);
+		this.setDescripcion(descripcion);
+		this.pedidosHabilitados = true;
+		this.cache = new ArrayList<MiembroDeGCC>();
+		this.invitarAlGrupo(administrador);
+		this.registrarInvitacionAceptada(administrador);
+		this.pedidoActual = new PedidoColectivo();
+		this.pedidoActual.setColectivo(this);
+		this.historial = new HistorialGCC(this.id);
+		this.setFechaCreacion(DateTime.now());
+		this.esNodo = esNodo;
 	}
 
 	public GrupoCC(Cliente administrador, String alias, String descripcion) {
@@ -52,6 +73,8 @@ public class GrupoCC {
 		this.pedidoActual = new PedidoColectivo();
 		this.pedidoActual.setColectivo(this);
 		this.historial = new HistorialGCC(this.id);
+		this.setFechaCreacion(DateTime.now());
+		this.esNodo = false;
 	}
 
 	// Gets & Sets
@@ -355,6 +378,22 @@ public class GrupoCC {
 	public void vaciarGrupo() throws EstadoPedidoIncorrectoException {
 		this.cache.clear();
 		this.pedidoActual.cancelar();
+	}
+
+	public DateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(DateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public boolean isEsNodo() {
+		return esNodo;
+	}
+
+	public void setEsNodo(boolean esNodo) {
+		this.esNodo = esNodo;
 	}
 
 }

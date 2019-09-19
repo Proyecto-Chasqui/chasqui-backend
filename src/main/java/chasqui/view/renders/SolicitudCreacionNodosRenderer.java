@@ -1,8 +1,11 @@
 package chasqui.view.renders;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Events;
@@ -29,7 +32,7 @@ public class SolicitudCreacionNodosRenderer implements ListitemRenderer<Solicitu
 	}
 	
 	public void render(Listitem item, final SolicitudCreacionNodo solicitud, int arg2) throws Exception {
-		
+		String fechaCreacion;
 		String estado;
 		String cliente;
 		String mail;
@@ -43,6 +46,7 @@ public class SolicitudCreacionNodosRenderer implements ListitemRenderer<Solicitu
 		telfijo = (datacliente.getTelefonoFijo().equals(""))? "N/D" : datacliente.getTelefonoFijo();
 		celular = (datacliente.getTelefonoMovil().equals(""))? "N/D" : datacliente.getTelefonoMovil();
 		barrio = solicitud.getBarrio();
+		fechaCreacion = parsearFechaDeModificacion(solicitud.getFechaCreacion());
 		
 		Map<String,Object>params1 = new HashMap<String,Object>();
 		Toolbarbutton c = new Toolbarbutton();
@@ -53,13 +57,15 @@ public class SolicitudCreacionNodosRenderer implements ListitemRenderer<Solicitu
 		c.setLabel("Gestionar");
 		c.addForward(Events.ON_CLICK, solicitudCreacionNodoWindow, Events.ON_NOTIFY, params1);
 		
-		Listcell c1 = new Listcell(String.valueOf(estado));
-		this.aplicarEstiloAEstado(solicitud.getEstado(), c1);
-		Listcell c2 = new Listcell(String.valueOf(cliente));
-		Listcell c3 = new Listcell(String.valueOf(mail));
-		Listcell c4 = new Listcell(String.valueOf(telfijo));
-		Listcell c5 = new Listcell(String.valueOf(celular));
-		Listcell c6 = new Listcell(String.valueOf(barrio));
+		Listcell c1 = new Listcell(String.valueOf(fechaCreacion));
+		Listcell c2 = new Listcell(String.valueOf(estado));
+		this.aplicarEstiloAEstado(solicitud.getEstado(), c2);
+		Listcell c3 = new Listcell(String.valueOf(cliente));
+		Listcell c4 = new Listcell(String.valueOf(mail));
+		Listcell c5 = new Listcell(String.valueOf(telfijo));
+		Listcell c6 = new Listcell(String.valueOf(celular));
+		Listcell c7 = new Listcell(String.valueOf(barrio));
+		
 
 		Listcell c100 = new Listcell(); //Se usa como padre de las demas
 	
@@ -73,7 +79,17 @@ public class SolicitudCreacionNodosRenderer implements ListitemRenderer<Solicitu
 		c4.setParent(item);
 		c5.setParent(item);
 		c6.setParent(item);
+		c7.setParent(item);
 		c100.setParent(item); //Padre de las demas
+	}
+
+	private String parsearFechaDeModificacion(DateTime fechaCreacion) {
+		if(fechaCreacion != null) {
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			Date d = new Date( fechaCreacion.getMillis());
+			return format.format(d);	
+		}
+		return "N/D";
 	}
 
 	private void aplicarEstiloAEstado(String estado, Listcell c1) {

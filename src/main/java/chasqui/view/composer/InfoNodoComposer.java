@@ -61,6 +61,7 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 	private String fechaUltimoConsumo;
 	private String totalHastaLaFecha;
 	private String totalUltimos3Consumos;
+	private String fechaCreacion;
 	private Nodo nodo;
 	private NodoService nodoService;
 	
@@ -164,6 +165,13 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 		tipoNodo = this.renderizarConstante(nodo.getTipo());
 		descripcion = nodo.getDescripcion();
 		nombreNodo = nodo.getAlias();
+		if(nodo.getFechaCreacion() != null) {
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			Date d = new Date( nodo.getFechaCreacion().getMillis());
+			fechaCreacion = format.format(d);
+		}else {
+			fechaCreacion = "N/D";
+		}
 	}
 
 	private String renderizarConstante(String estado) {
@@ -329,5 +337,13 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 
 	public void setTotalUltimos3Consumos(String totalUltimos3Consumos) {
 		this.totalUltimos3Consumos = totalUltimos3Consumos;
+	}
+
+	public String getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(String fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
 }

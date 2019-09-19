@@ -41,7 +41,8 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 			@Override
 			public List<Nodo> doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria criteria = session.createCriteria(Nodo.class);
-				criteria.add(Restrictions.eq("vendedor.id", idVendedor)); 
+				criteria.add(Restrictions.eq("vendedor.id", idVendedor))
+				.add(Restrictions.eq("esNodo", true)); 
 				return (List<Nodo>) criteria.list();
 			}
 

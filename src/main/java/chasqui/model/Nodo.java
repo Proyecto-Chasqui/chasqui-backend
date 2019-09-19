@@ -12,14 +12,14 @@ public class Nodo extends GrupoCC{
 	
 	//Constructor
 	public Nodo () {}
-	
+	@Deprecated
 	public Nodo (Cliente administrador, String alias, String descripcion) {
 		super(administrador, alias, descripcion);
 		this.setTipo(Constantes.NODO_ABIERTO);
 	}
 	//creacion de nodo via solicitud.
 	public Nodo (SolicitudCreacionNodo solicitud, Vendedor vendedor) {
-		super((Cliente)solicitud.getUsuarioSolicitante(), solicitud.getNombreNodo(), solicitud.getDescripcion());
+		super((Cliente)solicitud.getUsuarioSolicitante(), solicitud.getNombreNodo(), solicitud.getDescripcion(), true);
 		this.setBarrio(solicitud.getBarrio());
 		this.setEmailAdministradorNodo(solicitud.getUsuarioSolicitante().getEmail());
 		this.setDireccionDelNodo(solicitud.getDomicilio());

@@ -5,7 +5,7 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window title="Detalle del nodo" border="normal" id="infoNodoWindow" closable="true" sizable="true"
-apply="chasqui.view.composer.InfoNodoComposer" width="510px">
+apply="chasqui.view.composer.InfoNodoComposer" width="550px">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <tabbox>
 	<tabs>
@@ -50,6 +50,10 @@ apply="chasqui.view.composer.InfoNodoComposer" width="510px">
 					<listcell label="@{infoNodoWindow$composer.nombreNodo}"/>
 				</listitem>
 				<listitem>
+					<listcell label="Fecha de creación"/>
+					<listcell label="@{infoNodoWindow$composer.fechaCreacion}"/>
+				</listitem>
+				<listitem>
 					<listcell label="Dirección"/>
 					<listcell label="@{infoNodoWindow$composer.direccion}"/>
 				</listitem>
@@ -88,7 +92,7 @@ apply="chasqui.view.composer.InfoNodoComposer" width="510px">
 					<listcell label="@{infoNodoWindow$composer.fechaUltimoConsumo}"/>
 				</listitem>
 				<listitem>
-					<listcell label="Ultimo comsumo"/>
+					<listcell label="Total ultimo comsumo"/>
 					<listcell label="@{infoNodoWindow$composer.totalUltimoConsumo}"/>
 				</listitem>
 				<listitem>

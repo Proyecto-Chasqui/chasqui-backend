@@ -26,7 +26,9 @@
             <one-to-many entity-name="chasqui.model.MiembroDeGCC"/>
         </bag>        
         
-        <property name="pedidosHabilitados" type="java.lang.Boolean" column="PEDIDOS_HABILITADOS"/>        
+        <property name="pedidosHabilitados" type="java.lang.Boolean">
+        	<column name="PEDIDOS_HABILITADOS" not-null="true" default="true"></column>
+        </property>        
         
         <many-to-one name="pedidoActual" class="chasqui.model.PedidoColectivo" lazy="false" column="ID_PEDIDO_COLECTIVO" cascade="all" unique="true"/>
         
@@ -34,6 +36,11 @@
         
         <many-to-one name="historial" class="chasqui.model.HistorialGCC" column="HISTORIAL_GCC" cascade="all" unique="true" lazy="false"/>
         
+        <property name="fechaCreacion" type="org.joda.time.contrib.hibernate.PersistentDateTime" column= "FECHA_DE_CREACION"/>
+        
+        <property name="esNodo" type="java.lang.Boolean" >
+        		<column name="ES_NODO" not-null="true" default="false" />
+    	</property>
         
     </class>
 </hibernate-mapping>

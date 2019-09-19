@@ -50,11 +50,10 @@ style="overflow:auto">
 				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}" mold="paging" rows="10" pageSize="10" >
 					<listhead>
 						<listheader align="center" label="Nombre Nodo"/>
+						<listheader align="center" label="Fecha de creación"/>
 						<listheader align="center" label="Tipo"/>
 						<listheader align="center" label="Coordinador"/>
 						<listheader align="center" label="e-mail"/>
-						<listheader align="center" label="Tel.Fijo"/>
-						<listheader align="center" label="Celular"/>
 						<listheader align="center" label="Dirección"/>
 						<listheader align="center" label="Barrio" />
 						<listheader align="center" label="Acciones" />
@@ -67,6 +66,7 @@ style="overflow:auto">
 					<separator spacing="15px"/>
 						<listbox  id="listboxSolicitudesCreacionNodos" model="@{nodosWindow$composer.solicitudesCreacionNodos}" mold="paging" rows="10" pageSize="10" >
 							<listhead>
+								<listheader align="center" label="Fecha de creación"/>
 								<listheader align="center" label="Estado"/>
 								<listheader align="center" label="Coordinador"/>
 								<listheader align="center" label="e-mail"/>

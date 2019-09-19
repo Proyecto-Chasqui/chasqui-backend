@@ -24,7 +24,7 @@
 		<property name="estado" type="java.lang.String" column="ESTADO"/>
         
         <property name="reintentos" type="java.lang.Integer" column="REINTENTOS"/>
-        
+        <property name="fechaCreacion" type="org.joda.time.contrib.hibernate.PersistentDateTime" column= "FECHA_CREACION"/>
 
     </class>
 </hibernate-mapping>

@@ -1,15 +1,19 @@
 package chasqui.model;
 
+import org.joda.time.DateTime;
+
 public class SolicitudPertenenciaNodo {
 	private Integer id;
 	private Nodo nodo;
 	private Usuario usuarioSolicitante;
 	private String estado;
 	private Integer reintentos;
+	private DateTime fechaCreacion;
 	
 	public SolicitudPertenenciaNodo(Nodo nodo, Usuario usuario) {
 		this.nodo = nodo;
 		this.setUsuarioSolicitante(usuario);
+		this.setFechaCreacion(DateTime.now());
 	}
 
 	public Integer getId() {
@@ -51,6 +55,14 @@ public class SolicitudPertenenciaNodo {
 
 	public void setUsuarioSolicitante(Usuario usuarioSolicitante) {
 		this.usuarioSolicitante = usuarioSolicitante;
+	}
+
+	public DateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(DateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
 	
 }

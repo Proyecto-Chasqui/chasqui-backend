@@ -1,5 +1,7 @@
 package chasqui.model;
 
+import org.joda.time.DateTime;
+
 import chasqui.view.composer.Constantes;
 
 public class SolicitudCreacionNodo {
@@ -13,7 +15,7 @@ public class SolicitudCreacionNodo {
 	private String barrio;
 	private String descripcion;
 	private String estado;
-	
+	private DateTime fechaCreacion;
 	public SolicitudCreacionNodo() {}
 	
 	public SolicitudCreacionNodo(Integer idVendedor, Usuario usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) {
@@ -25,6 +27,7 @@ public class SolicitudCreacionNodo {
 		this.barrio = barrio;
 		this.descripcion = descripcion;
 		this.estado = Constantes.SOLICITUD_NODO_EN_GESTION;
+		this.setFechaCreacion(DateTime.now());
 	}
 
 	public Integer getId() {
@@ -97,6 +100,14 @@ public class SolicitudCreacionNodo {
 
 	public void setIdVendedor(Integer idVendedor) {
 		this.idVendedor = idVendedor;
+	}
+
+	public DateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(DateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
 	
 }

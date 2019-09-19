@@ -27,6 +27,7 @@
         <property name="barrio" type="java.lang.String" column="BARRIO"/>
         <property name="descripcion" type="java.lang.String" column="DESCRIPCION"/>
         <property name="estado" type="java.lang.String" column="ESTADO"/>
+        <property name="fechaCreacion" type="org.joda.time.contrib.hibernate.PersistentDateTime" column= "FECHA_DE_CREACION"/>
         
     </class>
 </hibernate-mapping>
