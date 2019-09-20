@@ -49,6 +49,7 @@ style="overflow:auto">
 			<separator spacing="15px"/>
 				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}" mold="paging" rows="10" pageSize="10" >
 					<listhead>
+						<listheader align="center" label="Estado"/>
 						<listheader align="center" label="Nombre Nodo"/>
 						<listheader align="center" label="Fecha de creación"/>
 						<listheader align="center" label="Tipo"/>

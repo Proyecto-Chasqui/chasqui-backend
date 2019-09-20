@@ -83,7 +83,9 @@ public class InvitacionServiceImpl implements InvitacionService{
 	@Override
 	public void eliminarInvitacion(Integer idGrupo, String emailCliente) {
 		InvitacionAGCC invitacion = this.obtenerInvitacionAGCCporIDGrupo(emailCliente, idGrupo);
-		notificacionService.eliminarNotificacion(invitacion);
+		if(invitacion != null) {
+			notificacionService.eliminarNotificacion(invitacion);
+		}
 		
 	}
 

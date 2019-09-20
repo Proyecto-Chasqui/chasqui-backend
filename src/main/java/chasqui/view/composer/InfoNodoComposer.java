@@ -1,6 +1,7 @@
 package chasqui.view.composer;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,11 +75,21 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 		binder = new AnnotateDataBinder(c);
 		nodo = (Nodo) Executions.getCurrent().getArg().get("nodo");
 		datacliente = nodo.getAdministrador(); 
-		clientes = nodo.getCache();
+		clientes = obtenerUsuariosActivos(nodo.getCache());
 		listboxUsuarios.setItemRenderer(new MiembrosGCCRenderer((Window) c));
 		this.fillData(nodo);
 		this.fillEstadisticas(nodo);
 		this.binder.loadAll();
+	}
+
+	private List<MiembroDeGCC> obtenerUsuariosActivos(List<MiembroDeGCC> cache) {
+		List<MiembroDeGCC> miembrosActivos = new ArrayList<MiembroDeGCC>();
+		for(MiembroDeGCC miembro: cache) {
+			if(miembro.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+				miembrosActivos.add(miembro);
+			}
+		}
+		return miembrosActivos;
 	}
 
 	private void fillEstadisticas(Nodo nodo2) {

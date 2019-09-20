@@ -26,6 +26,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 	}
 	@Override
 	public void render(Listitem item, Nodo nodo, int index) throws Exception {
+		String estado;
 		String tipo;
 		String cliente;
 		String mail;
@@ -34,6 +35,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		String nombreNodo;
 		String direccion;
 		Cliente datacliente = ((Cliente) nodo.getAdministrador()); 
+		estado = this.parsearEstado(nodo);
 		tipo = this.renderizarTipo(nodo.getTipo());
 		nombreNodo = nodo.getAlias();
 		direccion = nodo.getDireccionDelNodo().toString();
@@ -48,9 +50,10 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		params1.put("nodo", nodo);
 		c.setTooltiptext(Labels.getLabel("Ver detalles del nodo"));
 		c.setImage("/imagenes/editar.png");
-		c.setLabel("Ver mas información");
+		c.setLabel("Mas información");
 		c.addForward(Events.ON_CLICK, nodoWindow, Events.ON_NOTIFY, params1);
-		
+		Listcell c0 = new Listcell(String.valueOf(estado));
+		this.aplicarEstiloAEstado(estado, c0);
 		Listcell c1 = new Listcell(String.valueOf(nombreNodo));
 		Listcell c2 = new Listcell(String.valueOf(fechaCreacion));
 		Listcell c3 = new Listcell(String.valueOf(tipo));
@@ -67,6 +70,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		Hlayout hbox = new Hlayout();
 		c.setParent(hbox);
 		hbox.setParent(c100);
+		c0.setParent(item);
 		c1.setParent(item);
 		c2.setParent(item);
 		c3.setParent(item);
@@ -78,6 +82,21 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		
 	}
 	
+	private void aplicarEstiloAEstado(String estado, Listcell c0) {
+		if(estado.equals("ACTIVO")) {
+			c0.setStyle("color:green;");
+		} else {
+			c0.setStyle("color:red;");
+		}
+		
+	}
+	private String parsearEstado(Nodo nodo) {
+		if(nodo.getPedidoActual().getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)) {
+			return ("ELIMINADO");
+		} else {
+			return ("ACTIVO");
+		}	
+	}
 	private String parsearFechaDeModificacion(DateTime fechaCreacion) {
 		if(fechaCreacion != null) {
 			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");

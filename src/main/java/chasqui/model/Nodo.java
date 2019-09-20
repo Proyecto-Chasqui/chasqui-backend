@@ -95,6 +95,7 @@ public class Nodo extends GrupoCC{
 
 		if (miembro == null) {
 			miembro = new MiembroDeGCC(cliente);
+			miembro.setEstadoInvitacion(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA);
 		} else {
 			throw new InvitacionExistenteException("El cliente que pretende invitar ya existe en el nodo");
 		}

@@ -84,7 +84,7 @@ public class NodoListener {
 	UsuarioService usuarioService;
 	@Autowired
 	GrupoService grupoService;
-	
+	//testeado
 	@GET
 	@Path("/all/{idVendedor : \\d+ }")
 	@Produces("application/json")
@@ -99,7 +99,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+	//testeado
 	@POST
 	@Path("/alta")
 	@Produces("application/json")
@@ -148,7 +148,7 @@ public class NodoListener {
 		request = mapper.readValue(solicitudCreacionNodoRequest, NodoSolicitudCreacionRequest.class);
 		return request;
 	}
-	
+	//testeado
 	@POST
 	@Path("/cederAdministracion")
 	@Produces("application/json")
@@ -199,11 +199,11 @@ public class NodoListener {
 		if(nodo == null) {
 			throw new NodoInexistenteException("El nodo no existe");
 		}
-		if(!nodo.getEmailAdministradorNodo().equals(emailAdministrador)) {
+		if(!nodo.getAdministrador().getEmail().equals(emailAdministrador)) {
 			throw new UsuarioNoPerteneceAlGrupoDeCompras("No tiene permisos para eliminar el nodo");
 		}
 	}
-
+	//testeado
 	@GET
 	@Path("/solicitudesDeCreacion/{idVendedor : \\d+ }")
 	@Produces("application/json")
@@ -221,7 +221,7 @@ public class NodoListener {
 			return null;
 
 	}
-	
+	//testeado
 	@POST
 	@Path("/editarSolicitudDeCreacion")
 	@Produces("application/json")
@@ -246,7 +246,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
 		}
 	}
-	
+	//testeado
 	@POST
 	@Path("/cancelarSolicitudDeCreacion")
 	@Produces("application/json")
@@ -267,7 +267,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
 		}
 	}
-	
+	//testeado
 	@POST
 	@Path("/enviarSolicitudDePertenencia")
 	@Produces("application/json")
@@ -329,7 +329,7 @@ public class NodoListener {
 		}
 		nodoService.crearSolicitudDePertenenciaANodo(nodo, (Cliente)usuario);
 	}
-	
+	//testeado
 	@POST
 	@Path("/rechazarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -344,7 +344,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} 
 	}
-	
+	//testeado
 	@POST
 	@Path("/aceptarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -371,7 +371,7 @@ public class NodoListener {
 			throw new SolicitudPernenciaNodoException("No tiene permisos para gestionar la solicitud");
 		}
 	}
-
+	//testeado
 	@POST
 	@Path("/cancelarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -437,7 +437,7 @@ public class NodoListener {
 		return request;
 
 	}
-
+	//testeado
 	@POST
 	@Path("/invitacion")
 	@Produces("application/json")
@@ -469,7 +469,7 @@ public class NodoListener {
 			return Response.status(RestConstants.ERROR_INTERNO).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+	//testeado
 	@POST
 	@Path("/quitarMiembro")
 	@Produces("application/json")
