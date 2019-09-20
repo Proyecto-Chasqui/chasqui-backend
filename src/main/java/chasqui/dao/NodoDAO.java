@@ -10,6 +10,8 @@ public interface NodoDAO {
 
     public List<Nodo> obtenerNodosDelVendedor(Integer idVendedor);
     
+    public List<Nodo> obtenerNodosDelCliente(Integer idVendedor, String email);
+    
     public Nodo obtenerNodoPorAlias(final String alias) ;
  
     public Nodo obtenerNodoPorId(final Integer idNodo);

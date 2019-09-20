@@ -1,22 +1,33 @@
 package chasqui.services.interfaces;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.mail.MessagingException;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
+import chasqui.exceptions.EncrypterException;
+import chasqui.exceptions.EstadoPedidoIncorrectoException;
+import chasqui.exceptions.GrupoCCInexistenteException;
+import chasqui.exceptions.InvitacionExistenteException;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
+import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.SolicitudCreacionNodoException;
 import chasqui.exceptions.SolicitudCreacionNodoEnGestionExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Nodo;
 import chasqui.model.SolicitudCreacionNodo;
+import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
+import freemarker.template.TemplateException;
 
 public interface NodoService {
 
@@ -24,7 +35,7 @@ public interface NodoService {
 	public void guardarNodo(Nodo nodo);
 
 	@Transactional
-	List<Nodo> obtenerNodosDelVendedor(Integer idVendedor) throws VendedorInexistenteException;
+	List<Nodo> obtenerNodosDelVendedor(Integer idVendedor)throws VendedorInexistenteException;
 
 	@Transactional
 	void altaNodo(String alias, String emailClienteAdministrador, String Localidad, String calle, int Altura, String telefono, int idVendedor, String descripcion) throws UsuarioInexistenteException, NodoYaExistenteException, VendedorInexistenteException;
@@ -119,6 +130,93 @@ public interface NodoService {
 	 * @param solicitud
 	 */
 	public void rechazarSolicitud(SolicitudCreacionNodo solicitud);
+	/**
+	 * Obtiene los nodos del cliente con el email solicitado
+	 * @param idVendedor
+	 * @param email
+	 * @return
+	 * @throws VendedorInexistenteException
+	 */
+	List<Nodo> obtenerNodosDelCliente(Integer idVendedor, String email) throws VendedorInexistenteException;
+	
+	/**
+	 * Permite eliminar el nodo, vaciando sus pedidos e integrantes, solo se puede eliminar si no hay pedidos confirmados o abiertos.
+	 * @param idGrupo
+	 * @throws EstadoPedidoIncorrectoException
+	 */
+	@Transactional
+	public void vaciarNodo(Integer idGrupo) throws EstadoPedidoIncorrectoException;
+	/**
+	 * Cede la administración del nodo y notifica de la acción por email.
+	 * @param idNodo
+	 * @param emailCliente
+	 * @throws UsuarioNoPerteneceAlGrupoDeCompras
+	 * @throws UsuarioInexistenteException 
+	 */
+	@Transactional
+	public void cederAdministracion(Integer idNodo, String emailCliente) throws UsuarioNoPerteneceAlGrupoDeCompras, UsuarioInexistenteException;
+	/**
+	 * Elimina el miembro del nodo
+	 * @param idGrupo
+	 * @param emailCliente
+	 * @throws UsuarioInexistenteException
+	 */
+	@Transactional
+	public void quitarMiembroDelNodo(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException;
+	/**
+	 * Permite enviar invitación a usuarios al nodo
+	 * @param idGrupo
+	 * @param emailInvitado
+	 * @param emailAdministrador
+	 * @throws IOException
+	 * @throws MessagingException
+	 * @throws TemplateException
+	 * @throws EncrypterException
+	 * @throws GrupoCCInexistenteException 
+	 */
+	@Transactional
+	public void invitarANodo(Integer idGrupo, String emailInvitado, String emailAdministrador) throws IOException, MessagingException, TemplateException, EncrypterException, GrupoCCInexistenteException;
+	/**
+	 * Permite editar el nodo.
+	 * @param idNodo
+	 * @param email
+	 * @param alias
+	 * @param descripcion
+	 * @param idDireccion
+	 * @param tipoNodo
+	 * @param barrio
+	 * @throws RequestIncorrectoException
+	 */
+	@Transactional
+	public void editarNodo(Integer idNodo, String email, String alias, String descripcion, Integer idDireccion,
+			String tipoNodo, String barrio) throws RequestIncorrectoException;
+	/**
+	 * Acepta la solicitud de pertencia de ese usuario al nodo solicitado, lo agrega como miembro de mismo.
+	 * Si ya existe en el nodo retorna una excepcion de su existencia.
+	 * @param nodo
+	 * @param usuario
+	 * @throws InvitacionExistenteException
+	 */
+	@Transactional
+	public void aceptarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia);
+
+	public SolicitudPertenenciaNodo obtenerSolicitudDePertenenciaById(Integer idSolicitud);
+	/**
+	 * Cancela la solicitud de pertenencia, debe ser hecho por el usuario solicitante
+	 * @param solicitudpertenencia
+	 */
+	@Transactional
+	public void cancelarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia);
+	/**
+	 * Rechaza la solicitud de pertenencia, debe ser hecho por el administrador del Nodo
+	 * @param solicitudpertenencia
+	 */
+	@Transactional
+	public void rechazarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia);
+
+	public SolicitudPertenenciaNodo obtenerSolicitudDe(Integer idNodo, Integer idCliente);
+
+	public void reabrirSolicitudDePertenenciaNodo(SolicitudPertenenciaNodo solicitud);
 
 
 }

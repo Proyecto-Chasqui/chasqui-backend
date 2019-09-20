@@ -1,6 +1,9 @@
 package chasqui.services.impl;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,27 +14,38 @@ import chasqui.dao.impl.SolicitudCreacionNodoDAOHbm;
 import chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
+import chasqui.exceptions.EncrypterException;
+import chasqui.exceptions.EstadoPedidoIncorrectoException;
+import chasqui.exceptions.GrupoCCInexistenteException;
+import chasqui.exceptions.InvitacionExistenteException;
 import chasqui.exceptions.NodoCerradoException;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
+import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.SolicitudCreacionNodoException;
 import chasqui.exceptions.SolicitudCreacionNodoEnGestionExistenteException;
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
+import chasqui.model.GrupoCC;
+import chasqui.model.MiembroDeGCC;
 import chasqui.model.Nodo;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
+import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
+import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
+import freemarker.template.TemplateException;
 
 public class NodoServiceImpl implements NodoService {
-
+	private static final String IDDISP = "";
 	@Autowired
 	NodoDAOHbm nodoDAO;
 	@Autowired
@@ -42,6 +56,10 @@ public class NodoServiceImpl implements NodoService {
 	SolicitudCreacionNodoDAO solicitudCreacionNodoDAO;
 	@Autowired
 	SolicitudPertenenciaNodoDAO solicitudPertenenciaNodoDAO;
+	@Autowired
+	private NotificacionService notificacionService;
+	@Autowired
+	private InvitacionService invitacionService;
 
 	@Override
 	public void crearSolicitudDeCreacionNodo(Integer idVendedor, Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException, SolicitudCreacionNodoEnGestionExistenteException, NodoYaExistenteException{
@@ -62,6 +80,14 @@ public class NodoServiceImpl implements NodoService {
 		usuarioService.obtenerVendedorPorID(idVendedor); // Para verificar si el vendedor con el id pasado como parametro es válido
 
 		return nodoDAO.obtenerNodosDelVendedor(idVendedor);
+		
+	}
+	
+	@Override
+	public List<Nodo> obtenerNodosDelCliente(Integer idVendedor, String email) throws VendedorInexistenteException {
+		usuarioService.obtenerVendedorPorID(idVendedor); // Para verificar si el vendedor con el id pasado como parametro es válido
+
+		return nodoDAO.obtenerNodosDelCliente(idVendedor,email);
 		
 	}
 	
@@ -275,4 +301,181 @@ public class NodoServiceImpl implements NodoService {
 		solicitud.setEstado(Constantes.SOLICITUD_NODO_RECHAZADO);
 		solicitudCreacionNodoDAO.guardar(solicitud);	
 	}
+
+	@Override
+	public void vaciarNodo(Integer idNodo) throws EstadoPedidoIncorrectoException {
+		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
+		if(nodo.sePuedeEliminar()){
+			nodo.vaciarGrupo();
+			nodoDAO.guardarNodo(nodo);
+		}else {
+			throw new EstadoPedidoIncorrectoException("El grupo no puede ser eliminado, por que hay pedidos abiertos o confirmados");
+		}
+		
+	}
+	
+	private MiembroDeGCC obtenerMiembroGCC(GrupoCC grupo, String email) {
+		for(MiembroDeGCC miembro : grupo.getCache()){
+			if(miembro.getEmail().equals(email)){
+				return miembro;
+			}
+		}
+		return null;
+	}
+
+
+	@Override
+	public void cederAdministracion(Integer idNodo, String emailCliente) throws UsuarioNoPerteneceAlGrupoDeCompras, UsuarioInexistenteException {
+		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
+		Cliente administradorAnterior = nodo.getAdministrador(); //Es necesario guardar la referencia para notificarlo luego que cedio la administracion.
+		Cliente nuevoAdministrador = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
+		
+		MiembroDeGCC miembro = obtenerMiembroGCC(nodo, administradorAnterior.getEmail());
+		if(!miembro.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)){
+			throw new UsuarioNoPerteneceAlGrupoDeCompras(Constantes.ERROR_INVITACION_NO_ACEPTADA);
+		}
+		
+		if(nodo.pertenece(nuevoAdministrador.getEmail())){
+			nodo.cederAdministracion(nuevoAdministrador);
+			//redefinir esta notificacion para nodos.
+			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, nodo);
+			
+			nodoDAO.guardarNodo(nodo);
+		}else{
+			throw new UsuarioNoPerteneceAlGrupoDeCompras(Constantes.ERROR_CREDENCIALES_INVALIDAS);
+		}
+		
+	}
+
+	@Override
+	public void quitarMiembroDelNodo(Integer idNodo, String emailCliente) throws UsuarioInexistenteException {
+		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
+		
+		Cliente cliente;
+		try {
+			cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
+			nodo.quitarMiembro(cliente);
+			SolicitudPertenenciaNodo solicitud = solicitudPertenenciaNodoDAO.obtenerSolicitudDe(nodo.getId(), cliente.getId());
+			if(solicitud != null) {
+				solicitud.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO);
+				if(solicitud.getReintentos()>0) {
+					solicitud.setReintentos(solicitud.getReintentos() - 1);
+				}
+				solicitudPertenenciaNodoDAO.guardar(solicitud);
+			}
+		} catch (UsuarioInexistenteException e) {
+			// Si el usuario no existe es porque fue invitado pero no está registrado en chasqui
+			nodo.eliminarInvitacion(emailCliente);
+		}
+		nodoDAO.guardarNodo(nodo);
+		invitacionService.eliminarInvitacion(idNodo,emailCliente);
+		
+	}
+	
+
+
+	@Override
+	public void invitarANodo(Integer idNodo, String emailInvitado, String emailAdministrador) throws IOException, MessagingException, TemplateException, EncrypterException, GrupoCCInexistenteException {
+		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
+		if (nodo == null) {
+			throw new GrupoCCInexistenteException(idNodo);
+		}
+		Cliente administrador = nodo.getAdministrador();
+		//comprobar que el solicitante sea el administrador del grupo
+		if (!administrador.getEmail().equals(emailAdministrador)) {
+			throw new GrupoCCInexistenteException("El solicitante no es administrador del grupo: "+emailAdministrador);
+		}
+		
+		//comprobar que el administrador no se invite a si mismo
+		
+		if (administrador.getEmail().equals(emailInvitado)) {
+			throw new GrupoCCInexistenteException("El administrador está intentando invitarse a si mismo");
+		}
+		
+		if (nodo.fueInvitado(emailInvitado)) {
+			throw new GrupoCCInexistenteException("El usuario que intenta invitar ya fue invitado al grupo o ya pertence al grupo");
+		}
+		
+		try {
+			Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailInvitado);	
+			
+			notificacionService.notificarInvitacionAGCCClienteRegistrado(administrador, emailInvitado, nodo, IDDISP);
+			nodo.invitarAlGrupo(cliente);			
+			
+		} catch (UsuarioInexistenteException e) {
+			notificacionService.notificarInvitacionAGCCClienteNoRegistrado(administrador, emailInvitado, nodo, IDDISP);
+			nodo.invitarAlGrupo(emailInvitado);
+		}
+		
+		nodoDAO.guardarNodo(nodo);
+		
+	}
+	
+	
+
+	@Override
+	public void editarNodo(Integer idNodo, String email, String alias, String descripcion, Integer idDireccion,
+			String tipoNodo, String barrio) throws RequestIncorrectoException {
+		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
+		if (nodo.getAdministrador().getEmail().equals(email)) {
+			nodo.setAlias(alias);
+			nodo.setDescripcion(descripcion);
+			nodo.setEmailAdministradorNodo(email);
+			nodo.setBarrio(barrio);
+			nodo.setDescripcion(descripcion);
+			nodo.setTipo(tipoNodo);
+			Direccion direccion = nodo.getAdministrador().obtenerDireccionConId(idDireccion);
+			if(direccion == null) {
+				throw new RequestIncorrectoException("El usuario "+nodo.getAdministrador().getNombre() + " no posee la dirección asignada");
+			}
+			nodo.setDireccionDelNodo(direccion);
+			nodoDAO.guardarNodo(nodo);
+		}
+		else{
+			throw new RequestIncorrectoException("El usuario "+ email + " no es el administrador del grupo:"+ nodo.getAlias());
+		}
+		
+	}
+
+	@Override
+	public void aceptarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia){
+		Nodo nodo = solicitudpertenencia.getNodo();
+		Cliente usuario = (Cliente) solicitudpertenencia.getUsuarioSolicitante();
+		solicitudpertenencia.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO);
+		nodo.invitarAlNodo(usuario);
+		nodoDAO.guardarNodo(nodo);
+		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);
+	}
+
+	@Override
+	public SolicitudPertenenciaNodo obtenerSolicitudDePertenenciaById(Integer idSolicitud) {
+		return solicitudPertenenciaNodoDAO.obtenerSolicitudPertenenciaById(idSolicitud);
+	}
+
+	@Override
+	public void cancelarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia) {
+		solicitudpertenencia.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_CANCELADO);
+		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);		
+	}
+
+	@Override
+	public void rechazarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia) {
+		solicitudpertenencia.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO);
+		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);				
+	}
+
+	@Override
+	public SolicitudPertenenciaNodo obtenerSolicitudDe(Integer idNodo, Integer idCliente) {
+		return solicitudPertenenciaNodoDAO.obtenerSolicitudDe(idNodo,idCliente);
+		
+	}
+
+	@Override
+	public void reabrirSolicitudDePertenenciaNodo(SolicitudPertenenciaNodo solicitud) {
+		solicitud.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_ENVIADO);
+		solicitud.setReintentos(solicitud.getReintentos() + 1);
+		solicitudPertenenciaNodoDAO.guardar(solicitud);
+		
+	}	
+
 }

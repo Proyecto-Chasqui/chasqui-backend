@@ -244,7 +244,7 @@ public class GrupoCC {
 		miembro.rechazarInvitacion();
 	}
 
-	private MiembroDeGCC findMiembro(String emailCliente) {
+	protected MiembroDeGCC findMiembro(String emailCliente) {
 		for (MiembroDeGCC miembro : cache) {
 			if (miembro.getEmail().equals(emailCliente)) {
 				return miembro;

@@ -2,6 +2,8 @@ package chasqui.model;
 
 import org.joda.time.DateTime;
 
+import chasqui.view.composer.Constantes;
+
 public class SolicitudPertenenciaNodo {
 	private Integer id;
 	private Nodo nodo;
@@ -10,10 +12,14 @@ public class SolicitudPertenenciaNodo {
 	private Integer reintentos;
 	private DateTime fechaCreacion;
 	
+	public SolicitudPertenenciaNodo() {}
+	
 	public SolicitudPertenenciaNodo(Nodo nodo, Usuario usuario) {
 		this.nodo = nodo;
 		this.setUsuarioSolicitante(usuario);
 		this.setFechaCreacion(DateTime.now());
+		this.reintentos = 0;
+		this.estado = Constantes.SOLICITUD_PERTENENCIA_NODO_ENVIADO;
 	}
 
 	public Integer getId() {

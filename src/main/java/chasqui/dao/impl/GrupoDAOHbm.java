@@ -84,7 +84,6 @@ public class GrupoDAOHbm extends HibernateDaoSupport implements GrupoDAO {
 				Criteria criteria = session.createCriteria(GrupoCC.class);
 				criteria.add(Restrictions.eq("id", idGrupoCC));
 			    criteria.add(Restrictions.eq("esNodo", false));
-			    criteria.add(Restrictions.eq("esNodo", null));
 				return (GrupoCC) criteria.uniqueResult();
 			}
 

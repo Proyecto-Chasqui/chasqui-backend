@@ -56,7 +56,8 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 			@Override
 			public Nodo doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria criteria = session.createCriteria(Nodo.class);
-				criteria.add(Restrictions.eq("id", idNodo));
+				criteria.add(Restrictions.eq("id", idNodo))
+				.add(Restrictions.eq("esNodo", true)); 
 				return (Nodo) criteria.uniqueResult();
 			}
 
@@ -76,10 +77,30 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 			@Override
 			public Nodo doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria criteria = session.createCriteria(Nodo.class);
-				criteria.add(Restrictions.eq("alias", alias));
+				criteria.add(Restrictions.eq("alias", alias))
+				.add(Restrictions.eq("esNodo", true)); 
 				return (Nodo) criteria.uniqueResult();
 			}
 
 		});
+	}
+	
+	@Override
+	public List<Nodo> obtenerNodosDelCliente(final Integer idVendedor, final String email) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<Nodo>>() {
+
+			@Override
+			public List<Nodo> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Nodo.class);
+				criteria.add(Restrictions.eq("vendedor.id", idVendedor))
+				.add(Restrictions.eq("esNodo", true))
+	    		.createCriteria("cache").add(Restrictions.eq("email", email))
+	    		.add(Restrictions.eq("estadoInvitacion",Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA));
+				
+				return (List<Nodo>) criteria.list();
+			}
+
+		});
+
 	}
 }

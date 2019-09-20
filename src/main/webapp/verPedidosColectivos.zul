@@ -48,7 +48,7 @@
 <separator spacing="10px"/>
 <div align="center">
 	<button label="Confirmar Entrega" id="confirmarEntregabtn" visible="false"/>
-	<button label="Exportar Pedido Colectivo" id="exportarTodosbtn" visible="@{verPedidosColectivosWindow$composer.exportar}"/>
+	<button label="Exportar Pedido" id="exportarTodosbtn" visible="@{verPedidosColectivosWindow$composer.exportar}"/>
 	<button label="Exportar Pedidos Seleccionados" id="exportarSeleccionados" visible="false"/>
 </div>
 <separator spacing="10px"/>

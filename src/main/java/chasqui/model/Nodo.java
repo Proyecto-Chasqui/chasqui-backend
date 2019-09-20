@@ -1,5 +1,6 @@
 package chasqui.model;
 
+import chasqui.exceptions.InvitacionExistenteException;
 import chasqui.view.composer.Constantes;
 
 public class Nodo extends GrupoCC{
@@ -80,6 +81,25 @@ public class Nodo extends GrupoCC{
 	public void setBarrio(String barrio) {
 		this.barrio = barrio;
 	}
-	
+
+	public void invitarAlNodo(Cliente cliente) throws InvitacionExistenteException{
+		MiembroDeGCC miembro = this.validarNuevoMiembro(cliente.getEmail(),cliente);
+		miembro.setAvatar(cliente.getImagenPerfil());
+		miembro.setNickname(cliente.getUsername());
+		miembro.setIdCliente(cliente.getId());
+		this.getCache().add(miembro);
+	}
+
+	private MiembroDeGCC validarNuevoMiembro(String emailCliente, Cliente cliente) {
+		MiembroDeGCC miembro = this.findMiembro(emailCliente);
+
+		if (miembro == null) {
+			miembro = new MiembroDeGCC(cliente);
+		} else {
+			throw new InvitacionExistenteException("El cliente que pretende invitar ya existe en el nodo");
+		}
+		return miembro;
+
+	}
 	
 }
