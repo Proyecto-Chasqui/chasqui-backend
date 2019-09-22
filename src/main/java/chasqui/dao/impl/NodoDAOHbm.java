@@ -103,4 +103,20 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 		});
 
 	}
+
+	public List<Nodo> obtenerNodosAbiertosDelVendedor(final Integer idVendedor) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<Nodo>>() {
+
+			@Override
+			public List<Nodo> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Nodo.class);
+				criteria.add(Restrictions.eq("vendedor.id", idVendedor))
+				.add(Restrictions.eq("esNodo", true))
+				.add(Restrictions.eq("tipo",Constantes.NODO_ABIERTO));
+				
+				return (List<Nodo>) criteria.list();
+			}
+
+		});
+	}
 }

@@ -58,4 +58,40 @@ public class SolicitudPertenenciaNodoDAOHbm  extends HibernateDaoSupport impleme
 		
 	}
 
+	@Override
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeNodo(final Integer idNodo) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<SolicitudPertenenciaNodo>>() {
+
+			   @Override
+			   public List<SolicitudPertenenciaNodo> doInHibernate(Session session) throws HibernateException, SQLException {
+			    Criteria criteria = session.createCriteria(SolicitudPertenenciaNodo.class, "solicitud");
+			    criteria.add(Restrictions.eq("nodo.id", idNodo));
+
+			    List<SolicitudPertenenciaNodo> resultado = (List<SolicitudPertenenciaNodo>) criteria.list();
+			   
+			    return resultado; 
+			   }
+		});
+		
+	}
+
+	@Override
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(final Integer idUsuario,
+			final Integer idVendedor) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<SolicitudPertenenciaNodo>>() {
+
+			   @Override
+			   public List<SolicitudPertenenciaNodo> doInHibernate(Session session) throws HibernateException, SQLException {
+			    Criteria criteria = session.createCriteria(SolicitudPertenenciaNodo.class, "solicitud");
+			    criteria.add(Restrictions.eq("usuarioSolicitante.id", idUsuario))
+			    .createAlias("nodo.vendedor", "vendedor")
+			    .add(Restrictions.eq("vendedor.id", idVendedor));
+
+			    List<SolicitudPertenenciaNodo> resultado = (List<SolicitudPertenenciaNodo>) criteria.list();
+			   
+			    return resultado; 
+			   }
+		});
+	}
+
 }

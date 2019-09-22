@@ -7,6 +7,7 @@ import javax.mail.MessagingException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.EncrypterException;
@@ -15,6 +16,9 @@ import chasqui.exceptions.GrupoCCInexistenteException;
 import chasqui.exceptions.InvitacionExistenteException;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
+import chasqui.exceptions.PedidoInexistenteException;
+import chasqui.exceptions.PedidoSinProductosException;
+import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.SolicitudCreacionNodoException;
 import chasqui.exceptions.SolicitudCreacionNodoEnGestionExistenteException;
@@ -24,9 +28,12 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.Nodo;
+import chasqui.model.Pedido;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
+import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
+import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import freemarker.template.TemplateException;
 
 public interface NodoService {
@@ -217,6 +224,54 @@ public interface NodoService {
 	public SolicitudPertenenciaNodo obtenerSolicitudDe(Integer idNodo, Integer idCliente);
 
 	public void reabrirSolicitudDePertenenciaNodo(SolicitudPertenenciaNodo solicitud);
+	/**
+	 * Crea el pedido individual dentro de nodo, y notifica a los demas miembros que se creo.
+	 * @param idGrupo
+	 * @param email
+	 * @param idVendedor
+	 * @throws ClienteNoPerteneceAGCCException
+	 * @throws VendedorInexistenteException
+	 * @throws ConfiguracionDeVendedorException
+	 * @throws PedidoVigenteException
+	 * @throws UsuarioInexistenteException
+	 * @throws GrupoCCInexistenteException
+	 * @throws PedidoInexistenteException
+	 */
+	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException;
+	/**
+	 * Retorna el pedido actual del usuario de ese nodo.
+	 * @param idNodo
+	 * @param email
+	 * @return
+	 */
+	public Pedido obtenerPedidoIndividualEnNodo(Integer idNodo, String email);
+	/**
+	 * 
+	 * @param email
+	 * @param confirmarPedidoSinDireccionRequest
+	 * @throws RequestIncorrectoException 
+	 * @throws UsuarioInexistenteException 
+	 * @throws VendedorInexistenteException 
+	 * @throws PedidoInexistenteException 
+	 * @throws PedidoSinProductosException 
+	 * @throws EstadoPedidoIncorrectoException 
+	 * @throws GrupoCCInexistenteException 
+	 * @throws ClienteNoPerteneceAGCCException 
+	 */
+	public void confirmarPedidoIndividualEnNodo(String email,
+			ConfirmarPedidoSinDireccionRequest confirmarPedidoSinDireccionRequest) throws RequestIncorrectoException, UsuarioInexistenteException, VendedorInexistenteException, PedidoInexistenteException, PedidoSinProductosException, EstadoPedidoIncorrectoException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException;
+	/**
+	 * Retorna todos los nodos abiertos que posea ese vendedor.
+	 * @param idVendedor
+	 * @return
+	 * @throws VendedorInexistenteException
+	 */
+	public List<Nodo> obtenerNodosAbiertosDelVendedor(Integer idVendedor) throws VendedorInexistenteException;
+
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenencia(Integer idNodo);
+
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(Integer id,
+			Integer idVendedor) throws VendedorInexistenteException;
 
 
 }

@@ -9,6 +9,8 @@ public class EditarNodoRequest implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -6380639718383818713L;
+	private Integer idNodo;
+	private Integer idVendedor;
 	private String alias;
 	private String descripcion;
 	private String tipoNodo;
@@ -56,6 +58,22 @@ public class EditarNodoRequest implements Serializable {
 
 	public void setBarrio(String barrio) {
 		this.barrio = barrio;
+	}
+
+	public Integer getIdNodo() {
+		return idNodo;
+	}
+
+	public Integer getIdVendedor() {
+		return idVendedor;
+	}
+
+	public void setIdNodo(Integer idNodo) {
+		this.idNodo = idNodo;
+	}
+
+	public void setIdVendedor(Integer idVendedor) {
+		this.idVendedor = idVendedor;
 	}
 
 }

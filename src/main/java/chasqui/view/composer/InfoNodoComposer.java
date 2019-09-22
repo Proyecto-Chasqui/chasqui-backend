@@ -108,13 +108,22 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 				return o1.getId().compareTo(o2.getId());
 			}
 		});
-		Integer index = (pedidos.size() > 2)? 2: pedidos.size();
-		pedidos = pedidos.subList(0, index);
+		Integer startIndex = startIndex(pedidos,3);
+		Integer endIndex = pedidos.size();
+		pedidos = pedidos.subList(startIndex, endIndex);
 		for(PedidoColectivo pedidoColectivo: pedidos) {
 			total = total + pedidoColectivo.getMontoTotal();
 		}
 		this.totalUltimos3Consumos = Double.toString(total);
 		
+	}
+
+	private Integer startIndex(List<PedidoColectivo> pedidos, Integer gap) {
+		if(pedidos.size() > gap){
+			return pedidos.size() - gap;
+		}else {
+			return 0;
+		}
 	}
 
 	private void fillTotalHastaLaFecha(Nodo nodo2) {

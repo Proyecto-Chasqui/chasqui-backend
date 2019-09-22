@@ -124,6 +124,20 @@ public class GrupoDAOHbm extends HibernateDaoSupport implements GrupoDAO {
 			}
 		});	
 	}
+
+	@Override
+	public GrupoCC obtenerGrupoAbsolutoPorId(final Integer idGrupo) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<GrupoCC>() {
+
+			@Override
+			public GrupoCC doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(GrupoCC.class);
+				criteria.add(Restrictions.eq("id", idGrupo));
+				return (GrupoCC) criteria.uniqueResult();
+			}
+
+		});
+	}
 	
 
 }

@@ -140,7 +140,7 @@ public class DateableAspect {
 	}
 	
 	private void setearTimeStampPedidoColectivoEnBD(Integer id) {
-		GrupoCC grupo = this.grupoDao.obtenerGrupoPorId(id);
+		GrupoCC grupo = this.grupoDao.obtenerGrupoAbsolutoPorId(id);
 		this.setearTimeStampEnColectivos(grupo.getPedidoActual());
 		this.grupoDao.guardarGrupo(grupo);
 	}

@@ -51,6 +51,7 @@ import chasqui.service.rest.request.ActualizarDomicilioRequest;
 import chasqui.service.rest.request.CancelarSolicitudCreacionNodoRequest;
 import chasqui.service.rest.request.CederAdministracionRequest;
 import chasqui.service.rest.request.ConfirmarPedidoColectivoRequest;
+import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.service.rest.request.EditarGCCRequest;
 import chasqui.service.rest.request.EditarNodoRequest;
 import chasqui.service.rest.request.EditarSolicitudCreacionNodoRequest;
@@ -62,9 +63,11 @@ import chasqui.service.rest.request.NuevoPedidoIndividualRequest;
 import chasqui.service.rest.request.QuitarMiembroRequest;
 import chasqui.service.rest.request.SolicitudDePertenenciaRequest;
 import chasqui.service.rest.response.ChasquiError;
+import chasqui.service.rest.response.NodoAbiertoResponse;
 import chasqui.service.rest.response.NodoResponse;
 import chasqui.service.rest.response.PedidoResponse;
 import chasqui.service.rest.response.SolicitudCreacionNodoResponse;
+import chasqui.service.rest.response.SolicitudDePertenenciaResponse;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.UsuarioService;
@@ -88,11 +91,24 @@ public class NodoListener {
 	@GET
 	@Path("/all/{idVendedor : \\d+ }")
 	@Produces("application/json")
-	//TODO Deberian usarse el emailUsuario y el token en alguna parte, donde?
 	public Response obtenerNodosDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
 		try{
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			return Response.ok(toResponse(nodoService.obtenerNodosDelCliente(idVendedor,emailAdministrador),emailAdministrador),MediaType.APPLICATION_JSON).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	//testeado
+	@GET
+	@Path("/nodosAbiertos/{idVendedor : \\d+ }")
+	@Produces("application/json")
+	public Response obtenerNodosAbiertosDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
+		try{
+			return Response.ok(toResponseNodoAbierto(nodoService.obtenerNodosAbiertosDelVendedor(idVendedor)),MediaType.APPLICATION_JSON).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
 		}catch(Exception e){
@@ -168,7 +184,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+	//testeado
 	@POST
 	@Path("/eliminarNodo")
 	@Produces("application/json")
@@ -359,7 +375,55 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} 
 	}
+	//testeado
+	@GET
+	@Path("/obtenerSolicitudesDePertenenciaDeUsuario/{idVendedor : \\d+ }")
+	@Produces("application/json")
+	public Response obtenerSolicitudesDePertenenciaDeUsuario(@PathParam("idVendedor") final Integer idVendedor) {
+		try {
+			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
+			Usuario usuario = usuarioService.obtenerUsuarioPorEmail(emailSolicitante);
+			List<SolicitudPertenenciaNodo> solicitudesDepertenencia = nodoService.obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(usuario.getId(), idVendedor);
+			return Response.ok(toListSolicitudPertenenciaResponse(solicitudesDepertenencia),MediaType.APPLICATION_JSON).build();
+		} catch (UsuarioInexistenteException e) {
+			e.printStackTrace();
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			e.printStackTrace();
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} 
+	}
+	//testeado
+	@GET
+	@Path("/obtenerSolicitudesDePertenenciaANodo/{idNodo : \\d+ }")
+	@Produces("application/json")
+	public Response obtenerSolicitudesDePertenencia(@PathParam("idNodo") final Integer idNodo) {
+		try {
+			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
+			Nodo nodo = nodoService.obtenerNodoPorId(idNodo);
+			this.validarAdministrador(emailSolicitante,nodo.getAdministrador().getEmail());
+			List<SolicitudPertenenciaNodo> solicitudesDepertenencia = nodoService.obtenerSolicitudesDePertenencia(idNodo);
+			return Response.ok(toListSolicitudPertenenciaResponse(solicitudesDepertenencia),MediaType.APPLICATION_JSON).build();
+		} catch (RequestIncorrectoException e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} 
+	}
 	
+	private List<SolicitudDePertenenciaResponse> toListSolicitudPertenenciaResponse(List<SolicitudPertenenciaNodo> solicitudesDepertenencia) {
+		List<SolicitudDePertenenciaResponse> resultado = new ArrayList<SolicitudDePertenenciaResponse>();
+		for(SolicitudPertenenciaNodo solicitud : solicitudesDepertenencia){
+			resultado.add(new SolicitudDePertenenciaResponse(solicitud));
+		}
+		return resultado;
+	}
+
+	private void validarAdministrador(String emailSolicitante, String email) throws RequestIncorrectoException {
+		if(!email.equals(emailSolicitante)){
+			throw new RequestIncorrectoException("no tiene permisos");
+		}
+		
+	}
+
 	private void validarGestionDeSolicitudPertenencia(String emailSolicitante, SolicitudPertenenciaNodo solicitudpertenencia) throws SolicitudPernenciaNodoException {
 		if(solicitudpertenencia == null) {
 			throw new SolicitudPernenciaNodoException("La solicitud no existe");
@@ -400,19 +464,18 @@ public class NodoListener {
 
 	}
 
-
+	//testeado, falta flujo de notificacion cuando cambia de ABIERTO <-> CERRADO
 	@PUT
-	@Path("/editarNodo/{idNodo : \\d+ }")
+	@Path("/editarNodo")
 	@Produces("application/json")
 	public Response editarGCC(
-			@Multipart(value = "editarNodoRequest", type = "application/json") final String editarNodoRequest,
-			@PathParam("idNodo") final Integer idNodo) {
+			@Multipart(value = "editarNodoRequest", type = "application/json") final String editarNodoRequest) {
 
 		String email = obtenerEmailDeContextoDeSeguridad();
 		EditarNodoRequest request;
 		try {
 			request = this.toEditarNodo(editarNodoRequest);
-			nodoService.editarNodo(idNodo, email, request.getAlias(), request.getDescripcion(), request.getIdDireccion(),
+			nodoService.editarNodo(request.getIdNodo(), email, request.getAlias(), request.getDescripcion(), request.getIdDireccion(),
 					request.getTipoNodo(), request.getBarrio());
 			
 		} catch (JsonParseException e) {
@@ -422,8 +485,8 @@ public class NodoListener {
 		} catch (IOException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (RequestIncorrectoException e) {
-			// TODO Ver que genera esto y convertirlo en un error mas descriptivo.
 			e.printStackTrace();
+			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		}
 
 		return Response.ok().build();
@@ -441,7 +504,6 @@ public class NodoListener {
 	@POST
 	@Path("/invitacion")
 	@Produces("application/json")
-	// idGrupo mailInvitado token(obtenerEmailDeContextoDeSeguridad)
 	public Response invitarAGrupo(
 			@Multipart(value = "invitacionRequest", type = "application/json") final String invitacionRequest) {
 
@@ -488,11 +550,10 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+	//testeado
 	@POST
 	@Path("/individual")
 	@Produces("application/json")
-	// idGrupo mailInvitado token(obtenerEmailDeContextoDeSeguridad)
 	public Response nuevoPedidoIndividual(
 			@Multipart(value = "nuevoPedidoIndividualRequest", type = "application/json") final String nuevoPedidoIndividualRequest) {
 
@@ -501,8 +562,8 @@ public class NodoListener {
 		Pedido nuevoPedido = null;
 		try {
 			request = this.tonuevoPedidoIndividualRequest(nuevoPedidoIndividualRequest);
-			grupoService.nuevoPedidoIndividualPara(request.getIdGrupo(), email, request.getIdVendedor());
-			nuevoPedido = grupoService.obtenerPedidoIndividualEnGrupo(request.getIdGrupo(), email);
+			nodoService.nuevoPedidoIndividualPara(request.getIdGrupo(), email, request.getIdVendedor());
+			nuevoPedido = nodoService.obtenerPedidoIndividualEnNodo(request.getIdGrupo(), email);
 		} catch (JsonParseException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (JsonMappingException e) {
@@ -531,6 +592,20 @@ public class NodoListener {
 			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
 		
 	}
+	//testeado
+	@POST
+	@Produces("application/json")
+	@Path("/confirmarIndividualEnNodo")
+	public Response confirmarPedidoEnNodo(@Multipart(value="crearRequest", type="application/json") final String  request){
+		try{
+			String email = obtenerEmailDeContextoDeSeguridad();
+			nodoService.confirmarPedidoIndividualEnNodo(email,toConfirmarPedidoSinDireccionRequest(request));
+			return Response.ok().build();
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	//testeado
 	@POST
 	@Path("/confirmar")
 	@Produces("application/json")
@@ -615,9 +690,16 @@ public class NodoListener {
 	
 	private List<NodoResponse> toResponse(List<Nodo> nodos, String email) throws ClienteNoPerteneceAGCCException {
 		List<NodoResponse> response = new ArrayList<NodoResponse>();
-		//TODO seguir desde aca la prox. Solucionar Error serializing the response, please check the server logs, response class : ArrayList.
 		for(Nodo nodo : nodos){
 			response.add(new NodoResponse(nodo,email));
+		}
+		return response;
+	}
+	
+	private List<NodoAbiertoResponse> toResponseNodoAbierto(List<Nodo> nodos) {
+		List<NodoAbiertoResponse> response = new ArrayList<NodoAbiertoResponse>();
+		for(Nodo nodo : nodos){
+			response.add(new NodoAbiertoResponse(nodo));
 		}
 		return response;
 	}
@@ -696,5 +778,11 @@ public class NodoListener {
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		request = mapper.readValue(crearSolicitudDePertenencia, SolicitudDePertenenciaRequest.class);
 		return request;
+	}
+	
+	private ConfirmarPedidoSinDireccionRequest toConfirmarPedidoSinDireccionRequest(String request) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		return mapper.readValue(request, ConfirmarPedidoSinDireccionRequest.class);
 	}
 }

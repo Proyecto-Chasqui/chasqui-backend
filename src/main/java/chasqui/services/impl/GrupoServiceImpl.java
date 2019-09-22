@@ -349,7 +349,7 @@ public class GrupoServiceImpl implements GrupoService {
 	@Override
 	@Dateable
 	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest>opcionesSeleccionadas, Integer idZona) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
-		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
+		GrupoCC grupo = grupoDao.obtenerGrupoAbsolutoPorId(idGrupo);
 		
 		//Confirmar que el idDomicilio le pertenezca al solicitante
 		Cliente solicitante = (Cliente) usuarioService.obtenerClientePorEmail(emailSolicitante);
@@ -372,24 +372,27 @@ public class GrupoServiceImpl implements GrupoService {
 				actualizarMiembroGCC(miembroDeGCC);
 			}
 			grupoDao.guardarGrupo(grupo);
-			for (MiembroDeGCC miembroDeGCC : miembros) {
-				if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
-					Pedido p = pc.buscarPedidoParaCliente(miembroDeGCC.getEmail());
-					if(p != null) {
-						if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
-							notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+			if(grupo.isEsNodo()) {
+				//definir notificaciones para nodo.
+			}else {
+				for (MiembroDeGCC miembroDeGCC : miembros) {
+					if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+						Pedido p = pc.buscarPedidoParaCliente(miembroDeGCC.getEmail());
+						if(p != null) {
+							if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
+								notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+							}
 						}
 					}
 				}
+				mailService.enviarEmailCierreDePedidoColectivo(pc);
 			}
-			mailService.enviarEmailCierreDePedidoColectivo(pc);
 		}
 		else{
-			throw new RequestIncorrectoException("El usuario "+emailSolicitante + " no es el administrador del grupo:"+ grupo.getAlias());
+			throw new RequestIncorrectoException("El usuario "+emailSolicitante + " no es el administrador de :"+ grupo.getAlias());
 		}
 		
 	}
-	
 	private void actualizarMiembroGCC(MiembroDeGCC miembroDeGCC) {
 		try {
 			Usuario usuario = null;

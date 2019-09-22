@@ -1,6 +1,7 @@
 package chasqui.services.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -12,6 +13,7 @@ import chasqui.dao.SolicitudPertenenciaNodoDAO;
 import chasqui.dao.impl.NodoDAOHbm;
 import chasqui.dao.impl.SolicitudCreacionNodoDAOHbm;
 import chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm;
+import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
 import chasqui.exceptions.EncrypterException;
@@ -21,6 +23,9 @@ import chasqui.exceptions.InvitacionExistenteException;
 import chasqui.exceptions.NodoCerradoException;
 import chasqui.exceptions.NodoInexistenteException;
 import chasqui.exceptions.NodoYaExistenteException;
+import chasqui.exceptions.PedidoInexistenteException;
+import chasqui.exceptions.PedidoSinProductosException;
+import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.SolicitudCreacionNodoException;
 import chasqui.exceptions.SolicitudCreacionNodoEnGestionExistenteException;
@@ -32,13 +37,20 @@ import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Nodo;
+import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
+import chasqui.model.Zona;
+import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
+import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.NotificacionService;
+import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
@@ -58,6 +70,8 @@ public class NodoServiceImpl implements NodoService {
 	SolicitudPertenenciaNodoDAO solicitudPertenenciaNodoDAO;
 	@Autowired
 	private NotificacionService notificacionService;
+	@Autowired
+	private PedidoService pedidoService;
 	@Autowired
 	private InvitacionService invitacionService;
 
@@ -423,7 +437,11 @@ public class NodoServiceImpl implements NodoService {
 			nodo.setEmailAdministradorNodo(email);
 			nodo.setBarrio(barrio);
 			nodo.setDescripcion(descripcion);
-			nodo.setTipo(tipoNodo);
+			if(tipoNodo.equals(Constantes.NODO_ABIERTO)||tipoNodo.equals(Constantes.NODO_CERRADO)) {
+				nodo.setTipo(tipoNodo);
+			}else {
+				throw new RequestIncorrectoException("El tipo de nodo es incorrecto o fue mal especificado");
+			}
 			Direccion direccion = nodo.getAdministrador().obtenerDireccionConId(idDireccion);
 			if(direccion == null) {
 				throw new RequestIncorrectoException("El usuario "+nodo.getAdministrador().getNombre() + " no posee la dirección asignada");
@@ -476,6 +494,161 @@ public class NodoServiceImpl implements NodoService {
 		solicitud.setReintentos(solicitud.getReintentos() + 1);
 		solicitudPertenenciaNodoDAO.guardar(solicitud);
 		
-	}	
+	}
+	
+
+	private List<MiembroDeGCC> obtenerOtrosMiembrosDelNodo(String mailCliente, Integer idNodo) throws GrupoCCInexistenteException {		
+		Nodo nodo = this.obtenerNodoPorId(idNodo);
+		List<MiembroDeGCC> nuevaLista = new ArrayList<MiembroDeGCC>();
+		for (MiembroDeGCC miembroDeGCC : nodo.getCache()) {
+			if (!miembroDeGCC.getEmail().equals(mailCliente)) {
+				nuevaLista.add(miembroDeGCC);
+			}
+		}
+		return nuevaLista;
+				
+	}
+	
+	private boolean pedidoEnEstadoInactivo(Pedido pedido) {
+		if(pedido != null) {
+			return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_INEXISTENTE);
+		}else {
+			return true;
+		}
+	}
+	
+	//modoficar a futuro para que notifique en contexto Nodo, por ahora es una copia de grupos
+	private void notificarNuevoPedidoIndividualAOtrosMiembros(GrupoCC grupo, String emailCliente, String nombreCliente, String nombreVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException, VendedorInexistenteException, PedidoInexistenteException {
+		
+		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelNodo(emailCliente,grupo.getId());
+		for (MiembroDeGCC compa : compas) {
+			PedidoColectivo p = grupo.getPedidoActual();
+			if(!p.tienePedidoParaCliente(compa.getEmail())) {
+				if(pedidoEnEstadoInactivo(p.getPedidosIndividuales().get(compa.getEmail()))) {
+					if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+						notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
+					}
+				}
+			}else {
+				if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+					notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException {
+		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
+		Pedido pedidoVigente = nodo.obtenerPedidoIndividual(email);
+		if (pedidoVigente == null ) {
+			Pedido pedidoNuevo = pedidoService.crearPedidoIndividualEnGrupo(nodo, email, idVendedor);
+			nodo.nuevoPedidoIndividualPara(email, pedidoNuevo);
+			nodoDAO.guardarNodo(nodo);
+
+			Vendedor vendedor = usuarioService.obtenerVendedorPorID(idVendedor);
+			String nombreVendedor =vendedor.getNombre(); 
+			
+			Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
+			String nombreCliente= cliente.getUsername(); 
+			this.notificarNuevoPedidoIndividualAOtrosMiembros(nodo,email, nombreCliente, nombreVendedor);
+			
+		}
+		else{
+			throw new PedidoVigenteException(email);
+		}
+		
+	}
+
+	@Override
+	public Pedido obtenerPedidoIndividualEnNodo(Integer idNodo, String email) {
+		GrupoCC nodo = nodoDAO.obtenerNodoPorId(idNodo);
+		return nodo.getPedidoActual().buscarPedidoParaCliente(email);
+	}
+	
+
+	private void validarRequest(Integer idPedido) throws RequestIncorrectoException {
+		if (idPedido == null || idPedido < 0) {
+			throw new RequestIncorrectoException("el id del pedido debe ser mayor a 0");
+		}
+	}
+	
+	private void validarQueContengaProductos(Pedido pedido) throws PedidoSinProductosException {
+		if(pedido.getProductosEnPedido().isEmpty()){
+			throw new PedidoSinProductosException("El usuario: " + pedido.getCliente().getUsername() + " no posee productos en su pedido" );
+		}
+	}
+
+	
+	/*
+	 * Este método notifica a los miembros del nodo que un cliente ha confirmado el pedido individual
+	 * 
+	 */
+	//TODO: crear la notificación para nodo, actualmente usa la de grupos. 
+	private void notificarConfirmacionAOtrosMiembros(String emailCliente, String nombreCliente, Pedido pedido, Integer idVendedor, String emailVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException, VendedorInexistenteException, PedidoInexistenteException {
+		
+		Nodo nodo = this.obtenerNodoPorId(pedido.getPedidoColectivo().getColectivo().getId());
+		
+		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelNodo(emailCliente,nodo.getId());
+		for (MiembroDeGCC compa : compas) {
+		     notificacionService.notificarConfirmacionCompraOtroMiembro(emailVendedor, compa.getEmail(),nombreCliente , nodo.getAlias());
+			
+		}
+	}
+	private void validarConfirmacionDePedidoSinDireccionPara(Pedido p, ConfirmarPedidoSinDireccionRequest request)
+			throws PedidoInexistenteException {
+		if (p == null) {
+			throw new PedidoInexistenteException(
+					"El usuario no posee un pedido vigente con el ID otorgado");
+		}
+	}
+	
+	@Override
+	public void confirmarPedidoIndividualEnNodo(String email,
+			ConfirmarPedidoSinDireccionRequest request) throws RequestIncorrectoException, UsuarioInexistenteException, VendedorInexistenteException, PedidoInexistenteException, PedidoSinProductosException, EstadoPedidoIncorrectoException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException {
+		validarRequest(request.getIdPedido());
+		
+		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
+		Pedido pedido = pedidoService.obtenerPedidosporId(request.getIdPedido());
+		validarConfirmacionDePedidoSinDireccionPara(pedido, request); 
+		
+		validarQueContengaProductos(pedido);
+		
+		Vendedor vendedor = (Vendedor) usuarioService.obtenerVendedorPorID(pedido.getIdVendedor());
+		usuarioService.inicializarListasDe(vendedor);
+		if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+		pedido.confirmarte();
+		}else {
+			throw new EstadoPedidoIncorrectoException("El pedido no esta abierto");
+		}
+		vendedor.descontarStockYReserva(pedido);
+
+		pedidoService.guardar(pedido);
+		usuarioService.guardarUsuario(vendedor);
+		
+		//Notificar al cliente y a sus compañeros, redefinirlos para que sea para Nodos
+		notificacionService.enviarAClienteSuPedidoConfirmado(vendedor.getEmail(), email, pedido);		
+		this.notificarConfirmacionAOtrosMiembros(email, cliente.getUsername(), pedido, vendedor.getId(), vendedor.getEmail());
+		
+	}
+
+	@Override
+	public List<Nodo> obtenerNodosAbiertosDelVendedor(Integer idVendedor) throws VendedorInexistenteException {
+		usuarioService.obtenerVendedorPorID(idVendedor);
+		return nodoDAO.obtenerNodosAbiertosDelVendedor(idVendedor);
+	}
+
+	@Override
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenencia(Integer idNodo) {
+		return solicitudPertenenciaNodoDAO.obtenerSolicitudesDePertenenciaDeNodo(idNodo);
+	}
+
+	@Override
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(Integer idUsuario,
+			Integer idVendedor) throws VendedorInexistenteException {
+		usuarioService.obtenerVendedorPorID(idVendedor);
+		return solicitudPertenenciaNodoDAO.obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(idUsuario, idVendedor);
+	}
+	
 
 }
