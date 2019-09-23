@@ -168,7 +168,7 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 		if(fecha == null) {
 			fechaUltimoConsumo = "No hay consumos";
 		}else {
-			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy 'a las' HH:mm:ss z");
 			Date d = new Date(fecha.getMillis());
 			fechaUltimoConsumo = format.format(d);
 		}
@@ -186,7 +186,7 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 		descripcion = nodo.getDescripcion();
 		nombreNodo = nodo.getAlias();
 		if(nodo.getFechaCreacion() != null) {
-			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy 'a las' HH:mm:ss");
 			Date d = new Date( nodo.getFechaCreacion().getMillis());
 			fechaCreacion = format.format(d);
 		}else {

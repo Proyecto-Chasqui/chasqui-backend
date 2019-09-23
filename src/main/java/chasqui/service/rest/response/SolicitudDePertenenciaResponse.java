@@ -1,6 +1,8 @@
 package chasqui.service.rest.response;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.joda.time.DateTime;
 
@@ -17,14 +19,20 @@ public class SolicitudDePertenenciaResponse implements Serializable{
 	private NodoAbiertoResponse nodo;
 	private DataClienteSolicitudResponse cliente;
 	private String estado;
-	private DateTime fechaCreacion;
+	private String fechaCreacion; 
 	
 	public SolicitudDePertenenciaResponse(SolicitudPertenenciaNodo solicitud) {
 		this.nodo = new NodoAbiertoResponse(solicitud.getNodo());
 		this.id = solicitud.getId();
 		this.cliente = new DataClienteSolicitudResponse((Cliente) solicitud.getUsuarioSolicitante());
 		this.estado = solicitud.getEstado();
-		this.fechaCreacion = solicitud.getFechaCreacion();
+		this.setFechaCreacion(formatearFecha(solicitud.getFechaCreacion()));
+	}
+
+	private String formatearFecha(DateTime fechaCreacion) {
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss z");
+		Date d = new Date(fechaCreacion.getMillis());
+		return format.format(d);
 	}
 
 	public Integer getId() {
@@ -43,9 +51,6 @@ public class SolicitudDePertenenciaResponse implements Serializable{
 		return estado;
 	}
 
-	public DateTime getFechaCreacion() {
-		return fechaCreacion;
-	}
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -63,9 +68,14 @@ public class SolicitudDePertenenciaResponse implements Serializable{
 		this.estado = estado;
 	}
 
-	public void setFechaCreacion(DateTime fechaCreacion) {
+	public String getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(String fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
 	}
+
 
 	
 }

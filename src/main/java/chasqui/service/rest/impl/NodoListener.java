@@ -102,7 +102,7 @@ public class NodoListener {
 		}
 	}
 	
-	//testeado
+	//testeado, apiary publica.
 	@GET
 	@Path("/nodosAbiertos/{idVendedor : \\d+ }")
 	@Produces("application/json")
@@ -122,6 +122,7 @@ public class NodoListener {
 	public Response solicitudDeCreacionNodo(@Multipart(value = "solicitudCreacionNodoRequest", type = "application/json") final String solicitudCreacionNodoRequest) {
 		NodoSolicitudCreacionRequest request;
 		try {
+			//validar estrategia
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toNodoCreacionRequest(solicitudCreacionNodoRequest);
 			this.crearSolicitudDeCreacionDeNodo(request,emailAdministrador);
@@ -207,7 +208,7 @@ public class NodoListener {
 		} catch (NodoInexistenteException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioNoPerteneceAlGrupoDeCompras e) {
-			return Response.status(401).entity(new ChasquiError(e.getMessage())).build();
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	
@@ -475,7 +476,7 @@ public class NodoListener {
 		EditarNodoRequest request;
 		try {
 			request = this.toEditarNodo(editarNodoRequest);
-			nodoService.editarNodo(request.getIdNodo(), email, request.getAlias(), request.getDescripcion(), request.getIdDireccion(),
+			nodoService.editarNodo(request.getIdNodo(), email, request.getNombreNodo(), request.getDescripcion(), request.getIdDireccion(),
 					request.getTipoNodo(), request.getBarrio());
 			
 		} catch (JsonParseException e) {
@@ -592,7 +593,7 @@ public class NodoListener {
 			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
 		
 	}
-	//testeado
+	//testeado (revisar)
 	@POST
 	@Produces("application/json")
 	@Path("/confirmarIndividualEnNodo")

@@ -13,14 +13,14 @@ public class NodoAbiertoResponse implements Serializable {
 	private static final long serialVersionUID = -6744959569083461984L;
 	
 	private Integer idNodo;
-	private String alias;
+	private String nombreDelNodo;
 	private String emailAdministrador;
 	private String descripcion;
 	private Direccion direccionDelNodo;
 	private String barrio;
 	
 	public NodoAbiertoResponse(Nodo nodo) {
-		alias=nodo.getAlias();
+		setNombreDelNodo(nodo.getAlias());
 		emailAdministrador = nodo.getAdministrador().getEmail();
 		this.descripcion = nodo.getDescripcion();
 		this.setIdNodo(nodo.getId());
@@ -36,9 +36,7 @@ public class NodoAbiertoResponse implements Serializable {
 	public Integer getIdNodo() {
 		return idNodo;
 	}
-	public String getAlias() {
-		return alias;
-	}
+
 	public String getEmailAdministrador() {
 		return emailAdministrador;
 	}
@@ -54,9 +52,7 @@ public class NodoAbiertoResponse implements Serializable {
 	public void setIdNodo(Integer idNodo) {
 		this.idNodo = idNodo;
 	}
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
+
 	public void setEmailAdministrador(String emailAdministrador) {
 		this.emailAdministrador = emailAdministrador;
 	}
@@ -68,6 +64,14 @@ public class NodoAbiertoResponse implements Serializable {
 	}
 	public void setBarrio(String barrio) {
 		this.barrio = barrio;
+	}
+
+	public String getNombreDelNodo() {
+		return nombreDelNodo;
+	}
+
+	public void setNombreDelNodo(String nombreDelNodo) {
+		this.nombreDelNodo = nombreDelNodo;
 	}	
 	
 }
