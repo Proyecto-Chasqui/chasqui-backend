@@ -102,20 +102,6 @@ public class NodoListener {
 		}
 	}
 	
-	//testeado, apiary publica.
-	@GET
-	@Path("/nodosAbiertos/{idVendedor : \\d+ }")
-	@Produces("application/json")
-	public Response obtenerNodosAbiertosDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
-		try{
-			return Response.ok(toResponseNodoAbierto(nodoService.obtenerNodosAbiertosDelVendedor(idVendedor)),MediaType.APPLICATION_JSON).build();
-		}catch(VendedorInexistenteException e){
-			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
-		}catch(Exception e){
-			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
-		}
-	}
-	//testeado
 	@POST
 	@Path("/alta")
 	@Produces("application/json")
@@ -165,7 +151,7 @@ public class NodoListener {
 		request = mapper.readValue(solicitudCreacionNodoRequest, NodoSolicitudCreacionRequest.class);
 		return request;
 	}
-	//testeado
+	
 	@POST
 	@Path("/cederAdministracion")
 	@Produces("application/json")
@@ -185,7 +171,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	//testeado
+	
 	@POST
 	@Path("/eliminarNodo")
 	@Produces("application/json")
@@ -220,7 +206,7 @@ public class NodoListener {
 			throw new UsuarioNoPerteneceAlGrupoDeCompras("No tiene permisos para eliminar el nodo");
 		}
 	}
-	//testeado
+	
 	@GET
 	@Path("/solicitudesDeCreacion/{idVendedor : \\d+ }")
 	@Produces("application/json")
@@ -232,13 +218,12 @@ public class NodoListener {
 				return Response.ok(toResponseSolicitudes(nodoService.obtenerSolicitudesDeCreacionDe(email,idVendedor)),
 						MediaType.APPLICATION_JSON).build();
 			} catch (UsuarioInexistenteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 			}
-			return null;
 
 	}
-	//testeado
+	
 	@POST
 	@Path("/editarSolicitudDeCreacion")
 	@Produces("application/json")
@@ -263,7 +248,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
 		}
 	}
-	//testeado
+	
 	@POST
 	@Path("/cancelarSolicitudDeCreacion")
 	@Produces("application/json")
@@ -284,7 +269,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
 		}
 	}
-	//testeado
+	
 	@POST
 	@Path("/enviarSolicitudDePertenencia")
 	@Produces("application/json")
@@ -346,7 +331,7 @@ public class NodoListener {
 		}
 		nodoService.crearSolicitudDePertenenciaANodo(nodo, (Cliente)usuario);
 	}
-	//testeado
+	
 	@POST
 	@Path("/rechazarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -361,7 +346,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} 
 	}
-	//testeado
+	
 	@POST
 	@Path("/aceptarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -376,7 +361,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} 
 	}
-	//testeado
+	
 	@GET
 	@Path("/obtenerSolicitudesDePertenenciaDeUsuario/{idVendedor : \\d+ }")
 	@Produces("application/json")
@@ -394,7 +379,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} 
 	}
-	//testeado
+	
 	@GET
 	@Path("/obtenerSolicitudesDePertenenciaANodo/{idNodo : \\d+ }")
 	@Produces("application/json")
@@ -436,7 +421,7 @@ public class NodoListener {
 			throw new SolicitudPernenciaNodoException("No tiene permisos para gestionar la solicitud");
 		}
 	}
-	//testeado
+	
 	@POST
 	@Path("/cancelarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -501,7 +486,7 @@ public class NodoListener {
 		return request;
 
 	}
-	//testeado
+	
 	@POST
 	@Path("/invitacion")
 	@Produces("application/json")
@@ -532,7 +517,7 @@ public class NodoListener {
 			return Response.status(RestConstants.ERROR_INTERNO).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	//testeado
+	
 	@POST
 	@Path("/quitarMiembro")
 	@Produces("application/json")
@@ -551,7 +536,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	//testeado
+	
 	@POST
 	@Path("/individual")
 	@Produces("application/json")
@@ -593,7 +578,7 @@ public class NodoListener {
 			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
 		
 	}
-	//testeado (revisar)
+	
 	@POST
 	@Produces("application/json")
 	@Path("/confirmarIndividualEnNodo")
@@ -606,7 +591,7 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	//testeado
+	
 	@POST
 	@Path("/confirmar")
 	@Produces("application/json")

@@ -14,15 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.Nodo;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.DataPortadaResponse;
+import chasqui.service.rest.response.NodoAbiertoResponse;
 import chasqui.service.rest.response.PreguntaDeConsumoResponse;
 import chasqui.service.rest.response.PuntosDeRetiroResponse;
 import chasqui.service.rest.response.VendedorResponse;
 import chasqui.service.rest.response.ZonaResponse;
+import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
 
@@ -37,6 +40,9 @@ public class VendedorListener {
 	@Autowired
 	ZonaService zonaService;
 	
+	@Autowired
+	NodoService nodoService;
+	
 	
 	@GET
 	@Path("/all")
@@ -46,6 +52,20 @@ public class VendedorListener {
 			return Response.ok(toResponse(vendedorService.obtenerVendedores()),MediaType.APPLICATION_JSON).build();
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
+		}
+	}
+	
+
+	@GET
+	@Path("/nodosAbiertos/{idVendedor : \\d+ }")
+	@Produces("application/json")
+	public Response obtenerNodosAbiertosDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
+		try{
+			return Response.ok(toResponseNodoAbierto(nodoService.obtenerNodosAbiertosDelVendedor(idVendedor)),MediaType.APPLICATION_JSON).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	
@@ -166,4 +186,11 @@ public class VendedorListener {
 		return response;
 	}
 	
+	private List<NodoAbiertoResponse> toResponseNodoAbierto(List<Nodo> nodos) {
+		List<NodoAbiertoResponse> response = new ArrayList<NodoAbiertoResponse>();
+		for(Nodo nodo : nodos){
+			response.add(new NodoAbiertoResponse(nodo));
+		}
+		return response;
+	}
 }
