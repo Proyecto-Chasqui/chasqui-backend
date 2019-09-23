@@ -23,6 +23,8 @@ import org.zkoss.zul.Include;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Menubar;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
@@ -59,6 +61,24 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Radio radioPedidosColectivos;
 	private Radio radioCaracteristicas;
 	private Radio radioSolicitudesNodos;
+	//menu superior principal
+	private Menubar menubar;
+	private Menuitem menuItemCategorias;
+	private Menuitem menuItemProductos;
+	private Menuitem menuItemProductores;
+	private Menuitem menuItemPedidos;
+	private Menuitem menuItemPedidosColecitvos;
+	private Menuitem menuItemNodos;
+	private Menuitem menuItemConfiguracion;
+	//fin menu superior principal
+	//menu de botones de "crear"
+	private Menubar submenubar;
+	private Menuitem menuItemNuevaCategoria;
+	private Menuitem menuItemNuevoProducto;
+	private Menuitem menuItemNuevoProductor;
+	//fin menu de botones
+	private Div divoldmenu;
+	private Listbox oldmenu;
 	private Listcell cellRadioSolicitudesNodos;
 	private Listcell cellRadioPedidosColectivos;
 	private Listcell cellRadioPedidos;
@@ -147,6 +167,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 
 	public void inicializacionUsuarioROOT(){
+		divoldmenu.setVisible(true);
+		oldmenu.setVisible(true);
+		menubar.setVisible(false);
 		radioAltaUsuario.setChecked(true);
 		radioCategorias.getParent().getParent().setVisible(false);
 		radioCategorias.setDisabled(true);
@@ -169,7 +192,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void inicializacionUsuarioAdministrador(){
-		
+		divoldmenu.setVisible(true);
+		oldmenu.setVisible(false);
+		menubar.setVisible(true);
 		listboxProductos.setItemRenderer(new ProductoRenderer(this.self));
 		listboxCategorias.setItemRenderer(new CategoriaRenderer(this.self));
 		listboxProductores.setItemRenderer(new ProductorRenderer(this.self));
@@ -180,7 +205,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		radioAltaUsuario.getParent().getParent().setVisible(false);
 		radioCaracteristicas.getParent().getParent().setVisible(false);
 		refresh();
-		onClick$radioCategorias();			
+		onClick$menuItemCategorias();	
+		
 	}
 	//TODO:
 	private void mostrarSegunEstrategiasDeComercializacion(){
@@ -188,15 +214,18 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		EstrategiasDeComercializacion estrategias = usuarioLogueado.getEstrategiasUtilizadas();
 		if(estrategias.isCompraIndividual()){
 			cellRadioPedidos.setVisible(true);
-			radioPedidos.setVisible(true);
+			radioPedidos.setVisible(true); 
+			menuItemPedidos.setVisible(true);
 		}
 		if(estrategias.isGcc()){
 			cellRadioPedidosColectivos.setVisible(true);
-			radioPedidosColectivos.setVisible(true);
+			radioPedidosColectivos.setVisible(true);	
+			menuItemPedidosColecitvos.setVisible(true);
 		}
 		if(estrategias.isNodos()){
 			cellRadioSolicitudesNodos.setVisible(true);
 			radioSolicitudesNodos.setVisible(true);
+			menuItemNodos.setVisible(true);
 			//cellRadioPedidos.setVisible(true);
 			//radioPedidos.setVisible(true);
 		}
@@ -208,10 +237,38 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		radioSolicitudesNodos.setVisible(b);
 		cellRadioPedidos.setVisible(b);
 		cellRadioPedidosColectivos.setVisible(b);
+		menuItemPedidos.setVisible(b);
+		menuItemPedidosColecitvos.setVisible(b);
+		menuItemNodos.setVisible(b);
 		//cellRadioSolicitudesNodos.setVisible(b);
 
 	}
 	
+	public void onClick$menuItemCategorias(){
+		divProducto.setVisible(false);
+		submenubar.setVisible(true);
+		menuItemNuevaCategoria.setVisible(true);
+		menuItemNuevoProducto.setVisible(false);
+		menuItemNuevoProductor.setVisible(false);
+		agregarProductoButton.setVisible(false);
+		agregarProductorButton.setVisible(false);
+		configuracionInclude.setVisible(false);
+		divProductores.setVisible(false);
+		altaUsuarioInclude.setVisible(false);
+		usuariosActualesInclude.setVisible(false);
+		divPedidos.setVisible(false);
+		pedidosInclude.setVisible(false);
+		divCaracteristicas.setVisible(false);
+		caracInclude.setVisible(false);
+		divSolicitudesNodos.setVisible(false);
+		solicitudesNodosInclude.setVisible(false);
+		agregarButton.setVisible(true);
+		divCategoria.setVisible(true);
+		pedidosColectivosInclude.setVisible(false);
+		divPedidosColectivos.setVisible(false);
+		binder.loadAll();
+	}
+	@Deprecated
 	public void onClick$radioCategorias(){
 		divProducto.setVisible(false);
 		agregarProductoButton.setVisible(false);
@@ -235,6 +292,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	
 	public void onClick$radioCaracteristicas(){
 		divProducto.setVisible(false);
+		submenubar.setVisible(false);
 		agregarProductoButton.setVisible(false);
 		agregarProductorButton.setVisible(false);
 		configuracionInclude.setVisible(false);
@@ -256,6 +314,34 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		binder.loadAll();
 	}
 
+	public void onClick$menuItemProductos() throws VendedorInexistenteException{
+		sincWithBD();
+		onClick$buscarProducto();
+		submenubar.setVisible(true);
+		menuItemNuevaCategoria.setVisible(false);
+		menuItemNuevoProducto.setVisible(true);
+		menuItemNuevoProductor.setVisible(false);
+		agregarButton.setVisible(false);
+		agregarProductorButton.setVisible(false);
+		divCategoria.setVisible(false);
+		configuracionInclude.setVisible(false);
+		altaUsuarioInclude.setVisible(false);
+		usuariosActualesInclude.setVisible(false);
+		divProductores.setVisible(false);
+		pedidosInclude.setVisible(false);
+		divPedidos.setVisible(false);
+		caracInclude.setVisible(false);
+		divCaracteristicas.setVisible(false);
+		divSolicitudesNodos.setVisible(false);
+		solicitudesNodosInclude.setVisible(false);
+		agregarProductoButton.setVisible(true);
+		divProducto.setVisible(true);
+		pedidosColectivosInclude.setVisible(false);
+		divPedidosColectivos.setVisible(false);
+		binder.loadAll();
+
+	}
+	@Deprecated
 	public void onClick$radioProductos() throws VendedorInexistenteException{
 		sincWithBD();
 		onClick$buscarProducto();
@@ -280,6 +366,33 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 
 	}
 	
+	public void onClick$menuItemConfiguracion(){
+		submenubar.setVisible(false);
+		menuItemNuevaCategoria.setVisible(false);
+		menuItemNuevoProducto.setVisible(false);
+		menuItemNuevoProductor.setVisible(false);
+		agregarProductorButton.setVisible(false);
+		agregarProductorButton.setVisible(false);
+		agregarButton.setVisible(false);
+		agregarProductoButton.setVisible(false);
+		divCategoria.setVisible(false);
+		divProducto.setVisible(false);
+		altaUsuarioInclude.setVisible(false);
+		usuariosActualesInclude.setVisible(false);
+		divProductores.setVisible(false);
+		pedidosInclude.setVisible(false);
+		divPedidos.setVisible(false);
+		caracInclude.setVisible(false);
+		divCaracteristicas.setVisible(false);
+		divSolicitudesNodos.setVisible(false);
+		solicitudesNodosInclude.setVisible(false);
+		pedidosColectivosInclude.setVisible(false);
+		divPedidosColectivos.setVisible(false);
+		configuracionInclude.setVisible(true);
+		
+		binder.loadAll();
+	}
+	@Deprecated
 	public void onClick$radioConfiguracion(){
 		agregarProductorButton.setVisible(false);
 		agregarProductorButton.setVisible(false);
@@ -304,6 +417,10 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$radioAltaUsuario(){
+		submenubar.setVisible(false);
+		menuItemNuevaCategoria.setVisible(false);
+		menuItemNuevoProducto.setVisible(false);
+		menuItemNuevoProductor.setVisible(false);
 		divProducto.setVisible(false);
 		divCategoria.setVisible(false);
 		agregarButton.setVisible(false);
@@ -325,6 +442,33 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		binder.loadAll();
 	}
 	
+	public void onClick$menuItemProductores() throws VendedorInexistenteException{
+		sincWithBD();
+		onBuscarProductor();
+		submenubar.setVisible(true);
+		menuItemNuevaCategoria.setVisible(false);
+		menuItemNuevoProducto.setVisible(false);
+		menuItemNuevoProductor.setVisible(true);
+		divProducto.setVisible(false);
+		divCategoria.setVisible(false);
+		agregarButton.setVisible(false);
+		agregarProductoButton.setVisible(false);
+		configuracionInclude.setVisible(false);
+		altaUsuarioInclude.setVisible(false);
+		usuariosActualesInclude.setVisible(false);
+		pedidosInclude.setVisible(false);
+		divPedidos.setVisible(false);
+		caracInclude.setVisible(false);
+		divCaracteristicas.setVisible(false);
+		divSolicitudesNodos.setVisible(false);
+		solicitudesNodosInclude.setVisible(false);
+		divProductores.setVisible(true);
+		agregarProductorButton.setVisible(true);
+		pedidosColectivosInclude.setVisible(false);
+		divPedidosColectivos.setVisible(false);
+		binder.loadAll();
+	}
+	@Deprecated
 	public void onClick$radioProductores() throws VendedorInexistenteException{
 		sincWithBD();
 		onBuscarProductor();
@@ -348,6 +492,31 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		binder.loadAll();
 	}
 	
+	public void onClick$menuItemPedidos(){
+		submenubar.setVisible(false);
+		menuItemNuevaCategoria.setVisible(false);
+		menuItemNuevoProducto.setVisible(false);
+		menuItemNuevoProductor.setVisible(false);
+		divProducto.setVisible(false);
+		divCategoria.setVisible(false);
+		agregarButton.setVisible(false);
+		agregarProductoButton.setVisible(false);
+		configuracionInclude.setVisible(false);
+		altaUsuarioInclude.setVisible(false);
+		usuariosActualesInclude.setVisible(false);
+		divProductores.setVisible(false);
+		caracInclude.setVisible(false);
+		divCaracteristicas.setVisible(false);
+		agregarProductorButton.setVisible(false);
+		divSolicitudesNodos.setVisible(false);
+		solicitudesNodosInclude.setVisible(false);
+		pedidosInclude.setVisible(true);
+		divPedidos.setVisible(true);
+		pedidosColectivosInclude.setVisible(false);
+		divPedidosColectivos.setVisible(false);
+		binder.loadAll();
+	}
+	@Deprecated
 	public void onClick$radioPedidos(){
 		divProducto.setVisible(false);
 		divCategoria.setVisible(false);
@@ -369,6 +538,31 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		binder.loadAll();
 	}
 	
+	public void onClick$menuItemPedidosColecitvos(){
+		submenubar.setVisible(false);
+		menuItemNuevaCategoria.setVisible(false);
+		menuItemNuevoProducto.setVisible(false);
+		menuItemNuevoProductor.setVisible(false);
+		divProducto.setVisible(false);
+		divCategoria.setVisible(false);
+		agregarButton.setVisible(false);
+		agregarProductoButton.setVisible(false);
+		configuracionInclude.setVisible(false);
+		altaUsuarioInclude.setVisible(false);
+		usuariosActualesInclude.setVisible(false);
+		divProductores.setVisible(false);
+		caracInclude.setVisible(false);
+		divCaracteristicas.setVisible(false);
+		agregarProductorButton.setVisible(false);
+		divSolicitudesNodos.setVisible(false);
+		solicitudesNodosInclude.setVisible(false);
+		pedidosInclude.setVisible(false);
+		divPedidos.setVisible(false);
+		pedidosColectivosInclude.setVisible(true);
+		divPedidosColectivos.setVisible(true);
+		binder.loadAll();
+	}
+	@Deprecated
 	public void onClick$radioPedidosColectivos(){
 		divProducto.setVisible(false);
 		divCategoria.setVisible(false);
@@ -390,6 +584,33 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		binder.loadAll();
 	}
 	
+	public void onClick$menuItemNodos(){	
+		submenubar.setVisible(false);
+		menuItemNuevaCategoria.setVisible(false);
+		menuItemNuevoProducto.setVisible(false);
+		menuItemNuevoProductor.setVisible(false);
+		divProducto.setVisible(false);
+		divCategoria.setVisible(false);
+		agregarButton.setVisible(false);
+		agregarProductoButton.setVisible(false);
+		configuracionInclude.setVisible(false);
+		altaUsuarioInclude.setVisible(false);
+		usuariosActualesInclude.setVisible(false);
+		divProductores.setVisible(false);
+		caracInclude.setVisible(false);
+		divCaracteristicas.setVisible(false);
+		agregarProductorButton.setVisible(false);
+		pedidosInclude.setVisible(false);
+		divPedidos.setVisible(false);
+		divSolicitudesNodos.setVisible(true);
+		solicitudesNodosInclude.setVisible(true);
+		pedidosColectivosInclude.setVisible(false);
+		divPedidosColectivos.setVisible(false);
+
+		binder.loadAll();
+	}
+	
+	@Deprecated
 	public void onClick$radioSolicitudesNodos(){	
 		divProducto.setVisible(false);
 		divCategoria.setVisible(false);
@@ -806,6 +1027,118 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 
 	public void setVisibilidadSeleccionada(String visibilidadSeleccionada) {
 		this.visibilidadSeleccionada = visibilidadSeleccionada;
+	}
+
+	public Menuitem getMenuItemCategorias() {
+		return menuItemCategorias;
+	}
+
+	public void setMenuItemCategorias(Menuitem menuItemCategorias) {
+		this.menuItemCategorias = menuItemCategorias;
+	}
+
+	public Menuitem getMenuItemProductos() {
+		return menuItemProductos;
+	}
+
+	public void setMenuItemProductos(Menuitem menuItemProductos) {
+		this.menuItemProductos = menuItemProductos;
+	}
+
+	public Menuitem getMenuItemProductores() {
+		return menuItemProductores;
+	}
+
+	public void setMenuItemProductores(Menuitem menuItemProductores) {
+		this.menuItemProductores = menuItemProductores;
+	}
+
+	public Menuitem getMenuItemPedidos() {
+		return menuItemPedidos;
+	}
+
+	public Menuitem getMenuItemPedidosColecitvos() {
+		return menuItemPedidosColecitvos;
+	}
+
+	public Menuitem getMenuItemNodos() {
+		return menuItemNodos;
+	}
+
+	public Menuitem getMenuItemConfiguracion() {
+		return menuItemConfiguracion;
+	}
+
+	public void setMenuItemPedidos(Menuitem menuItemPedidos) {
+		this.menuItemPedidos = menuItemPedidos;
+	}
+
+	public void setMenuItemPedidosColecitvos(Menuitem menuItemPedidosColecitvos) {
+		this.menuItemPedidosColecitvos = menuItemPedidosColecitvos;
+	}
+
+	public void setMenuItemNodos(Menuitem menuItemNodos) {
+		this.menuItemNodos = menuItemNodos;
+	}
+
+	public void setMenuItemConfiguracion(Menuitem menuItemConfiguracion) {
+		this.menuItemConfiguracion = menuItemConfiguracion;
+	}
+
+	public Menuitem getMenuItemNuevaCategoria() {
+		return menuItemNuevaCategoria;
+	}
+
+	public Menuitem getMenuItemNuevoProducto() {
+		return menuItemNuevoProducto;
+	}
+
+	public Menuitem getMenuItemNuevoProductor() {
+		return menuItemNuevoProductor;
+	}
+
+	public void setMenuItemNuevaCategoria(Menuitem menuItemNuevaCategoria) {
+		this.menuItemNuevaCategoria = menuItemNuevaCategoria;
+	}
+
+	public void setMenuItemNuevoProducto(Menuitem menuItemNuevoProducto) {
+		this.menuItemNuevoProducto = menuItemNuevoProducto;
+	}
+
+	public void setMenuItemNuevoProductor(Menuitem menuItemNuevoProductor) {
+		this.menuItemNuevoProductor = menuItemNuevoProductor;
+	}
+
+	public Menubar getSubmenubar() {
+		return submenubar;
+	}
+
+	public void setSubmenubar(Menubar submenubar) {
+		this.submenubar = submenubar;
+	}
+
+	public Listbox getOldmenu() {
+		return oldmenu;
+	}
+
+	public void setOldmenu(Listbox oldmenu) {
+		this.oldmenu = oldmenu;
+	}
+
+	public Menubar getMenubar() {
+		return menubar;
+	}
+
+	public void setMenubar(Menubar menubar) {
+		this.menubar = menubar;
+	}
+
+	public Div getDivoldmenu() {
+		return divoldmenu;
+	}
+
+	public void setDivoldmenu(Div divoldmenu) {
+		this.divoldmenu = divoldmenu;
 	}
 	
 //	public void setVisibleEstrategiasConfig(Boolean b){

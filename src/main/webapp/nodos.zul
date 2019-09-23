@@ -19,7 +19,7 @@ style="overflow:auto">
 	</hbox>
 </div>
 -->
-<tabbox>
+<tabbox width="100%" mold="accordion">
 	<tabs>
 		<tab label="Pedidos" image="/imagenes/pedidosNodo.png"/>
 		<tab label="Nodos" image="/imagenes/nodos.png"/>
@@ -28,18 +28,18 @@ style="overflow:auto">
 	<tabpanels>
 		<tabpanel>
 			<separator spacing="15px"/>
-				<listbox  id="listboxPedidosNodo" model="@{nodosWindow$composer.pedidosNodos}" mold="paging" rows="10" pageSize="10" >
+				<listbox  id="listboxPedidosNodo" model="@{nodosWindow$composer.pedidosNodos}" mold="paging" rows="5" pageSize="5" >
 					<listhead>
-							<listheader label="ID" align="center" visible="true"/>
-							<listheader label="Nombre Nodo" align="center" visible="true"></listheader>
-							<listheader label="Coordinador" align="center" visible="true"></listheader>
-							<listheader label="Fecha Creación" align="center"/>
-							<listheader label="Fecha Cierre" align="center"/>
-							<listheader label="Zona" align="center"/>
+							<listheader label="ID" align="center" visible="true" sort="auto(id)"/>
+							<listheader label="Nombre Nodo" align="center" visible="true" sort="auto(colectivo.alias)"></listheader>
+							<listheader label="Coordinador" align="center" visible="true" sort="auto(colectivo.administrador.email)"></listheader>
+							<listheader label="Fecha Creación" align="center" sort="auto(fechaCreacion)"/>
+							<listheader label="Fecha Cierre" align="center" sort="auto(fechaModificacion)"/>
+							<listheader label="Zona" align="center" sort="auto(zona.nombre)"/>
 							<listheader label="Monto Minimo" align="center" visible="false"/>
-							<listheader label="Monto Final" align="center"/>
-							<listheader label="Estado" align="center"/>
-							<listheader label="Dir. de Entrega" align="center"/>
+							<listheader label="Monto Final" align="center" sort="auto(montoTotal)"/>
+							<listheader label="Estado" align="center" sort="auto(estado)"/>
+							<listheader label="Dir. de Entrega" align="center" />
 							<listheader label="Acciones" align="center" hflex="4"/>
 					</listhead>		
 				</listbox>
@@ -47,16 +47,16 @@ style="overflow:auto">
 		</tabpanel>
 		<tabpanel>
 			<separator spacing="15px"/>
-				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}" mold="paging" rows="10" pageSize="10" >
+				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}" mold="paging" rows="5" pageSize="5" >
 					<listhead>
 						<listheader align="center" label="Estado"/>
-						<listheader align="center" label="Nombre Nodo"/>
-						<listheader align="center" label="Fecha de creación"/>
-						<listheader align="center" label="Tipo"/>
-						<listheader align="center" label="Coordinador"/>
-						<listheader align="center" label="e-mail"/>
-						<listheader align="center" label="Dirección"/>
-						<listheader align="center" label="Barrio" />
+						<listheader align="center" label="Nombre Nodo" sort="auto(alias)"/>
+						<listheader align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>
+						<listheader align="center" label="Tipo" sort="auto(tipo)"/>
+						<listheader align="center" label="Coordinador" sort="auto(administrador.nombre, administrador.apellido)"/>
+						<listheader align="center" label="e-mail" sort="auto(emailAdministradorNodo)"/>
+						<listheader align="center" label="Dirección" sort="auto(direccionDelNodo.calle, direccionDelNodo.altura, direccionDelNodo.localidad)"/>
+						<listheader align="center" label="Barrio" sort="auto(barrio)"/>
 						<listheader align="center" label="Acciones" />
 						
 					</listhead>		
@@ -65,15 +65,15 @@ style="overflow:auto">
 		</tabpanel>
 		<tabpanel>
 					<separator spacing="15px"/>
-						<listbox  id="listboxSolicitudesCreacionNodos" model="@{nodosWindow$composer.solicitudesCreacionNodos}" mold="paging" rows="10" pageSize="10" >
+						<listbox  id="listboxSolicitudesCreacionNodos" model="@{nodosWindow$composer.solicitudesCreacionNodos}" mold="paging" rows="5" pageSize="5" >
 							<listhead>
-								<listheader align="center" label="Fecha de creación"/>
-								<listheader align="center" label="Estado"/>
-								<listheader align="center" label="Coordinador"/>
-								<listheader align="center" label="e-mail"/>
+								<listheader align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>
+								<listheader align="center" label="Estado" sort="auto(estado)"/>
+								<listheader align="center" label="Coordinador" sort="auto(usuarioSolicitante.nombre, usuarioSolicitante.apellido)"/>
+								<listheader align="center" label="e-mail" sort="auto(usuarioSolicitante.email)"/>
 								<listheader align="center" label="Tel.Fijo"/>
 								<listheader align="center" label="Celular" />
-								<listheader align="center" label="Barrio" />
+								<listheader align="center" label="Barrio" sort="auto(barrio)"/>
 								<listheader align="center" label="Acciones"/>
 							</listhead>		
 						</listbox>
