@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="pedidosWindow"  border="normal" apply="chasqui.view.composer.PedidosComposer" sizable="true"
+<window id="pedidosWindow"  apply="chasqui.view.composer.PedidosComposer" sizable="true"
 style="overflow:auto">
 <style>
 	.selectorpedidos{
@@ -87,6 +87,7 @@ style="overflow:auto">
 		});
 </script>
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<separator spacing="5px"/>
 <div align="center">
 	<hbox>
 		<vbox>

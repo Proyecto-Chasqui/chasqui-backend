@@ -17,7 +17,7 @@
 	}
 </style>
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
-<window width="100%" id="historialPedidosColectivosWindow"  border="normal" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="false"
+<window width="100%"  id="historialPedidosColectivosWindow" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="false"
 style="overflow:auto">
 
 <div align="center">

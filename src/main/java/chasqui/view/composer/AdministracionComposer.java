@@ -76,7 +76,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Menuitem menuItemNuevaCategoria;
 	private Menuitem menuItemNuevoProducto;
 	private Menuitem menuItemNuevoProductor;
+	private Menuitem menuItemMostrarFiltrosProducto;
 	//fin menu de botones
+	private Menuitem menuItemLogOut;
 	private Div divoldmenu;
 	private Listbox oldmenu;
 	private Listcell cellRadioSolicitudesNodos;
@@ -112,6 +114,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Div divPedidosColectivos;
 	private Div divSolicitudesNodos;
 	private Div divCaracteristicas;
+	private Div filtros_producto;
 	private UsuarioService usuarioService;
 	private ProductoService  productoService;
 	private ProductorService productorService;
@@ -171,6 +174,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		oldmenu.setVisible(true);
 		menubar.setVisible(false);
 		radioAltaUsuario.setChecked(true);
+		logout.setVisible(true);
 		radioCategorias.getParent().getParent().setVisible(false);
 		radioCategorias.setDisabled(true);
 		radioProductos.setDisabled(true);
@@ -195,6 +199,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divoldmenu.setVisible(true);
 		oldmenu.setVisible(false);
 		menubar.setVisible(true);
+		menuItemLogOut.setLabel(usuarioLogueado.getUsername());
+		logout.setVisible(false);
 		listboxProductos.setItemRenderer(new ProductoRenderer(this.self));
 		listboxCategorias.setItemRenderer(new CategoriaRenderer(this.self));
 		listboxProductores.setItemRenderer(new ProductorRenderer(this.self));
@@ -246,7 +252,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	
 	public void onClick$menuItemCategorias(){
 		divProducto.setVisible(false);
+		filtros_producto.setVisible(false);
 		submenubar.setVisible(true);
+		menuItemMostrarFiltrosProducto.setVisible(false);
 		menuItemNuevaCategoria.setVisible(true);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -318,6 +326,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		sincWithBD();
 		onClick$buscarProducto();
 		submenubar.setVisible(true);
+		filtros_producto.setVisible(false);
+		menuItemMostrarFiltrosProducto.setVisible(true);
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(true);
 		menuItemNuevoProductor.setVisible(false);
@@ -367,7 +377,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemConfiguracion(){
+		menuItemMostrarFiltrosProducto.setVisible(false);
 		submenubar.setVisible(false);
+		filtros_producto.setVisible(false);
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -421,6 +433,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
+		filtros_producto.setVisible(false);
 		divProducto.setVisible(false);
 		divCategoria.setVisible(false);
 		agregarButton.setVisible(false);
@@ -446,6 +459,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		sincWithBD();
 		onBuscarProductor();
 		submenubar.setVisible(true);
+		filtros_producto.setVisible(false);
+		menuItemMostrarFiltrosProducto.setVisible(false);
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(true);
@@ -495,6 +510,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void onClick$menuItemPedidos(){
 		submenubar.setVisible(false);
 		menuItemNuevaCategoria.setVisible(false);
+		filtros_producto.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
 		divProducto.setVisible(false);
@@ -540,6 +556,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	
 	public void onClick$menuItemPedidosColecitvos(){
 		submenubar.setVisible(false);
+		filtros_producto.setVisible(false);
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -586,6 +603,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	
 	public void onClick$menuItemNodos(){	
 		submenubar.setVisible(false);
+		filtros_producto.setVisible(false);
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -649,6 +667,15 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void onClick$logout(){
 		Executions.getCurrent().getSession().invalidate();
 		Executions.sendRedirect("/");
+	}
+	
+	public void onClick$menuItemLogOut(){
+		Executions.getCurrent().getSession().invalidate();
+		Executions.sendRedirect("/");
+	}
+	
+	public void onMostrarFiltrosProducto() {
+		filtros_producto.setVisible(!filtros_producto.isVisible());
 	}
 	
 	public void onEditarCategoria(Categoria c){
@@ -1139,6 +1166,30 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 
 	public void setDivoldmenu(Div divoldmenu) {
 		this.divoldmenu = divoldmenu;
+	}
+
+	public Menuitem getMenuItemLogOut() {
+		return menuItemLogOut;
+	}
+
+	public void setMenuItemLogOut(Menuitem menuItemLogOut) {
+		this.menuItemLogOut = menuItemLogOut;
+	}
+
+	public Menuitem getMenuItemMostrarFiltrosProducto() {
+		return menuItemMostrarFiltrosProducto;
+	}
+
+	public void setMenuItemMostrarFiltrosProducto(Menuitem menuItemMostrarFiltrosProducto) {
+		this.menuItemMostrarFiltrosProducto = menuItemMostrarFiltrosProducto;
+	}
+
+	public Div getFiltros_producto() {
+		return filtros_producto;
+	}
+
+	public void setFiltros_producto(Div filtros_producto) {
+		this.filtros_producto = filtros_producto;
 	}
 	
 //	public void setVisibleEstrategiasConfig(Boolean b){

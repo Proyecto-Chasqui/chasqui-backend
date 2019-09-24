@@ -1,4 +1,4 @@
-<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?page title="PANEL CHASQUI" contentType="text/html;charset=UTF-8"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./administracionWindow" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
@@ -24,11 +24,8 @@
 		left:40%;
 	}
 </style>
-
-<style></style>
-<window id="administracionWindow"  border="normal" apply="chasqui.view.composer.AdministracionComposer"
-visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="overflow:auto;">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<window id="administracionWindow" style=" position:absolute; left:-3px; width:100.5%;" zclass="none" apply="chasqui.view.composer.AdministracionComposer" visible="false" >
 <div style="background: #00b8fc">
 	<grid  style="background: #00b8fc">
 		<columns zclass="none">
@@ -51,10 +48,10 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 				<space spacing="180px"/>
 				<vbox>
 					<separator spacing="5px"/>
-					<label value="@{administracionWindow$composer.usuarioLogueado.getUsername}" style="font-size:15px;font-weight:bold; color:white"/>
+					<label visible="false" value="@{administracionWindow$composer.usuarioLogueado.getUsername}" style="font-size:15px;font-weight:bold; color:white"/>
 				</vbox>
 
-					<toolbarbutton style="background: #00b8fc, hover:background-color: red" id="logout" tooltiptext="${c:l('zk.toolbar.disconnect')}" image="/imagenes/logout.png"/>
+					<toolbarbutton visible="false" style="background: #00b8fc, hover:background-color: red" id="logout" tooltiptext="${c:l('zk.toolbar.disconnect')}" image="/imagenes/logout.png"/>
 
 			</hbox>
 			</vbox>
@@ -62,14 +59,15 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		</rows>
 	</grid>
 </div>
-<menubar id="menubar" scrollable = "true" width="100%">
-	<menuitem id="menuItemCategorias" label="Categorias" />
-	<menuitem id="menuItemProductores" label="Productores" />
-	<menuitem id="menuItemProductos" label="Productos" />
-	<menuitem id="menuItemPedidos" label="Pedidos"/>
-	<menuitem id="menuItemPedidosColecitvos" label="PedidosColectivos"/>
-	<menuitem id="menuItemNodos" label="Nodos"/>
-	<menuitem id="menuItemConfiguracion" label="Configuración" />
+<menubar id="menubar" scrollable = "true" width="100%" >
+	<menuitem  id="menuItemCategorias"  image="/imagenes/categorias.png" label="Categorias" />
+	<menuitem id="menuItemProductores" image="/imagenes/productor.png" label="Productores" />
+	<menuitem id="menuItemProductos" image="/imagenes/productos.png" label="Productos" />
+	<menuitem id="menuItemPedidos" image="/imagenes/pedidos.png" label="Pedidos"/>
+	<menuitem id="menuItemPedidosColecitvos"  image="/imagenes/pedidos_colectivos.png" label="PedidosColectivos"/>
+	<menuitem id="menuItemNodos" image="/imagenes/menu_nodos.png" label="Nodos"/>
+	<menuitem id="menuItemConfiguracion" image="/imagenes/configuraciones.png" label="Configuraciones" />
+	<menuitem id="menuItemLogOut" style="position: relative;  left: 580px;" image="/imagenes/logout.png"   tooltiptext="${c:l('zk.toolbar.disconnect')}" label="Adminmtr" />
 </menubar>
 
 <menubar id="submenubar" width="100%" visible="false"  scrollable = "true">
@@ -79,6 +77,9 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		forward="onClick=administracionWindow$composer.onCrearProducto"/>
 	<menuitem id="menuItemNuevoProductor" label="Nuevo Productor" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		forward="onClick=administracionWindow$composer.onCrearProductor"/>
+	<menuseparator/>
+	<menuitem id="menuItemMostrarFiltrosProducto" label="Ver filtros de productos" image="/imagenes/filtrar.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
+		forward="onClick=administracionWindow$composer.onMostrarFiltrosProducto"/>
 </menubar>
 
 <!-- reemplazado por submenubar  (borrar despues de testear bien)-->
@@ -92,7 +93,7 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		forward="onClick=administracionWindow$composer.onCrearProductor"/>	
 </hbox>
 <!-- reemplazado por submenubar (borrar despues de testear bien)  -->
-<hbox height="100%" >
+<hbox>
 <!-- reemplazado por menubar  (borrar despues de testear bien)-->
 	<div width="35%" id="divoldmenu" visible="false">
 	<radiogroup id="v1"/>
@@ -156,9 +157,10 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 	</div>
 <!-- reemplazado por menubar  (borrar despues de testear bien)-->
 
-	<hbox>
-		<div id="divCategoria" visible="false" width="100%">
-			<vbox>
+
+		<div id="divCategoria" visible="false" >
+				<separator spacing="5px"/>
+			<vbox width="100%">
 				<listbox id="listboxCategorias" model="@{administracionWindow$composer.usuarioLogueado.categorias}"
 				selectedItem="${administracionWindow$composer.categoriaSeleccionada}" mold="paging" pageSize="10" rows="10">
 					<listhead>
@@ -169,27 +171,26 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 			</vbox>
 		</div>
 		<div visible="false" id="divProducto">
+			<separator spacing="5px"/>
 			<vbox>
-			<hbox>	
-			</hbox>
 			<hbox>
-				<div>
-				<hbox>
-					<vbox>
-						<combobox id="productorComboBox" placeholder="Por productor" readonly="false" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
-						<combobox id="destacadoComboBox" placeholder="Por destacado" readonly="false" model="@{administracionWindow$composer.destacado}" selectedItem="@{administracionWindow$composer.destacadoSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
-					</vbox>
-					<vbox>
-						<combobox id="habilitadoComboBox" placeholder="Por ocultado/mostrado" readonly="false" model="@{administracionWindow$composer.visibilidad}" selectedItem="@{administracionWindow$composer.visibilidadSeleccionada}" forward="onOK=administracionWindow$composer.onBuscar" />
-						<button label="Buscar" id="buscarProducto" visible="false"/>
-						<textbox id="busquedaPorCodigoProducto" placeholder="Por codigo producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
-					</vbox>
-					<vbox>
-						<textbox id="busquedaPorNombreProducto" placeholder="Por nombre de producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
-						<intbox id="busquedaPorStock" placeholder="Por stock menor a" width="158px" constraint="no negative" forward="onOK=administracionWindow$composer.onBuscar"/>
-					</vbox>
-				<button label="Limpiar Campos" id="limpiarCamposbtn" visible="true"/>
-				</hbox>
+				<div id="filtros_producto">
+					<hbox>
+						<vbox>
+							<combobox id="productorComboBox" placeholder="Por productor" readonly="false" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
+							<combobox id="destacadoComboBox" placeholder="Por destacado" readonly="false" model="@{administracionWindow$composer.destacado}" selectedItem="@{administracionWindow$composer.destacadoSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
+						</vbox>
+						<vbox>
+							<combobox id="habilitadoComboBox" placeholder="Por ocultado/mostrado" readonly="false" model="@{administracionWindow$composer.visibilidad}" selectedItem="@{administracionWindow$composer.visibilidadSeleccionada}" forward="onOK=administracionWindow$composer.onBuscar" />
+							<button label="Buscar" id="buscarProducto" visible="false"/>
+							<textbox id="busquedaPorCodigoProducto" placeholder="Por codigo producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
+						</vbox>
+						<vbox>
+							<textbox id="busquedaPorNombreProducto" placeholder="Por nombre de producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
+							<intbox id="busquedaPorStock" placeholder="Por stock menor a" width="158px" constraint="no negative" forward="onOK=administracionWindow$composer.onBuscar"/>
+						</vbox>
+					<button label="Limpiar Campos" id="limpiarCamposbtn" visible="true"/>
+					</hbox>
 				</div>
 			</hbox>
 				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10"
@@ -214,9 +215,11 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 		</div>
 		
 		<div id="divPedidosColectivos" visible="false">
+			<separator spacing="5px"/>
 			<include id="pedidosColectivosInclude" visible="false" src="/verHistorialPedidosColectivos.zul"/>
 		</div>
-		<div id="divSolicitudesNodos" visible="true">
+		<div id="divSolicitudesNodos" visible="false">
+			<separator spacing="5px"/>
 			<include id="solicitudesNodosInclude" visible="false" src="/nodos.zul"/>
 		</div>
 		<div id="divProductores" visible="false">
@@ -252,8 +255,9 @@ visible="false" width="100%" height="100%" style="overflow:auto"  contentStyle="
 				<include id="usuariosActualesInclude" visible="false" src="/usuariosActuales.zul"/>
 			</hbox>
 		</div>
-	</hbox>
-	
+
+
 </hbox>
+
 </window>
 </zk>

@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui.ico"?>
 <zk>
-<window id="nodosWindow"  border="normal" apply="chasqui.view.composer.NodosComposer" sizable="false" width="100%"
+<window id="nodosWindow" apply="chasqui.view.composer.NodosComposer" sizable="false" width="100%"
 style="overflow:auto">
 <!--
 <div align="center">
@@ -20,9 +20,9 @@ style="overflow:auto">
 </div>
 -->
 <tabbox width="100%" mold="accordion">
-	<tabs>
-		<tab label="Pedidos" image="/imagenes/pedidosNodo.png"/>
-		<tab label="Nodos" image="/imagenes/nodos.png"/>
+	<tabs >
+		<tab label="Pedidos"  image="/imagenes/pedidosNodo.png"/>
+		<tab label="Nodos"  image="/imagenes/nodos.png"/>
 		<tab label="Solicitudes" image="/imagenes/solicitud.png"/>
 	</tabs>
 	<tabpanels>
