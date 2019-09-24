@@ -54,7 +54,7 @@ style="overflow:auto">
 						<listheader align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>
 						<listheader align="center" label="Tipo" sort="auto(tipo)"/>
 						<listheader align="center" label="Coordinador" sort="auto(administrador.nombre, administrador.apellido)"/>
-						<listheader align="center" label="e-mail" sort="auto(emailAdministradorNodo)"/>
+						<listheader align="center" label="e-mail" sort="auto(administrador.email)"/>
 						<listheader align="center" label="Dirección" sort="auto(direccionDelNodo.calle, direccionDelNodo.altura, direccionDelNodo.localidad)"/>
 						<listheader align="center" label="Barrio" sort="auto(barrio)"/>
 						<listheader align="center" label="Acciones" />

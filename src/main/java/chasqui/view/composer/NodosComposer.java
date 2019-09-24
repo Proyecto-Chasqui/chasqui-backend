@@ -104,7 +104,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		pedidosColectivos.sort(new Comparator<PedidoColectivo>() {
 			@Override
 			public int compare(PedidoColectivo o1, PedidoColectivo o2) {
-				return o1.getFechaCreacion().compareTo(o2.getFechaCreacion());
+				return o2.getFechaCreacion().compareTo(o1.getFechaCreacion());
 			}
 		});
 		return pedidosColectivos;

@@ -351,6 +351,7 @@ public class NodoServiceImpl implements NodoService {
 		
 		if(nodo.pertenece(nuevoAdministrador.getEmail())){
 			nodo.cederAdministracion(nuevoAdministrador);
+			nodo.setEmailAdministradorNodo(nuevoAdministrador.getEmail());
 			//redefinir esta notificacion para nodos.
 			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, nodo);
 			

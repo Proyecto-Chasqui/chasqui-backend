@@ -168,7 +168,7 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 		if(fecha == null) {
 			fechaUltimoConsumo = "No hay consumos";
 		}else {
-			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy 'a las' HH:mm:ss z");
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy 'a las' HH:mm:ss");
 			Date d = new Date(fecha.getMillis());
 			fechaUltimoConsumo = format.format(d);
 		}

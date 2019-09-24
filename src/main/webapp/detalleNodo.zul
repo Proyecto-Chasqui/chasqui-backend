@@ -22,7 +22,7 @@ apply="chasqui.view.composer.InfoNodoComposer" width="550px">
 					<listheader label="Detalle" align="center"/>
 				</listhead>
 				<listitem>
-					<listcell label="Usuario Solicitante"/>
+					<listcell label="Coordinador"/>
 					<listcell label="@{infoNodoWindow$composer.cliente}"/>
 				</listitem>
 				<listitem>
@@ -74,8 +74,8 @@ apply="chasqui.view.composer.InfoNodoComposer" width="550px">
 		<tabpanel>
 				<listbox  span="true" id="listboxUsuarios"  model="@{infoNodoWindow$composer.clientes}" mold="paging" pageSize="5" rows="5">
 					<listhead>
-						<listheader label="Nombre" align="center"/>
-						<listheader label="E-mail" align="center"/>
+						<listheader label="Nombre" align="center"  sort="auto(cliente.nombre, cliente.apellido)"/>
+						<listheader label="E-mail" align="center" sort="auto(cliente.email)"/>
 						<listheader label="Tel.Fijo" align="center"/>
 						<listheader label="Celular" align="center"/>
 					</listhead>		
