@@ -67,7 +67,7 @@
 	<menuitem id="menuItemPedidosColecitvos"  image="/imagenes/pedidos_colectivos.png" label="PedidosColectivos"/>
 	<menuitem id="menuItemNodos" image="/imagenes/menu_nodos.png" label="Nodos"/>
 	<menuitem id="menuItemConfiguracion" image="/imagenes/configuraciones.png" label="Configuraciones" />
-	<menuitem id="menuItemLogOut" style="position: relative;  left: 580px;" image="/imagenes/logout.png"   tooltiptext="${c:l('zk.toolbar.disconnect')}" label="Adminmtr" />
+	<menuitem id="menuItemLogOut" style="position: absolute;  left: 92vw" image="/imagenes/logout.png"   tooltiptext="${c:l('zk.toolbar.disconnect')}" label="Adminmtr" />
 </menubar>
 
 <menubar id="submenubar" width="100%" visible="false"  scrollable = "true">
@@ -78,8 +78,20 @@
 	<menuitem id="menuItemNuevoProductor" label="Nuevo Productor" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		forward="onClick=administracionWindow$composer.onCrearProductor"/>
 	<menuseparator/>
-	<menuitem id="menuItemMostrarFiltrosProducto" label="Ver filtros de productos" image="/imagenes/filtrar.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
-		forward="onClick=administracionWindow$composer.onMostrarFiltrosProducto"/>
+	<menuitem id="menuItemMostrarFiltrosProductor" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProductores"/>
+	<menuitem id="menuItemMostrarFiltrosProducto" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProducto"/>
+	<menuitem id="menuItemMostrarFiltrosPedidosColectivos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosColectivos"/>
+	<menuitem id="menuItemMostrarFiltrosPedidosIndividuales" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosIndividuales"/>
+	<menuitem id="menuItemReiniciarFiltrosPedidosColectivos" label="Reiniciar filtros" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosColectivos"/>
+	<menuitem id="menuItemReiniciarFiltrosPedidosIndividuales" label="Reiniciar filtros" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosIndividuales"/>
+	<menuitem id="menuItemReiniciarFiltrosProductos" label="Reiniciar filtros" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosProductos"/>
+	<menuseparator id="separadorExport"/>
+	<menu label="Exportar pedidos" id="menuExportar" image="/imagenes/export.png">
+		<menupopup>
+			<menuitem id="menuItemExportarPedidos" image="/imagenes/all.png" label="Afectados por el filtro" forward="onClick=administracionWindow$composer.onExportarPedidosIndividuales"/>
+			<menuitem id="menuItemExportarSeleccionados" image="/imagenes/multiple_selection.png"  label="Seleccionados" forward="onClick=administracionWindow$composer.onExportarPedidosIndividualesSeleccionados"/>
+		</menupopup>
+	</menu>
 </menubar>
 
 <!-- reemplazado por submenubar  (borrar despues de testear bien)-->
@@ -173,9 +185,9 @@
 		<div visible="false" id="divProducto">
 			<separator spacing="5px"/>
 			<vbox>
-			<hbox>
-				<div id="filtros_producto">
-					<hbox>
+			<hbox style="position: relative;  left: 1vw">
+				<div  id="filtros_producto">
+					<hbox >
 						<vbox>
 							<combobox id="productorComboBox" placeholder="Por productor" readonly="false" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
 							<combobox id="destacadoComboBox" placeholder="Por destacado" readonly="false" model="@{administracionWindow$composer.destacado}" selectedItem="@{administracionWindow$composer.destacadoSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
@@ -183,13 +195,13 @@
 						<vbox>
 							<combobox id="habilitadoComboBox" placeholder="Por ocultado/mostrado" readonly="false" model="@{administracionWindow$composer.visibilidad}" selectedItem="@{administracionWindow$composer.visibilidadSeleccionada}" forward="onOK=administracionWindow$composer.onBuscar" />
 							<button label="Buscar" id="buscarProducto" visible="false"/>
-							<textbox id="busquedaPorCodigoProducto" placeholder="Por codigo producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
+							<textbox id="busquedaPorCodigoProducto" width="100%" placeholder="Por código producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
 						</vbox>
 						<vbox>
-							<textbox id="busquedaPorNombreProducto" placeholder="Por nombre de producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
+							<textbox id="busquedaPorNombreProducto" width="100%" placeholder="Por nombre de producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
 							<intbox id="busquedaPorStock" placeholder="Por stock menor a" width="158px" constraint="no negative" forward="onOK=administracionWindow$composer.onBuscar"/>
 						</vbox>
-					<button label="Limpiar Campos" id="limpiarCamposbtn" visible="true"/>
+					<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
 					</hbox>
 				</div>
 			</hbox>
@@ -225,9 +237,11 @@
 		<div id="divProductores" visible="false">
 			<vbox>
 			<separator spacing="1px"/>
-			<hbox>
-				<textbox id="busquedaPorNombreProductor" placeholder="Buscar por nombre"  forward="onOK=administracionWindow$composer.onBuscarProductor"/>
-			</hbox>
+			<div  id="filtrosproductores" visible="false">
+				<hbox>
+					<textbox id="busquedaPorNombreProductor" placeholder="Buscar por nombre"  forward="onOK=administracionWindow$composer.onBuscarProductor"/>
+				</hbox>
+			</div>
 			<listbox id="listboxProductores" model="@{administracionWindow$composer.listfabricantes}" mold="paging" pageSize="10" 
 			rows="10">
 				<listhead>

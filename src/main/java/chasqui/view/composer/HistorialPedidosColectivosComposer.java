@@ -24,6 +24,7 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -35,9 +36,11 @@ import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.Categoria;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
+import chasqui.model.Producto;
 import chasqui.model.ProductoPedido;
 import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
@@ -96,6 +99,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private Combobox prCombobox;
 	private String prSeleccionado;
 	private VendedorService vendedorService;
+	private Div filtros;
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -106,6 +110,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			windowComponent = component;
 			grupo = (GrupoCC) Executions.getCurrent().getArg().get("Grupo");
 			component.addEventListener(Events.ON_USER, new HitorialPedidosColectivosEventListener(this,grupo));
+			component.addEventListener(Events.ON_RENDER, new RenderEventListener(this));
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
 			pedidoColectivoService = (PedidoColectivoService) SpringUtil.getBean("pedidoColectivoService");
@@ -424,8 +429,36 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		this.prSeleccionado = prSeleccionado;
 	}
 
+	public Div getFiltros() {
+		return filtros;
+	}
+
+	public void setFiltros(Div filtros) {
+		this.filtros = filtros;
+	}
+
+	public void onMostrarFiltros() {
+		this.filtros.setVisible(!filtros.isVisible());
+		
+	}
 
 
+
+}
+
+class RenderEventListener implements EventListener<Event>{
+
+	HistorialPedidosColectivosComposer composer;
+	public RenderEventListener(HistorialPedidosColectivosComposer historialPedidosColectivosComposer) {
+		this.composer = historialPedidosColectivosComposer;
+	}
+
+	public void onEvent(Event event) throws Exception {
+		
+		composer.onMostrarFiltros();
+		
+	}
+	
 }
 
 class HitorialPedidosColectivosEventListener implements EventListener<Event>{
@@ -468,6 +501,7 @@ class HitorialPedidosColectivosEventListener implements EventListener<Event>{
 		if(accion.equals(PedidosComposer.ACCION_NOTIFICAR)){
 			composer.onNotificar(p);				
 		}
+
 			
 	}
 }
