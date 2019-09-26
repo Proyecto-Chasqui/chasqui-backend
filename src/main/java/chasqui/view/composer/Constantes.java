@@ -114,4 +114,6 @@ public class Constantes {
 	public static final String SOLICITUD_PERTENENCIA_NODO_ACEPTADO = "solicitud_pertenencia_nodo_aceptado";
 	public static final String SOLICITUD_PERTENENCIA_NODO_RECHAZADO = "solicitud_pertenencia_nodo_rechazado";
 	public static final String SOLICITUD_PERTENENCIA_NODO_CANCELADO = "solicitud_pertenencia_nodo_cancelado";
+	public static final String NODO_ACTIVO = "nodo_activo";
+	public static final String NODO_INACTIVO = "nodo_inactivo";
 }

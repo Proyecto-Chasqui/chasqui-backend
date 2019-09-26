@@ -95,8 +95,27 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	private boolean tienePuntosDeRetiro;
 	private Menuitem menuItemMostrarFiltrosPedidosNodos;
 	private Menuitem menuItemReiniciarFiltrosPedidosNodos;
-	
 	private Div filtros;
+	
+	//menu nodos
+	private Menuitem menuItemMostrarFiltrosNodos;
+	private Menuitem menuItemReiniciarFiltrosNodos;
+	private Div filtrosNodos;
+	
+	//filtro nodos
+	private Datebox desde_nodo;
+	private Datebox hasta_nodo;
+	private Textbox buscadorPorUsuarioCoordinador;
+	private Combobox estadosNodosCombobox;
+	private Textbox buscadorBarrio;
+	private Textbox buscadorPorNombreNodo;
+	
+	//data menu nodos
+	private List<String> estadosNodosList;
+	private String estadoNodoSeleccionado;
+	private Combobox tipoNodosCombobox;
+	private List<String> tiposNodosList;
+	private String tipoNodoSeleccionado;
 	
 	public void doAfterCompose(Component c) throws Exception{
 		vendedorLogueado =(Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
@@ -123,8 +142,10 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 			if(!vendedorLogueado.getIsRoot()) {
 				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(vendedorLogueado.getId()));
 			}
-			binder.loadAll();
-			
+			//data filler nodos
+			estadosNodosList = Arrays.asList(Constantes.NODO_ACTIVO, Constantes.NODO_INACTIVO);
+			tiposNodosList = Arrays.asList(Constantes.NODO_ABIERTO, Constantes.NODO_CERRADO);
+			binder.loadAll();			
 		}
 		
 	}
@@ -151,7 +172,60 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		});
 		return pedidosColectivos;
 	}
+	
+	public void onSelect$estadosNodosCombobox(SelectEvent evt) {
+		onBuscarNodos();
 
+	}
+
+	public void onSelect$tipoNodosCombobox(SelectEvent evt) {
+		onBuscarNodos();
+	}
+	
+	public void onMostrarFiltrosNodos() {
+		if(filtrosNodos.isVisible()) {
+			menuItemMostrarFiltrosNodos.setLabel("Mostrar filtros");
+		}else {
+			menuItemMostrarFiltrosNodos.setLabel("Ocultar filtros");
+		}
+		filtrosNodos.setVisible(!filtrosNodos.isVisible());
+	}
+	
+	public void onLimpiarCamposNodos(){
+		menuItemReiniciarFiltrosNodos.setVisible(false);
+		estadoSeleccionado = "";
+		desde_nodo.setValue(null);
+		desde_nodo.setValue(null);
+		estadosNodosCombobox.setValue(null);
+		tipoNodosCombobox.setValue(null);
+		buscadorPorNombreNodo.setValue("");
+		buscadorPorUsuarioCoordinador.setValue("");
+		buscadorBarrio.setValue("");
+		tipoNodoSeleccionado = "";
+		estadoNodoSeleccionado = "";
+		nodos.clear();
+		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),null,null,null,null,null,null,null));
+		Clients.showNotification("Filtros restablecidos", "info", component, "middle_center", 2000, true);
+		this.binder.loadAll();
+	}
+	
+	public void onBuscarNodos() {
+		menuItemReiniciarFiltrosNodos.setVisible(true);
+		Date d = desde_nodo.getValue();
+		Date h = hasta_nodo.getValue();
+		String nombreNodo = buscadorPorNombreNodo.getValue();
+		String emailcoordinador = buscadorPorUsuarioCoordinador.getValue();
+		String barrio = buscadorBarrio.getValue();
+		if(d != null && h != null){
+			if(h.before(d)){
+				Messagebox.show("La fecha hasta debe ser posterior a la fecha desde", "Error", Messagebox.OK,Messagebox.EXCLAMATION);
+			}
+		}		
+		nodos.clear();
+		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),d,h,estadoNodoSeleccionado,nombreNodo,emailcoordinador,barrio,tipoNodoSeleccionado));
+		this.binder.loadAll();
+	}
+	
 	public void onBuscar(){
 		onClick$buscar();
 	}
@@ -542,6 +616,138 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	public void setFiltros(Div filtros) {
 		this.filtros = filtros;
 	}
+
+	public Menuitem getMenuItemMostrarFiltrosNodos() {
+		return menuItemMostrarFiltrosNodos;
+	}
+
+	public Menuitem getMenuItemReiniciarFiltrosNodos() {
+		return menuItemReiniciarFiltrosNodos;
+	}
+
+	public Div getFiltrosNodos() {
+		return filtrosNodos;
+	}
+
+	public Datebox getDesde_nodo() {
+		return desde_nodo;
+	}
+
+	public Datebox getHasta_nodo() {
+		return hasta_nodo;
+	}
+
+	public Textbox getBuscadorPorUsuarioCoordinador() {
+		return buscadorPorUsuarioCoordinador;
+	}
+
+	public Combobox getEstadosNodosListbox() {
+		return estadosNodosCombobox;
+	}
+
+	public Textbox getBuscadorBarrio() {
+		return buscadorBarrio;
+	}
+
+	public Textbox getBuscadorPorNombreNodo() {
+		return buscadorPorNombreNodo;
+	}
+
+	public void setMenuItemMostrarFiltrosNodos(Menuitem menuItemMostrarFiltrosNodos) {
+		this.menuItemMostrarFiltrosNodos = menuItemMostrarFiltrosNodos;
+	}
+
+	public void setMenuItemReiniciarFiltrosNodos(Menuitem menuItemReiniciarFiltrosNodos) {
+		this.menuItemReiniciarFiltrosNodos = menuItemReiniciarFiltrosNodos;
+	}
+
+	public void setFiltrosNodos(Div filtrosNodos) {
+		this.filtrosNodos = filtrosNodos;
+	}
+
+	public void setDesde_nodo(Datebox desde_nodo) {
+		this.desde_nodo = desde_nodo;
+	}
+
+	public void setHasta_nodo(Datebox hasta_nodo) {
+		this.hasta_nodo = hasta_nodo;
+	}
+
+	public void setBuscadorPorUsuarioCoordinador(Textbox buscadorPorUsuarioCoordinador) {
+		this.buscadorPorUsuarioCoordinador = buscadorPorUsuarioCoordinador;
+	}
+
+	public void setEstadosNodosListbox(Combobox estadosNodosListbox) {
+		this.estadosNodosCombobox = estadosNodosListbox;
+	}
+
+	public void setBuscadorBarrio(Textbox buscadorBarrio) {
+		this.buscadorBarrio = buscadorBarrio;
+	}
+
+	public void setBuscadorPorNombreNodo(Textbox buscadorPorNombreNodo) {
+		this.buscadorPorNombreNodo = buscadorPorNombreNodo;
+	}
+
+	public Combobox getEstadosListbox() {
+		return estadosListbox;
+	}
+
+	public List<String> getEstadosNodosList() {
+		return estadosNodosList;
+	}
+
+	public String getEstadoNodoSeleccionado() {
+		return estadoNodoSeleccionado;
+	}
+
+	public void setEstadosListbox(Combobox estadosListbox) {
+		this.estadosListbox = estadosListbox;
+	}
+
+	public void setEstadosNodosList(List<String> estadosNodosList) {
+		this.estadosNodosList = estadosNodosList;
+	}
+
+	public void setEstadoNodoSeleccionado(String estadoNodoSeleccionado) {
+		this.estadoNodoSeleccionado = estadoNodoSeleccionado;
+	}
+
+	public List<String> getTiposNodosList() {
+		return tiposNodosList;
+	}
+
+
+
+	public void setTiposNodosList(List<String> tiposNodosList) {
+		this.tiposNodosList = tiposNodosList;
+	}
+
+	public String getTipoNodoSeleccionado() {
+		return tipoNodoSeleccionado;
+	}
+
+	public void setTipoNodoSeleccionado(String tipoNodoSeleccionado) {
+		this.tipoNodoSeleccionado = tipoNodoSeleccionado;
+	}
+
+	public Combobox getTipoNodosCombobox() {
+		return tipoNodosCombobox;
+	}
+
+	public void setTipoNodosCombobox(Combobox tipoNodosCombobox) {
+		this.tipoNodosCombobox = tipoNodosCombobox;
+	}
+
+	public Combobox getEstadosNodosCombobox() {
+		return estadosNodosCombobox;
+	}
+
+	public void setEstadosNodosCombobox(Combobox estadosNodosCombobox) {
+		this.estadosNodosCombobox = estadosNodosCombobox;
+	}
+
+
 	
 }
 

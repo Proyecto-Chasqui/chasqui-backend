@@ -16,5 +16,9 @@
     
         <many-to-one name="direccionDelNodo" class="chasqui.model.Direccion" lazy="false" column="ID_DIRECCION"/>        
         
+        <property name="activo" type="java.lang.Boolean" >
+        		<column name="ACTIVO" not-null="true" default="true" />
+    	</property>
+        
     </joined-subclass>
 </hibernate-mapping>

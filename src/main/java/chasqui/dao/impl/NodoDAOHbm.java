@@ -1,12 +1,15 @@
 package chasqui.dao.impl;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -119,4 +122,55 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 
 		});
 	}
+
+	public List<Nodo> obtenerNodosDelVendedorCon(final Integer idVendedor, final Date d, final Date h, final String estadoNodo,
+			final String nombreNodo, final String emailcoordinador, final String barrio, final String tipo) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<Nodo>>() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public List<Nodo> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(Nodo.class);
+				c.add(Restrictions.eq("vendedor.id", idVendedor))
+				.add(Restrictions.eq("esNodo", true));
+				
+				if(!StringUtils.isEmpty(tipo)) {
+					c.add(Restrictions.eq("tipo", tipo));
+				}
+				if (!StringUtils.isEmpty(nombreNodo)) {
+					c.add(Restrictions.like("alias", "%"+nombreNodo+"%"));
+				}
+				if (d != null && h != null) {
+					DateTime desde = new DateTime(d.getTime());
+					DateTime hasta = new DateTime(h.getTime());
+					c.add(Restrictions.between("fechaCreacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
+				}else{
+					if(d!=null){
+						DateTime desde = new DateTime(d.getTime());
+						c.add(Restrictions.ge("fechaCreacion", desde.withHourOfDay(0)));
+					}else{
+						if(h!=null){
+							DateTime hasta = new DateTime(h.getTime());
+							c.add(Restrictions.le("fechaCreacion", hasta.plusDays(1).withHourOfDay(0)));
+						}
+					}
+				}
+				if(!StringUtils.isEmpty(estadoNodo)) {
+					boolean activo = estadoNodo.equals(Constantes.NODO_ACTIVO); 
+					c.add(Restrictions.eq("activo",activo));
+				}
+				if(!StringUtils.isEmpty(emailcoordinador)) {
+					c.add(Restrictions.like("emailAdministradorNodo", "%"+emailcoordinador+"%"));
+				}
+				if(!StringUtils.isEmpty(barrio)) {
+					c.add(Restrictions.like("barrio", "%"+barrio+"%"));
+				}
+				
+				return (List<Nodo>) c.list();
+			}
+
+		});
+	}
+
+
 }

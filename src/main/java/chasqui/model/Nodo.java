@@ -10,6 +10,7 @@ public class Nodo extends GrupoCC{
 	private String emailAdministradorNodo;
 	private Direccion direccionDelNodo;
 	private String barrio;
+	private boolean activo;
 	
 	//Constructor
 	public Nodo () {}
@@ -26,6 +27,7 @@ public class Nodo extends GrupoCC{
 		this.setDireccionDelNodo(solicitud.getDomicilio());
 		this.setTipo(solicitud.getTipoNodo());
 		this.setVendedor(vendedor);
+		this.setActivo(true);
 	}
 
 	//Gets & Sets
@@ -102,5 +104,12 @@ public class Nodo extends GrupoCC{
 		return miembro;
 
 	}
+	public boolean isActivo() {
+		return activo;
+	}
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+
 	
 }

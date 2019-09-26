@@ -80,6 +80,39 @@ style="overflow:auto">
 		</tabpanel>
 		<tabpanel>
 			<separator spacing="15px"/>
+			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarnodos" visible="true">
+				<menuitem id="menuItemMostrarFiltrosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosNodos"/>
+				<menuitem id="menuItemReiniciarFiltrosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposNodos"/>
+			</menubar>
+			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtrosNodos" visible="false">
+			<separator spacing="15px"/>
+				<div style="position:relative; left:10px;">
+				<hbox>
+					<vbox>
+						<hbox>
+							<label value="Fecha Desde:" /> 
+							<datebox readonly="true" id="desde_nodo" forward="onChange=nodosWindow.composer.onBuscarNodos"/>
+						</hbox>
+						<hbox>
+							<label value="Fecha Hasta:"/>
+							<datebox readonly="true" id="hasta_nodo" forward="onChange=nodosWindow.composer.onBuscarNodos"/>
+						</hbox>
+					</vbox>
+				    <vbox>
+						<textbox id="buscadorPorUsuarioCoordinador" placeholder="Buscar por email admin" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
+						<combobox id="estadosNodosCombobox" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosNodosList}" selectedItem="@{nodosWindow$composer.estadoNodoSeleccionado}"/>
+				    </vbox>
+				    <vbox>
+						<textbox id="buscadorBarrio" placeholder="Buscar por barrio" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
+						<textbox id="buscadorPorNombreNodo" placeholder="Nombre nodo" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
+					</vbox>
+					 <vbox>
+						<combobox id="tipoNodosCombobox" placeholder="Buscar por tipo" readonly="true" model="@{nodosWindow$composer.tiposNodosList}" selectedItem="@{nodosWindow$composer.tipoNodoSeleccionado}"/>
+					</vbox>
+				</hbox>
+				</div>
+				<separator spacing="15px"/>
+			</div>
 				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}" mold="paging" rows="5" pageSize="5" >
 					<listhead>
 						<listheader align="center" label="Estado"/>

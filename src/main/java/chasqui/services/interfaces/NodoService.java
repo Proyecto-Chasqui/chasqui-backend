@@ -1,6 +1,7 @@
 package chasqui.services.interfaces;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -272,6 +273,20 @@ public interface NodoService {
 
 	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(Integer id,
 			Integer idVendedor) throws VendedorInexistenteException;
+	/**
+	 * Retorna un nodo con los datos solicitados, si los mismos son null o "", son ignorados.
+	 * @param id
+	 * @param d
+	 * @param h
+	 * @param estadoNodoBool
+	 * @param nombreNodo
+	 * @param emailcoordinador
+	 * @param barrio
+	 * @return
+	 */
+
+	List<Nodo> obtenerNodosDelVendedorCon(Integer idvendedor, Date d, Date h, String estadoNodoBool, String nombreNodo,
+			String emailcoordinador, String barrio, String tipo);
 
 
 }

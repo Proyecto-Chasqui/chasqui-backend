@@ -2,6 +2,7 @@ package chasqui.services.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -649,6 +650,12 @@ public class NodoServiceImpl implements NodoService {
 			Integer idVendedor) throws VendedorInexistenteException {
 		usuarioService.obtenerVendedorPorID(idVendedor);
 		return solicitudPertenenciaNodoDAO.obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(idUsuario, idVendedor);
+	}
+
+	@Override
+	public List<Nodo> obtenerNodosDelVendedorCon(Integer idvendedor, Date d, Date h, String estadoNodoBool,
+			String nombreNodo, String emailcoordinador, String barrio, String tipo) {
+		return nodoDAO.obtenerNodosDelVendedorCon(idvendedor,d, h, estadoNodoBool,nombreNodo,emailcoordinador,barrio, tipo);
 	}
 	
 
