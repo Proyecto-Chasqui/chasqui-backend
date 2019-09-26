@@ -82,13 +82,13 @@
 	<menuitem id="menuItemMostrarFiltrosProducto" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProducto"/>
 	<menuitem id="menuItemMostrarFiltrosPedidosColectivos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosColectivos"/>
 	<menuitem id="menuItemMostrarFiltrosPedidosIndividuales" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosIndividuales"/>
-	<menuitem id="menuItemReiniciarFiltrosPedidosColectivos" label="Reiniciar filtros" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosColectivos"/>
-	<menuitem id="menuItemReiniciarFiltrosPedidosIndividuales" label="Reiniciar filtros" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosIndividuales"/>
-	<menuitem id="menuItemReiniciarFiltrosProductos" label="Reiniciar filtros" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosProductos"/>
+	<menuitem id="menuItemReiniciarFiltrosPedidosColectivos" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosColectivos"/>
+	<menuitem id="menuItemReiniciarFiltrosPedidosIndividuales" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosIndividuales"/>
+	<menuitem id="menuItemReiniciarFiltrosProductos" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosProductos"/>
 	<menuseparator id="separadorExport"/>
 	<menu label="Exportar pedidos" id="menuExportar" image="/imagenes/export.png">
 		<menupopup>
-			<menuitem id="menuItemExportarPedidos" image="/imagenes/all.png" label="Afectados por el filtro" forward="onClick=administracionWindow$composer.onExportarPedidosIndividuales"/>
+			<menuitem id="menuItemExportarPedidos" image="/imagenes/all.png" label="Filtrados" forward="onClick=administracionWindow$composer.onExportarPedidosIndividuales"/>
 			<menuitem id="menuItemExportarSeleccionados" image="/imagenes/multiple_selection.png"  label="Seleccionados" forward="onClick=administracionWindow$composer.onExportarPedidosIndividualesSeleccionados"/>
 		</menupopup>
 	</menu>

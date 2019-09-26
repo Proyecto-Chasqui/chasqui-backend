@@ -14,13 +14,20 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.select.annotation.Listen;
+import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.Messagebox.ClickEvent;
 
@@ -33,13 +40,17 @@ import chasqui.model.Nodo;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
+import chasqui.model.PuntoDeRetiro;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.Vendedor;
+import chasqui.model.Zona;
 import chasqui.service.rest.request.DireccionRequest;
 import chasqui.service.rest.request.SingUpRequest;
 import chasqui.services.impl.MailService;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.PedidoColectivoService;
+import chasqui.services.interfaces.VendedorService;
+import chasqui.services.interfaces.ZonaService;
 import chasqui.view.renders.NodoRenderer;
 import chasqui.view.renders.PedidoColectivoRenderer;
 import chasqui.view.renders.PedidoRenderer;
@@ -56,6 +67,12 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	private Listbox listboxNodos;
 	private Button confirmarEntregabtn;
 	private AnnotateDataBinder binder;
+	private List<Zona> zonas;
+	private Button buscar;
+	private Textbox buscadorPorUsuario;
+	private Combobox zonasListbox;
+	private Zona zonaSeleccionada;
+	private Combobox estadosListbox;
 	
 	private List<String> estados; 
 	private String estadoSeleccionado;
@@ -69,31 +86,56 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	private List<SolicitudCreacionNodo> solicitudesCreacionNodos;
 	
 	private Component component;
+	private Combobox prCombobox;
+	private String prSeleccionado;
+	private List<String> puntosDeRetiro;
+	private VendedorService vendedorService;
+	private ZonaService zonaService;
 	
+	private boolean tienePuntosDeRetiro;
+	private Menuitem menuItemMostrarFiltrosPedidosNodos;
+	private Menuitem menuItemReiniciarFiltrosPedidosNodos;
+	
+	private Div filtros;
 	
 	public void doAfterCompose(Component c) throws Exception{
 		vendedorLogueado =(Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		if(vendedorLogueado != null){
 			super.doAfterCompose(c);
 			component = c;
+			tienePuntosDeRetiro = vendedorLogueado.getEstrategiasUtilizadas().isPuntoDeEntrega();
 			nodoService = (NodoService) SpringUtil.getBean("nodoService");
 			mailService = (MailService) SpringUtil.getBean("mailService");
+			vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
+			zonaService = (ZonaService) SpringUtil.getBean("zonaService");
 			pedidoColectivoService = (PedidoColectivoService) SpringUtil.getBean("pedidoColectivoService");
 			c.addEventListener(Events.ON_NOTIFY, new SolicitudEventListener(this));
 			c.addEventListener(Events.ON_USER, new PediodosNodosListener(this));
 			binder = new AnnotateDataBinder(c);
-			pedidosNodos = this.obtenerPedidosColectivos(nodoService.obtenerNodosDelVendedor(vendedorLogueado.getId()));
-			//pedidosDeLosNodos = nodoService.obtenerNodosDelVendedor(vendedorLogueado.getId());
+			pedidosNodos = pedidoColectivoService.obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(vendedorLogueado.getId(), null, null, null, null, null, null);
 			solicitudesCreacionNodos = nodoService.obtenerSolicitudesDeCreacionDeVendedor(vendedorLogueado.getId());
 			nodos = nodoService.obtenerNodosDelVendedor(vendedorLogueado.getId());
+			zonas = zonaService.buscarZonasBy(vendedorLogueado.getId());
+			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO,Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_PREPARADO);
 			listboxPedidosNodo.setItemRenderer(new PedidoColectivoRenderer((Window) c));
 			listboxSolicitudesCreacionNodos.setItemRenderer( new SolicitudCreacionNodosRenderer((Window) c));
 			listboxNodos.setItemRenderer(new NodoRenderer((Window) c));
+			if(!vendedorLogueado.getIsRoot()) {
+				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(vendedorLogueado.getId()));
+			}
 			binder.loadAll();
 			
 		}
 		
 	}
+	
+	private List<String> crearListaDeNombresDePR(List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor) {
+		List<String> list = new ArrayList<String>();
+		for(PuntoDeRetiro pr: obtenerPuntosDeRetiroDeVendedor) {
+			list.add(pr.getNombre());
+		}
+	    return list;
+    }
 
 	private List<PedidoColectivo> obtenerPedidosColectivos(List<Nodo> nodosDelVendedor) {
 		List<PedidoColectivo> pedidosColectivos = new ArrayList<PedidoColectivo>();
@@ -108,6 +150,67 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 			}
 		});
 		return pedidosColectivos;
+	}
+
+	public void onBuscar(){
+		onClick$buscar();
+	}
+	
+	public void onMostrarFiltrosPedidosNodos() {
+		filtros.setVisible(!filtros.isVisible());
+		if(filtros.isVisible()) {
+			menuItemMostrarFiltrosPedidosNodos.setLabel("Ocultar Filtros");
+		}else {
+			menuItemMostrarFiltrosPedidosNodos.setLabel("Mostrar Filtros");
+		}
+	}
+	
+	public void onReiniciarFiltrosPedidosNodos() {
+		this.onClick$limpiarCamposbtn();
+	}
+	
+	public void onSelect$estadosListbox(SelectEvent evt) {
+			onClick$buscar();
+	
+	}
+	
+	public void onSelect$zonasListbox(SelectEvent evt) {
+			onClick$buscar();
+	}
+	
+	public void onClick$limpiarCamposbtn(){
+		menuItemReiniciarFiltrosPedidosNodos.setVisible(false);
+		estadoSeleccionado = "";
+		zonaSeleccionada = null;
+		desde.setValue(null);
+		hasta.setValue(null);
+		estadosListbox.setValue("");
+		zonasListbox.setValue(null);
+		buscadorPorUsuario.setValue("");
+		prSeleccionado = null;
+		prCombobox.setValue("");
+		pedidosNodos = pedidoColectivoService.obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(vendedorLogueado.getId(), null, null, null, null, null, null);
+		Clients.showNotification("Filtros restablecidos", "info", component, "middle_center", 2000, true);
+		this.binder.loadAll();
+	}
+
+	public void onClick$buscar(){
+		menuItemReiniciarFiltrosPedidosNodos.setVisible(true);
+		Date d = desde.getValue();
+		Date h = hasta.getValue();
+		String email = buscadorPorUsuario.getValue();
+		if(d != null && h != null){
+			if(h.before(d)){
+				Messagebox.show("La fecha hasta debe ser posterior a la fecha desde", "Error", Messagebox.OK,Messagebox.EXCLAMATION);
+			}
+		}		
+		pedidosNodos.clear();
+		Integer zonaId= null;
+		if(zonaSeleccionada !=null){
+			zonaId = zonaSeleccionada.getId();
+		}
+		pedidosNodos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(vendedorLogueado.getId(),d,h,estadoSeleccionado,zonaId, prSeleccionado, email));
+		this.binder.loadAll();
 	}
 
 	public List<String> getEstados() {
@@ -318,6 +421,126 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 				}
 			}
 			});
+	}
+
+	public Datebox getDesde() {
+		return desde;
+	}
+
+	public Datebox getHasta() {
+		return hasta;
+	}
+
+	public Button getConfirmarEntregabtn() {
+		return confirmarEntregabtn;
+	}
+
+	public List<Zona> getZonas() {
+		return zonas;
+	}
+
+	public Button getBuscar() {
+		return buscar;
+	}
+
+	public Textbox getBuscadorPorUsuario() {
+		return buscadorPorUsuario;
+	}
+
+	public Combobox getZonasListbox() {
+		return zonasListbox;
+	}
+
+	public Combobox getPrCombobox() {
+		return prCombobox;
+	}
+
+	public String getPrSeleccionado() {
+		return prSeleccionado;
+	}
+
+	public List<String> getPuntosDeRetiro() {
+		return puntosDeRetiro;
+	}
+
+	public void setDesde(Datebox desde) {
+		this.desde = desde;
+	}
+
+	public void setHasta(Datebox hasta) {
+		this.hasta = hasta;
+	}
+
+	public void setConfirmarEntregabtn(Button confirmarEntregabtn) {
+		this.confirmarEntregabtn = confirmarEntregabtn;
+	}
+
+	public void setZonas(List<Zona> zonas) {
+		this.zonas = zonas;
+	}
+
+	public void setBuscar(Button buscar) {
+		this.buscar = buscar;
+	}
+
+	public void setBuscadorPorUsuario(Textbox buscadorPorUsuario) {
+		this.buscadorPorUsuario = buscadorPorUsuario;
+	}
+
+	public void setZonasListbox(Combobox zonasListbox) {
+		this.zonasListbox = zonasListbox;
+	}
+
+	public void setPrCombobox(Combobox prCombobox) {
+		this.prCombobox = prCombobox;
+	}
+
+	public void setPrSeleccionado(String prSeleccionado) {
+		this.prSeleccionado = prSeleccionado;
+	}
+
+	public void setPuntosDeRetiro(List<String> puntosDeRetiro) {
+		this.puntosDeRetiro = puntosDeRetiro;
+	}
+
+	public Zona getZonaSeleccionada() {
+		return zonaSeleccionada;
+	}
+
+	public void setZonaSeleccionada(Zona zonaSeleccionada) {
+		this.zonaSeleccionada = zonaSeleccionada;
+	}
+
+	public boolean isTienePuntosDeRetiro() {
+		return tienePuntosDeRetiro;
+	}
+
+	public void setTienePuntosDeRetiro(boolean tienePuntosDeRetiro) {
+		this.tienePuntosDeRetiro = tienePuntosDeRetiro;
+	}
+
+	public Menuitem getMenuItemMostrarFiltrosPedidosNodos() {
+		return menuItemMostrarFiltrosPedidosNodos;
+	}
+
+	public Menuitem getMenuItemReiniciarFiltrosPedidosNodos() {
+		return menuItemReiniciarFiltrosPedidosNodos;
+	}
+
+	public void setMenuItemMostrarFiltrosPedidosNodos(Menuitem menuItemMostrarFiltrosPedidosNodos) {
+		this.menuItemMostrarFiltrosPedidosNodos = menuItemMostrarFiltrosPedidosNodos;
+	}
+
+	public void setMenuItemReiniciarFiltrosPedidosNodos(Menuitem menuItemReiniciarFiltrosPedidosNodos) {
+		this.menuItemReiniciarFiltrosPedidosNodos = menuItemReiniciarFiltrosPedidosNodos;
+	}
+
+	public Div getFiltros() {
+		return filtros;
+	}
+
+	public void setFiltros(Div filtros) {
+		this.filtros = filtros;
 	}
 	
 }

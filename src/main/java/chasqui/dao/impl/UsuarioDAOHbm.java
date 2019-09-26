@@ -291,5 +291,19 @@ public class UsuarioDAOHbm extends HibernateDaoSupport implements UsuarioDAO {
 
 	}
 
+	@Override
+	public Usuario obtenerUsuarioRoot() {
+		Usuario u = this.getHibernateTemplate().execute(new HibernateCallback<Usuario>() {
+
+			public Usuario doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Usuario.class);
+				criteria.add(Restrictions.eq("username", "root"));
+				return (Usuario) criteria.uniqueResult();
+			}
+
+		});
+		return u;
+	}
+
 
 }

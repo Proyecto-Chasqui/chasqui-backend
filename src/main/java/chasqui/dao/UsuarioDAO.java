@@ -60,4 +60,6 @@ public interface UsuarioDAO {
 
 	Cliente inicializarColecciones(Cliente cliente);
 
+	public Usuario obtenerUsuarioRoot();
+
 }

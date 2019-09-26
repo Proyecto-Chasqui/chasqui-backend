@@ -65,7 +65,6 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 		if (!password.matches("^[a-zA-Z0-9]*$") || password.length() < 8){
 			labelError.setVisible(true);
 			passwordLoggin.setValue("");
-			usernameLoggin.setValue("");
 			binder.loadAll();
 			return;
 		};
@@ -79,7 +78,6 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 		}catch(Exception e){
 			labelError.setVisible(true);
 			passwordLoggin.setValue("");
-			usernameLoggin.setValue("");
 		}
 		
 	}

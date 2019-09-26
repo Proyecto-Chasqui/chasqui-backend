@@ -27,7 +27,40 @@ style="overflow:auto">
 	</tabs>
 	<tabpanels>
 		<tabpanel>
+			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarpedidosnodos" visible="true">
+				<menuitem id="menuItemMostrarFiltrosPedidosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosPedidosNodos"/>
+				<menuitem id="menuItemReiniciarFiltrosPedidosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onReiniciarFiltrosPedidosNodos"/>
+			</menubar>
+			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtros" visible="false">
 			<separator spacing="15px"/>
+				<div style="position:relative; left:10px;">
+				<hbox>
+					<vbox>
+						<hbox>
+							<label value="Fecha Desde:" /> 
+							<datebox readonly="true" id="desde" forward="onChange=nodosWindow.composer.onBuscar"/>
+						</hbox>
+						<hbox>
+							<label value="Fecha Hasta:"/>
+							<datebox readonly="true" id="hasta" forward="onChange=nodosWindow.composer.onBuscar"/>
+						</hbox>
+					</vbox>
+				    <vbox>
+						<textbox id="buscadorPorUsuario" placeholder="Buscar por email admin" width="100%"  forward="onOK=nodosWindow$composer.onBuscar" />
+						<combobox id="estadosListbox" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estados}" selectedItem="@{nodosWindow$composer.estadoSeleccionado}"/>
+				    </vbox>
+				    <vbox>
+						<combobox  placeholder="Buscar por zona" id="zonasListbox" autodrop="true" readonly="false" model="@{nodosWindow$composer.zonas.nombre}" selectedItem="@{nodosWindow$composer.zonaSeleccionada}" forward="onOK=nodosWindow$composer.onBuscar"/>
+						<combobox placeholder="Buscar por Punto de retiro" id="prCombobox" autodrop="true" readonly="false" model="@{nodosWindow$composer.puntosDeRetiro}" selectedItem="@{nodosWindow$composer.prSeleccionado}" forward="onOK=nodosWindow$composer.onBuscar" visible="@{nodosWindow$composer.tienePuntosDeRetiro}"/>
+					</vbox>
+				    <vbox>
+						<button label="Buscar" id="buscar" visible="false"/>
+						<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
+				    </vbox>
+				</hbox>
+				</div>
+				<separator spacing="15px"/>
+			</div>
 				<listbox  id="listboxPedidosNodo" model="@{nodosWindow$composer.pedidosNodos}" mold="paging" rows="5" pageSize="5" >
 					<listhead>
 							<listheader label="ID" align="center" visible="true" sort="auto(id)"/>
