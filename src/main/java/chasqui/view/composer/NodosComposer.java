@@ -143,8 +143,10 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(vendedorLogueado.getId()));
 			}
 			//data filler nodos
-			estadosNodosList = Arrays.asList(Constantes.NODO_ACTIVO, Constantes.NODO_INACTIVO);
-			tiposNodosList = Arrays.asList(Constantes.NODO_ABIERTO, Constantes.NODO_CERRADO);
+			estadosNodosList = Arrays.asList("TODOS LOS ESTADOS","ACTIVO","INACTIVO");
+			tiposNodosList = Arrays.asList("TODOS LOS TIPOS","ABIERTO","CERRADO");
+			tipoNodoSeleccionado = "TODOS LOS TIPOS";
+			estadoNodoSeleccionado="TODOS LOS ESTADOS";
 			binder.loadAll();			
 		}
 		
@@ -193,16 +195,15 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	
 	public void onLimpiarCamposNodos(){
 		menuItemReiniciarFiltrosNodos.setVisible(false);
-		estadoSeleccionado = "";
 		desde_nodo.setValue(null);
-		desde_nodo.setValue(null);
+		hasta_nodo.setValue(null);
 		estadosNodosCombobox.setValue(null);
 		tipoNodosCombobox.setValue(null);
 		buscadorPorNombreNodo.setValue("");
 		buscadorPorUsuarioCoordinador.setValue("");
 		buscadorBarrio.setValue("");
-		tipoNodoSeleccionado = "";
-		estadoNodoSeleccionado = "";
+		tipoNodoSeleccionado = "TODOS LOS TIPOS";
+		estadoNodoSeleccionado = "TODOS LOS ESTADOS";
 		nodos.clear();
 		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),null,null,null,null,null,null,null));
 		Clients.showNotification("Filtros restablecidos", "info", component, "middle_center", 2000, true);
@@ -216,16 +217,42 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		String nombreNodo = buscadorPorNombreNodo.getValue();
 		String emailcoordinador = buscadorPorUsuarioCoordinador.getValue();
 		String barrio = buscadorBarrio.getValue();
+		String estado = this.evaluarEstadoNodo();
+		String tipo = this.evaluarTipo();
 		if(d != null && h != null){
 			if(h.before(d)){
 				Messagebox.show("La fecha hasta debe ser posterior a la fecha desde", "Error", Messagebox.OK,Messagebox.EXCLAMATION);
 			}
 		}		
 		nodos.clear();
-		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),d,h,estadoNodoSeleccionado,nombreNodo,emailcoordinador,barrio,tipoNodoSeleccionado));
+		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),d,h,estado,nombreNodo,emailcoordinador,barrio,tipo));
 		this.binder.loadAll();
 	}
 	
+	private String evaluarTipo() {
+		if(tipoNodoSeleccionado.equals("TODOS LOS TIPOS")) {
+			return "";
+		}else {
+			if(tipoNodoSeleccionado.equals("ABIERTO")) {
+				return Constantes.NODO_ABIERTO;
+			}else {
+				return Constantes.NODO_CERRADO;
+			}
+		}
+	}
+
+	private String evaluarEstadoNodo() {
+		if(estadoNodoSeleccionado.equals("TODOS LOS ESTADOS")) {
+			return "";
+		}else {
+			if(estadoNodoSeleccionado.equals("ACTIVO")) {
+				return Constantes.NODO_ACTIVO;
+			}else{
+				return Constantes.NODO_INACTIVO;
+			}
+		}
+	}
+
 	public void onBuscar(){
 		onClick$buscar();
 	}
@@ -294,14 +321,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	public void setEstados(List<String> estados) {
 		this.estados = estados;
 	}
-	
-	public String getEstadoSeleccionado() {
-		return estadoSeleccionado;
-	}
 
-	public void setEstadoSeleccionado(String estadoSeleccionado) {
-		this.estadoSeleccionado = estadoSeleccionado;
-	}
 
 
 	public List<SolicitudCreacionNodo> getSolicitudesCreacionNodos() {
@@ -745,6 +765,14 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 
 	public void setEstadosNodosCombobox(Combobox estadosNodosCombobox) {
 		this.estadosNodosCombobox = estadosNodosCombobox;
+	}
+
+	public String getEstadoSeleccionado() {
+		return estadoSeleccionado;
+	}
+
+	public void setEstadoSeleccionado(String estadoSeleccionado) {
+		this.estadoSeleccionado = estadoSeleccionado;
 	}
 
 
