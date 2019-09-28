@@ -1,6 +1,7 @@
 package chasqui.services.interfaces;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -287,6 +288,9 @@ public interface NodoService {
 
 	List<Nodo> obtenerNodosDelVendedorCon(Integer idvendedor, Date d, Date h, String estadoNodoBool, String nombreNodo,
 			String emailcoordinador, String barrio, String tipo);
+
+	public Collection<? extends SolicitudCreacionNodo> obtenerSolicitudesDeCreacionNodosDelVendedorCon(Integer id,
+			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio);
 
 
 }

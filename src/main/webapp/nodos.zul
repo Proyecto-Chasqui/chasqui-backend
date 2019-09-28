@@ -130,7 +130,37 @@ style="overflow:auto">
 				<separator spacing="10px"/>
 		</tabpanel>
 		<tabpanel>
+			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarsolicitudes" visible="true">
+				<menuitem id="menuItemMostrarFiltrosSolicitudes" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosSolicitudes"/>
+				<menuitem id="menuItemReiniciarFiltrosSolicitudes" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposSolicitudes"/>
+			</menubar>
+			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtros_solicitudes" visible="false">
+			<separator spacing="15px"/>
+				<div style="position:relative; left:10px;">
+				<hbox>
+					<vbox>
+						<hbox>
+							<label value="Fecha Desde:" /> 
+							<datebox readonly="true" id="desde_solicitud" forward="onChange=nodosWindow.composer.onBuscarSolicitudes"/>
+						</hbox>
+						<hbox>
+							<label value="Fecha Hasta:"/>
+							<datebox readonly="true" id="hasta_solicitud" forward="onChange=nodosWindow.composer.onBuscarSolicitudes"/>
+						</hbox>
+					</vbox>
+				    <vbox>
+						<textbox id="buscadorSolicitudEmailCoordinador" placeholder="Buscar por email" width="100%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
+						<combobox id="estadosSolicitud" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosDeSolicitudesList}" selectedItem="@{nodosWindow$composer.estadoSolicitudSeleccionada}"/>
+				    </vbox>
+				    <vbox>
+						<textbox id="buscadorPorCoordinador" placeholder="Buscar por cooridnador" width="100%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
+						<textbox id="buscadorSolicitudPorBarrio" placeholder="Buscar por barrio" width="100%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
+					</vbox>
+				</hbox>
+				</div>
+				
 					<separator spacing="15px"/>
+			</div>
 						<listbox  id="listboxSolicitudesCreacionNodos" model="@{nodosWindow$composer.solicitudesCreacionNodos}" mold="paging" rows="5" pageSize="5" >
 							<listhead>
 								<listheader align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>

@@ -111,7 +111,7 @@ apply="chasqui.view.composer.InfoNodoComposer" width="550px">
 </tabbox>
 <separator spacing="15px" visible="true"/>
 <div align="center">  
-	<button label="Salir" id="salirBtn"/>
+	<button image="/imagenes/salir_menu_16.png" label="Salir" id="salirBtn"/>
 </div>
 <separator spacing="15px" visible="true"/>
 

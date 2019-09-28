@@ -69,9 +69,9 @@ apply="chasqui.view.composer.GestionSolicitudCreacionNodoComposer" width="30%">
 </tabbox>
 <separator spacing="15px" visible="true"/>
 <div align="center">
-	<button label="Aceptar Solicitud" id="aceptarSolicitudBtn" />
-	<button label="Rechazar Solicitud" id="rechazarSolicitudBtn" />        
-	<button label="Salir" id="salirBtn"/>
+	<button image = "/imagenes/checked_16.png" label="Aceptar Solicitud" id="aceptarSolicitudBtn" />
+	<button image = "/imagenes/cancel_16.png" label="Rechazar Solicitud" id="rechazarSolicitudBtn" />        
+	<button image = "/imagenes/salir_menu_16.png" label="Salir" id="salirBtn"/>
 </div>
 <separator spacing="15px" visible="true"/>
 

@@ -53,7 +53,7 @@ public class SolicitudCreacionNodosRenderer implements ListitemRenderer<Solicitu
 		params1.put("accion", "gestionar");
 		params1.put("solicitud", solicitud);
 		c.setTooltiptext(Labels.getLabel("Permite gestionar la solicitud"));
-		c.setImage("/imagenes/editar.png");
+		c.setImage("/imagenes/gestion_16.png");
 		c.setLabel("Gestionar");
 		c.addForward(Events.ON_CLICK, solicitudCreacionNodoWindow, Events.ON_NOTIFY, params1);
 		

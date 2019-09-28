@@ -1,5 +1,7 @@
 package chasqui.dao;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -29,5 +31,8 @@ public interface SolicitudCreacionNodoDAO {
 	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionEnGestionDe(Integer idVendedor);
 
 	public List<SolicitudCreacionNodo> obtenerSolicitudesDeCreacionDe(Integer idVendedor);
+
+	public Collection<? extends SolicitudCreacionNodo> obtenerSolicitudesDeCreacionNodosDelVendedorCon(Integer id,
+			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio);
 	
 }

@@ -116,6 +116,22 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	private Combobox tipoNodosCombobox;
 	private List<String> tiposNodosList;
 	private String tipoNodoSeleccionado;
+	//menu filtro solicitudes
+	private Menuitem menuItemMostrarFiltrosSolicitudes;
+	private Menuitem menuItemReiniciarFiltrosSolicitudes;
+	private Div filtros_solicitudes;
+	
+	//filtro solicitudes
+	private Datebox desde_solicitud;
+	private Datebox hasta_solicitud;
+	private Textbox buscadorSolicitudEmailCoordinador;
+	private Combobox estadosSolicitud;
+	private Textbox buscadorPorCoordinador;
+	private Textbox buscadorSolicitudPorBarrio;
+	
+	//data menu solicitudes
+	private List<String> estadosDeSolicitudesList;
+	private String estadoSolicitudSeleccionada;
 	
 	public void doAfterCompose(Component c) throws Exception{
 		vendedorLogueado =(Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
@@ -142,11 +158,14 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 			if(!vendedorLogueado.getIsRoot()) {
 				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(vendedorLogueado.getId()));
 			}
-			//data filler nodos
+			//data search filler nodos
 			estadosNodosList = Arrays.asList("TODOS LOS ESTADOS","ACTIVO","INACTIVO");
 			tiposNodosList = Arrays.asList("TODOS LOS TIPOS","ABIERTO","CERRADO");
 			tipoNodoSeleccionado = "TODOS LOS TIPOS";
-			estadoNodoSeleccionado="TODOS LOS ESTADOS";
+			estadoNodoSeleccionado = "TODOS LOS ESTADOS";
+			//data search filler solicitudes
+			estadosDeSolicitudesList = Arrays.asList("TODOS LOS ESTADOS","EN GESTION","CANCELADO","RECHAZADO","APROBADO") ;
+			estadoSolicitudSeleccionada = "TODOS LOS ESTADOS";
 			binder.loadAll();			
 		}
 		
@@ -177,7 +196,10 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	
 	public void onSelect$estadosNodosCombobox(SelectEvent evt) {
 		onBuscarNodos();
-
+	}
+	
+	public void onSelect$estadosSolicitud(SelectEvent evt) {
+		onBuscarSolicitudes();
 	}
 
 	public void onSelect$tipoNodosCombobox(SelectEvent evt) {
@@ -250,6 +272,58 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 			}else{
 				return Constantes.NODO_INACTIVO;
 			}
+		}
+	}
+	public void onMostrarFiltrosSolicitudes() {
+		filtros_solicitudes.setVisible(!filtros_solicitudes.isVisible());
+		if(filtros_solicitudes.isVisible()) {
+			menuItemMostrarFiltrosSolicitudes.setLabel("Ocultar Filtros");
+		}else {
+			menuItemMostrarFiltrosSolicitudes.setLabel("Mostrar Filtros");
+		}
+	}
+	
+	public void onLimpiarCamposSolicitudes(){
+		menuItemReiniciarFiltrosSolicitudes.setVisible(false);
+		desde_solicitud.setValue(null);
+		hasta_solicitud.setValue(null);
+		estadosSolicitud.setValue(null);
+		buscadorSolicitudEmailCoordinador.setValue("");
+		buscadorPorCoordinador.setValue("");
+		buscadorSolicitudPorBarrio.setValue("");
+		estadoSolicitudSeleccionada = "TODOS LOS TIPOS";
+		solicitudesCreacionNodos.clear();
+		solicitudesCreacionNodos.addAll(nodoService.obtenerSolicitudesDeCreacionDeVendedor(vendedorLogueado.getId()));
+		Clients.showNotification("Filtros restablecidos", "info", component, "middle_center", 2000, true);
+		this.binder.loadAll();
+	}
+	
+	public void onBuscarSolicitudes() {
+		menuItemReiniciarFiltrosSolicitudes.setVisible(true);
+		Date d = desde_solicitud.getValue();
+		Date h = hasta_solicitud.getValue();
+		String email = buscadorSolicitudEmailCoordinador.getValue();
+		String estado = evaluarEstadoSolicitud(estadoSolicitudSeleccionada);
+		String nombreCoordinador = buscadorPorCoordinador.getValue();
+		String barrio = buscadorSolicitudPorBarrio.getValue();
+		if(d != null && h != null){
+			if(h.before(d)){
+				Messagebox.show("La fecha hasta debe ser posterior a la fecha desde", "Error", Messagebox.OK,Messagebox.EXCLAMATION);
+			}
+		}		
+		solicitudesCreacionNodos.clear();
+		solicitudesCreacionNodos.addAll(nodoService.obtenerSolicitudesDeCreacionNodosDelVendedorCon(vendedorLogueado.getId(),d,h,estado,nombreCoordinador,email,barrio));
+		this.binder.loadAll();
+	}
+	
+	private String evaluarEstadoSolicitud(String estadoSolicitudSeleccionada) {
+		switch (estadoSolicitudSeleccionada){
+			case "TODOS LOS ESTADOS": return "";
+			case "EN GESTION": return Constantes.SOLICITUD_NODO_EN_GESTION;
+			case "CANCELADO": return Constantes.SOLICITUD_NODO_CANCELADO;
+			case "APROBADO" : return Constantes.SOLICITUD_NODO_APROBADO;
+			case "RECHAZADO" : return Constantes.SOLICITUD_NODO_RECHAZADO;
+		    default: return "";
 		}
 	}
 
@@ -773,6 +847,94 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 
 	public void setEstadoSeleccionado(String estadoSeleccionado) {
 		this.estadoSeleccionado = estadoSeleccionado;
+	}
+
+	public Datebox getDesde_solicitud() {
+		return desde_solicitud;
+	}
+
+	public Datebox getHasta_solicitud() {
+		return hasta_solicitud;
+	}
+
+	public Textbox getBuscadorSolicitudEmailCoordinador() {
+		return buscadorSolicitudEmailCoordinador;
+	}
+
+	public Combobox getEstadosSolicitud() {
+		return estadosSolicitud;
+	}
+
+	public Textbox getBuscadorPorCoordinador() {
+		return buscadorPorCoordinador;
+	}
+
+	public Textbox getBuscadorSolicitudPorBarrio() {
+		return buscadorSolicitudPorBarrio;
+	}
+
+	public List<String> getEstadosDeSolicitudesList() {
+		return estadosDeSolicitudesList;
+	}
+
+	public String getEstadoSolicitudSeleccionada() {
+		return estadoSolicitudSeleccionada;
+	}
+
+	public void setDesde_solicitud(Datebox desde_solicitud) {
+		this.desde_solicitud = desde_solicitud;
+	}
+
+	public void setHasta_solicitud(Datebox hasta_solicitud) {
+		this.hasta_solicitud = hasta_solicitud;
+	}
+
+	public void setBuscadorSolicitudEmailCoordinador(Textbox buscadorSolicitudEmailCoordinador) {
+		this.buscadorSolicitudEmailCoordinador = buscadorSolicitudEmailCoordinador;
+	}
+
+	public void setEstadosSolicitud(Combobox estadosSolicitud) {
+		this.estadosSolicitud = estadosSolicitud;
+	}
+
+	public void setBuscadorPorCoordinador(Textbox buscadorPorCoordinador) {
+		this.buscadorPorCoordinador = buscadorPorCoordinador;
+	}
+
+	public void setBuscadorSolicitudPorBarrio(Textbox buscadorSolicitudPorBarrio) {
+		this.buscadorSolicitudPorBarrio = buscadorSolicitudPorBarrio;
+	}
+
+	public void setEstadosDeSolicitudesList(List<String> estadosDeSolicitudesList) {
+		this.estadosDeSolicitudesList = estadosDeSolicitudesList;
+	}
+
+	public void setEstadoSolicitudSeleccionada(String estadoSolicitudSeleccionada) {
+		this.estadoSolicitudSeleccionada = estadoSolicitudSeleccionada;
+	}
+
+	public Menuitem getMenuItemMostrarFiltrosSolicitudes() {
+		return menuItemMostrarFiltrosSolicitudes;
+	}
+
+	public Menuitem getMenuItemReiniciarFiltrosSolicitudes() {
+		return menuItemReiniciarFiltrosSolicitudes;
+	}
+
+	public Div getFiltros_solicitudes() {
+		return filtros_solicitudes;
+	}
+
+	public void setMenuItemMostrarFiltrosSolicitudes(Menuitem menuItemMostrarFiltrosSolicitudes) {
+		this.menuItemMostrarFiltrosSolicitudes = menuItemMostrarFiltrosSolicitudes;
+	}
+
+	public void setMenuItemReiniciarFiltrosSolicitudes(Menuitem menuItemReiniciarFiltrosSolicitudes) {
+		this.menuItemReiniciarFiltrosSolicitudes = menuItemReiniciarFiltrosSolicitudes;
+	}
+
+	public void setFiltros_solicitudes(Div filtros_solicitudes) {
+		this.filtros_solicitudes = filtros_solicitudes;
 	}
 
 

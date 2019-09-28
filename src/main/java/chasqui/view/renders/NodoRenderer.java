@@ -49,7 +49,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		params1.put("accion", "detallenodo");
 		params1.put("nodo", nodo);
 		c.setTooltiptext(Labels.getLabel("Ver detalles del nodo"));
-		c.setImage("/imagenes/editar.png");
+		c.setImage("/imagenes/info.png");
 		c.setLabel("Mas información");
 		c.addForward(Events.ON_CLICK, nodoWindow, Events.ON_NOTIFY, params1);
 		Listcell c0 = new Listcell(String.valueOf(estado));
