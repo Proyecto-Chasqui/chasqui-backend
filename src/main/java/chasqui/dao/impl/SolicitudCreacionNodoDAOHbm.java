@@ -9,6 +9,7 @@ import org.apache.cxf.common.util.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -129,7 +130,9 @@ public class SolicitudCreacionNodoDAOHbm extends HibernateDaoSupport implements 
 				}
 				
 				if(!StringUtils.isEmpty(nombreCoordinador)) {
-					c.add(Restrictions.eq("usuarioSolicitante.nombre", nombreCoordinador));
+					Criterion crit = Restrictions.like("usuarioSolicitante.nombre", "%"+nombreCoordinador+"%");
+					Criterion crit2= Restrictions.like("usuarioSolicitante.apellido", "%"+nombreCoordinador+"%");
+					c.add(Restrictions.or(crit,crit2));
 				}
 
 				if(!StringUtils.isEmpty(email)) {

@@ -153,8 +153,8 @@ style="overflow:auto">
 						<combobox id="estadosSolicitud" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosDeSolicitudesList}" selectedItem="@{nodosWindow$composer.estadoSolicitudSeleccionada}"/>
 				    </vbox>
 				    <vbox>
-						<textbox id="buscadorPorCoordinador" placeholder="Buscar por cooridnador" width="100%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
-						<textbox id="buscadorSolicitudPorBarrio" placeholder="Buscar por barrio" width="100%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
+						<textbox id="buscadorPorCoordinador" placeholder="Buscar por coordinador" width="110%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
+						<textbox id="buscadorSolicitudPorBarrio" placeholder="Buscar por barrio" width="110%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
 					</vbox>
 				</hbox>
 				</div>
