@@ -18,7 +18,6 @@
     
             <td width="100" align-center></td>
             <td width="600" bgColor="#EEF0F1" style="padding: 25px;" align="none">
-                <p><span>Estimado usuario: <span style="font-weight: bold;">${nombreUsuario}</span>,</span></p> 
                 <!-- header del cuerpo -->
                 <!-- principio del cuerpo -->
                 <div style="padding: 25px;"> 

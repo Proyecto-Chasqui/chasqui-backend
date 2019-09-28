@@ -51,9 +51,9 @@ public class Constantes {
 	public static final String TEMPLATE_BIENVENIDA_VENDEDOR = "emailBienvenida.ftl";
 	public static final String TEMPLATE_BIENVENIDA_CLIENTE = "emailBienvenidaCliente.ftl";
 	public static final String PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE = "emailPedidosColectivosConfirmados.ftl";
-	public static final String TEMPLATE_NOTIFICACION_VENCIMIENTO_PROXIMO = "emailNotificacionPedido.ftl"; //TODO cambiar template, ahora en desuso
-	public static final String TEMPLATE_NOTIFICACION_PEDIDO = "emailNotificacionPedido.ftl";
-	public static final String TEMPLATE_NOTIFICACION = "emailNotificacionPedido.ftl";
+	public static final String TEMPLATE_NOTIFICACION_VENCIMIENTO_PROXIMO = "emailNotificacionGenerica.ftl"; //TODO cambiar template, ahora en desuso
+	public static final String TEMPLATE_NOTIFICACION_PEDIDO = "emailNotificacionGenerica.ftl";
+	public static final String TEMPLATE_NOTIFICACION = "emailNotificacionGenerica.ftl";
 	public static final String TEMPLATE_INVITAR_GCC_NO_REGISTRADO = "emailInvitadoSinRegistrar.ftl";
 	public static final String TEMPLATE_INVITAR_GCC_REGISTRADO = "emailInvitadoRegistrado.ftl";//TODO Definir, porque no existe, AUN.
 	public static final String TEMPLATE_INVITACION_CHASQUI = "emailInvitacion.ftl";

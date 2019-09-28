@@ -27,9 +27,12 @@ import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.IPedido;
+import chasqui.model.Nodo;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
+import chasqui.model.SolicitudPertenenciaNodo;
+import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
 import chasqui.security.PasswordGenerator;
@@ -211,6 +214,7 @@ public class MailService {
 		final Map<String,Object> params = new HashMap<String,Object>();
 		params.put("nombreUsuario", nombreUsuario);
 		params.put("cuerpo", mensaje);
+		params.put("catalogoVendedor","");
 		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NOTIFICACION, emailClienteDestino, subject, params);
 		
@@ -515,6 +519,11 @@ public class MailService {
 					helper.addInline("confirmacion", resource);
 				}
 				
+				if(Constantes.TEMPLATE_NOTIFICACION.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/recuperacion.png");
+					helper.addInline("recuperacion", resource);
+				}
+				
 				if(Constantes.TEMPLATE_INVITACION_CHASQUI.equals(template)) {
 					ClassPathResource resource = new ClassPathResource("templates/imagenes/invitacion.png");
 					helper.addInline("invitacion", resource);
@@ -749,5 +758,75 @@ public class MailService {
 		String slash = (url.endsWith("/"))?"":"/";
 		return (url + slash + "#/" + nombreCorto + "/bienvenida");
 	}
+	
+	//mock emails para nodos, hay que gestionar templates especificos para cada caso.
+	public void enviarEmailDeGestionDeSolicitudCreacionNodoFinalizada(Nodo nodo, Vendedor vendedor, String emailAdministradorNodo,
+			String estadoSolicitudNodo) {
+		String nombreUsuario = nodo.getAdministrador().getNombre() + " " +nodo.getAdministrador().getApellido();
+		String inicio = "</br> Su solicitud del nodo <strong>"+ nodo.getAlias() + "</strong> a <strong>" + vendedor.getNombre() + "</strong> ha sido ";
+		String estado = (estadoSolicitudNodo.equals(Constantes.SOLICITUD_NODO_APROBADO))? "aprobado":"rechazado";
+		String fin = ".";
+		String mensaje = inicio + estado + fin;
+		String subject = "[EMAIL TEMPORAL] Su solicitud de nodo a "+ vendedor.getNombre() +" a sido " + estado + ".";
+		enviarEmailNotificacionChasqui("", nombreUsuario, emailAdministradorNodo,mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombrenodo, Cliente usuario) throws VendedorInexistenteException {
+		String nombreUsuario = usuario.getNombre() + " " + usuario.getApellido();
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> a enviado una solicitud de creación de nodo con nombre <strong>"+ nombrenodo + "</strong>, para obtener mas información y gestionar la solicitud, puede hacerlo desde el panel de administración en la sección <strong>nodos->solicitudes</strong>";
+		String subject = "[EMAIL TEMPORAL] Tiene una nueva solicitud de nodo.";
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(idVendedor);
+		enviarEmailNotificacionChasqui("", nombreUsuario, vendedor.getEmail() ,mensaje , subject);
+		
+	}
+	
+	public void enviarEmailDeCancelacionDeSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombrenodo, Cliente usuario) throws VendedorInexistenteException {
+		String nombreUsuario = usuario.getNombre() + " " + usuario.getApellido();
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> a cancelado su solicitud de creación de nodo con nombre <strong>"+ nombrenodo + "</strong>.";
+		String subject = "[EMAIL TEMPORAL] Se cancelo una solicitud de nodo.";
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(idVendedor);
+		enviarEmailNotificacionChasqui("", nombreUsuario, vendedor.getEmail() ,mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario) {
+		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
+		String nombrenodo = nodo.getAlias();
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> le acaba de enviar una solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "</strong>. <br><br> Para mas detalles acceda a desde el catalogo a 'mis grupos->" + nombrenodo +"->Solicitudes'";
+		String subject = "[EMAIL TEMPORAL] Tiene una nueva solicitud para el nodo " + nodo.getAlias() + ".";
+		enviarEmailNotificacionChasqui("", nombreUsuario, nodo.getAdministrador().getEmail(),mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeCancelacionDePertenenciaANodo(SolicitudPertenenciaNodo solicitudpertenencia) {
+		Cliente usuario = (Cliente) solicitudpertenencia.getUsuarioSolicitante();
+		Nodo nodo = solicitudpertenencia.getNodo();
+		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
+		String nombrenodo = nodo.getAlias();
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> cancelo su solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "</strong>. <br><br> Para mas detalles acceda a desde el catalogo a 'mis grupos->" + nombrenodo +"->Solicitudes'";
+		String subject = "[EMAIL TEMPORAL] Han cancelado una solicitud para su nodo " + nodo.getAlias() + ".";
+		enviarEmailNotificacionChasqui("", nombreUsuario, nodo.getAdministrador().getEmail(),mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeGestionDePertenenciaANodo(SolicitudPertenenciaNodo solicitudpertenencia) {
+		Cliente usuario = (Cliente) solicitudpertenencia.getUsuarioSolicitante();
+		Nodo nodo = solicitudpertenencia.getNodo();
+		String estado = (solicitudpertenencia.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO))? "aceptada": "rechazada";
+		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
+		String nombrenodo = nodo.getAlias();
+		String mensaje = "</br> Tu solicitud para ingresar al nodo <strong>"+nombrenodo+ "</strong> a sido <strong>" + estado + "</strong>";
+		if(solicitudpertenencia.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)) {
+			mensaje = mensaje +", para comprar o ver mas detalles, ingresa al catalogo de Chasqui y ve a la sección <strong> mis nodos </strong>.";
+		}else {
+			mensaje = mensaje + ".";
+		}
+		String subject = "[EMAIL TEMPORAL] Tu solicitud de ingreso a " + nombrenodo + " a sido "+estado+".";
+		enviarEmailNotificacionChasqui("", nombreUsuario, usuario.getEmail(),mensaje , subject);
+		
+	}
+	
+	
 
 }

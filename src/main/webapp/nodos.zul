@@ -76,10 +76,8 @@ style="overflow:auto">
 							<listheader label="Acciones" align="center" hflex="4"/>
 					</listhead>		
 				</listbox>
-			<separator spacing="10px"/>
 		</tabpanel>
 		<tabpanel>
-			<separator spacing="15px"/>
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarnodos" visible="true">
 				<menuitem id="menuItemMostrarFiltrosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosNodos"/>
 				<menuitem id="menuItemReiniciarFiltrosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposNodos"/>
@@ -127,7 +125,6 @@ style="overflow:auto">
 						
 					</listhead>		
 				</listbox>
-				<separator spacing="10px"/>
 		</tabpanel>
 		<tabpanel>
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarsolicitudes" visible="true">
@@ -173,10 +170,8 @@ style="overflow:auto">
 								<listheader align="center" label="Acciones"/>
 							</listhead>		
 						</listbox>
-					<separator spacing="10px"/>
 		</tabpanel>
 	</tabpanels>
 </tabbox>
-<separator spacing="10px"/>
 </window>
 </zk>

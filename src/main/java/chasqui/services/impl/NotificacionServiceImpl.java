@@ -15,12 +15,16 @@ import com.google.android.gcm.server.Sender;
 import chasqui.aspect.Auditada;
 import chasqui.dao.NotificacionDAO;
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.exceptions.EncrypterException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
+import chasqui.model.Nodo;
 import chasqui.model.Notificacion;
 import chasqui.model.Pedido;
+import chasqui.model.SolicitudPertenenciaNodo;
+import chasqui.model.Usuario;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.view.composer.Constantes;
 import freemarker.template.TemplateException;
@@ -276,6 +280,43 @@ public class NotificacionServiceImpl implements NotificacionService{
 		minutosResultantes;
 		
 		return fechaResultante;
+	}
+
+	@Override
+	public void notificarSolicitudCreacionNodo(Nodo nodo, String estadoSolicitudNodo) {
+		mailService.enviarEmailDeGestionDeSolicitudCreacionNodoFinalizada(nodo,nodo.getVendedor(),nodo.getEmailAdministradorNodo(),estadoSolicitudNodo);
+		
+	}
+
+	@Override
+	public void notificarSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombrenodo, Cliente usuario) throws VendedorInexistenteException {
+		mailService.enviarEmailDeSolicitudCreacionNodoAVendedor(idVendedor, nombrenodo, usuario);
+		
+	}
+
+	@Override
+	public void notificarCancelacionDeSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombreNodo,
+			Usuario usuarioSolicitante) throws VendedorInexistenteException {
+		mailService.enviarEmailDeCancelacionDeSolicitudCreacionNodoAVendedor(idVendedor, nombreNodo, (Cliente) usuarioSolicitante);
+		
+	}
+
+	@Override
+	public void enviarEmailDeSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario) {
+		mailService.enviarEmailDeAvisoDeSolicitudDePertenenciaANodo(nodo, usuario);
+		
+	}
+
+	@Override
+	public void notificarCancelacionDeSolicitudDePertenenciaANodo(SolicitudPertenenciaNodo solicitudpertenencia) {
+		mailService.enviarEmailDeAvisoDeCancelacionDePertenenciaANodo(solicitudpertenencia);
+		
+	}
+
+	@Override
+	public void notificarGestionDeSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia) {
+		mailService.enviarEmailDeAvisoDeGestionDePertenenciaANodo(solicitudpertenencia);
+		
 	}
 
 }

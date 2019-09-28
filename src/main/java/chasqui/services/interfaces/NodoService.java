@@ -224,7 +224,8 @@ public interface NodoService {
 	public void rechazarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia);
 
 	public SolicitudPertenenciaNodo obtenerSolicitudDe(Integer idNodo, Integer idCliente);
-
+	
+	@Transactional
 	public void reabrirSolicitudDePertenenciaNodo(SolicitudPertenenciaNodo solicitud);
 	/**
 	 * Crea el pedido individual dentro de nodo, y notifica a los demas miembros que se creo.
@@ -239,6 +240,7 @@ public interface NodoService {
 	 * @throws GrupoCCInexistenteException
 	 * @throws PedidoInexistenteException
 	 */
+	@Transactional
 	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException;
 	/**
 	 * Retorna el pedido actual del usuario de ese nodo.
@@ -260,6 +262,7 @@ public interface NodoService {
 	 * @throws GrupoCCInexistenteException 
 	 * @throws ClienteNoPerteneceAGCCException 
 	 */
+	@Transactional
 	public void confirmarPedidoIndividualEnNodo(String email,
 			ConfirmarPedidoSinDireccionRequest confirmarPedidoSinDireccionRequest) throws RequestIncorrectoException, UsuarioInexistenteException, VendedorInexistenteException, PedidoInexistenteException, PedidoSinProductosException, EstadoPedidoIncorrectoException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException;
 	/**

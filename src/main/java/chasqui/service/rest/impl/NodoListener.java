@@ -70,6 +70,7 @@ import chasqui.service.rest.response.SolicitudCreacionNodoResponse;
 import chasqui.service.rest.response.SolicitudDePertenenciaResponse;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.NodoService;
+import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
@@ -311,7 +312,7 @@ public class NodoListener {
 		if(solicitud.getReintentos() > 2) {
 			throw new SolicitudPernenciaNodoException("La solicitud tiene muchos reintentos, solo puede ser invitado por el administrador de nodo");
 		}
-		if(!solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO) || !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)){
+		if(!solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO) && !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)){
 			throw new SolicitudPernenciaNodoException("La solicitud esta en gestión");
 		}
 		if(solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)){
@@ -639,7 +640,7 @@ public class NodoListener {
 	private void cancelarSolicitudDeCreacionDeNodo(CancelarSolicitudCreacionNodoRequest request,
 			String emailAdministrador) throws UsuarioInexistenteException, SolicitudCreacionNodoException, VendedorInexistenteException, ConfiguracionDeVendedorException {
 		Cliente cliente = usuarioService.obtenerClientePorEmail(emailAdministrador);
-		nodoService.cancelarSolicitudDeCreacionNodo(request.getIdSolicitud(), request.getIdVendedor(), cliente.getId());		
+		nodoService.cancelarSolicitudDeCreacionNodo(request.getIdSolicitud(), request.getIdVendedor(), cliente.getId());	
 	}
 
 

@@ -82,12 +82,14 @@ public class NodoServiceImpl implements NodoService {
 		validar(usuario,direccion,idVendedor);
 		validarNombreNodo(nombre,idVendedor);
 		solicitudCreacionNodoDAO.guardar(new SolicitudCreacionNodo(idVendedor,usuario, nombre, direccion, tipo, barrio, descripcion));
+		notificacionService.notificarSolicitudCreacionNodoAVendedor(idVendedor, nombre, usuario);
 	}
 
 	@Override
 	public void crearSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario) throws NodoCerradoException{
 		validarNodo(nodo);
 		solicitudPertenenciaNodoDAO.guardar(new SolicitudPertenenciaNodo(nodo, usuario));
+		notificacionService.enviarEmailDeSolicitudDePertenenciaANodo(nodo,usuario);
 	}
 
 
@@ -213,6 +215,7 @@ public class NodoServiceImpl implements NodoService {
 		validarSolicitud(solicitud);
 		solicitud.setEstado(Constantes.SOLICITUD_NODO_CANCELADO);
 		solicitudCreacionNodoDAO.guardar(solicitud);
+		notificacionService.notificarCancelacionDeSolicitudCreacionNodoAVendedor(idVendedor,solicitud.getNombreNodo(),solicitud.getUsuarioSolicitante());
 	}
 	
 	/**
@@ -309,13 +312,25 @@ public class NodoServiceImpl implements NodoService {
 		Nodo nodo = new Nodo(solicitud, vendedorService.obtenerVendedorPorId(solicitud.getIdVendedor()));
 		solicitud.setEstado(Constantes.SOLICITUD_NODO_APROBADO);
 		solicitudCreacionNodoDAO.guardar(solicitud);
-		nodoDAO.guardarNodo(nodo);		
+		nodoDAO.guardarNodo(nodo);
+		notificacionService.notificarSolicitudCreacionNodo(nodo,Constantes.SOLICITUD_NODO_APROBADO);
 	}
 	
 	@Override
 	public void rechazarSolicitud(SolicitudCreacionNodo solicitud){
 		solicitud.setEstado(Constantes.SOLICITUD_NODO_RECHAZADO);
-		solicitudCreacionNodoDAO.guardar(solicitud);	
+		solicitudCreacionNodoDAO.guardar(solicitud);
+		//creacion de nodo temporal para compatibilidad de email
+		Vendedor vendedor;
+		try {
+			vendedor = vendedorService.obtenerVendedorPorId(solicitud.getIdVendedor());
+			Nodo nodo = new Nodo(solicitud, vendedor);
+			notificacionService.notificarSolicitudCreacionNodo(nodo,Constantes.SOLICITUD_NODO_RECHAZADO);
+		} catch (VendedorInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -466,6 +481,7 @@ public class NodoServiceImpl implements NodoService {
 		nodo.invitarAlNodo(usuario);
 		nodoDAO.guardarNodo(nodo);
 		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);
+		notificacionService.notificarGestionDeSolicitudDePertenencia(solicitudpertenencia);
 	}
 
 	@Override
@@ -476,13 +492,15 @@ public class NodoServiceImpl implements NodoService {
 	@Override
 	public void cancelarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia) {
 		solicitudpertenencia.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_CANCELADO);
-		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);		
+		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);	
+		notificacionService.notificarCancelacionDeSolicitudDePertenenciaANodo(solicitudpertenencia);
 	}
 
 	@Override
 	public void rechazarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia) {
 		solicitudpertenencia.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO);
-		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);				
+		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);	
+		notificacionService.notificarGestionDeSolicitudDePertenencia(solicitudpertenencia);
 	}
 
 	@Override
@@ -496,6 +514,7 @@ public class NodoServiceImpl implements NodoService {
 		solicitud.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_ENVIADO);
 		solicitud.setReintentos(solicitud.getReintentos() + 1);
 		solicitudPertenenciaNodoDAO.guardar(solicitud);
+		notificacionService.enviarEmailDeSolicitudDePertenenciaANodo(solicitud.getNodo(),(Cliente) solicitud.getUsuarioSolicitante());
 		
 	}
 	
