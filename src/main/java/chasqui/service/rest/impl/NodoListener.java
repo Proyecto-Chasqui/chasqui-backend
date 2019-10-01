@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
+import chasqui.exceptions.EncrypterException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.GrupoCCInexistenteException;
 import chasqui.exceptions.NoAlcanzaMontoMinimoException;
@@ -42,11 +43,14 @@ import chasqui.exceptions.UsuarioNoPerteneceAlGrupoDeCompras;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
+import chasqui.model.GrupoCC;
+import chasqui.model.InvitacionAGCC;
 import chasqui.model.Nodo;
 import chasqui.model.Pedido;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
+import chasqui.service.rest.request.AceptarRequest;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
 import chasqui.service.rest.request.CancelarSolicitudCreacionNodoRequest;
 import chasqui.service.rest.request.CederAdministracionRequest;
@@ -63,12 +67,14 @@ import chasqui.service.rest.request.NuevoPedidoIndividualRequest;
 import chasqui.service.rest.request.QuitarMiembroRequest;
 import chasqui.service.rest.request.SolicitudDePertenenciaRequest;
 import chasqui.service.rest.response.ChasquiError;
+import chasqui.service.rest.response.GrupoResponse;
 import chasqui.service.rest.response.NodoAbiertoResponse;
 import chasqui.service.rest.response.NodoResponse;
 import chasqui.service.rest.response.PedidoResponse;
 import chasqui.service.rest.response.SolicitudCreacionNodoResponse;
 import chasqui.service.rest.response.SolicitudDePertenenciaResponse;
 import chasqui.services.interfaces.GrupoService;
+import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.UsuarioService;
@@ -88,6 +94,8 @@ public class NodoListener {
 	UsuarioService usuarioService;
 	@Autowired
 	GrupoService grupoService;
+	@Autowired
+	InvitacionService invitacionService;
 	//testeado
 	@GET
 	@Path("/all/{idVendedor : \\d+ }")
@@ -489,7 +497,7 @@ public class NodoListener {
 	}
 	
 	@POST
-	@Path("/invitacion")
+	@Path("/enviarInvitacion")
 	@Produces("application/json")
 	public Response invitarAGrupo(
 			@Multipart(value = "invitacionRequest", type = "application/json") final String invitacionRequest) {
@@ -501,7 +509,7 @@ public class NodoListener {
 
 			nodoService.invitarANodo(request.getIdGrupo(), request.getEmailInvitado(), emailAdministrador);
 			return Response.ok().build();
-		} catch (IOException e) {
+		}catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError("Error al enviar mail" + e.getMessage())).build();
 		} catch (GrupoCCInexistenteException e) {
 			e.printStackTrace();
@@ -514,8 +522,13 @@ public class NodoListener {
 		} catch (ClassCastException e) {
 			return Response.status(500)
 					.entity(new ChasquiError("El mail invitado ya pertence a un vendedor" + e.getMessage())).build();
-		} catch (Exception e) {
-			return Response.status(RestConstants.ERROR_INTERNO).entity(new ChasquiError(e.getMessage())).build();
+		} catch (EncrypterException e) {
+			e.printStackTrace();
+			return Response.status(RestConstants.ERROR_INTERNO).entity("Error interno de encriptación").build();
+			
+		}  catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(RestConstants.ERROR_INTERNO).entity("error interno").build();
 		}
 	}
 	
@@ -537,6 +550,48 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
+	
+	@POST
+	@Path("/aceptarInvitacion")
+	@Produces("application/json")
+	// @Consumes(MediaType.APPLICATION_JSON)
+	public Response confirmarInvitacionGCC(
+			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString) throws ClienteNoPerteneceAGCCException, GrupoCCInexistenteException{
+		try {
+			String emailClienteLogueado = obtenerEmailDeContextoDeSeguridad();
+			AceptarRequest aceptarReq = this.toAceptarRequest(aceptarReqString);
+			grupoService.confirmarInvitacionGCC(aceptarReq.getIdInvitacion(), emailClienteLogueado);
+			InvitacionAGCC invitacion = invitacionService.obtenerInvitacionAGCCporID(aceptarReq.getIdInvitacion());
+			return Response.ok(toNodoSimpleResponse(nodoService.obtenerNodoPorId(invitacion.getIdGrupo()))).build();
+		} catch (UsuarioInexistenteException e) {
+			return Response.status(RestConstants.CLIENTE_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (IOException e) {
+			return Response.status(RestConstants.IO_EXCEPTION).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	private NodoResponse toNodoSimpleResponse(Nodo nodo) throws ClienteNoPerteneceAGCCException{
+		return new NodoResponse(nodo);
+	}
+	
+	@POST
+	@Path("/rechazarInvitacion")
+	@Produces("application/json")
+	// @Consumes(MediaType.APPLICATION_JSON)
+	public Response rechazarInvitacionGCC(
+			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString){
+		try {
+			String emailClienteLogueado = obtenerEmailDeContextoDeSeguridad();
+			AceptarRequest aceptarReq = this.toAceptarRequest(aceptarReqString);
+			grupoService.rechazarInvitacionGCC(aceptarReq.getIdInvitacion(), emailClienteLogueado);
+			return Response.ok().build();
+		} catch (UsuarioInexistenteException e) {
+			return Response.status(RestConstants.CLIENTE_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (IOException e) {
+			return Response.status(RestConstants.IO_EXCEPTION).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+
 	
 	@POST
 	@Path("/individual")
@@ -771,5 +826,14 @@ public class NodoListener {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		return mapper.readValue(request, ConfirmarPedidoSinDireccionRequest.class);
+	}
+	
+
+	private AceptarRequest toAceptarRequest(String aceptarRequest) throws IOException {
+		AceptarRequest request = new AceptarRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		request = mapper.readValue(aceptarRequest, AceptarRequest.class);
+		return request;
 	}
 }

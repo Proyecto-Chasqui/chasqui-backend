@@ -148,8 +148,7 @@ public class GrupoServiceImpl implements GrupoService {
 	public void confirmarInvitacionGCC(Integer idInvitacion, String emailCliente) throws UsuarioInexistenteException {
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);		
 		InvitacionAGCC invitacion = invitacionService.obtenerInvitacionAGCCporID(idInvitacion);		
-		GrupoCC grupo = grupoDao.obtenerGrupoPorId(invitacion.getIdGrupo());
-		
+		GrupoCC grupo = grupoDao.obtenerGrupoAbsolutoPorId(invitacion.getIdGrupo());
 		invitacionService.aceptarInvitacionAGCC(invitacion);
 		
 		grupo.registrarInvitacionAceptada(cliente);
@@ -167,11 +166,13 @@ public class GrupoServiceImpl implements GrupoService {
 	public void rechazarInvitacionGCC(Integer idInvitacion, String emailCliente) throws UsuarioInexistenteException {
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);		
 		InvitacionAGCC invitacion = invitacionService.obtenerInvitacionAGCCporID(idInvitacion);		
-		GrupoCC grupo = grupoDao.obtenerGrupoPorId(invitacion.getIdGrupo());
+		GrupoCC grupo = grupoDao.obtenerGrupoAbsolutoPorId(invitacion.getIdGrupo());
 		invitacionService.rechazarInvitacionAGCC(invitacion);		
 		grupo.registrarInvitacionRechazada(cliente);
 		grupo.quitarMiembro(cliente);
-		notificacionService.notificar(cliente.getEmail(), grupo.getAdministrador().getEmail(), "El usuario con el email " + cliente.getEmail() + " que invitaste, rechazo tu invitacion al grupo "+ grupo.getAlias() , null);
+		String tipo = (grupo.isEsNodo())? "nodo": "grupo";
+		String mensaje = "El usuario con el email " + cliente.getEmail() + " que invitaste, rechazo tu invitacion al " + tipo + " " + grupo.getAlias();
+		notificacionService.notificar(cliente.getEmail(), grupo.getAdministrador().getEmail(), mensaje, null);
 		grupoDao.guardarGrupo(grupo);
 	}
 
@@ -372,9 +373,7 @@ public class GrupoServiceImpl implements GrupoService {
 				actualizarMiembroGCC(miembroDeGCC);
 			}
 			grupoDao.guardarGrupo(grupo);
-			if(grupo.isEsNodo()) {
-				//definir notificaciones para nodo.
-			}else {
+			//definir mejor respecto a nodo, cuando esten los incentivos.
 				for (MiembroDeGCC miembroDeGCC : miembros) {
 					if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
 						Pedido p = pc.buscarPedidoParaCliente(miembroDeGCC.getEmail());
@@ -386,7 +385,7 @@ public class GrupoServiceImpl implements GrupoService {
 					}
 				}
 				mailService.enviarEmailCierreDePedidoColectivo(pc);
-			}
+
 		}
 		else{
 			throw new RequestIncorrectoException("El usuario "+emailSolicitante + " no es el administrador de :"+ grupo.getAlias());

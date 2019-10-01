@@ -38,6 +38,7 @@ import chasqui.security.Encrypter;
 import chasqui.security.PasswordGenerator;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
+import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
@@ -61,6 +62,8 @@ public class MailService {
 	private InvitacionService invitacionService;
 	@Autowired
 	private GrupoService grupoService;
+	@Autowired
+	private NodoService nodoService;
 	
 	public static final Logger logger = Logger.getLogger(MailService.class);
 	
@@ -101,10 +104,14 @@ public class MailService {
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NOTIFICACION_PEDIDO, destino, Constantes.SUBJECT_ALERT_VENCIMIENTO, params);
 	}
 		
-	public void enviarmailInvitadoSinRegistrar(Cliente clienteOrigen, String destino, String urlVendedor, String nombreCorto, String nombreVendedor, Integer idGrupo) throws Exception  {
+	public void enviarmailInvitadoSinRegistrar(Cliente clienteOrigen, String destino, String urlVendedor, String nombreCorto, String nombreVendedor, Integer idGrupo, boolean esNodo) throws Exception  {
 		Map<String,Object> params = new HashMap<String,Object>();
-		
-		GrupoCC grupo = grupoService.obtenerGrupo(idGrupo);
+		GrupoCC grupo = null;
+		if(esNodo) {
+			grupo = nodoService.obtenerNodoPorId(idGrupo);
+		}else {
+			grupo = grupoService.obtenerGrupo(idGrupo);
+		}
 		String idInvitacion = invitacionService.obtenerInvitacionAGCCporIDGrupo(destino, idGrupo).getId().toString();
 		
 		params.put("nombreEmisor",clienteOrigen.getNombre());
@@ -112,14 +119,25 @@ public class MailService {
 		params.put("aliasGrupo",grupo.getAlias());
 		params.put("nombreVendedor", nombreVendedor);
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
+		String template = "";
+		String subject = "";
+		if(esNodo) {
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
+			template = Constantes.TEMPLATE_INVITAR_NODO_NO_REGISTRADO;
+			subject = Constantes.SUBJECT_INVITACION_NODO_NO_REGISTRADO;
+		}else {
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misGrupos/invitaciones" );
+			template = Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO;
+			subject = Constantes.SUBJECT_INVITACION_NO_REGISTRADO;
+		}
 		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
 		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
 		params.put("catalogoVendedor", catalogo);
 		
-		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO, destino, Constantes.SUBJECT_INVITACION_NO_REGISTRADO, params);
+		this.enviarMailEnThreadAparte(template, destino, subject, params);
 	}
 			
-	public void enviarEmailInvitadoRegistrado(Cliente clienteOrigen, String destino, String aliasGrupo, String urlVendedor, String nombreCorto, String nombreVendedor) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException  {		
+	public void enviarEmailInvitadoRegistrado(Cliente clienteOrigen, String destino, String aliasGrupo, String urlVendedor, String nombreCorto, String nombreVendedor, boolean esNodo) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException  {		
 		Map<String,Object> params = new HashMap<String,Object>();
 		Cliente clienteInvitado = usuarioService.obtenerClientePorEmail(destino);
 		params.put("nombreInvitado", clienteInvitado.getNombre());
@@ -131,12 +149,22 @@ public class MailService {
 		params.put("mailOrigen",clienteOrigen.getEmail());
 		
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
-		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misGrupos/invitaciones" );
+		String template = "";
+		String subject = "";
+		if(esNodo) {
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misNodos/invitaciones" );
+			template = Constantes.TEMPLATE_INVITAR_NODO_REGISTRADO;
+			subject = Constantes.SUBJECT_INVITACION_NODO_REGISTRADO;
+		}else {
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misGrupos/invitaciones" );
+			template = Constantes.TEMPLATE_INVITAR_GCC_REGISTRADO;
+			subject = Constantes.SUBJECT_INVITACION_REGISTRADO;
+		}
 		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
 		params.put("catalogoVendedor", catalogo);
 		
 		
-		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_REGISTRADO, destino,Constantes.SUBJECT_INVITACION_REGISTRADO, params);
+		this.enviarMailEnThreadAparte(template, destino, subject, params);
 		
 	}
 	
@@ -158,7 +186,7 @@ public class MailService {
 
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITACION_CHASQUI, destino, Constantes.SUBJECT_CONOCES_CHASQUI, params);
 	}
-	
+	//subdividir en nodo y grupo.
 	public void enviarEmailDeInvitacionAGCCAceptada(GrupoCC grupo, Cliente invitado) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("aliasGrupo", grupo.getAlias());
@@ -171,9 +199,12 @@ public class MailService {
 		params.put("catalogoVendedor", catalogo);
 		
 		String subject = Constantes.SUBJECT_INVITACION_GCC_ACEPTADA.replaceAll("<usuario>", invitado.getUsername());
-
+		String template = Constantes.TEMPLATE_ACEPTAR_INVITACION_GCC;
+		if(grupo.isEsNodo()) {
+			template = Constantes.TEMPLATE_ACEPTAR_INVITACION_NODO;
+		}
 		
-		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_ACEPTAR_INVITACION_GCC, grupo.getAdministrador().getEmail(), subject, params);
+		this.enviarMailEnThreadAparte(template, grupo.getAdministrador().getEmail(), subject, params);
 	}
 	
 	@Transactional

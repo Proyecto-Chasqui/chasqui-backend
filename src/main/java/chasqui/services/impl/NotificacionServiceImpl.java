@@ -13,6 +13,7 @@ import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 
 import chasqui.aspect.Auditada;
+import chasqui.dao.GrupoDAO;
 import chasqui.dao.NotificacionDAO;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
@@ -25,6 +26,7 @@ import chasqui.model.Notificacion;
 import chasqui.model.Pedido;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
+import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.view.composer.Constantes;
 import freemarker.template.TemplateException;
@@ -41,6 +43,8 @@ public class NotificacionServiceImpl implements NotificacionService{
 	private MailService mailService;
 	@Autowired
 	Integer cantidadDeMinutosParaExpiracion;
+	@Autowired
+	GrupoDAO grupodao;
 	
 	@Override
 	public void guardar(Notificacion notificacion,String idDispositivo) {
@@ -135,13 +139,23 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensaje = mensaje.replaceAll("<grupo>", alias);
 		this.notificar(emailVendedor, emailCliente, mensaje, null);
 	}
+	
+	@Override
+	public void notificarConfirmacionNodoCompraOtroMiembro(String emailVendedor, String emailCliente, String nombreCliente,
+			String alias) {
+		String mensaje = Constantes.CONFIRMACION_COMPRA_NOTIFICACION_OTROMIEMBRO_NODO;
+		mensaje = mensaje.replaceAll("<usuario>", nombreCliente);
+		mensaje = mensaje.replaceAll("<alias>", alias);
+		this.notificar(emailVendedor, emailCliente, mensaje, null);
+	}
 	@Override
 	public void notificarConfirmacionPedidoColectivo(Integer idGrupo, String emailAdministrador, String alias,
 			String emailClienteDestino, String nombreUsuario, String nombreVendedor) {
-
+		GrupoCC grupo = grupodao.obtenerGrupoAbsolutoPorId(idGrupo);
 		String mensaje = Constantes.CONFIRMACION_PEDIDO_COLECTIVO;
 		mensaje = mensaje.replaceAll("<grupo>",alias);
 		mensaje = mensaje.replaceAll("<vendedor>",nombreVendedor);
+		mensaje = mensaje.replaceAll("<colectivo>",(grupo.isEsNodo())? "nodo":"grupo");
 		
 		//--------------Notificación interna
 		this.notificar(emailAdministrador,emailClienteDestino,mensaje, null);
@@ -157,11 +171,11 @@ public class NotificacionServiceImpl implements NotificacionService{
 	public void notificarNuevoPedidoEnGCC(Integer idGrupo, String alias, String emailOriginante, String emailDestinatario, String nicknameDestinatario,
 			String nombreVendedor) {
 		String mensaje =Constantes.NUEVO_PEDIDO_NOTIFICACION_OTROMIEMBRO;
-
+		GrupoCC grupo = grupodao.obtenerGrupoAbsolutoPorId(idGrupo);
 		mensaje = mensaje.replaceAll("<grupo>",alias);
 		mensaje = mensaje.replaceAll("<usuario>",emailOriginante);
 		mensaje = mensaje.replaceAll("<vendedor>",nombreVendedor);
-				
+		mensaje = mensaje.replaceAll("<colectivo>",(grupo.isEsNodo())? "nodo":"grupo");
 		//--------------Notificación interna
 		this.notificar(emailOriginante,emailDestinatario,mensaje, null);
 		//--------------Mail de respaldo (Desestimado, queda comentado para futura opcion de mandar mail si lo desea el usuario)
@@ -174,9 +188,10 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensaje = mensaje.replaceAll("<usuario>", adminGCC.getUsername());
 		mensaje = mensaje.replaceAll("<alias>", grupo.getAlias());
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
+		mensaje = mensaje.replaceAll("<colectivo>",(grupo.isEsNodo())? "nodo":"grupo");
 		
 		this.invitar(adminGCC.getEmail(), emailInvitado, mensaje, idDispositivo,grupo.getId());
-		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getAlias(), grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre());
+		mailService.enviarEmailInvitadoRegistrado(adminGCC, emailInvitado, grupo.getAlias(), grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre(), grupo.isEsNodo());
 	}
 
 
@@ -196,10 +211,11 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensaje = mensaje.replaceAll("<usuario>", adminGCC.getUsername());
 		mensaje = mensaje.replaceAll("<alias>", grupo.getAlias());
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
+		mensaje = mensaje.replaceAll("<colectivo>",(grupo.isEsNodo())? "nodo":"grupo");
 		
 		this.invitar(adminGCC.getEmail(), emailInvitado, mensaje, iddisp,grupo.getId());
 		try{
-			mailService.enviarmailInvitadoSinRegistrar(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre(), grupo.getId());	
+			mailService.enviarmailInvitadoSinRegistrar(adminGCC, emailInvitado, grupo.getVendedor().getUrl(), grupo.getVendedor().getNombreCorto(), grupo.getVendedor().getNombre(), grupo.getId(), grupo.isEsNodo());	
 		} catch (Exception e) {
 			throw new EncrypterException(e);
 		}
@@ -211,6 +227,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensaje = mensaje.replaceAll("<usuario>", invitado.getUsername());
 		mensaje = mensaje.replaceAll("<alias>", grupo.getAlias());
 		mensaje = mensaje.replaceAll("<vendedor>", grupo.getVendedor().getNombre());
+		mensaje = mensaje.replaceAll("<colectivo>",(grupo.isEsNodo())? "nodo":"grupo");
 		
 		this.notificar(invitado.getEmail(), grupo.getAdministrador().getEmail(), mensaje, null);
 		mailService.enviarEmailDeInvitacionAGCCAceptada(grupo, invitado);

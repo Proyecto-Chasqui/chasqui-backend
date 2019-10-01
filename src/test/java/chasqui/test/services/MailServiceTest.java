@@ -151,7 +151,7 @@ public class MailServiceTest extends GenericSetUp {
 		this.vendedor.setUrl("urlVendedor");
 		this.vendedor.setNombreCorto("nombreCorto");
 		
-		mailService.enviarEmailInvitadoRegistrado(this.clienteFulano, this.destinatarioSecundario, "aliasGrupo", this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre());
+		mailService.enviarEmailInvitadoRegistrado(this.clienteFulano, this.destinatarioSecundario, "aliasGrupo", this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre(),false);
 		assertEquals(true , true);
 	}
 
@@ -358,7 +358,7 @@ public class MailServiceTest extends GenericSetUp {
 		notificacionService.notificarInvitacionAGCCClienteNoRegistrado(clienteFulano, this.destinatario, grupo, null);
 		
 		//el email ya es enviado en el metodo "notificarInvitacionAGCCClienteNoRegistrado".
-		mailService.enviarmailInvitadoSinRegistrar(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre(), idGrupo);;
+		mailService.enviarmailInvitadoSinRegistrar(this.clienteFulano, this.destinatario, this.vendedor.getUrl(), this.vendedor.getNombreCorto(), this.vendedor.getNombre(), idGrupo,false);
 		assertEquals(true , true);
 	}
 }

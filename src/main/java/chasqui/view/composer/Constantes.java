@@ -48,12 +48,15 @@ public class Constantes {
 	public static final String AGRADECIMIENTO = "Muchas gracias por utilizar el sistema Chasqui";
 	public static final String SUGERENCIA = "Si tenés alguna duda con respecto a días y lugares de entrega, consultá la información relacionada en la sección <bienvenida>. ";
 	public static final String TEMPLATE_ACEPTAR_INVITACION_GCC ="emailInvitacionAGCCAceptada.ftl";
+	public static final String TEMPLATE_ACEPTAR_INVITACION_NODO = "emailInvitacionANODOAceptada.ftl";
 	public static final String TEMPLATE_BIENVENIDA_VENDEDOR = "emailBienvenida.ftl";
 	public static final String TEMPLATE_BIENVENIDA_CLIENTE = "emailBienvenidaCliente.ftl";
 	public static final String PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE = "emailPedidosColectivosConfirmados.ftl";
 	public static final String TEMPLATE_NOTIFICACION_VENCIMIENTO_PROXIMO = "emailNotificacionGenerica.ftl"; //TODO cambiar template, ahora en desuso
 	public static final String TEMPLATE_NOTIFICACION_PEDIDO = "emailNotificacionGenerica.ftl";
 	public static final String TEMPLATE_NOTIFICACION = "emailNotificacionGenerica.ftl";
+	public static final String TEMPLATE_INVITAR_NODO_NO_REGISTRADO = "emailInvitadoSinRegistrarNodo.ftl";
+	public static final String TEMPLATE_INVITAR_NODO_REGISTRADO = "emailInvitadoRegistradoNodo.ftl";
 	public static final String TEMPLATE_INVITAR_GCC_NO_REGISTRADO = "emailInvitadoSinRegistrar.ftl";
 	public static final String TEMPLATE_INVITAR_GCC_REGISTRADO = "emailInvitadoRegistrado.ftl";//TODO Definir, porque no existe, AUN.
 	public static final String TEMPLATE_INVITACION_CHASQUI = "emailInvitacion.ftl";
@@ -61,7 +64,9 @@ public class Constantes {
 	public static final String SUBJECT_BIENVENIDO = "Bienvenido a Chasqui";
 	public static final String SUBJECT_ALERT_VENCIMIENTO = "Tu Pedido esta a punto de vencer";
 	public static final String SUBJECT_INVITACION_NO_REGISTRADO = "Te han invitado a un grupo de compras colectivas, registrate para seguir!";
+	public static final String SUBJECT_INVITACION_NODO_NO_REGISTRADO = "Te han invitado a un nodo de compras colectivas, registrate para seguir!";
 	public static final String SUBJECT_INVITACION_REGISTRADO = "Te han invitado a un grupo de compras colectivas";
+	public static final String SUBJECT_INVITACION_NODO_REGISTRADO = "Te han invitado a un nodo de compras colectivas";
 	public static final String SUBJECT_CONOCES_CHASQUI = "¿Conocés Chasqui?";
 	public static final String SUBJECT_INVITACION_GCC_ACEPTADA = "<usuario> acepto tu invitacion";
 	public static final String NUEVO_ADMINISTRADOR_SUBJECT = "Usted es el nuevo Administrador";
@@ -77,17 +82,18 @@ public class Constantes {
 	public static final int MAX_SIZE_DESC_LARGA_PRODUCTOR = 8200;
 	public static final String CONFIRMACION_COMPRA_NOTIFICACION ="Tu pedido se ha confirmado con éxito, recibirás un correo con la fecha probable de entrega.";
 	public static final String CONFIRMACION_COMPRA_NOTIFICACION_OTROMIEMBRO = "El usuario <usuario> ha confirmado su pedido en tu grupo de compras <grupo>.";
-	public static final String NUEVO_PEDIDO_NOTIFICACION_OTROMIEMBRO =  "El usuario <usuario> ha iniciado su pedido en el grupo <grupo> del catálogo de <vendedor> ¡No te pierdas esta compra!";
-	public static final String CONFIRMACION_PEDIDO_COLECTIVO = "El administrador del grupo <grupo> en el catálogo de <vendedor> ha confirmado el pedido colectivo.";
+	public static final String CONFIRMACION_COMPRA_NOTIFICACION_OTROMIEMBRO_NODO = "El usuario <usuario> ha confirmado su pedido en tu nodo de compras <alias>.";
+	public static final String NUEVO_PEDIDO_NOTIFICACION_OTROMIEMBRO =  "El usuario <usuario> ha iniciado su pedido en el <colectivo> <grupo> del catálogo de <vendedor> ¡No te pierdas esta compra!";
+	public static final String CONFIRMACION_PEDIDO_COLECTIVO = "El administrador del <colectivo> <grupo> en el catálogo de <vendedor> ha confirmado el pedido colectivo.";
 	public static final String VENCIMIENTO_PEDIDO_TEMPLATE = "emailVencimientoAutomatico.ftl";
 	public static final String TEMPLATE_NUEVO_ADMINISTRADOR = "emailNuevoAdministrador.ftl";
 	public static final String PEDIDO_PREPARADO_TEMPLATE = "emailPedidoPreparado.ftl";
 	public static final String PEDIDOS_PREPARADOS_TEMPLATE = "emailPedidosPreparados.ftl";
-
-	public static final String TXT_INVITACION_GCC = "El usuario <usuario> te ha invitado al grupo de compras colectivas <alias> para el catálogo de <vendedor>";
-	public static final String TXT_INVITACION_GCC_ACEPTADA = "El usuario <usuario> ha aceptado tu invitacion al grupo de compras colectivas <alias> para el catálogo de <vendedor>.";
-	public static final String TXT_NUEVO_ADMINISTRADOR = "El usuario <administradorAnterior> le ha cedido la administracion del grupo de compras colectivas <alias>.";
-	public static final String TXT_ANTERIOR_ADMINISTRADOR = "Se ha realizado el traspaso de la administracion del grupo de compras colectivas <alias> al usuario <nuevoAdministrador>.";
+	
+	public static final String TXT_INVITACION_GCC = "El usuario <usuario> te ha invitado al <colectivo> de compras colectivas <alias> para el catálogo de <vendedor>";
+	public static final String TXT_INVITACION_GCC_ACEPTADA = "El usuario <usuario> ha aceptado tu invitacion al <colectivo> de compras colectivas <alias> para el catálogo de <vendedor>.";
+	public static final String TXT_NUEVO_ADMINISTRADOR = "El usuario <administradorAnterior> le ha cedido la administracion del <colectivo> de compras colectivas <alias>.";
+	public static final String TXT_ANTERIOR_ADMINISTRADOR = "Se ha realizado el traspaso de la administracion del <colectivo> de compras colectivas <alias> al usuario <nuevoAdministrador>.";
 	public static final String PEDIDO_VENCIDO_NOTIFICACION = "Tu pedido abierto el dia <timestamp> del catálogo del vendedor <vendedor> ha expirado por falta de actividad.";
 	
 	//Mensajes de error
@@ -116,4 +122,5 @@ public class Constantes {
 	public static final String SOLICITUD_PERTENENCIA_NODO_CANCELADO = "solicitud_pertenencia_nodo_cancelado";
 	public static final String NODO_ACTIVO = "nodo_activo";
 	public static final String NODO_INACTIVO = "nodo_inactivo";
+	
 }

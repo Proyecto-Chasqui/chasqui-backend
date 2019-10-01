@@ -154,4 +154,7 @@ public interface NotificacionService {
 
 	public void notificarGestionDeSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia);
 
+	void notificarConfirmacionNodoCompraOtroMiembro(String emailVendedor, String emailCliente, String nombreCliente,
+			String alias);
+
 }
