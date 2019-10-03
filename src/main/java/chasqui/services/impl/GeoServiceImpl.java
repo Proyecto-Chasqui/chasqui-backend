@@ -14,35 +14,58 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.zkplus.spring.SpringUtil;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 import chasqui.dao.GrupoDAO;
+import chasqui.dao.PuntoDeRetiroDAO;
 import chasqui.dao.UsuarioDAO;
 import chasqui.dao.VendedorDAO;
 import chasqui.dao.ZonaDAO;
 import chasqui.exceptions.ArchivoConFormatoIncorrectoException;
 import chasqui.exceptions.ErrorDeParseoDeCoordenadasException;
+import chasqui.exceptions.ErrorZona;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
+import chasqui.model.PuntoDeRetiro;
+import chasqui.model.Usuario;
+import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.service.rest.request.EliminarZonaRequest;
+import chasqui.service.rest.request.PuntoDeRetiroRequest;
+import chasqui.service.rest.request.ZonaRequest;
 import chasqui.services.interfaces.GeoService;
+import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.VendedorService;
+import chasqui.utils.ErrorCodes;
+import chasqui.utils.SphericalMercator;
+import chasqui.utils.TokenGenerator;
 
 
 public class GeoServiceImpl implements GeoService{
 	
 	@Autowired ZonaDAO zonaDAO;
+	@Autowired PuntoDeRetiroDAO puntoDeRetiroDAO;
 	@Autowired VendedorDAO vendedorDAO;
 	@Autowired UsuarioDAO usuarioDAO;
 	@Autowired GrupoDAO grupoDAO;
+	@Autowired UsuarioService usuarioService;
+	GeometryFactory geometryFactory = new GeometryFactory();
+	@Autowired
+	TokenGenerator tokenGenerator;
 	
 	// Asume que cada poligono esta definido en una linea, y son todos poligonos.
 	// El numeroZona es para todas las zonas la misma, solo es para la instanciacion de zonas, 
@@ -62,6 +85,94 @@ public class GeoServiceImpl implements GeoService{
 		} catch (IOException e) {
 			new ArchivoConFormatoIncorrectoException("El archivo es incorrecto o no se encuentra en la ruta especificada: /n" + " Path: " + absolutePath);
 		}
+	}
+	
+	@Override
+	public void crearGuardarZona(ZonaRequest request) throws Exception {
+		
+		try {
+			validar(request);
+			ArrayList<ArrayList<Double>> coordenadas = (ArrayList<ArrayList<Double>>) request.getCoordenadas();		
+			Polygon poly = crearPolygon(coordenadas);
+			Zona z;
+			if(request.getId()!=null) {
+				z = zonaDAO.obtenerZonaPorId(request.getId());
+			}else {
+				z = new Zona();
+				z.setIdVendedor(request.getIdVendedor());
+			}
+			z.setGeoArea(poly);
+			z.setNombre(request.getNombre());
+			z.setFechaCierrePedidos(request.getFechaCierre());
+			z.setDescripcion(request.getMensaje());
+			if(!seSolapaCon(z,z.getId(),zonaDAO.obtenerZonas(request.getIdVendedor()))) {
+				zonaDAO.guardar(z);				
+			}else {
+				throw new ErrorZona("ez008");
+			}
+			request.setId(z.getId());
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}			
+		
+		
+	}
+
+	private void validar(ZonaRequest request) {
+		
+		if(! tokenGenerator.tokenActivo(request.getToken())) {
+			throw new ErrorZona("ez001");
+		}
+		
+		if(request.getCoordenadas() == null) {
+			throw new ErrorZona("ez002");
+		}
+		
+		if(request.getFechaCierre().isBeforeNow()) {
+			throw new ErrorZona("ez003");
+		}
+		
+		if(request.getIdVendedor() == null) {
+			throw new ErrorZona("ez004");
+		}
+		
+		if(request.getMensaje().isEmpty()) {
+			throw new ErrorZona("ez005");
+		}
+		
+		if(request.getNombre().isEmpty()) {
+			throw new ErrorZona("ez006");
+		}
+		//verifica que ante una zona nueva no exista el nombre en las zonas existentes.
+		if( request.getId() == null && existeZonaConNombre(request) ) {
+			throw new ErrorZona("ez007");
+		}
+		//verifica que en caso de cambio de nombre a una zona existente, ese cambio de nombre no este asignado a otra zona.
+		if(!laZonaConIdTieneElNombre(request)) {
+			if(existeZonaConNombre(request)){
+				throw new ErrorZona("ez007");
+			}
+		}
+		
+	}
+
+	private boolean laZonaConIdTieneElNombre(ZonaRequest request) {
+		boolean ret=false;
+		if(request.getId() != null) {
+			ret = zonaDAO.obtenerZonaPorId(request.getId()).getNombre().equals(request.getNombre());
+		}
+		return ret;
+	}
+
+	private boolean existeZonaConNombre(ZonaRequest request) {
+		return zonaDAO.obtenerZonaPorNombre(request.getNombre(), request.getIdVendedor()) != null;
+	}
+
+	private Polygon crearPolygon(ArrayList<ArrayList<Double>> coordinates) throws ParseException {
+		String zonaEnformatoWKT = parsearAWkt("Polygon",coordinates);
+		Polygon geoArea = (Polygon) new WKTReader().read(zonaEnformatoWKT);
+		return geoArea;
 	}
 
 	//Asume que el archivo geoJson tiene un campo descripcion (tentativo) con el nombre del vendedor.
@@ -109,6 +220,13 @@ public class GeoServiceImpl implements GeoService{
 	public List<GrupoCC> obtenerGCC_CercanosACliente(String email) throws ParseException{		
 		Geometry area = crearAreaSobreCliente(email);
 		return grupoDAO.obtenerGruposEnUnArea(area);
+	}
+	
+	public Zona calcularZonaDePertenencia(Point punto,Integer idVendedor) {
+		List<Zona> zonas = zonaDAO.obtenerZonas(idVendedor);
+		
+		return null;
+		
 	}
 	
 	/*-------------------------------------------
@@ -215,6 +333,87 @@ public class GeoServiceImpl implements GeoService{
 		return seSolapa;
 	}
 	
+	private Boolean seSolapaCon(Zona zona, Integer idZona, List<Zona>zonas) throws Exception{
+		Boolean seSolapa = false;
+		Double area = 0.0;
+		Double tolerancia = (double) 4000;
+		for(Zona vzona : zonas){
+			if(!seSolapa && vzona.getGeoArea() != null && vzona.getId() != idZona){
+				Geometry geom = zona.getGeoArea().intersection(vzona.getGeoArea());
+				double areacalculada = 0.0;
+				for(int i=0; i<geom.getNumGeometries();i++) {
+					areacalculada = areacalculada + GeoServiceImpl.getArea(geom.getGeometryN(i),true);
+				}
+				if(area < areacalculada) {
+					area = areacalculada;
+				}
+				if(area > tolerancia) {
+					seSolapa = true;
+				}
+			}
+		}
+		
+		return seSolapa;
+	}
+	
+	public static double getArea(Geometry geom, Boolean inMeters) throws Exception
+	{
+		double retArea = 0.0;
+		if (inMeters) {
+			if (geom instanceof Polygon)
+			{
+				Polygon poly = (Polygon) geom;
+				double area = Math.abs(getSignedArea(poly.getExteriorRing().getCoordinateSequence()));
+				
+				for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+					LineString hole =	poly.getInteriorRingN(i);
+					area -= Math.abs(getSignedArea(hole.getCoordinateSequence()));
+				}
+				retArea = area;
+			}
+			else if (geom instanceof LineString)
+			{
+				LineString ring = (LineString)geom;
+				retArea = getSignedArea(ring.getCoordinateSequence());
+			}
+		} else {
+			retArea = geom.getArea();
+		}
+		return retArea;
+	}
+	
+	private static double getSignedArea(CoordinateSequence ring)
+	{
+		int n = ring.size();
+		if (n < 3)
+			return 0.0;
+		Coordinate p0 = new Coordinate();
+		Coordinate p1 = new Coordinate();
+		Coordinate p2 = new Coordinate();
+		getMercatorCoordinate(ring, 0, p1);
+		getMercatorCoordinate(ring, 1, p2);
+		double x0 = p1.x;
+		p2.x -= x0;
+		double sum = 0.0;
+		for (int i = 1; i < n - 1; i++) {
+			p0.y = p1.y;
+			p1.x = p2.x;
+			p1.y = p2.y;
+			getMercatorCoordinate(ring, i + 1, p2);
+			p2.x -= x0;
+			sum += p1.x * (p0.y - p2.y);
+		}
+		return sum / 2.0;
+	}
+	
+	private static void getMercatorCoordinate(CoordinateSequence seq, int index, Coordinate coord)
+	{
+		seq.getCoordinate(index, coord);
+		coord.x = SphericalMercator.lonToX(coord.x);
+		coord.y = SphericalMercator.latToY(coord.y);
+	}
+
+	
 	private void guardarZonas(List<String> nombresDeZonasQueSeSolapan, List<Zona> zonas, Integer idVendedor) {
 		if(!nombresDeZonasQueSeSolapan.isEmpty()){				
 			new ErrorDeParseoDeCoordenadasException(this.mensajeDeErrorZonasSolapadas(nombresDeZonasQueSeSolapan)); 
@@ -228,4 +427,91 @@ public class GeoServiceImpl implements GeoService{
 		
 	}
 	
+	@Override
+	public void crearGuardarPR(PuntoDeRetiroRequest request) {
+		
+			validarPRRequest(request);
+			String latitud = request.getDireccion().getLatitud();
+			String longitud = request.getDireccion().getLongitud();	
+			Point point = new GeometryFactory().createPoint(new Coordinate(Double.parseDouble(latitud),Double.parseDouble(longitud)));
+			PuntoDeRetiro puntoDeRetiro;
+			Vendedor vendedor = vendedorDAO.obtenerVendedorPorId(request.getIdVendedor());
+			if(request.getId()!=null) {
+				puntoDeRetiro = vendedor.obtenerPuntoDeRetiro(request.getId());
+			}else {
+				puntoDeRetiro = new PuntoDeRetiro();
+				vendedor.agregarPuntoDeRetiro(puntoDeRetiro);
+			}
+			puntoDeRetiro.setNombre(request.getNombre());
+			puntoDeRetiro.setDescripcion(request.getDescripcion());
+			puntoDeRetiro.setDisponible(request.isHabilitado());
+			puntoDeRetiro.setDireccion(request.getDireccion());
+			puntoDeRetiro.setGeoUbicacion(point);
+			usuarioDAO.guardarUsuario(vendedor);
+			request.setId(puntoDeRetiro.getId());
+	}
+	
+	private void validarPRRequest(PuntoDeRetiroRequest request) {
+		
+		if(! tokenGenerator.tokenActivo(request.getToken())) {
+			throw new ErrorZona("ez001");
+		}
+		
+		if(request.getDireccion() == null) {
+			throw new ErrorZona("ez002");
+		}
+		
+		if(request.getDireccion().getLatitud() == null) {
+			throw new ErrorZona("ez002");
+		}
+		
+		if(request.getDireccion().getLongitud() == null) {
+			throw new ErrorZona("ez002");
+		}
+		
+		if(request.getIdVendedor() == null) {
+			throw new ErrorZona("ez004");
+		}
+		
+		if(request.getDescripcion().isEmpty()) {
+			throw new ErrorZona("ez005");
+		}
+		
+		if(request.getNombre().isEmpty()) {
+			throw new ErrorZona("ez006");
+		}
+		/*
+		//verifica que ante una zona nueva no exista el nombre en las zonas existentes.
+		if( request.getId() == null && existeZonaConNombre(request) ) {
+			throw new ErrorZona("ez007");
+		}
+		//verifica que en caso de cambio de nombre a una zona existente, ese cambio de nombre no este asignado a otra zona.
+		if(!laZonaConIdTieneElNombre(request)) {
+			if(existeZonaConNombre(request)){
+				throw new ErrorZona("ez007");
+			}
+		}
+		*/
+	}
+
+	@Override
+	public void eliminarZona(EliminarZonaRequest request) {
+		Vendedor usuario = this.usuarioDAO.obtenerVendedorPorID(request.getIdVendedor());
+		Zona zona = this.zonaDAO.obtenerZonaPorId(request.getId());
+		usuarioService.inicializarListasDe(usuario);
+		usuario.eliminarZona(zona);
+		usuarioService.guardarUsuario(usuario);
+	}
+	
+	@Override
+	public void eliminarPuntoDeRetiro(EliminarZonaRequest request) {
+		Vendedor usuario = this.usuarioDAO.obtenerVendedorPorID(request.getIdVendedor());
+		PuntoDeRetiro puntoDeRetiro = puntoDeRetiroDAO.obtenerPuntoDeRetiro(request.getId());
+		usuarioService.inicializarListasDe(usuario);
+		usuario.eliminarPuntoDeRetiro(puntoDeRetiro);
+		usuarioService.guardarUsuario(usuario);
+	}	
+	
 }
+
+

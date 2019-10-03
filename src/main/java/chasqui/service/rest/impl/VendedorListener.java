@@ -13,8 +13,11 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import chasqui.exceptions.PuntoDeRetiroInexistenteException;
+import chasqui.exceptions.TokenInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Nodo;
+import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
@@ -28,6 +31,7 @@ import chasqui.service.rest.response.ZonaResponse;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
+import chasqui.utils.TokenGenerator;
 
 @Service
 @Path("/vendedor")
@@ -43,6 +47,8 @@ public class VendedorListener {
 	@Autowired
 	NodoService nodoService;
 	
+	@Autowired
+	TokenGenerator tokenGenerator;
 	
 	@GET
 	@Path("/all")
@@ -55,7 +61,6 @@ public class VendedorListener {
 		}
 	}
 	
-
 	@GET
 	@Path("/nodosAbiertos/{idVendedor : \\d+ }")
 	@Produces("application/json")
@@ -68,6 +73,7 @@ public class VendedorListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
+
 	
 	@GET
 	@Path("/zonas/{idVendedor}")
@@ -118,6 +124,20 @@ public class VendedorListener {
 	}
 	
 	@GET
+	@Path("/byToken/{token}")
+	@Produces("application/json")
+	public Response obtenerVendedorPorToken(@PathParam("token")String token){
+		try {
+			Integer idVendedor = tokenGenerator.getIdDeVendedorConToken(token);
+			return Response.ok(new VendedorResponse(vendedorService.obtenerVendedorPorId(idVendedor))).build();
+		} catch (TokenInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	@GET
 	@Path("/puntosDeRetiro/{nombreVendedor}")
 	@Produces("application/json")
 	public Response obtenerPuntosDeRetiroDeVendedor(@PathParam("nombreVendedor")String nombreVendedor){
@@ -130,6 +150,35 @@ public class VendedorListener {
 		}
 	}
 	
+	@GET
+	@Path("/puntosDeRetiro/id/{idVendedor}")
+	@Produces("application/json")
+	public Response obtenerPuntosDeRetiroPorIdDeVendedor(@PathParam("idVendedor")Integer idVendedor){
+		try{
+			this.validarEstrategiaActiva("PR", idVendedor);
+			return Response.ok(new PuntosDeRetiroResponse(vendedorService.obtenerVendedorPorId(idVendedor).getPuntosDeRetiro())).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch(PuntoDeRetiroInexistenteException e){			
+			return Response.status(401).build();
+		}
+		catch(Exception e){			
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	private void validarEstrategiaActiva(String codigo_estrategia, Integer idVendedor) throws Exception {
+		EstrategiasDeComercializacion estrategias = vendedorService.obtenerVendedorPorId(idVendedor).getEstrategiasUtilizadas();
+		switch(codigo_estrategia) {
+			case "PR": if(!estrategias.isPuntoDeEntrega()) {
+							throw new PuntoDeRetiroInexistenteException();
+						};
+					break;
+			}
+	}
+
+
+
 	@GET
 	@Path("/preguntasDeConsumoIndividual/{nombreVendedor}")
 	@Produces("application/json")

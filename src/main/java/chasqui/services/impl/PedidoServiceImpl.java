@@ -32,6 +32,7 @@ import chasqui.model.Zona;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
+import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
@@ -57,6 +58,7 @@ public class PedidoServiceImpl implements PedidoService {
 	private NotificacionService notificacionService;
 	@Autowired
 	private Integer cantidadDeMinutosParaExpiracion;
+
 	
 	@Override
 	public List<Pedido> obtenerPedidosExpirados(Integer idVendedor) {
@@ -334,7 +336,9 @@ public class PedidoServiceImpl implements PedidoService {
 		
 		vendedor.descontarStockYReserva(pedido);
 		cliente.confirmarPedido(request.getIdPedido(),request.getIdDireccion(),request.getIdPuntoDeRetiro());
-		
+		if(request.getIdDireccion() !=null) {
+			pedido.setZona(zonaService.obtenerZonaDePertenenciaDeDireccion(pedido.getDireccionEntrega().getGeoUbicacion(),pedido.getIdVendedor()));
+		}		
 		
 		notificacionService.enviarAClienteSuPedidoConfirmado(vendedor.getEmail(), email, pedido);
 		usuarioService.guardarUsuario(cliente);

@@ -120,6 +120,8 @@
 	   </bean>
 	   
 	   <bean id="applicationContextProvider" name="applicationContextProvider" class="chasqui.model.ApplicationContextProvider"/>
+
+	   <bean id="tokenGenerator" name="tokenGenerator" class="chasqui.utils.TokenGenerator"></bean>
 	   <!--  <bean id="webSocketManager" name="webSocketManager" class="chasqui.service.websocket.impl.WebSocketManager"></bean> -->
 	   <!-- SERVICIO EMAIL -->
 	   

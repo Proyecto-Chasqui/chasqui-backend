@@ -24,6 +24,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Fileupload;
+import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
@@ -35,6 +36,7 @@ import chasqui.model.Zona;
 import chasqui.services.impl.FileSaver;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.ZonaService;
+import chasqui.utils.TokenGenerator;
 
 @SuppressWarnings({"deprecation","unused"})
 public class ZonasComposer extends GenericForwardComposer<Component> {
@@ -59,7 +61,8 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 	private FileSaver fileSaver;
 	private ZonaService zonaService;
 	private UsuarioService usuarioService;
-	
+	private Iframe mapFrame;
+	private TokenGenerator tokenGenerator;
 	
 	
 	
@@ -71,9 +74,12 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		c.addEventListener(Events.ON_NOTIFY,new SubirImagenListener(this));
 		zonas = zonaService.buscarZonasBy(usuario.getId());
-		if(usuario.getMapaZonas() != null){
-			imgMapa.setSrc(usuario.getMapaZonas());			
+		tokenGenerator = (TokenGenerator) SpringUtil.getBean("tokenGenerator");
+		String urlMap = usuario.getMapaZonas();
+		if(urlMap == null || urlMap.equals("") || urlMap.contains("google")) {
+			urlMap = "http://" + Executions.getCurrent().getServerName() + ":" + Executions.getCurrent().getServerPort()+"/map/";
 		}
+		mapFrame.setSrc(urlMap+"?token="+tokenGenerator.generarTokenParaVendedor(usuario.getId()));
 		binder = new AnnotateDataBinder(c);
 		binder.loadAll();
 	}
@@ -253,6 +259,14 @@ public class ZonasComposer extends GenericForwardComposer<Component> {
 
 	public void setZonas(List<Zona> zonas) {
 		this.zonas = zonas;
+	}
+
+	public Iframe getMapFrame() {
+		return mapFrame;
+	}
+
+	public void setMapFrame(Iframe mapFrame) {
+		this.mapFrame = mapFrame;
 	}
 	
 	

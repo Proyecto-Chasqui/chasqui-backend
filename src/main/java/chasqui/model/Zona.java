@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.joda.time.DateTime;
 
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class Zona {
@@ -73,11 +74,17 @@ public class Zona {
 		this.geoArea = geoArea;
 	}
 
-	public void editar(String msg, Date fechaCierrePedidos, String zona) {
+	public void editar(String msg, Date fechaCierrePedidos, String nombreZona) {
 		descripcion = msg;
 		this.fechaCierrePedidos = new DateTime(fechaCierrePedidos.getTime());
-		nombre = zona;
-		
+		nombre = nombreZona;
+	}
+	
+	public void editarConGeo(String msg, Date fechaCierrePedidos, String nombreZona, Polygon geoarea) {
+		descripcion = msg;
+		this.fechaCierrePedidos = new DateTime(fechaCierrePedidos.getTime());
+		nombre = nombreZona;
+		this.geoArea = geoarea;
 	}
 
 

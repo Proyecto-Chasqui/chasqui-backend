@@ -352,6 +352,15 @@ public class Vendedor extends Usuario{
 		}
 		return ret;
 	}
+	
+	public PuntoDeRetiro obtenerPuntoDeRetiro(Integer id){
+		for(PuntoDeRetiro pr: puntosDeRetiro){
+			if( pr.getId() == id) {
+				return pr;
+			} 
+		}
+		return null;
+	}
 
 	public void eliminarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiroSeleccionado) {
 		ArrayList<PuntoDeRetiro> refill = new ArrayList<PuntoDeRetiro>();
