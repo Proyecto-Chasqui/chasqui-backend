@@ -31,6 +31,12 @@ apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
 			</listcell>         	 		
 		</listitem>
 		<listitem>
+			<listcell style="text-align: center"  label="Utiliza incentivos"/>
+			<listcell style="text-align: center">
+				<checkbox id="utilizaIncentivos"/>
+			</listcell>         	 		
+		</listitem>
+		<listitem>
 			<listcell style="text-align: center"  label="Punto de entrega"/>
          	<listcell style="text-align: center">
          		<checkbox id="puntoDeEntrega"/>

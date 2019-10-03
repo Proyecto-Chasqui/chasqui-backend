@@ -12,6 +12,7 @@ public class Variante {
 	private Integer stock;
 	private Integer cantidadReservada;
 	private Double precio;
+	private Double incentivo;
 	private String nombre;
 	private Producto producto;
 	private Boolean destacado;
@@ -144,6 +145,14 @@ public class Variante {
 	public void eliminarReserva(Integer cantidad) {
 		cantidadReservada -= cantidad;
 		
+	}
+
+	public Double getIncentivo() {
+		return incentivo;
+	}
+
+	public void setIncentivo(Double incentivo) {
+		this.incentivo = incentivo;
 	}	
 	
 }

@@ -33,6 +33,10 @@
             <column name="PRECIO" />
         </property>
         
+        <property name="incentivo" type="java.lang.Double">
+            <column name="INCENTIVO" not-null="true" default="0.0"/>
+        </property>
+        
         <property name="nombre" type="java.lang.String">
             <column name="NOMBRE" />
         </property>

@@ -36,8 +36,10 @@ import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
@@ -74,6 +76,9 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private Toolbarbutton botonCancelar;
 	private Textbox agregarCaractTextbox;
 	private Popup popUpCaracteristica;
+	private Tab tabdetalles;
+	private Tab tabdescsellos;
+	private Listitem listitemincentivo;
 	private Producto model;
 	private List<Caracteristica> caracteristicas;
 	private Categoria categoriaSeleccionada;
@@ -85,6 +90,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private FabricanteDAO fabricantedao;
 	private Vendedor usuario;
 	private boolean modoEdicion;
+	private Doublebox incentivo;
+	private Doublebox totalPrecio;
 	
 	
 	private UsuarioService usuarioService;
@@ -153,6 +160,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		modoEdicion= true;
 		imgRender.setLectura(true);
 		listImagenes.setDisabled(false);
+		listitemincentivo.setVisible(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos());
 		if(model.getCategoria() != null && model.getFabricante() != null){
 			categoriaSeleccionada = model.getCategoria();
 			productorSeleccionado = model.getFabricante();
@@ -163,6 +171,9 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		if(!model.getVariantes().isEmpty()){
 			modelv = model.getVariantes().get(0);
 			doubleboxPrecio.setValue(modelv.getPrecio());
+			incentivo.setValue(modelv.getIncentivo());
+			totalPrecio.setReadonly(true);
+			totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
 			intboxStock.setValue(modelv.getStock());
 			textboxCodigo.setValue(modelv.getCodigo());
 			ckEditor.setValue(modelv.getDescripcion());
@@ -217,9 +228,12 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		modelv.setImagenes(imagenes);
 		modelv.setStock(intboxStock.getValue());
 		modelv.setPrecio(doubleboxPrecio.getValue());
+		if(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos()) {
+			modelv.setIncentivo(incentivo.getValue());
+		}
 		modelv.setCantidadReservada(0);
 		modelv.setProducto(model);
-
+		
 		if(model == null){			
 			modelv.setDestacado(false);
 			model.getVariantes().add(modelv);			
@@ -264,19 +278,19 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private void validaciones(){
 		String nombre = nombreProducto.getValue();
 		if(StringUtils.isEmpty(nombre)){
-			throw new WrongValueException(nombreProducto,"El nombre no debe ser vacio!");
+			throw new WrongValueException(tabdetalles,"El nombre no debe ser vacio!");
 		}
 		if(categoriaSeleccionada == null){
-			throw new WrongValueException(comboCategorias,"Se debe seleccionar una categoria");
+			throw new WrongValueException(tabdetalles,"Se debe seleccionar una categoria");
 		}
 		if(productorSeleccionado == null){
-			throw new WrongValueException(comboFabricantes,"Se debe seleccionar un productor");
+			throw new WrongValueException(tabdetalles,"Se debe seleccionar un productor");
 		}
 		if(textboxCodigo == null || textboxCodigo.getValue().equals("")){
-			throw new WrongValueException(textboxCodigo,"Se debe escribir un codigo de producto	");
+			throw new WrongValueException(tabdetalles,"Se debe escribir un codigo de producto	");
 		}
 		if(existeCodigo(textboxCodigo.getValue())) {
-			throw new WrongValueException(textboxCodigo,"El código del producto ya existe");
+			throw new WrongValueException(tabdetalles,"El código del producto ya existe");
 		}
 	}
 	
@@ -502,6 +516,9 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		doubleboxPrecio.setDisabled(true);
 		intboxStock.setDisabled(true);
 		uploadImagen.setDisabled(true);
+		listitemincentivo.setVisible(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos());
+		listitemincentivo.setDisabled(true);
+		totalPrecio.setDisabled(true);
 		ckEditor.setCustomConfigurationsPath("/js/ckEditorReadOnly.js");
 		
 	}
@@ -529,7 +546,10 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			binder.loadAll();
 		}
 	}
-
+	
+	public void onCalcularTotal() {
+		totalPrecio.setValue(incentivo.getValue() + doubleboxPrecio.getValue());
+	}
 	
 	
 	public void refresh() {
@@ -551,21 +571,31 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	
 	private void ejecutarValidaciones() throws IOException{
 		Double precio = doubleboxPrecio.getValue();
+		Double vincentivo = incentivo.getValue();
 		Integer stock = intboxStock.getValue();
 		String descripcion = ckEditor.getValue();
 
 		if(precio == null || precio < 0){
-			throw new WrongValueException(doubleboxPrecio,"El precio debe ser mayor a 0");
+			throw new WrongValueException(tabdetalles,"El precio no debe ser menor a 0");
 		}
+		
+		if(vincentivo == null || vincentivo < 0){
+			throw new WrongValueException(tabdetalles,"El Incentivo no debe ser negativo");
+		}
+		
+		if(vincentivo + precio < 0){
+			throw new WrongValueException(tabdetalles,"El el precio total no debe ser menor a 0");
+		}
+		
 		if(stock == null || stock < 0){
-			throw new WrongValueException(intboxStock,"El Stock debe ser mayor a 0");
+			throw new WrongValueException(tabdetalles,"El Stock debe ser mayor a 0");
 		}
 		if(StringUtils.isEmpty(descripcion)){
-			throw new WrongValueException(ckEditor,"La descripción no debe ser vacia");
+			throw new WrongValueException(tabdescsellos,"La descripción no debe ser vacia");
 		}
 		
 		if(descripcion.length() > 355){
-			throw new WrongValueException(ckEditor,"La descripción es demasiado larga");
+			throw new WrongValueException(tabdescsellos,"La descripción es demasiado larga");
 		}
 		int previews = 0;
 		for(Imagen i : imagenes){
@@ -574,7 +604,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			}
 		}
 		if(previews > 1){
-			throw new WrongValueException(listImagenes,"No se puede elegir mas de una imagen de previsualización");
+			throw new WrongValueException(tabdetalles,"No se puede elegir mas de una imagen de previsualización");
 		}
 		
 		
@@ -587,6 +617,46 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 
 	public void setImagenes(List<Imagen> imagenes) {
 		this.imagenes = imagenes;
+	}
+
+	public Tab getTabdetalles() {
+		return tabdetalles;
+	}
+
+	public void setTabdetalles(Tab tabdetalles) {
+		this.tabdetalles = tabdetalles;
+	}
+
+	public Tab getTabdescsellos() {
+		return tabdescsellos;
+	}
+
+	public void setTabdescsellos(Tab tabdescsellos) {
+		this.tabdescsellos = tabdescsellos;
+	}
+
+	public Listitem getListitemincentivo() {
+		return listitemincentivo;
+	}
+
+	public void setListitemincentivo(Listitem listitemincentivo) {
+		this.listitemincentivo = listitemincentivo;
+	}
+
+	public Doublebox getIncentivo() {
+		return incentivo;
+	}
+
+	public void setIncentivo(Doublebox incentivo) {
+		this.incentivo = incentivo;
+	}
+
+	public Doublebox getTotalPrecio() {
+		return totalPrecio;
+	}
+
+	public void setTotalPrecio(Doublebox totalPrecio) {
+		this.totalPrecio = totalPrecio;
 	}
 	
 }

@@ -42,6 +42,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	private Checkbox nodos; 
 	private Checkbox puntoDeEntrega; 
 	private Checkbox entregaADomicilio;
+	private Checkbox utilizaIncentivos;
 	private UsuariosActualesComposer usuariosActualesComposer;
 	private AdministracionComposer admComposer;
 	private Component usuariosActualesComponent;
@@ -125,6 +126,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	 	colectiva.setChecked(estrategias.isGcc());
 	 	puntoDeEntrega.setChecked(estrategias.isPuntoDeEntrega());
 	 	entregaADomicilio.setChecked(estrategias.isSeleccionDeDireccionDelUsuario());
+	 	utilizaIncentivos.setChecked(estrategias.isUtilizaIncentivos());
 	}
 	
 	private void liberarChecks(){
@@ -133,6 +135,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		colectiva.setChecked(false);
 		puntoDeEntrega.setChecked(false);
 		entregaADomicilio.setChecked(false);
+		utilizaIncentivos.setChecked(false);
 		textboxTiempoVencimiento.setValue("");
 		urlMapa.setValue("");
 		usuarioSeleccionado = null;
@@ -154,6 +157,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 	estrategias.setGcc(colectiva.isChecked());
 		 	estrategias.setPuntoDeEntrega(puntoDeEntrega.isChecked());
 		 	estrategias.setSeleccionDeDireccionDelUsuario(entregaADomicilio.isChecked());
+		 	estrategias.setUtilizaIncentivos(utilizaIncentivos.isChecked());
 		 	Integer tiempo = Integer.parseInt(textboxTiempoVencimiento.getValue());
 		 	usuarioSeleccionado.setTiempoVencimientoPedidos(tiempo);
 		 	usuarioSeleccionado.setMapaZonas(urlMapa.getValue());
@@ -270,6 +274,14 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 
 	public void setUrlMapa(Textbox urlMapa) {
 		this.urlMapa = urlMapa;
+	}
+
+	public Checkbox getUtilizaIncentivos() {
+		return utilizaIncentivos;
+	}
+
+	public void setUtilizaIncentivos(Checkbox utilizaIncentivos) {
+		this.utilizaIncentivos = utilizaIncentivos;
 	}
 }
 

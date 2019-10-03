@@ -7,6 +7,7 @@ public class ProductoPedido {
 	private Integer id;
 	private Integer idVariante;
 	private Double precio;
+	private Double incentivo;
 	private String nombreProducto;
 	private String nombreVariante;
 	private Integer cantidad;
@@ -101,6 +102,14 @@ public class ProductoPedido {
 
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
+	}
+
+	public Double getIncentivo() {
+		return incentivo;
+	}
+
+	public void setIncentivo(Double incentivo) {
+		this.incentivo = incentivo;
 	}
 	
 	
