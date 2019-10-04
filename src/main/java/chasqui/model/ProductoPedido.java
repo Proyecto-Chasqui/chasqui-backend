@@ -25,6 +25,7 @@ public class ProductoPedido {
 		precio = v.getPrecio();
 		imagen = (v.getImagenes().size()>0)?v.getImagenes().get(0).getPath():null;
 		setNombreProductor(vnombreProductor);
+		incentivo = 0.0;
 	}
 
 	//GETs & SETs

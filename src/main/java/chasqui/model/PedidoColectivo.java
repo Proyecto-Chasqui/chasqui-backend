@@ -86,6 +86,16 @@ public class PedidoColectivo implements IPedido{
 		return trim2decimals(total);
 	}
 	
+	public Double getMontoTotalDeIncentivos() {
+		Double total=0.0;
+		for(Pedido pedido: pedidosIndividuales.values()){
+			if(estaConfirmado(pedido.getEstado())){
+				total=total+pedido.getMontoTotalIncentivo();
+			}
+		}			
+		return trim2decimals(total);
+	}
+	
 	private boolean estaConfirmado(String estado) {
 		return estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}

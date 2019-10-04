@@ -194,7 +194,7 @@ public class PedidoServiceImpl implements PedidoService {
 		validarVendedorParaCreacionDePedido(cliente, vendedor);
 
 		Pedido p = new Pedido(vendedor, cliente, true, nuevaFechaVencimiento(vendedor.getTiempoVencimientoPedidos())); 
-		//p.setPedidoColectivo(grupo.getPedidoActual());
+		p.setPedidoColectivo(grupo.getPedidoActual());
 		cliente.agregarPedido(p);
 		usuarioService.guardarUsuario(cliente);
 		return p;
@@ -208,13 +208,18 @@ public class PedidoServiceImpl implements PedidoService {
 			throws UsuarioInexistenteException, ProductoInexistenteException, PedidoVigenteException,
 			RequestIncorrectoException, EstadoPedidoIncorrectoException, VendedorInexistenteException {
 		
+		
 		validarRequest(request);
 		Pedido p = pedidoDAO.obtenerPedidoPorId(request.getIdPedido());
+		Vendedor v = usuarioService.obtenerVendedorPorID(p.getIdVendedor());
 		Variante variante = productoService.obtenerVariantePor(request.getIdVariante());
 		Integer tiempoVencimiento = usuarioService.obtenerVendedorPorID(p.getIdVendedor()).getTiempoVencimientoPedidos();
-		validar(variante, null, request);
+		validar(variante, null, request, p);
 		
 		ProductoPedido pp = new ProductoPedido(variante, request.getCantidad(),variante.getProducto().getFabricante().getNombre());
+		if(v.getEstrategiasUtilizadas().isUtilizaIncentivos()) {
+			pp.setIncentivo(variante.getIncentivo());
+		}
 		p.agregarProductoPedido(pp, nuevaFechaVencimiento(tiempoVencimiento));
 		p.sumarAlMontoActual(variante.getPrecio(), request.getCantidad());
 		variante.reservarCantidad(request.getCantidad());
@@ -422,6 +427,10 @@ public class PedidoServiceImpl implements PedidoService {
 			throw new ProductoInexistenteException(
 					"No se puede quitar mas cantidad de un producto de la que el usuario posee en su pedido");
 		}
+		if(pedido.getIdVendedor() != v.getIdVendedor()) {
+			throw new ProductoInexistenteException(
+					"No se puede quitar un producto que no es del vendedor");
+		}
 	}
 	
 	private boolean contieneProductoEnPedido(Variante v, Pedido p) {
@@ -440,11 +449,14 @@ public class PedidoServiceImpl implements PedidoService {
 		return false;
 	}
 
-	private void validar(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request)
+	private void validar(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request, Pedido p)
 			throws ProductoInexistenteException, PedidoVigenteException, RequestIncorrectoException {
 		//validacionesGenerales(v, c, request);
 		if (!v.tieneStockParaReservar(request.getCantidad())) {
 			throw new ProductoInexistenteException("El producto no posee más Stock");
+		}
+		if(v.getIdVendedor() != p.getIdVendedor()) {
+			throw new ProductoInexistenteException("El producto no pertenece al vendedor solicitado");
 		}
 	}
 

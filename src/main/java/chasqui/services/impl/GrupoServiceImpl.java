@@ -358,7 +358,10 @@ public class GrupoServiceImpl implements GrupoService {
 		PuntoDeRetiro puntoderetiro = buscarpuntoderetiro(grupo.getVendedor(), idPuntoDeRetiro);
 		Zona zona=null;
 		if(direccion != null){
-			zona = zonaService.obtenerZonaDePertenenciaDeDireccion(direccion.getGeoUbicacion(), grupo.getVendedor().getId());
+			Zona subzona = zonaService.obtenerZonaDePertenenciaDeDireccion(direccion.getGeoUbicacion(), grupo.getVendedor().getId());
+			if(subzona != null) {
+				zona = buscarZona(grupo.getVendedor(),subzona.getId());
+			}			
 		}
 		if(!(direccion == null ^ puntoderetiro == null)){
 			throw new DireccionesInexistentes("El punto de retiro o direccion seleccionada no existe"); 

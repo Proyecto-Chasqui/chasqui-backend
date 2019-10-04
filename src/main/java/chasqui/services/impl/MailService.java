@@ -275,7 +275,7 @@ public class MailService {
 		String catalogo = this.generarUrlCatalogo(vendedor.getUrl(), vendedor.getNombreCorto());
 		String cuerpoCliente;
 		String tablaDireccionDeEntrega;
-		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
+		String tablaContenidoPedido = armarTablaContenidoDePedido(p,vendedor.getEstrategiasUtilizadas().isUtilizaIncentivos());
 		String cuerpoVendedor;
 		
 		if(p.getPerteneceAPedidoGrupal()) {
@@ -355,15 +355,15 @@ public class MailService {
 			textoEnEmail = "Tu pedido de " + pedido.getNombreVendedor() +" esta preparado para que lo puedas pasar a retirar. El detalle de tu pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar tu pedido";
 		}
-		
-		String tablaContenidoPedido = armarTablaContenidoDePedido(pedido);
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(pedido.getIdVendedor());
+		boolean usaIncentivo = vendedor.getEstrategiasUtilizadas().isUtilizaIncentivos();
+		String tablaContenidoPedido = armarTablaContenidoDePedido(pedido,usaIncentivo);
 		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedido, direccion,textoDeDireccionDeEntrega);
 		
 		params.put("tablaContenidoPedido", tablaContenidoPedido);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
 		params.put("textoDetalle", textoEnEmail);
 		params.put("textoDeDireccionDeEntrega", textoDeDireccionDeEntrega);
-		Vendedor vendedor = vendedorService.obtenerVendedorPorId(pedido.getIdVendedor());
 		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(), vendedor.getNombreCorto()) + "> bienvenida </a>"));
 		
 		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), formarTag(pedido) +Constantes.PEDIDO_PREPARADO_SUBJECT, params);
@@ -466,14 +466,14 @@ public class MailService {
 	private String armarTablaContenidoDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		
 		String tablaContenidoDePedidoColectivo ="";
-		
+		Boolean usaIncentivo = pedidoColectivo.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
 		Iterator<Entry<String, Pedido>> it = pedidoColectivo.getPedidosIndividuales().entrySet().iterator();
 		while (it.hasNext()) {
 		    Entry<String, Pedido> pair = it.next();
 		    Pedido pedido = pair.getValue();
 		    if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
 		    	tablaContenidoDePedidoColectivo += armarInformacionDelCliente(pedido.getCliente());
-		    	tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido);
+		    	tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido,usaIncentivo);
 		    }
 		}
 		
@@ -720,11 +720,11 @@ public class MailService {
 	}
 	
 
-	private String armarTablaContenidoDePedido(Pedido p) {
+	private String armarTablaContenidoDePedido(Pedido p, boolean usaIncentivos) {
 		String tabla = armarHeader();
-		String footer = armarFooter(p.getMontoActual());
+		String footer = armarFooter((usaIncentivos)?p.getMontoActual()+p.getMontoTotalIncentivo():p.getMontoActual());
 		for(ProductoPedido pp : p.getProductosEnPedido()){
-			tabla += armarFilaDetalleProducto(pp);
+			tabla += armarFilaDetalleProducto(pp,usaIncentivos);
 		}		
 		tabla += footer + "<br>";
 		return tabla;
@@ -743,10 +743,11 @@ public class MailService {
 		       + "<tbody>";
 	}
 	
-	private String armarFilaDetalleProducto(ProductoPedido pp){
+	private String armarFilaDetalleProducto(ProductoPedido pp, boolean usaIncentivos){
+		Double precio = (usaIncentivos)? pp.getPrecio() + pp.getIncentivo() : pp.getPrecio();
 		return  "<tr>"
 				+	"<td>"+pp.getNombreProducto()+"</td>"
-				+	"<td>"+pp.getPrecio()+"</td>"
+				+	"<td>"+precio+"</td>"
 				+	"<td>"+pp.getCantidad()+"</td>"
 				+"</tr>";
 				

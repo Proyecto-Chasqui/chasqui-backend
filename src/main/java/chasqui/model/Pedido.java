@@ -132,6 +132,14 @@ public class Pedido implements IPedido {
 		return trim2decimals(monto);
 	}
 	
+	public Double getMontoTotalIncentivo() {
+		double monto = 0.0; 
+		for (ProductoPedido p : productosEnPedido) {
+			monto = monto + (p.getCantidad() * p.getIncentivo());
+		}
+		return trim2decimals(monto);
+	}
+	
 	private Double trim2decimals(Double d) {
 		String trim = df.format(d); 
 		Double value = Double.parseDouble(trim.replace(",","."));
@@ -271,7 +279,7 @@ public class Pedido implements IPedido {
 
 	@Override
 	public Double getMontoTotal() {
-		return this.montoActual;
+		return this.getMontoActual();
 	}
 
 	@Override
