@@ -305,7 +305,7 @@ public class GrupoCC {
 		this.pedidoActual.setComentario(comentario);
 		this.pedidoActual.confirmarte();
 		this.historial.agregarAHistorial(this.pedidoActual);
-		this.historial.setId(this.id);
+		this.historial.setIdGCC(this.id);
 		this.pedidoActual = new PedidoColectivo();
 		this.pedidoActual.setColectivo(this);
 	}

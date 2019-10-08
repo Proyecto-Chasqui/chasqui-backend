@@ -13,6 +13,7 @@ import org.zkoss.zul.Label;
 
 import chasqui.dtos.PedidoDTO;
 import chasqui.dtos.VarianteDTO;
+import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
 
@@ -55,19 +56,29 @@ public class ProductosEnPedidoComposer extends GenericForwardComposer<Component>
 		this.binder.loadAll();
 	}
 	
-
-	/**
-	 * TODO Este metodo solo maneja pedidos individuales
-	 * cambiar para que acepte pedidos colectivoss
-	 */
 	
 	private PedidoDTO buildPedidoDTO(Pedido pedido){
 
 				List<ProductoPedido> listaProductosEnPedido = new ArrayList();
 				listaProductosEnPedido.addAll(pedido.getProductosEnPedido());		
 		PedidoDTO pedidodto = new PedidoDTO(pedido);
-	    pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
-			
+		if(pedido.getPerteneceAPedidoGrupal()) {
+			GrupoCC colectivo = pedido.getPedidoColectivo().getColectivo();
+			boolean esNodo = colectivo.isEsNodo();
+			boolean usaIncentivo = colectivo.getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
+			boolean esAdmin = colectivo.getAdministrador().getEmail().equals(pedido.getCliente().getEmail());
+			if(esNodo) {
+				if(usaIncentivo) {
+					pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido, esAdmin);
+				}else {
+					pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
+				}
+			}else {
+				pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
+			}
+		}else {
+			pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
+		}
 		return pedidodto;
 	}
 	

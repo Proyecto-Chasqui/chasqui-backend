@@ -26,7 +26,7 @@ public class PedidoDTO {
 		this.username = pedido.getCliente().getUsername();
 		this.zona = pedido.getZona();
 		domicilio = pedido.getDireccionEntrega();
-		montoTotal = pedido.getMontoActual();
+		montoTotal = definirMontoSegunIncentivos(pedido);
 		pedidosIndividuales = new ArrayList<PedidoIndividualDTO>();
 		esIndividual = !pedido.getPerteneceAPedidoGrupal()&&pedido.getPuntoDeRetiro()==null;
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
@@ -42,7 +42,21 @@ public class PedidoDTO {
 		esIndividual = false;
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
 	}
-
+	
+	private double definirMontoSegunIncentivos(Pedido pedido) {
+			boolean esColectivo = pedido.getPerteneceAPedidoGrupal();
+			if(esColectivo) {
+				GrupoCC colectivo = pedido.getPedidoColectivo().getColectivo();
+				boolean conIncentivo = colectivo.getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
+				if(conIncentivo) {
+					if(colectivo.getAdministrador().getEmail().equals(pedido.getCliente().getEmail())) {
+						return pedido.getMontoActual() + pedido.getMontoTotalIncentivo();
+					}			
+				}
+			}
+			return pedido.getMontoActual();
+	}
+	
 	public List<PedidoIndividualDTO> getPedidosIndividuales() {
 		return pedidosIndividuales;
 	}
@@ -62,7 +76,7 @@ public class PedidoDTO {
 	public void addPedidoIndividual(String userMail, List<ProductoPedido> productosPedidos) {
 
 		PedidoIndividualDTO nuevoPedido = new PedidoIndividualDTO(userMail);
-
+		
 		for (ProductoPedido pp : productosPedidos) {
 			nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
 		}
@@ -70,6 +84,23 @@ public class PedidoDTO {
 		this.pedidosIndividuales.add(nuevoPedido);
 
 	}
+	//usado para mostrar el precio correcto, si es admin o no en los productos del panel (si el incentivo esta activado).
+	public void addPedidoIndividual(String email, List<ProductoPedido> listaProductosEnPedido, boolean esAdmin) {
+		PedidoIndividualDTO nuevoPedido = new PedidoIndividualDTO(email);
+		if(esAdmin) {
+			for (ProductoPedido pp : listaProductosEnPedido) {
+				nuevoPedido.addVariante(pp.getPrecio() + pp.getIncentivo(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
+			}
+		}else {
+			for (ProductoPedido pp : listaProductosEnPedido) {
+				nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
+			}
+		}
+
+		this.pedidosIndividuales.add(nuevoPedido);
+		
+	}
+	
 
 	public Direccion getDomicilio() {
 		return domicilio;
@@ -122,6 +153,7 @@ public class PedidoDTO {
 	public void setSinConfirmar(Boolean sinConfirmar) {
 		this.sinConfirmar = sinConfirmar;
 	}
-	
+
+
 	
 }

@@ -77,20 +77,37 @@ public class PedidoColectivo implements IPedido{
 
 	@Override
 	public Double getMontoTotal() {
+		boolean usaIncentivo = this.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
 		Double total=0.0;
 		for(Pedido pedido: pedidosIndividuales.values()){
-			if(estaConfirmado(pedido.getEstado())){
-				total=total+pedido.getMontoActual();
-			}
+			total = total + calcularSegunIncentivo(pedido,usaIncentivo);
 		}			
 		return trim2decimals(total);
 	}
 	
+	private Double calcularSegunIncentivo(Pedido pedido, boolean usaIncentivo) {
+		if(estaConfirmado(pedido.getEstado())){
+			if(usaIncentivo) {
+				if(pedido.getCliente().getEmail().equals(this.getColectivo().getAdministrador().getEmail())) {
+					return pedido.getMontoActual()+pedido.getMontoTotalIncentivo();
+				}else{
+					return pedido.getMontoActual();
+				}
+			}else {
+				return pedido.getMontoActual();
+			}
+		}
+		return 0.0;
+		
+	}
+
 	public Double getMontoTotalDeIncentivos() {
 		Double total=0.0;
 		for(Pedido pedido: pedidosIndividuales.values()){
 			if(estaConfirmado(pedido.getEstado())){
-				total=total+pedido.getMontoTotalIncentivo();
+				if(!pedido.getCliente().getEmail().equals(this.getColectivo().getAdministrador().getEmail())) {
+					total=total+pedido.getMontoTotalIncentivo();
+				}
 			}
 		}			
 		return trim2decimals(total);

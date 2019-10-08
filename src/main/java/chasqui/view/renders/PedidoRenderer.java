@@ -17,7 +17,9 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
+import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
 import chasqui.model.Zona;
 import chasqui.view.composer.Constantes;
 import chasqui.view.composer.PedidosColectivosComposer;
@@ -73,7 +75,7 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 
 		celdaMontoMinimo = new Listcell(String.valueOf(pedido.getMontoMinimo()));
 
-		celdaMontoActual = new Listcell(String.valueOf(pedido.getMontoActual()));
+		celdaMontoActual = new Listcell(String.valueOf(definirMonto(pedido)));
 		if(!pedido.getPerteneceAPedidoGrupal()) {
 			if (pedido.getMontoMinimo() <= pedido.getMontoActual()|| pedido.getPuntoDeRetiro() != null) {
 				celdaMontoActual.setStyle("color:green;");
@@ -129,6 +131,20 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 		celdaBotones.setParent(item);
 	}
 	
+	private Double definirMonto(Pedido pedido) {
+		boolean esColectivo = pedido.getPerteneceAPedidoGrupal();
+		if(esColectivo) {
+			GrupoCC colectivo = pedido.getPedidoColectivo().getColectivo();
+			boolean conIncentivo = colectivo.getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
+			if(conIncentivo) {
+				if(colectivo.getAdministrador().getEmail().equals(pedido.getCliente().getEmail())) {
+					return pedido.getMontoActual() + pedido.getMontoTotalIncentivo();
+				}			
+			}
+		}
+		return pedido.getMontoActual();
+	}
+
 	private Listcell crearCeldaSegunEstado(Pedido pedido) {
 		Listcell ret;
 		if(pedido.getPerteneceAPedidoGrupal() && pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)){

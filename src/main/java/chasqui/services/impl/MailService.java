@@ -393,11 +393,11 @@ public class MailService {
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
-			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>ha sido confirmado. El detalle de tu pedido es el siguiente:";
+			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b> del "+definirTexto(pedidoColectivo)+" ha sido confirmado. El detalle de tu pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "La dirección elegida es la siguiente:";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() + " </b>ha sido confirmado. El detalle de tu pedido es el siguiente:";
+			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() + " </b> del "+definirTexto(pedidoColectivo)+" ha sido confirmado. El detalle de tu pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="El punto de retiro elegido es el siguiente:";
 		}
 		//Genero tabla de contenido de pedido de cada persona
@@ -417,16 +417,21 @@ public class MailService {
 		
 	}
 	
+	private String definirTexto(PedidoColectivo p) {
+		return (p.getColectivo().isEsNodo())?"nodo "+p.getColectivo().getAlias():"grupo "+p.getColectivo().getAlias();
+	}
+	
 	public void enviarEmailPreparacionDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		Direccion direccion;
+		boolean esNodo = pedidoColectivo.getColectivo().isEsNodo();
 		String catalogo = this.generarUrlCatalogo(pedidoColectivo.getColectivo().getVendedor().getUrl(), pedidoColectivo.getColectivo().getVendedor().getNombreCorto());
 		params.put("catalogoVendedor", catalogo);
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
-			textoEnEmail = "Hola, "+ this.generateSpan(pedidoColectivo.getColectivo().getAdministrador().getNombre(), "00adee") +". El pedido colectivo del grupo "+ this.generateSpan(pedidoColectivo.getColectivo().getAlias(), "00adee") +" está preparado para ser entregado. El detalle del pedido es el siguiente:";
+			textoEnEmail = "Hola, "+ this.generateSpan(pedidoColectivo.getColectivo().getAdministrador().getNombre(), "00adee") +". El pedido colectivo del "+ ((esNodo)? " nodo ":" grupo ") + this.generateSpan(pedidoColectivo.getColectivo().getAlias(), "00adee") +" está preparado para ser entregado. El detalle del pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
@@ -471,14 +476,18 @@ public class MailService {
 		while (it.hasNext()) {
 		    Entry<String, Pedido> pair = it.next();
 		    Pedido pedido = pair.getValue();
-		    if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+		    if(pedidosuperioraconfirmado(pedido)) {
 		    	tablaContenidoDePedidoColectivo += armarInformacionDelCliente(pedido.getCliente());
 		    	tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido,usaIncentivo);
 		    }
 		}
-		
+		tablaContenidoDePedidoColectivo += armarTablaConTotales(pedidoColectivo,usaIncentivo);
 		return tablaContenidoDePedidoColectivo;
 		
+	}
+
+	private boolean pedidosuperioraconfirmado(Pedido pedido) {
+		return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}
 
 	private String armarInformacionDelCliente(Cliente cliente) {
@@ -719,6 +728,65 @@ public class MailService {
 			return "";
 	}
 	
+	private String armarTablaConTotales(PedidoColectivo p, boolean usaIncentivos) {
+		String tabla = (usaIncentivos)?armarHeaderTotalesIncentivos():armarHeaderTotales();
+		if(usaIncentivos) {
+			tabla += armarFilaTotalConIncentivos(p);
+		}else {
+			tabla += armarFilaPrecioTotal(p);
+		}
+		return tabla;
+	}
+	
+	private String armarFilaTotalConIncentivos(PedidoColectivo p){
+		Double precioTotal =  p.getMontoTotal() + p.getMontoTotalDeIncentivos();
+		return  "<tr>"
+				+	"<td> $"+p.getMontoTotalDeIncentivos()+"</td>"
+				+	"<td> $"+p.getMontoTotal()+"</td>"
+				+	"<td> $"+precioTotal+"</td>"
+				+ "</tr>"
+				+"</tbody>"
+				+"</table>"
+				+"<br>"
+				+"<strong>Aclaración:</strong> En el <strong>incentivo total</strong> no se calcula el de tu <strong>pedido como administrador</strong>, tenes que pagar el precio completo. <br>"
+				+"En el caso que pidas con un solo pedido para el nodo, vas a tener que hacer los calculos correspondientes.";
+				
+				
+		//"<tr><td>"+ pp.getNombreProducto() + pp.getNombreVariante() + "</td><td>" +pp.getPrecio()+ "</td><td> "+ pp.getCantidad() +"</td></tr>";
+	}
+	private String armarFilaPrecioTotal(PedidoColectivo p){
+		return  "<tr>"
+				+ "<td> $"+p.getMontoTotal()+"</td>"
+				+ "</tr>"
+				+"</tbody>"
+				+"</table>";
+				
+				
+		//"<tr><td>"+ pp.getNombreProducto() + pp.getNombreVariante() + "</td><td>" +pp.getPrecio()+ "</td><td> "+ pp.getCantidad() +"</td></tr>";
+	}	
+	
+	private String armarHeaderTotalesIncentivos() {
+		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
+			   + "<thead bgcolor=\"#313231\">" 
+			   +  "<tr height=\"32\">"
+			   +     "<th><font color=\"white\">TOTAL DE INCENTIVO</font></th>"
+			   +     "<th><font color=\"white\">TOTAL A PAGAR</font></th>"
+			   +     "<th><font color=\"white\">TOTAL DEL PEDIDO COLECTIVO</font></th>"
+			   +  "</tr>"
+			   + "</thead>"
+			   + "<tbody>";
+	}
+	
+	private String armarHeaderTotales() {
+		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
+			   + "<thead bgcolor=\"#313231\">" 
+			   +  "<tr height=\"32\">"
+			   +     "<th><font color=\"white\">TOTAL A PAGAR</font></th>"
+			   +  "</tr>"
+			   + "</thead>"
+			   + "<tbody>";
+	}
+	
 
 	private String armarTablaContenidoDePedido(Pedido p, boolean usaIncentivos) {
 		String tabla = armarHeader();
@@ -747,7 +815,7 @@ public class MailService {
 		Double precio = (usaIncentivos)? pp.getPrecio() + pp.getIncentivo() : pp.getPrecio();
 		return  "<tr>"
 				+	"<td>"+pp.getNombreProducto()+"</td>"
-				+	"<td>"+precio+"</td>"
+				+	"<td>$"+precio+"</td>"
 				+	"<td>"+pp.getCantidad()+"</td>"
 				+"</tr>";
 				
