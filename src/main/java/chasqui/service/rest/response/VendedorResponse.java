@@ -49,12 +49,14 @@ public class VendedorResponse implements Serializable{
 		this.getFew().setNodos(estrategia.isNodos());
 		this.getFew().setPuntoDeEntrega(estrategia.isPuntoDeEntrega());
 		this.getFew().setSeleccionDeDireccionDelUsuario(estrategia.isSeleccionDeDireccionDelUsuario());
+		this.getFew().setUsaIncentivos(estrategia.isUtilizaIncentivos());
 		
 		this.getApp().setCompraIndividual(estrategia.isCompraIndividualEnApp());
 		this.getApp().setGcc(estrategia.isGccEnApp());
 		this.getApp().setNodos(estrategia.isNodosEnApp());
 		this.getApp().setPuntoDeEntrega(estrategia.isPuntoDeEntregaEnApp());
 		this.getApp().setSeleccionDeDireccionDelUsuario(estrategia.isSeleccionDeDireccionDelUsuario());
+		this.getApp().setUsaIncentivos(estrategia.isUtilizaIncentivos());
 		
 	}
 

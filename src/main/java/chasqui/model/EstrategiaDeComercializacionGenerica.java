@@ -7,6 +7,7 @@ public class EstrategiaDeComercializacionGenerica {
 	private boolean compraIndividual;
 	private boolean puntoDeEntrega;
 	private boolean seleccionDeDireccionDelUsuario;
+	private boolean usaIncentivos;
 
 	public EstrategiaDeComercializacionGenerica(){}
 	
@@ -16,6 +17,7 @@ public class EstrategiaDeComercializacionGenerica {
 		this.nodos = false;
 		this.puntoDeEntrega = false;
 		this.seleccionDeDireccionDelUsuario = true;
+		this.usaIncentivos = false;
 	}
 	
 	public boolean isNodos() {
@@ -56,5 +58,13 @@ public class EstrategiaDeComercializacionGenerica {
 	
 	public void setGcc(boolean gcc) {
 		this.gcc = gcc;
+	}
+
+	public boolean isUsaIncentivos() {
+		return usaIncentivos;
+	}
+
+	public void setUsaIncentivos(boolean usaIncentivos) {
+		this.usaIncentivos = usaIncentivos;
 	}
 }
