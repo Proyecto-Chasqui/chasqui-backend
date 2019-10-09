@@ -187,11 +187,21 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		try {
 			Clients.showBusy(window,"Generando el archivo, por favor espere...");
 			PedidoColectivo pedidoc = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
-			this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
-			List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
-			pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
-			pedidomerge = obtenerSoloConfirmados(pedidomerge);
-			export.exportColectivos(pedidomerge);
+			if(pedidoc.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos() && pedidoc.getColectivo().isEsNodo()) {
+				this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+				List<Pedido> pedidomerge = this.pedidoColectivoMergeParaIncentivos(pedidosDentroDeColectivo,pedidoc);
+				this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+				alterarPreciosDelPedidoDelAdmin(pedidosDentroDeColectivo,pedidoc.getColectivo().getAdministrador().getEmail());
+				pedidomerge.addAll(pedidosDentroDeColectivo);
+				pedidomerge = obtenerSoloConfirmados(pedidomerge);
+				export.exportColectivos(pedidomerge);
+			}else {
+				this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+				List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
+				pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
+				pedidomerge = obtenerSoloConfirmados(pedidomerge);
+				export.exportColectivos(pedidomerge);
+			}
 			Clients.clearBusy(window);
 			Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 		} catch (Exception e) {
@@ -203,6 +213,62 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		this.binder.loadAll();
 	}
 	
+	private List<Pedido> alterarPreciosDelPedidoDelAdmin(List<Pedido> pedidosmerge, String email) {
+		List<Pedido> pedidos = new ArrayList<Pedido> ();
+		for(Pedido p: pedidosmerge) {
+			if(p.getCliente().getEmail().equals(email)) {
+				alterarPreciosConIncentivo(p);
+				pedidos.add(p);
+			}else {
+				pedidos.add(p);
+			}
+		}
+		return pedidos;
+	}
+
+	private void alterarPreciosConIncentivo(Pedido p) {
+		for(ProductoPedido pp : p.getProductosEnPedido()){
+			pp.setPrecio(pp.getPrecio() + pp.getIncentivo());
+		}
+	}
+
+	private List<Pedido> pedidoColectivoMergeParaIncentivos(List<Pedido> pedidosDentroDeColectivo,
+			PedidoColectivo pedidoColectivo) throws EstadoPedidoIncorrectoException {
+		List<Pedido>pedidoGrupalCompleto = new ArrayList<Pedido>();
+		Pedido pedidogeneralgrupal = new Pedido(usuarioLogueado,pedidoColectivo.getColectivo().getAdministrador(),false, new DateTime());
+		pedidogeneralgrupal.setDireccionEntrega(pedidoColectivo.getDireccionEntrega());
+		pedidogeneralgrupal.setPuntoDeRetiro(pedidoColectivo.getPuntoDeRetiro());
+		pedidogeneralgrupal.setComentario(pedidoColectivo.getComentario());
+		pedidogeneralgrupal.setZona(pedidoColectivo.getZona());
+		pedidogeneralgrupal.setRespuestasAPreguntas(pedidoColectivo.getRespuestasAPreguntas());
+		String emailadmin = pedidoColectivo.getColectivo().getAdministrador().getEmail();
+		for(Pedido p : pedidosDentroDeColectivo){
+			if(this.pedidoEnEstadoConfirmado(p)){
+				if(p.getCliente().getEmail().equals(emailadmin)) {
+					for(ProductoPedido pp : p.getProductosEnPedido()){
+						ProductoPedido ppcopia = copiarProducto(pp);
+						ppcopia.setPrecio(ppcopia.getPrecio() + ppcopia.getIncentivo());
+						pedidogeneralgrupal.agregarProductoPedidoConValidaciones(ppcopia, null);
+					}
+				}else {
+					for(ProductoPedido pp : p.getProductosEnPedido()){
+						ProductoPedido ppcopia = copiarProducto(pp);
+						pedidogeneralgrupal.agregarProductoPedidoConValidaciones(ppcopia, null);
+					}
+				}
+			}
+		}
+		
+		pedidogeneralgrupal.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		pedidoGrupalCompleto.add(pedidogeneralgrupal);
+		return pedidoGrupalCompleto;
+	}
+
+	private void alterarPreciosDePedidoAdministrador(List<Pedido> pedidosDentroDeColectivo2, String emailadmin) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private List<Pedido> obtenerSoloConfirmados(List<Pedido> pedidosTotales){
 		List<Pedido> pedidos = new ArrayList<Pedido> ();
 		
@@ -232,7 +298,8 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 			if(this.pedidoEnEstadoConfirmado(p)){
 				for(ProductoPedido pp : p.getProductosEnPedido()){
 					ProductoPedido ppcopia = copiarProducto(pp);
-					pedidogeneralgrupal.agregarProductoPedido(ppcopia, null);
+					//si falla cambiar a "agregarProductoPedido(ppcopia,null)";
+					pedidogeneralgrupal.agregarProductoPedidoConValidaciones(ppcopia, null);
 				}
 			}
 		}
@@ -252,6 +319,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		ppc.setNombreProducto(pp.getNombreProducto());
 		ppc.setNombreVariante(pp.getNombreVariante());
 		ppc.setPrecio(pp.getPrecio());
+		ppc.setIncentivo(pp.getIncentivo());
 		return ppc;
 	}
 
