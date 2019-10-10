@@ -4,117 +4,220 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window title="Alta/Edición de Productores" id="productorWindow" position="center,top"
+<window title="Alta/Edición de Productor" id="productorWindow" position="center,top"
 apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  sizable="true" closable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
-<listbox>
-	<listhead>
-		<listheader/>
-		<listheader/>
-	</listhead>
-	<listitem>
-		<listcell>
-			<label value="${c:l('zk.listheader.label.abmCategoria.nombre')} *"/>
-		</listcell>
-		<listcell>
-			<textbox maxlength="100" id="textboxNombreProductor"/>	
-		</listcell>
-	</listitem>
-	<listitem>
-		<listcell>
-			<label value="País:"/>
-		</listcell>
-		<listcell>
-			<textbox id="txtPais" maxlength="30"/>
-		</listcell>
-	</listitem>
-	<listitem>
-		<listcell>
-			<label value="Provincia:"/>
-		</listcell>
-		<listcell>
-			<textbox id="txtProvincia" maxlength="30"/>
-		</listcell>
-	</listitem>
-	<listitem>
-		<listcell>
-			<label value="Localidad:"/>
-		</listcell>
-		<listcell>
-			<textbox id="txtLocalidad" maxlength="30"/>
-		</listcell>
-	</listitem>
-	<listitem>
-		<listcell>
-			<label value="Calle:"/>
-		</listcell>
-		<listcell>
-			<textbox id="txtDireccion" maxlength="30"/>
-		</listcell>
-	</listitem>
-	<listitem>
-		<listcell label="Altura:"/>
-		<listcell>
-			<intbox id="altura" maxlength="5"/>
-		</listcell>
-	</listitem>
-	<listitem>
-		<listcell label="Descripción breve: * (300 caracteres max.)"/>
-		<listcell>
-			<textbox id="descCorta" maxlength="300" rows="3" width="90%" forward="onChange=productorWindow$composer.onCalcularTotalCaracteresCorta"/>
-		</listcell>
-	</listitem>
-	<listitem height="30%">
-		<listcell label="Descripción Larga: * (8200 caracteres max.)"/>
-		<listcell>
-			<textbox id="descLarga" maxlength="8200" height="100px" rows="3" width="90%"  forward="onChange=productorWindow$composer.onCalcularTotalCaracteres"/>
-		</listcell>
-	</listitem>
-	<listitem>
-		<listcell>
-			<image width="20px" height="20px" id="imagenProductor"/>
-		</listcell>
-		<listcell>
-			<fileupload label="Subir Imagen" id="uploadImagen" upload="true,maxsize=-1" />
-		</listcell>
-	</listitem>
-	<listitem>
-		<listcell label="Sello:"/>
-		<listcell>
-			<hbox>
-<!-- 			<combobox readonly="true" id="comboCaracteristica" model="@{productorWindow$composer.caracteristicas}"
-			itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"
-			selectedItem="@{productorWindow$composer.caracteristicaSeleccionada}"/>
- 			<toolbarbutton image="/imagenes/plus.png" id="agregarCaracteristicaButton"/> -->
-			</hbox>
-		</listcell>
-	</listitem>
-</listbox>
-
-	<listbox id="listboxCaracteristicas" mold="paging" pageSize="3" selectedItem="@{productorWindow$composer.caracteristicaSeleccionada}"
-		model="@{productorWindow$composer.model.caracteristicasProductor}" rows="3">
-		<auxhead>
-			<auxheader colspan="2">
-				<combobox id="comboCaracteristica" placeholder="Seleccione un sello"  readonly="true" model="@{productorWindow$composer.caracteristicas}"
-				selectedItem="@{productorWindow$composer.caracteristicaProductorSeleccionada}"
-				itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"/>
-			</auxheader>
-		</auxhead>
-		<listhead>
-			<listheader label="${c:l('zk.listcell.label.abmProducto.caracteristica')}"/>
-			<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
-		</listhead>
-		<listitem self="@{each=caracteristica}">			
-			<listcell>
-				<image src="@{caracteristica.getPathImagen}" height="16px" width="16px"/>
-				<label  maxlength="25" value="@{caracteristica.getNombre}"/>
-			</listcell>
-			<listcell>
-				<image src="/imagenes/trash.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.eliminar')}"
-				forward="onClick=productorWindow$composer.onEliminarCaracteristica" visible="@{productorWindow$composer.mostrarBorrarCaract}"/>
-			</listcell>
-		</listitem>
-	</listbox>
+<style>
+.z-notification-pointer ~ .z-notification-content
+    {
+        display:table-cell;
+        width:auto;
+        height:50px;
+        min-height:60px;
+        padding:5px 18px 5px 45px;
+        vertical-align:middle;
+    }
+    .title {
+    	background-color: #00b8fc;
+    	border-style: solid;
+    	border-width: 1px;
+    	border-color:LightGray;
+    }
+    </style>
+<tabbox width="100%" mold="accordion">
+	<tabs >
+		<tab id="tabdetalles"  label="Datos del productor"  image="/imagenes/productor.png"/>
+		<tab id="tabdesc" label="Descripciones"  image="/imagenes/blog.png"/>
+		<tab id="tabimgsellos" label="Imagen y sellos"  image="/imagenes/image-editor.png"/>
+	</tabs>
+	<tabpanels>
+			<tabpanel>
+			<!-- Datos productor -->
+				  <div align="center" class="title" >
+					<auxhead>
+			           	<auxheader label="Datos" style="color: white;" />
+			        </auxhead>
+			       </div>
+					<listbox>
+						<listhead>
+							<listheader width="25%" />
+							<listheader/>
+						</listhead>
+						<listitem>
+							<listcell>
+								<label value="${c:l('zk.listheader.label.abmCategoria.nombre')} *"/>
+							</listcell>
+							<listcell>
+								<textbox maxlength="100" width="100%" id="textboxNombreProductor"/>	
+							</listcell>
+						</listitem>
+						<listitem>
+							<listcell>
+								<label value="País:"/>
+							</listcell>
+							<listcell>
+								<textbox id="txtPais" maxlength="30" width="100%"/>
+							</listcell>
+						</listitem>
+						<listitem>
+							<listcell>
+								<label value="Provincia:"/>
+							</listcell>
+							<listcell>
+								<textbox id="txtProvincia" maxlength="30" width="100%"/>
+							</listcell>
+						</listitem>
+						<listitem>
+							<listcell>
+								<label value="Localidad:"/>
+							</listcell>
+							<listcell>
+								<textbox id="txtLocalidad" maxlength="30" width="100%"/>
+							</listcell>
+						</listitem>
+						<listitem>
+							<listcell>
+								<label value="Calle:"/>
+							</listcell>
+							<listcell>
+								<textbox id="txtDireccion" maxlength="30" width="100%"/>
+							</listcell>
+						</listitem>
+						<listitem>
+							<listcell label="Altura:"/>
+							<listcell>
+								<intbox id="altura" maxlength="5" width="100%"/>
+							</listcell>
+						</listitem>
+					</listbox>
+			</tabpanel>
+			<!-- descripciones -->
+			<tabpanel>
+				  <div align="center" class="title" >
+					<auxhead>
+			           	<auxheader label="Descripción breve *(300 carácteres max.)" style="color: white;" />
+			        </auxhead>
+				   <image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudadesc" src="/imagenes/question.png" />
+	        		
+	        		 <popup id="ayudadesc" width="400px">
+	        			<html><![CDATA[ Campo de descripción corta del productor. <br />
+	        					Este campo es <font color="red">obligatorio</font>. <br /><br />
+	        					Sera visible en el catálogo al hacer click en el <font color="blue">nombre del productor</font> en los productos. <br /><br />
+	        					<strong>Nota:</strong> Tenga en cuenta que si pega un texto mayor a 300 carácteres
+	           					<font color="red">será recortado</font>.<br /></u>
+	        					]]>
+	        			</html>
+	    			</popup>
+			       </div>
+				<listbox>
+					<listitem>
+							<listcell>
+								<textbox id="descCorta" maxlength="300" rows="3" width="100%" forward="onChange=productorWindow$composer.onCalcularTotalCaracteresCorta"/>
+								<popup id="cantidadCaracteresCorta" width="14%">
+									<label id="mensajedesccorta" />
+				   				</popup>							
+							</listcell>
+					</listitem>
+				</listbox>
+					<div align="center" class="title" >
+					<auxhead>
+			           	<auxheader label="Descripción larga *(8200 carácteres max.)" style="color: white;" />
+			        </auxhead>
+				   <image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudadescl" src="/imagenes/question.png" />
+	        		
+	        		 <popup id="ayudadescl" width="400px">
+	        			<html><![CDATA[ Campo de descripción larga del productor. <br />
+    									Este campo es <font color="red">obligatorio</font>. <br /><br />
+    									Sera visible en el catálogo al hacer click en  <font color="blue">ver más</font> en el detalle breve del productor. <br /><br />
+	        					<strong>Nota:</strong> Tenga en cuenta que si pega un texto mayor a 8200 carácteres
+	           					<font color="red">será recortado</font>.<br /></u>
+	        					]]>
+	        			</html>
+	    			</popup>			        
+			       </div>
+				<listbox>
+						<listitem height="30%">
+							<listcell>
+								<textbox id="descLarga" maxlength="8200" height="200px" rows="7" width="100%"   forward="onChange=productorWindow$composer.onCalcularTotalCaracteres"/>
+								<popup id="cantidadCaracteresLarga" width="14%">
+									<label id="mensajedesclarga" />
+				   				</popup>
+							</listcell>
+					</listitem>
+				</listbox>
+			</tabpanel>
+			
+			<tabpanel>
+					<div align="center" class="title" >
+					<auxhead>
+			           	<auxheader label="Imagen" style="color: white;" />
+			        </auxhead>
+			        <image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaimg" src="/imagenes/question.png" />
+	        		
+	        		 <popup id="ayudaimg" width="400px">
+	        			<html><![CDATA[ En esta sección podrá agregar una imagen al productor. <br /><br />
+        					Es recomendable que la imagen sean de resolución <strong>4:3</strong> y no exeda el peso en más de </strong> <font color="red"> 512Kb</font> para asegurar una veloz carga del catálogo. <br />
+        					]]>
+	        			</html>
+	    			</popup>
+			       </div>
+					<listbox>
+						<listitem>
+							<listcell>
+								<div align="center">
+								<image   width="100px" height="100px" id="imagenProductor"/>
+								</div>
+							</listcell>
+						</listitem>
+						<listitem>
+							<listcell>
+								<div  align="center">
+								<fileupload  label="Subir Imagen" id="uploadImagen" upload="true,maxsize=-1" image="/imagenes/upload_photo_16.png"/>
+								</div>
+							</listcell>
+						</listitem>
+					</listbox>
+					
+				 <div align="center" class="title" >
+						<auxhead>
+				           	<auxheader label="Sellos" style="color: white;" />
+				        </auxhead>
+			        <image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudasellos" src="/imagenes/question.png" />
+	        		
+	        		 <popup id="ayudasellos" width="400px">
+	        			<html><![CDATA[ Area de selección de sellos, se puede elegir tantos como hay disponibles. <br /> <br />
+        					<strong>Nota:</strong> Los sellos elegidos para el productor también serán aplicados a todos sus productos.
+        					]]>
+	        			</html>
+	    			</popup>				        
+			       </div>
+					<listbox id="listboxCaracteristicas" mold="paging" pageSize="3" selectedItem="@{productorWindow$composer.caracteristicaSeleccionada}"
+						model="@{productorWindow$composer.model.caracteristicasProductor}" rows="3">
+						<auxhead>
+							<auxheader colspan="2">
+								<combobox id="comboCaracteristica" placeholder="Seleccione un sello"  readonly="true" model="@{productorWindow$composer.caracteristicas}"
+								selectedItem="@{productorWindow$composer.caracteristicaProductorSeleccionada}"
+								itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"/>
+							</auxheader>
+						</auxhead>
+						<listhead>
+							<listheader label="${c:l('zk.listcell.label.abmProducto.caracteristica')}"/>
+							<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+						</listhead>
+						<listitem self="@{each=caracteristica}">			
+							<listcell>
+								<image src="@{caracteristica.getPathImagen}" height="16px" width="16px"/>
+								<label  maxlength="25" value="@{caracteristica.getNombre}"/>
+							</listcell>
+							<listcell>
+								<image src="/imagenes/trash.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.eliminar')}"
+								forward="onClick=productorWindow$composer.onEliminarCaracteristica" visible="@{productorWindow$composer.mostrarBorrarCaract}"/>
+							</listcell>
+						</listitem>
+					</listbox>
+			</tabpanel>
+	</tabpanels>
+</tabbox>
 
 <separator spacing="15px"/>
 <div align="center">

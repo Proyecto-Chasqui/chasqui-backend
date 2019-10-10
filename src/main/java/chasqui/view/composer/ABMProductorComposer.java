@@ -19,6 +19,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -28,8 +29,11 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 
@@ -77,6 +81,15 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	private boolean mostrarBorrarCaract = true;
 	private List<CaracteristicaProductor> caracteristicasProductor = new ArrayList<CaracteristicaProductor>();
 	
+	private Tab tabdetalles;
+	private Tab tabdesc;
+	private Tab tabimgsellos;
+	
+	private Popup cantidadCaracteresCorta;
+	private Label mensajedesccorta;
+	
+	private Popup cantidadCaracteresLarga;
+	private Label mensajedesclarga;
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -181,6 +194,19 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 			String error = "La Descripción larga no debe superar los "+Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR+" carácteres (actualmente tiene "+total+" carácteres)";
 			Clients.showNotification(error, "error", descLarga, "middle_center", 20000, true);
 		}
+	}
+	
+	public void onChanging$descCorta(InputEvent evt) {
+		Integer total = Jsoup.parse(evt.getValue()).wholeText().length();
+		mensajedesccorta.setValue("Cant. carácteres: "+total+"/300");
+		cantidadCaracteresCorta.open(descCorta,"after_end");
+	}
+	
+	
+	public void onChanging$descLarga(InputEvent evt) {
+		Integer total = Jsoup.parse(evt.getValue()).wholeText().length();
+		mensajedesclarga.setValue("Cant. carácteres: "+total+"/8200");
+		cantidadCaracteresLarga.open(descLarga,"after_end");
 	}
 	
 	public void onClick$buttonGuardar(){
@@ -288,11 +314,11 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	
 	private void validar(String productor,Integer alt, String calle,String pais, String provincia, String localidad,String descCorta, String descLarga) {
 		if(StringUtils.isEmpty(productor)){
-			throw new WrongValueException(textboxNombreProductor,"El productor no debe ser vacio!");
+			throw new WrongValueException(tabdetalles,"El productor no debe ser vacio!");
 		}
 		
 		if(model == null && usuario.contieneProductor(productor)){
-			throw new WrongValueException(textboxNombreProductor,"El usuario: " + usuario.getUsername() + " ya tiene el productor: " + productor );
+			throw new WrongValueException(tabdetalles,"El usuario: " + usuario.getUsername() + " ya tiene el productor: " + productor );
 		}
 		
 		if(model != null && !model.getNombre().equals(productor) && usuario.contieneProductor(productor)){
@@ -375,6 +401,62 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 
 	public void setMostrarBorrarCaract(boolean mostrarBorrarCaract) {
 		this.mostrarBorrarCaract = mostrarBorrarCaract;
+	}
+
+	public Tab getTabdetalles() {
+		return tabdetalles;
+	}
+
+	public void setTabdetalles(Tab tabdetalles) {
+		this.tabdetalles = tabdetalles;
+	}
+
+	public Tab getTabdesc() {
+		return tabdesc;
+	}
+
+	public void setTabdesc(Tab tabdesc) {
+		this.tabdesc = tabdesc;
+	}
+
+	public Tab getTabimgsellos() {
+		return tabimgsellos;
+	}
+
+	public void setTabimgsellos(Tab tabimgsellos) {
+		this.tabimgsellos = tabimgsellos;
+	}
+
+	public Popup getCantidadCaracteresCorta() {
+		return cantidadCaracteresCorta;
+	}
+
+	public void setCantidadCaracteresCorta(Popup cantidadCaracteresCorta) {
+		this.cantidadCaracteresCorta = cantidadCaracteresCorta;
+	}
+
+	public Label getMensajedesccorta() {
+		return mensajedesccorta;
+	}
+
+	public void setMensajedesccorta(Label mensajedesccorta) {
+		this.mensajedesccorta = mensajedesccorta;
+	}
+
+	public Popup getCantidadCaracteresLarga() {
+		return cantidadCaracteresLarga;
+	}
+
+	public void setCantidadCaracteresLarga(Popup cantidadCaracteresLarga) {
+		this.cantidadCaracteresLarga = cantidadCaracteresLarga;
+	}
+
+	public Label getMensajedesclarga() {
+		return mensajedesclarga;
+	}
+
+	public void setMensajedesclarga(Label mensajedesclarga) {
+		this.mensajedesclarga = mensajedesclarga;
 	}
 
 

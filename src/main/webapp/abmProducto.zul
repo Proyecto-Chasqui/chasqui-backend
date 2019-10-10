@@ -96,15 +96,17 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 				<auxhead>
             		<auxheader label="Imágenes" style="color: white;" />
         		</auxhead>
-        		<image align="right" style="cursor:pointer; position:absolute; margin-top:-1.5em; margin-left: 22.5em;" popup="ayudaImagenes" src="/imagenes/question.png" />
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaImagenes" src="/imagenes/question.png" />
         		
         		 <popup id="ayudaImagenes" width="400px">
         			<html><![CDATA[ En esta sección podrá agregar imágenes al producto. <br /><br />
         					Haciendo click en el icono <image src="./imagenes/destacado_on.png"/> define que imagen es la principal.<br />
         					Si no define ninguna se mostrará la primera como principal.<br /> <br />
-        					Es recomendable que las imágenes sean de resolución <strong>16:9</strong> y no exeda el peso en más de </strong> <font color="red"> 512Kb</font> para asegurar una veloz carga del catálogo. <br />
+        					Es recomendable que las imágenes sean de resolución <strong>16:9</strong> y no exeda el peso en más de </strong> <font color="red"> 512Kb</font> para asegurar una veloz carga del catálogo. <br /><br />
         					<strong>Nota: </strong>Solo puede agregar hasta <font color="red">3 imágenes</font></u> por producto.
-        					]]></html>
+        					]]>
+        					
+        			</html>
     				</popup>
         		</div>
 					<listbox id="listImagenes" model="@{productosWindow$composer.imagenes}"  rows="3">
@@ -136,11 +138,11 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 				<auxhead>
             		<auxheader id="auxheaderproducto" label="Descripción * (max 355 carácteres)" style="color: white;"> </auxheader>
         		</auxhead>
-        		<image align="right" style="cursor:pointer; position:absolute; margin-top:-1.5em; margin-left: 22.5em;" popup="ayudadesc" src="/imagenes/question.png" />
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudadesc" src="/imagenes/question.png" />
         		
         		 <popup id="ayudadesc" width="400px">
-        			<html><![CDATA[ Campo de descripción del producto. <br />
-        					<strong>Nota:</strong>Tenga en cuenta que si pega un texto mayor a 355 carácteres
+        			<html><![CDATA[ Campo de descripción del producto. <br /><br />
+        					<strong>Nota:</strong> Tenga en cuenta que si pega un texto mayor a 355 carácteres
            					<font color="red">será recortado</font>.<br /></u>
         					]]></html>
     				</popup>
@@ -154,11 +156,11 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 			    <auxhead sclass="category-center">
             		<auxheader label="Sellos" style="color:white;"/>
         		</auxhead>
-        		<image align="right" style="cursor:pointer; position:absolute; margin-top:-1.5em; margin-left: 22.5em;" popup="ayudaSellos" src="/imagenes/question.png" />
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaSellos" src="/imagenes/question.png" />
         		
         		 <popup id="ayudaSellos" width="400px">
-        			<html><![CDATA[ Area de selección de sellos, se puede elegir tantos como hay disponibles. <br />
-        					<strong>Nota:</strong>Los sellos de productor
+        			<html><![CDATA[ Area de selección de sellos, se puede elegir tantos como hay disponibles. <br /> <br />
+        					<strong>Nota:</strong> Los sellos de productor
            					<font color="red">no son visibles en esta sección</font>,</u> sin embargo son aplicados al producto.
         					]]></html>
     				</popup>
