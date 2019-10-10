@@ -61,13 +61,13 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 	<listitem>
 		<listcell label="Descripción breve: * (300 caracteres max.)"/>
 		<listcell>
-			<textbox id="descCorta" maxlength="300" rows="3" width="90%"/>
+			<textbox id="descCorta" maxlength="300" rows="3" width="90%" forward="onChange=productorWindow$composer.onCalcularTotalCaracteresCorta"/>
 		</listcell>
 	</listitem>
 	<listitem height="30%">
 		<listcell label="Descripción Larga: * (8200 caracteres max.)"/>
 		<listcell>
-			<ckeditor id="descLarga" height="100px" width="95%" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
+			<textbox id="descLarga" maxlength="8200" height="100px" rows="3" width="90%"  forward="onChange=productorWindow$composer.onCalcularTotalCaracteres"/>
 		</listcell>
 	</listitem>
 	<listitem>

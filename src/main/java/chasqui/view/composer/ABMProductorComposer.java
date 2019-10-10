@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.media.Media;
@@ -52,7 +54,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	private Textbox txtProvincia;
 	private Textbox txtPais;
 	private Textbox descCorta;
-	private CKeditor descLarga;
+	private Textbox descLarga;
 	private Intbox altura;
 	private Combobox comboCaracteristica;
 	private CaracteristicaProductor caracteristicaSeleccionada;
@@ -109,7 +111,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		txtDireccion.setValue(model.getCalle());
 		altura.setValue(model.getAltura());
 		descCorta.setValue(model.getDescripcionCorta());
-		descLarga.setValue(model.getDescripcionLarga());
+		descLarga.setValue(Jsoup.parse(model.getDescripcionLarga()).wholeText());
 		caracteristicaSeleccionada = model.getCaracteristica();
 		if(caracteristicaSeleccionada != null){
 			comboCaracteristica.setValue(caracteristicaSeleccionada.getNombre());			
@@ -125,7 +127,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		setMostrarBorrarCaract(false);
 		comboCaracteristica.setDisabled(true);
 		altura.setDisabled(true);
-		descLarga.setCustomConfigurationsPath("/js/ckEditorReadOnly.js");
+		descLarga.setDisabled(true);
 		descCorta.setDisabled(true);
 		textboxNombreProductor.setDisabled(true);
 		txtDireccion.setDisabled(true);
@@ -165,13 +167,29 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		
 	}
 	
+	public void onCalcularTotalCaracteresCorta() {
+		Integer total = Jsoup.parse(descCorta.getValue()).text().length();
+		if(total > 300){
+			String error = "La Descripción larga no debe superar los "+300+" carácteres (actualmente tiene "+total+" carácteres)";
+			Clients.showNotification(error, "error", descLarga, "middle_center", 20000, true);
+		}
+	}
+	
+	public void onCalcularTotalCaracteres() {
+		Integer total = Jsoup.parse(descLarga.getValue()).text().length();
+		if(total > Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR){
+			String error = "La Descripción larga no debe superar los "+Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR+" carácteres (actualmente tiene "+total+" carácteres)";
+			Clients.showNotification(error, "error", descLarga, "middle_center", 20000, true);
+		}
+	}
+	
 	public void onClick$buttonGuardar(){
 		String productor = textboxNombreProductor.getValue();
 		Integer alt = altura.getValue();
 		String calle = txtDireccion.getValue();
 		String pais = txtPais.getValue();
 		String descorta = descCorta.getValue();
-		String deslarga = descLarga.getValue();
+		String deslarga = Jsoup.parse(descLarga.getValue()).wholeText();
 		String provincia = txtProvincia.getValue();
 		String localidad = txtLocalidad.getValue();
 		validar(productor,alt,calle,pais,provincia,localidad,descorta,deslarga);
@@ -304,7 +322,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 //			throw new WrongValueException(altura,"La altura no debe ser vacía");
 //		}
 
-		if(StringUtils.isEmpty(descCorta)){
+		if(StringUtils.isEmpty(descLarga)){
 			throw new WrongValueException("La descripción breve no debe ser vacía");
 		}
 		
@@ -313,8 +331,8 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 			throw new WrongValueException("La descripción larga no debe ser vacía");
 		}
 		
-		if(descLarga!=null && descLarga.length() > Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR){
-			throw new WrongValueException("La Descripción LARGA no debe superar los "+Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR+" caracteres (actualmente tiene "+descLarga.length()+" caracteres");
+		if(descLarga!=null &&  descLarga.length() > Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR){
+			throw new WrongValueException("La Descripción larga no debe superar los "+Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR+" carácteres (actualmente tiene "+descLarga.length()+" carácteres");
 		}
 		
 //		if(caracteristicaSeleccionada == null){

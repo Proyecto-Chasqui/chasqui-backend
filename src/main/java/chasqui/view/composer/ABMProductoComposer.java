@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
 import org.apache.cxf.common.util.StringUtils;
+import org.jsoup.Jsoup;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
@@ -23,18 +24,21 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Auxheader;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
@@ -93,6 +97,10 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private Doublebox incentivo;
 	private Doublebox totalPrecio;
 	
+	private Auxheader auxheaderproducto;
+	private Popup cantidadCaracteres;
+	private Label mensaje;
+	
 	
 	private UsuarioService usuarioService;
 	private CaracteristicaService caracteristicaService;
@@ -105,7 +113,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private Doublebox doubleboxPrecio; 
 	private Intbox intboxStock;
 	private Textbox textboxCodigo; 
-	private CKeditor ckEditor; 
+	private Textbox ckEditor; 
 	private Fileupload uploadImagen; 
 	private Listbox listImagenes;	
 	private ImagenesRender imgRender;
@@ -176,7 +184,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
 			intboxStock.setValue(modelv.getStock());
 			textboxCodigo.setValue(modelv.getCodigo());
-			ckEditor.setValue(modelv.getDescripcion());
+			ckEditor.setValue(Jsoup.parse(modelv.getDescripcion()).wholeText());
 			imagenes.addAll(modelv.getImagenes());
 			
 		}
@@ -494,7 +502,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		comboFabricantes.setValue(productorSeleccionado.toString());
 		comboCategorias.setValue(categoriaSeleccionada.toString());
 		//textboxNombre.setValue(modelv.getNombre());
-		ckEditor.setValue(modelv.getDescripcion());
+		ckEditor.setValue(Jsoup.parse(modelv.getDescripcion()).text());
+		onCalcularTotalCaracteres();
 		
 	}
 	
@@ -518,8 +527,9 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		uploadImagen.setDisabled(true);
 		listitemincentivo.setVisible(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos());
 		listitemincentivo.setDisabled(true);
+		incentivo.setDisabled(true);
 		totalPrecio.setDisabled(true);
-		ckEditor.setCustomConfigurationsPath("/js/ckEditorReadOnly.js");
+		ckEditor.setDisabled(true);
 		
 	}
 	
@@ -547,6 +557,17 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		}
 	}
 	
+	public void onChanging$ckEditor(InputEvent evt) {
+		Integer total = Jsoup.parse(evt.getValue()).wholeText().length();
+		mensaje.setValue("Cant. carácteres: "+total+"/355");
+		cantidadCaracteres.open(ckEditor,"after_end");
+	}
+	
+	public void onCalcularTotalCaracteres() {
+		Integer total = Jsoup.parse(ckEditor.getValue()).wholeText().length();
+		mensaje.setValue("Cant. carácteres: "+total+"/355");
+		cantidadCaracteres.open(ckEditor,"after_end");
+	}
 	public void onCalcularTotal() {
 		totalPrecio.setValue(incentivo.getValue() + doubleboxPrecio.getValue());
 	}
@@ -573,7 +594,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		Double precio = doubleboxPrecio.getValue();
 		Double vincentivo = incentivo.getValue();
 		Integer stock = intboxStock.getValue();
-		String descripcion = ckEditor.getValue();
+		String descripcion = Jsoup.parse(ckEditor.getValue()).text();
 
 		if(precio == null || precio < 0){
 			throw new WrongValueException(tabdetalles,"El precio no debe ser menor a 0");
@@ -657,6 +678,14 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 
 	public void setTotalPrecio(Doublebox totalPrecio) {
 		this.totalPrecio = totalPrecio;
+	}
+
+	public Label getMensaje() {
+		return mensaje;
+	}
+
+	public void setMensaje(Label mensaje) {
+		this.mensaje = mensaje;
 	}
 	
 }

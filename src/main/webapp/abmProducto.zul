@@ -50,23 +50,23 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 							<textbox width="100%" id="nombreProducto" placeholder="i.e: Mermelada" />
 						</listcell>
 						<listcell label="${c:l('zk.listcell.label.abmVariedad.codigo')} *"/>
-					<listcell>
-						<textbox width="100%" id="textboxCodigo" placeholder="Ingresar código del artículo"/>
-					</listcell>
+						<listcell>
+							<textbox width="100%" id="textboxCodigo" placeholder="Ingresar código del artículo"/>
+						</listcell>
 					</listitem>
 					<listitem>
 						<listcell label="${c:l('zk.listcell.label.abmProducto.categoria')} * "/>
 						<listcell>
 							<hbox>
 								<toolbarbutton id="botonAgregarCategoria" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')} *" image="/imagenes/plus.png"/>
-								<combobox width="125%" readonly="true" id="comboCategorias" model="@{productosWindow$composer.usuario.categorias}" selectedItem="@{productosWindow$composer.categoriaSeleccionada }"/>
+								<combobox width="100%" readonly="true" id="comboCategorias" model="@{productosWindow$composer.usuario.categorias}" selectedItem="@{productosWindow$composer.categoriaSeleccionada }"/>
 							</hbox>
 						</listcell>
 						<listcell label="${c:l('zk.listcell.label.abmProducto.fabricante') } *"/>
 						<listcell>
 							<hbox>
 								<toolbarbutton image="/imagenes/plus.png" id="botonAgregarFabricante" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"/>
-								<combobox width="125%" readonly="true" id="comboFabricantes" model="@{productosWindow$composer.usuario.fabricantes}" selectedItem="@{productosWindow$composer.productorSeleccionado }"/>
+								<combobox width="100%" readonly="true" id="comboFabricantes" model="@{productosWindow$composer.usuario.fabricantes}" selectedItem="@{productosWindow$composer.productorSeleccionado }"/>
 							</hbox>
 						</listcell>
 					</listitem>
@@ -94,8 +94,18 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 								<!-- Detalles -->
 				<div align="center" class="title">
 				<auxhead>
-            		<auxheader label="Imagenes" style="color: white;" />
+            		<auxheader label="Imágenes" style="color: white;" />
         		</auxhead>
+        		<image align="right" style="cursor:pointer; position:absolute; margin-top:-1.5em; margin-left: 22.5em;" popup="ayudaImagenes" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudaImagenes" width="400px">
+        			<html><![CDATA[ En esta sección podrá agregar imágenes al producto. <br /><br />
+        					Haciendo click en el icono <image src="./imagenes/destacado_on.png"/> define que imagen es la principal.<br />
+        					Si no define ninguna se mostrará la primera como principal.<br /> <br />
+        					Es recomendable que las imágenes sean de resolución <strong>16:9</strong> y no exeda el peso en más de </strong> <font color="red"> 512Kb</font> para asegurar una veloz carga del catálogo. <br />
+        					<strong>Nota: </strong>Solo puede agregar hasta <font color="red">3 imágenes</font></u> por producto.
+        					]]></html>
+    				</popup>
         		</div>
 					<listbox id="listImagenes" model="@{productosWindow$composer.imagenes}"  rows="3">
 						<listhead>
@@ -124,15 +134,34 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 				<!-- Descripcion -->
 				<div align="center" class="title">
 				<auxhead>
-            		<auxheader label="Descripción * (max 355 carácteres)" style="color: white;"/>
+            		<auxheader id="auxheaderproducto" label="Descripción * (max 355 carácteres)" style="color: white;"> </auxheader>
         		</auxhead>
+        		<image align="right" style="cursor:pointer; position:absolute; margin-top:-1.5em; margin-left: 22.5em;" popup="ayudadesc" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudadesc" width="400px">
+        			<html><![CDATA[ Campo de descripción del producto. <br />
+        					<strong>Nota:</strong>Tenga en cuenta que si pega un texto mayor a 355 carácteres
+           					<font color="red">será recortado</font>.<br /></u>
+        					]]></html>
+    				</popup>
         		</div>
-				<ckeditor width="100%" height="100px" id="ckEditor" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
+				<textbox width="100%" id="ckEditor" maxlength="355" rows="5" forward="onClick=productosWindow$composer.onCalcularTotalCaracteres"/>
+				<popup id="cantidadCaracteres" width="12%">
+					<label id="mensaje" />
+   				</popup>
 				<!-- Sellos -->
 				<div align="center" class="title">
 			    <auxhead sclass="category-center">
             		<auxheader label="Sellos" style="color:white;"/>
         		</auxhead>
+        		<image align="right" style="cursor:pointer; position:absolute; margin-top:-1.5em; margin-left: 22.5em;" popup="ayudaSellos" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudaSellos" width="400px">
+        			<html><![CDATA[ Area de selección de sellos, se puede elegir tantos como hay disponibles. <br />
+        					<strong>Nota:</strong>Los sellos de productor
+           					<font color="red">no son visibles en esta sección</font>,</u> sin embargo son aplicados al producto.
+        					]]></html>
+    				</popup>
         		</div>
 					  <listbox id="listboxCaracteristicas" mold="paging" pageSize="3" selectedItem="@{productosWindow$composer.caracteristicaSeleccionada}"
 						model="@{productosWindow$composer.model.caracteristicas}" rows="3">
