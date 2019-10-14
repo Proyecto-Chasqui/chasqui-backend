@@ -187,6 +187,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		try {
 			Clients.showBusy(window,"Generando el archivo, por favor espere...");
 			PedidoColectivo pedidoc = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
+			/* eliminar cuando se confirme la funcionalidad completa de nodos.
 			if(pedidoc.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos() && pedidoc.getColectivo().isEsNodo()) {
 				this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
 				List<Pedido> pedidomerge = this.pedidoColectivoMergeParaIncentivos(pedidosDentroDeColectivo,pedidoc);
@@ -196,12 +197,13 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 				pedidomerge = obtenerSoloConfirmados(pedidomerge);
 				export.exportColectivos(pedidomerge);
 			}else {
+			*/
 				this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
 				List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
 				pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
 				pedidomerge = obtenerSoloConfirmados(pedidomerge);
 				export.exportColectivos(pedidomerge);
-			}
+			//}
 			Clients.clearBusy(window);
 			Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 		} catch (Exception e) {

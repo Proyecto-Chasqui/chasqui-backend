@@ -132,16 +132,18 @@ public class PedidoRenderer implements ListitemRenderer<Pedido> {
 	}
 	
 	private Double definirMonto(Pedido pedido) {
+		/*
 		boolean esColectivo = pedido.getPerteneceAPedidoGrupal();
+		//eliminar cuando se confirme toda la funcionalidad de nodos
 		if(esColectivo) {
 			GrupoCC colectivo = pedido.getPedidoColectivo().getColectivo();
-			boolean conIncentivo = colectivo.getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
+			boolean conIncentivo = false;//colectivo.getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
 			if(conIncentivo) {
 				if(colectivo.getAdministrador().getEmail().equals(pedido.getCliente().getEmail())) {
 					return pedido.getMontoActual() + pedido.getMontoTotalIncentivo();
 				}			
 			}
-		}
+		}*/
 		return pedido.getMontoActual();
 	}
 

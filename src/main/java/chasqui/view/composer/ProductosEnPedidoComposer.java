@@ -62,23 +62,24 @@ public class ProductosEnPedidoComposer extends GenericForwardComposer<Component>
 				List<ProductoPedido> listaProductosEnPedido = new ArrayList();
 				listaProductosEnPedido.addAll(pedido.getProductosEnPedido());		
 		PedidoDTO pedidodto = new PedidoDTO(pedido);
-		if(pedido.getPerteneceAPedidoGrupal()) {
-			GrupoCC colectivo = pedido.getPedidoColectivo().getColectivo();
-			boolean esNodo = colectivo.isEsNodo();
-			boolean usaIncentivo = colectivo.getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
-			boolean esAdmin = colectivo.getAdministrador().getEmail().equals(pedido.getCliente().getEmail());
-			if(esNodo) {
-				if(usaIncentivo) {
-					pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido, esAdmin);
-				}else {
-					pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
-				}
-			}else {
-				pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
-			}
-		}else {
+// eliminar cuando se confirme la funcionalidad de nodos
+//		if(pedido.getPerteneceAPedidoGrupal()) {
+//			GrupoCC colectivo = pedido.getPedidoColectivo().getColectivo();
+//			boolean esNodo = colectivo.isEsNodo();
+//			boolean usaIncentivo = colectivo.getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
+//			boolean esAdmin = colectivo.getAdministrador().getEmail().equals(pedido.getCliente().getEmail());
+//			if(esNodo) {
+//				if(usaIncentivo) {
+//					pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido, esAdmin);
+//				}else {
+//					pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
+//				}
+//			}else {
+//				pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
+//			}
+//		}else {
 			pedidodto.addPedidoIndividual(pedido.getCliente().getEmail(), listaProductosEnPedido);
-		}
+//		}
 		return pedidodto;
 	}
 	

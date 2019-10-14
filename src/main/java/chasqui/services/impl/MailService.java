@@ -2,6 +2,7 @@ package chasqui.services.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,12 +67,17 @@ public class MailService {
 	private NodoService nodoService;
 	
 	public static final Logger logger = Logger.getLogger(MailService.class);
-	
+	DecimalFormat df = new DecimalFormat("#.##");
 /*
  * ***********************************************
  * METODOS PUBLICOS 
  * ***********************************************
  */
+	private Double trim2decimals(Double d) {
+		String trim = df.format(d); 
+		Double value = Double.parseDouble(trim.replace(",","."));
+		return value;
+	}
 	
 	public void enviarEmailBienvenidaVendedor(String destino,String usuario,String password) throws IOException, MessagingException, TemplateException{
 		Map<String,Object> params = new HashMap<String,Object>();
@@ -743,13 +749,12 @@ public class MailService {
 		return  "<tr>"
 				+	"<td> $"+p.getMontoTotalDeIncentivos()+"</td>"
 				+	"<td> $"+p.getMontoTotal()+"</td>"
-				+	"<td> $"+precioTotal+"</td>"
+				+	"<td> $"+trim2decimals(precioTotal)+"</td>"
 				+ "</tr>"
 				+"</tbody>"
 				+"</table>"
 				+"<br>"
-				+"<strong>Aclaración:</strong> En el <strong>incentivo total</strong> no se calcula el de tu <strong>pedido como administrador</strong>, tenes que pagar el precio completo. <br>"
-				+"En el caso que pidas con un solo pedido para el nodo, vas a tener que hacer los calculos correspondientes.";
+				+"<strong>Aclaración:</strong> En el <strong>incentivo total</strong> esta incluido el de tu <strong>pedido como administrador</strong>.";
 				
 				
 		//"<tr><td>"+ pp.getNombreProducto() + pp.getNombreVariante() + "</td><td>" +pp.getPrecio()+ "</td><td> "+ pp.getCantidad() +"</td></tr>";

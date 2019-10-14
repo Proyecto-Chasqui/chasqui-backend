@@ -77,14 +77,15 @@ public class PedidoColectivo implements IPedido{
 
 	@Override
 	public Double getMontoTotal() {
-		boolean usaIncentivo = this.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
+		//boolean usaIncentivo = this.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
 		Double total=0.0;
 		for(Pedido pedido: pedidosIndividuales.values()){
-			total = total + calcularSegunIncentivo(pedido,usaIncentivo);
+			total = total + pedido.getMontoActual();
 		}			
 		return trim2decimals(total);
 	}
-	
+	//eliminar cuando se confirme la funcionalidad de nodos
+	/*
 	private Double calcularSegunIncentivo(Pedido pedido, boolean usaIncentivo) {
 		if(estaConfirmado(pedido.getEstado())){
 			if(usaIncentivo) {
@@ -99,7 +100,7 @@ public class PedidoColectivo implements IPedido{
 		}
 		return 0.0;
 		
-	}
+	}*/
 
 	public Double getMontoTotalDeIncentivos() {
 		Double total=0.0;

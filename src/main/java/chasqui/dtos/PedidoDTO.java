@@ -44,6 +44,7 @@ public class PedidoDTO {
 	}
 	
 	private double definirMontoSegunIncentivos(Pedido pedido) {
+			/* eliminar cuando se confirme la funcionalidad de nodos
 			boolean esColectivo = pedido.getPerteneceAPedidoGrupal();
 			if(esColectivo) {
 				GrupoCC colectivo = pedido.getPedidoColectivo().getColectivo();
@@ -53,7 +54,7 @@ public class PedidoDTO {
 						return pedido.getMontoActual() + pedido.getMontoTotalIncentivo();
 					}			
 				}
-			}
+			}*/
 			return pedido.getMontoActual();
 	}
 	
@@ -84,18 +85,19 @@ public class PedidoDTO {
 		this.pedidosIndividuales.add(nuevoPedido);
 
 	}
-	//usado para mostrar el precio correcto, si es admin o no en los productos del panel (si el incentivo esta activado).
+	//usado para mostrar el precio correcto, si es admin o no en los productos del panel (si el incentivo esta activado). Eliminar cuando
+	// se confirme la funcionalidad de nodos.
 	public void addPedidoIndividual(String email, List<ProductoPedido> listaProductosEnPedido, boolean esAdmin) {
 		PedidoIndividualDTO nuevoPedido = new PedidoIndividualDTO(email);
-		if(esAdmin) {
+/*		if(esAdmin) {
 			for (ProductoPedido pp : listaProductosEnPedido) {
 				nuevoPedido.addVariante(pp.getPrecio() + pp.getIncentivo(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
 			}
-		}else {
+		}else {*/
 			for (ProductoPedido pp : listaProductosEnPedido) {
 				nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
 			}
-		}
+		//}
 
 		this.pedidosIndividuales.add(nuevoPedido);
 		
