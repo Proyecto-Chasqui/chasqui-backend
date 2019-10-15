@@ -96,7 +96,6 @@ public class NodoListener {
 	GrupoService grupoService;
 	@Autowired
 	InvitacionService invitacionService;
-	//testeado
 	@GET
 	@Path("/all/{idVendedor : \\d+ }")
 	@Produces("application/json")

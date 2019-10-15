@@ -7,6 +7,23 @@
 <window id="configuracionPortadaWindow" style="text-align: center; font-weight:bold;" border="normal" title="Configuración de pagina de bienvenida" position="center,top"
 apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<style>
+.z-notification-pointer ~ .z-notification-content
+    {
+        display:table-cell;
+        width:auto;
+        height:50px;
+        min-height:60px;
+        padding:5px 18px 5px 45px;
+        vertical-align:middle;
+    }
+    .title {
+    	background-color: #00b8fc;
+    	border-style: solid;
+    	border-width: 1px;
+    	border-color:LightGray;
+    }
+    </style>
 	<tabbox>
 	<tabs>
 		<tab label="Imágenes"/>
@@ -15,10 +32,20 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 	</tabs>
 	<tabpanels>
 		<tabpanel>
-			<div align="center" style="background-color: #66b3ff; border-color:#d0d3d8; border-style:solid; border-width: 1px;">
+			<div align="center" class="title">
 				<auxhead sclass="category-center">
-            		<auxheader label="Banner" colspan="6" rowspan="1" />
-        		</auxhead>		
+            		<auxheader label="Banner"  style="color: white;" colspan="6" rowspan="1" />
+        		</auxhead>
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaImagenes" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudaImagenes" width="400px">
+        			<html><![CDATA[ En esta sección pueden cambiar las imágenes del banner de la página de bienvenida. <br /><br />
+        					Se pueden agregar hasta <font color="red">3 imágenes</font>, si desea cambiar todas las que están por defecto en la sección bienvenida deberá agregar las 3, por ejemplo en el caso que agregue solo 2 la tercera permanecera con la imagen por defecto.<br /><br />
+        					<strong>Nota: </strong>Las imágenes deben tener un tamaño de <font color="red">1600x340</font> y no deben pesar más de <font color="red">2MB</font>
+        					]]>
+        					
+        			</html>
+    				</popup>        				
 			</div>
 			<listbox id="listImagenesBanner" width="100%" model="@{configuracionPortadaWindow$composer.imagenesBanner}"  rows="3">
 				<listhead>
@@ -41,10 +68,20 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 				<fileupload style="font-weight:bold; color:black" label="Agregar Imagen de Banner" id="uploadImagenBanner"  upload="true,maxsize=-1" />
 			</div>
 			<separator spacing="15px"/>
-			<div align="center" style="background-color: #66b3ff; border-color:#d0d3d8; border-style:solid; border-width: 1px;">
+			<div align="center" class="title">
 				<auxhead sclass="category-center">
-            		<auxheader label="Portada"  colspan="6" rowspan="1" />
+            		<auxheader label="Portada"   style="color: white;"  colspan="6" rowspan="1" />
         		</auxhead>	
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaImagenPortada" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudaImagenPortada" width="400px">
+        			<html><![CDATA[ En esta sección pueden cambiar la imagen de la página de bienvenida, situada a la derecha del texto. <br /><br />
+        					Se puede agregar solo <font color="red">una imagen</font> y es <font color="blue">recomendable</font> que se agregue una para una mejor presentación.<br /><br />
+        					<strong>Nota: </strong>La imagen debe tener un tamaño entre <font color="red">620x400</font> y <font color="red">620x800</font> y no deben pesar más de <font color="red">2MB</font>
+        					]]>
+        					
+        			</html>
+    				</popup>         		
 			</div>
 			<listbox id="listImagenesPortada" width="100%" model="@{configuracionPortadaWindow$composer.imagenesPortada}"  rows="1">
 				<listhead>
@@ -67,10 +104,20 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 				<fileupload style="font-weight:bold; color:black" label="Agregar Imagen de portada" id="uploadImagenPortada"  upload="true,maxsize=-1" />
 			</div>
 			<separator  spacing="15px"/>
-				<div align="center" style="background-color: #66b3ff; border-color:#d0d3d8; border-style:solid; border-width: 1px;">
+				<div align="center" class="title">
 					<auxhead sclass="category-center">
-	            		<auxheader label="Logo" colspan="6" rowspan="1" />
-	        		</auxhead>	
+	            		<auxheader label="Logo"  style="color: white;"  colspan="6" rowspan="1" />
+	        		</auxhead>
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaImagenLogo" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudaImagenLogo" width="400px">
+        			<html><![CDATA[ En esta sección pueden agregar el logo, situado arriba al izquierda de la página general. <br /><br />
+        					Se puede agregar solo <font color="red">una imagen</font> y es <font color="blue">recomendable</font> que se agregue para una mejor distinción del catálogo.<br /><br />
+        					<strong>Nota: </strong>La imagen debe tener un tamaño entre <font color="red">124x40</font> y <font color="red">300x40</font>, no deben pesar más de <font color="red">1MB</font> debe ser de formato <font color="red"> jpg, jpeg, png </font>y es <font color="blue">recomendable</font> que tenga transaparencia para una mejor presentación.
+        					]]>
+        					
+        			</html>
+    				</popup> 	
 				</div>
 			<separator spacing="15px"/>
 				<div align="center">
@@ -86,10 +133,20 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 			<separator spacing="15px"/>
 		</tabpanel>
 		<tabpanel>
-				<div align="center" style="background-color: #66b3ff; border-color:#d0d3d8; border-style:solid; border-width: 1px;">
+				<div align="center" class="title">
 					<auxhead sclass="category-center">
-            			<auxheader label="Texto de bienvenida"  colspan="6" rowspan="1" />
-        			</auxhead>		
+            			<auxheader label="Texto de bienvenida"  style="color: white;"  colspan="6" rowspan="1" />
+        			</auxhead>
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextobienvenida" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudatextobienvenida" width="400px">
+        			<html><![CDATA[ En esta sección pueden agregar el texto de la página de bienvenida, situado abajo a la izquierda de la página. <br /><br />
+        					Se puede agregar el texto que desee, es <font color="blue">recomendable</font> que no sea muy extenso para mantener una buena presentación. <br /><br />
+        					<strong><font color=red>Advertencia: </font></strong> Si pega contenido con formato es probable que no se refleje en la página principal, si desea agregarle formato, detalles o links <font color="blue">deberá usar los provistos en los controles de esta sección</font>.
+        					]]>
+        					
+        			</html>
+    				</popup> 		
 				</div>
 				<separator spacing="2px"/>
 				<ckeditor width="100%" height="400px" id="txtPortada" customConfigurationsPath="/js/config_portada.js"/>
@@ -102,7 +159,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
         		<hbox>
 				<listbox width="100%">
 					<listhead>
-						<listheader label="Dirección" align="center" style="background-color: #66b3ff; "/>
+						<listheader label="Dirección" align="center" style="background-color: #00b8fc; color: white; "/>
 					</listhead>
 					<listitem>
 						<listcell label="Calle" style="text-align: center"/>
@@ -151,7 +208,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 			    
 			    <listbox>
 					<listhead>
-						<listheader label="Datos de contacto" align="center" style="background-color: #66b3ff;"/>
+						<listheader label="Datos de contacto" align="center" style="background-color: #00b8fc; color: white;"/>
 					</listhead>
 					<listitem>
 						<listcell label="Telefono" style="text-align: center"/>

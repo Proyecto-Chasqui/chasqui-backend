@@ -26,8 +26,7 @@ http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
        <ref bean="catalogoListener"/>
        <ref bean="categoriaListener"/>
        <ref bean="productorListener"/>
-       <ref bean="caracteristicaListener"/>
-       <ref bean="nodoListener"/>   
+       <ref bean="caracteristicaListener"/>  
        <ref bean="zonaListener"/>
        <ref bean="puntoDeRetiroListener"/>
     </jaxrs:serviceBeans>
