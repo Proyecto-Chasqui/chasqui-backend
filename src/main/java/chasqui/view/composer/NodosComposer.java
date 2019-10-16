@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -132,6 +133,9 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	//data menu solicitudes
 	private List<String> estadosDeSolicitudesList;
 	private String estadoSolicitudSeleccionada;
+	
+	private List<Pedido>pedidosDentroDeColectivo;
+	private XlsExporter export  = new XlsExporter();
 	
 	public void doAfterCompose(Component c) throws Exception{
 		vendedorLogueado =(Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
@@ -560,6 +564,24 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 
 	}
 	
+	public void exportarPedidoColectivo(Integer idPedidoColectivo) {
+		this.export.exportarPedidoColectivo(idPedidoColectivo, component, pedidoColectivoService, vendedorLogueado);
+		this.binder.loadAll();
+	}
+	
+	private ProductoPedido copiarProducto(ProductoPedido pp) {
+		ProductoPedido ppc = new ProductoPedido();
+		ppc.setCantidad(pp.getCantidad());
+		ppc.setIdVariante(pp.getIdVariante());
+		ppc.setNombreProductor(pp.getNombreProductor());
+		ppc.setImagen(pp.getImagen());
+		ppc.setNombreProducto(pp.getNombreProducto());
+		ppc.setNombreVariante(pp.getNombreVariante());
+		ppc.setPrecio(pp.getPrecio());
+		ppc.setIncentivo(pp.getIncentivo());
+		return ppc;
+	}
+	
 	private void notificar(PedidoColectivo p) {
 		//Notificar por mail que el pedido ha sido preparado
 		mailService.enviarEmailPreparacionDePedidoColectivo(p);
@@ -978,6 +1000,10 @@ class PediodosNodosListener implements EventListener<Event>{
 		
 		if(accion.equals(PedidosComposer.ACCION_NOTIFICAR)){
 			composer.onNotificar(p);				
+		}
+		
+		if(accion.equals("exportar")) {
+			composer.exportarPedidoColectivo(p.getId());
 		}
 			
 	}

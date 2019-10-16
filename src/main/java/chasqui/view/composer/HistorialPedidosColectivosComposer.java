@@ -100,6 +100,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private String prSeleccionado;
 	private VendedorService vendedorService;
 	private Div filtros;
+	private XlsExporter export  = new XlsExporter();
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -442,6 +443,11 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		
 	}
 
+	public void exportarPedidoColectivo(Integer idPedidoColectivo) {
+		export.exportarPedidoColectivo(idPedidoColectivo, windowComponent, pedidoColectivoService, usuarioLogueado);
+		this.binder.loadAll();
+	}
+
 
 
 }
@@ -483,6 +489,10 @@ class HitorialPedidosColectivosEventListener implements EventListener<Event>{
 		if (accion.equals(PedidosComposer.ACCION_VER)) {
 			composer.onVerPedido(p);
 			
+		}
+		
+		if(accion.equals("exportar")) {
+			composer.exportarPedidoColectivo(p.getId());
 		}
 		
 		if(accion.equals(PedidosComposer.ACCION_PREPARAR)){

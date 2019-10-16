@@ -93,6 +93,12 @@
 		</menupopup>
 	</menu>
 </menubar>
+<!-- imagenes de ayuda -->
+<image id="ayudapedidoscolectivos" visible="true" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudatextopedidoscolectivos" src="/imagenes/question.png" />
+<image id="ayudapedidos" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudaenconstruccion" src="/imagenes/question.png" />
+<image id="ayudaproductores" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaenconstruccion" src="/imagenes/question.png" />
+<image id="ayudacategorias" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudaenconstruccion" src="/imagenes/question.png" />
+<image id="ayudaproductos" visible="false" align="right" style="cursor:pointer; position:relative;margin-top:-1.6em; margin-right:1em;" popup="ayudaenconstruccion" src="/imagenes/question.png" />
 
 <!-- reemplazado por submenubar  (borrar despues de testear bien)-->
 <hbox width="100%" visible = "false">
@@ -272,6 +278,31 @@
 
 
 </hbox>
-
+<!-- popups de ayuda -->
+        <!-- Colectivos -->		
+        <popup id="ayudatextopedidoscolectivos" width="600px">
+        	<html><![CDATA[ En esta sección se listan todos los pedidos colectivos generados por los grupos <br /><br />
+        			<strong>Los pedidos estan divididos en 2 estados principales ABIERTOS y <font color="blue">CONFIRMADOS</font></strong> <br /><br />
+        			<font><strong>ABIERTO:</font></strong> Son los pedidos colectivos que estan en proceso de compra, estos se generan automaticamente al cerrar una compra colectiva por lo que <strong> no siempre significa</strong> que están activamente comprando, si estan activamente comprando el<strong> Monto final</strong> deberia ser superior a 0.0. </br> </br>
+        			<font color="blue"><strong>CONFIRMADO:</font></strong> Son los pedidos colectivos que fueron cerrados por el grupo y son los que deben ser gestionados para su preparación y entrega. </br> </br>
+        			<strong>El botón desplegable <font color="blue">Ver Acciones</font> posee las siguientes 6 acciones disponibles</strong> </br>
+        			<strong>Nota:</strong> Algunas estan disponibles o visibles bajo determinadas circunstancias. </br> </br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/eye.png"/>Ver detalle:</strong> Permite ver en detalle cada compra individual de los usuarios del grupo y ver su estado <strong>ABIERTO, <font color="blue">CONFIRMADO</font> o <font color="red">CANCELADO</font></strong>, asi como el detalle del pedido accediendo desde su sección ver detalle. </br> </br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/mapIcon.png"/>Cambiar Zona:</strong> Permite cambiar la zona del pedido a otra que definas, <strong> solo se puede cambiar con estado <font color="blue">CONFIRMADO</font></strong> y deberá ser asignada <font color="red">obligatoriamente</font> si la misma tiene una zona <font color="red"> No definida </font> para poder preparar y entregar el pedido.</br>
+        			<strong><font color="blue">Aclaración:</font></strong> Esta acción no es visible si el pedido fue seleccionado para retirar en un <strong>punto de retiro</strong>.</br></br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/pedidoPreparado.png"/>Preparar:</strong> Cambia el estado del pedido a <strong><font color="magenta">PREPARADO</font></strong>, <font color="red">esta acción no es reversible</font>.</br></br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/pedidoEntregado.png"/>Entregar:</strong> Cambia el estado del pedido a <strong><font color="green">ENTREGADO</font></strong>, <font color="red">esta acción no es reversible</font>.</br></br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/envelope.png"/>Notificar:</strong> Permite enviar un email del sistema que envia el resumen del pedido y avisa que el mismo esta preparado, <strong> solo es posible con pedidos en estado<font color="magenta"> PREPARADO</font></strong>.</br></br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/export.png"/>Exportar:</strong> Permite exportar a un .xls el pedido colectivo.
+        		]]>
+        					
+        </html>
+    	</popup> 
+    <!-- filler de popups -->
+            <popup id="ayudaenconstruccion" width="150px">
+        	<html><![CDATA[ Ayuda en construcción ]]>
+        					
+        </html>
+    	</popup> 
 </window>
 </zk>

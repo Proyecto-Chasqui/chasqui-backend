@@ -41,7 +41,7 @@ style="overflow:auto">
         					<strong><image style="width:16px;height:16px;" src="./imagenes/pedidoPreparado.png"/>Preparar:</strong> Cambia el estado del pedido a <strong><font color="magenta">PREPARADO</font></strong>, <font color="red">esta acción no es reversible</font>.</br></br>
         					<strong><image style="width:16px;height:16px;" src="./imagenes/pedidoEntregado.png"/>Entregar:</strong> Cambia el estado del pedido a <strong><font color="green">ENTREGADO</font></strong>, <font color="red">esta acción no es reversible</font>.</br></br>
         					<strong><image style="width:16px;height:16px;" src="./imagenes/envelope.png"/>Notificar:</strong> Permite enviar un email del sistema que envia el resumen del pedido y avisa que el mismo esta preparado, <strong> solo es posible con pedidos en estado<font color="magenta"> PREPARADO</font></strong>.</br></br>
-        					<strong>Exportar:</strong> Permite exportar a un .xls el pedido colectivo.
+        					<strong><image style="width:16px;height:16px;" src="./imagenes/export.png"/>Exportar:</strong> Permite exportar a un .xls el pedido colectivo.
         					]]>
         					
         			</html>

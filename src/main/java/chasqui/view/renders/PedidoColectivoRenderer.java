@@ -294,6 +294,17 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 			itemEntregar.setStyle("color:black");
 			itemEntregar.setTooltiptext("Pedido cancelado");
 		}
+		
+		//manuitem exportar
+		Menuitem menuitemexportar = new Menuitem("Exportar");
+		menuitemexportar.setTooltip("Exporta el pedido colectivo");
+		menuitemexportar.setImage("/imagenes/export.png");
+		HashMap<String, Object> paramsexport = new HashMap<String, Object>();
+		paramsexport.put(PedidosComposer.PEDIDO_KEY, pedido);
+		paramsexport.put(PedidosComposer.ACCION_KEY, "exportar");
+		menuitemexportar.addForward(Events.ON_CLICK, pedidoWindow, Events.ON_USER, paramsexport);
+		menuitemexportar.setParent(menupop);
+		
 		menubar.setSclass("selectorpedidoscolectivos");
 		//bindea los componentes a un hbox
 		Hlayout hbox = new Hlayout();
