@@ -509,6 +509,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	
 	public void inicializarModoLectura(){
 		llenarCampos();
+		incentivo.setValue(modelv.getIncentivo());
+		totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
 		modoEdicion = false;
 		textboxCodigo.setDisabled(true);
 		comboCaracteristicas.setDisabled(true);
@@ -527,8 +529,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		uploadImagen.setDisabled(true);
 		listitemincentivo.setVisible(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos());
 		listitemincentivo.setDisabled(true);
-		incentivo.setDisabled(true);
-		totalPrecio.setDisabled(true);
+		incentivo.setReadonly(true);
+		totalPrecio.setReadonly(true);
 		ckEditor.setDisabled(true);
 		
 	}

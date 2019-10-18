@@ -1,33 +1,50 @@
 package chasqui.service.rest.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.vividsolutions.jts.geom.Point;
+
+import chasqui.exceptions.DomicilioInexistenteException;
+import chasqui.exceptions.EstrategiaInvalidaException;
 import chasqui.exceptions.PuntoDeRetiroInexistenteException;
 import chasqui.exceptions.TokenInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Nodo;
+import chasqui.model.Direccion;
 import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.service.rest.request.ConfirmarPedidoRequest;
+import chasqui.service.rest.request.DireccionZonaRequest;
+import chasqui.service.rest.request.ObtenerPedidosConEstadoRequest;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.DataPortadaResponse;
 import chasqui.service.rest.response.NodoAbiertoResponse;
 import chasqui.service.rest.response.PreguntaDeConsumoResponse;
 import chasqui.service.rest.response.PuntosDeRetiroResponse;
 import chasqui.service.rest.response.VendedorResponse;
+import chasqui.service.rest.response.ZonaGeoJsonResponse;
 import chasqui.service.rest.response.ZonaResponse;
+import chasqui.services.interfaces.DireccionService;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
@@ -46,6 +63,9 @@ public class VendedorListener {
 	
 	@Autowired
 	NodoService nodoService;
+	
+	@Autowired
+	DireccionService direccionService;
 	
 	@Autowired
 	TokenGenerator tokenGenerator;
@@ -74,15 +94,49 @@ public class VendedorListener {
 		}
 	}
 
-	
+	@Deprecated
 	@GET
 	@Path("/zonas/{idVendedor}")
 	@Produces("application/json")
-	public Response obtenerVendedores(@PathParam("idVendedor") Integer idVendedor){
+	public Response obtenerZonas(@PathParam("idVendedor") Integer idVendedor){
 		try{
 			return Response.ok(toResponseZona(zonaService.obtenerZonas(idVendedor)),MediaType.APPLICATION_JSON).build();
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
+		}
+	}
+	
+	@GET
+	@Path("/zonasGeo/{idVendedor}")
+	@Produces("application/json")
+	public Response obtenerZonasGeo(@PathParam("idVendedor") Integer idVendedor){
+		try{
+			this.validarEstrategiaActiva("ZN", idVendedor);
+			return Response.ok(toResponseZonaGeo(zonaService.obtenerZonas(idVendedor)),MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError (e.getMessage())).build();
+		}
+	}
+	
+	@POST
+	@Produces("application/json")
+	@Path("/obtenerZonaDeDireccion")
+	public Response obtenerZonaDeDireccion(@Multipart(value="crearRequest", type="application/json") final String  request){
+		try{
+			DireccionZonaRequest dirRequest = toDireccionZonaRequest(request);
+			Direccion d = direccionService.obtenerDireccionPorId(dirRequest.getIdDireccion());
+			if(d==null) {
+				throw new DomicilioInexistenteException();
+			}
+			if(d.getGeoUbicacion() == null) {
+				d.crearGeoDireccion(d.getLatitud(), d.getLongitud());
+			}
+			Zona zona = zonaService.obtenerZonaDePertenenciaDeDireccion(d.getGeoUbicacion(), dirRequest.getIdVendedor());
+			return Response.ok(toResponseZona(zona),MediaType.APPLICATION_JSON).build();
+		}catch(DomicilioInexistenteException e){
+			return Response.status(406).entity(new ChasquiError("Parametros Incorrectos")).build();
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	
@@ -174,6 +228,10 @@ public class VendedorListener {
 							throw new PuntoDeRetiroInexistenteException();
 						};
 					break;
+			case "ZN": if(!estrategias.isSeleccionDeDireccionDelUsuario()) {
+				throw new EstrategiaInvalidaException();
+			};
+			break;
 			}
 	}
 
@@ -205,6 +263,8 @@ public class VendedorListener {
 		}
 	}
 	
+
+
 	@GET
 	@Path("/datosPortada/{nombreVendedor}")
 	@Produces("application/json")
@@ -217,6 +277,12 @@ public class VendedorListener {
 		}catch(Exception e){			
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
+	}
+	
+	private DireccionZonaRequest toDireccionZonaRequest(String request) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		return mapper.readValue(request, DireccionZonaRequest.class);
 	}
 	
 	private List<PreguntaDeConsumoResponse> toResponsePreguntaConsumo(List<PreguntaDeConsumo> lista){
@@ -239,6 +305,14 @@ public class VendedorListener {
 		List<NodoAbiertoResponse> response = new ArrayList<NodoAbiertoResponse>();
 		for(Nodo nodo : nodos){
 			response.add(new NodoAbiertoResponse(nodo));
+		}
+		return response;
+	}
+	
+	private List<ZonaGeoJsonResponse> toResponseZonaGeo(List<Zona> obtenerZonas) {
+		List<ZonaGeoJsonResponse> response = new ArrayList<ZonaGeoJsonResponse>();
+		for(Zona z : obtenerZonas){
+			response.add(new ZonaGeoJsonResponse(z));
 		}
 		return response;
 	}

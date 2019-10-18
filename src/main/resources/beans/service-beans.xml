@@ -53,7 +53,8 @@
 	   <bean id="pedidoColectivoService" name="pedidoColectivoService" class="chasqui.services.impl.PedidoColectivoServiceImpl"/>
 	   
 	   <bean id="puntoDeRetiroService" name="puntoDeRetiroService" class="chasqui.services.impl.PuntoDeRetiroServiceImpl"/>
-	     
+	    
+	   <bean id="direccionService" name="direccionService" class="chasqui.services.impl.DireccionServiceImpl"/>
 	   <!--  DAOS -->
 	   <bean name="usuarioDAO" id="usuarioDAO" class="chasqui.dao.impl.UsuarioDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>
@@ -116,6 +117,10 @@
 	   </bean>
 	   
 	   <bean id="solicitudPertenenciaNodoDAO" name="solicitudPertenenciaNodoDAO" class="chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm">
+	   		<property name="sessionFactory" ref="sessionFactory"/>
+	   </bean>
+	   
+	   <bean id="direccionDAO" name="direccionDAO" class="chasqui.dao.impl.DireccionDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>
 	   </bean>
 	   

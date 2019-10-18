@@ -9,6 +9,8 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vividsolutions.jts.geom.Point;
+
 import chasqui.aspect.Auditada;
 import chasqui.aspect.Dateable;
 import chasqui.dao.PedidoDAO;
@@ -23,6 +25,7 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
+import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
@@ -342,7 +345,9 @@ public class PedidoServiceImpl implements PedidoService {
 		vendedor.descontarStockYReserva(pedido);
 		cliente.confirmarPedido(request.getIdPedido(),request.getIdDireccion(),request.getIdPuntoDeRetiro());
 		if(request.getIdDireccion() !=null) {
-			pedido.setZona(zonaService.obtenerZonaDePertenenciaDeDireccion(pedido.getDireccionEntrega().getGeoUbicacion(),pedido.getIdVendedor()));
+			Direccion d = pedido.getDireccionEntrega();
+			Point geoubicacion = d.getGeoUbicacion();
+			pedido.setZona(zonaService.obtenerZonaDePertenenciaDeDireccion(geoubicacion,pedido.getIdVendedor()));
 		}		
 		
 		notificacionService.enviarAClienteSuPedidoConfirmado(vendedor.getEmail(), email, pedido);
