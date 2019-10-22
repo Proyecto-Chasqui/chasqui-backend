@@ -12,10 +12,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -50,21 +52,35 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	private Textbox textboxUrlBase;
 	
 	private String passwordInicial;
-	
-	
+	private Component vcomp;
+	private Window administracionWindow;
+	private Label labelVenededor;
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
+		vcomp = comp;
 		binder = new AnnotateDataBinder(comp);
 		service = (UsuarioService) SpringUtil.getBean("usuarioService");
 		mailService = (MailService) SpringUtil.getBean("mailService");
 		vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
 		encrypter = (Encrypter) SpringUtil.getBean("encrypter");
+		administracionWindow = (Window) findAdministracionWindow(comp);
 		comp.addEventListener(Events.ON_NOTIFY, new GuardarUsuarioEventListener(this));
 		comp.addEventListener(Events.ON_USER, new GuardarUsuarioEventListener(this));
 		binder.loadAll();
 	}
 	
+	private Component findAdministracionWindow(Component comp) {
+		if(comp.getParent() instanceof Window && comp.getParent().getId().equals("administracionWindow")){
+			return comp.getParent();
+		}
+		return findAdministracionWindow(comp.getParent());
+	}
+	
+	public void onClick$buttonCancelar(){
+		mostrarListaUsuarios();
+		this.limpiarCampos();
+	}
 	
 	public void onClick$buttonGuardar(){
 		validacionesParaGuardar();
@@ -191,6 +207,12 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		chequearTodosLosCamposEnBlanco();
 	}
 	
+	public void mostrarListaUsuarios() {
+		Map<String,Object>params2 = new HashMap<String,Object>();
+		params2.put("accion", "mostrarListaUsuarios");
+		Events.sendEvent(Events.ON_RENDER, administracionWindow, params2);
+	}
+	
 	public void chequearTodosLosCamposEnBlanco(){
 		String username = textboxUsername.getValue();
 		String email = textboxEmail.getValue();
@@ -229,6 +251,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 			params.put("usuario", v);
 			params.put("accion", "crear");
 			Events.sendEvent(Events.ON_NOTIFY, usuariosActualesWindow, params);
+			mostrarListaUsuarios();
 		}catch(Exception e){
 			e.printStackTrace();
 			alert(e.getMessage());
@@ -258,6 +281,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	}
 	
 	public void llenarCombosConUser(Vendedor user){
+		labelVenededor.setValue("Editando datos de " + user.getNombre());
 		limpiarCampos();
 		textboxUsername.setValue(user.getUsername());
 		textboxEmail.setValue(user.getEmail());

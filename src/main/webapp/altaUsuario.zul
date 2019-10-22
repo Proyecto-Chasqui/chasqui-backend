@@ -7,6 +7,18 @@
 <window id="altaUsuarioWindow" title="${c:l('zk.window.altaUsuario.title')}" border="normal"
 apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<style>
+    .title {
+    	background-color: #00b8fc;
+    	border-style: solid;
+    	border-width: 1px;
+    	border-color:LightGray;
+    }
+    </style>
+    				<!-- Detalles -->
+				<div id="titulo" align="center" class="title" >
+					<label  id="labelVenededor">Vendedor</label>
+        		</div>
 <div>
 	<listbox>
 		<listhead>
@@ -58,7 +70,9 @@ apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
 	</listbox>
 	<div align="center">
 		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
+		<toolbarbutton label="Cancelar" style="font-weight:bold; color:black" id="buttonCancelar" image="/imagenes/cancel_16.png"/>
 	</div>
+
 </div>
 </window>
 </zk>

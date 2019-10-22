@@ -122,6 +122,9 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		params.put("accion", "editar");
 		params.put("usuario", u);
 		Events.sendEvent(Events.ON_USER,altaUsuarioWindow,params);
+		Map<String,Object>params2 = new HashMap<String,Object>();
+		params2.put("accion", "editarUsuario");
+		Events.sendEvent(Events.ON_RENDER,administracionWindow,params2);
 	}
 	
 	public void eliminar(final Vendedor u){

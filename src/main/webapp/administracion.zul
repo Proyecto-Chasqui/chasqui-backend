@@ -67,7 +67,10 @@
 	<menuitem id="menuItemPedidosColecitvos"  image="/imagenes/pedidos_colectivos.png" label="PedidosColectivos"/>
 	<menuitem id="menuItemNodos" image="/imagenes/menu_nodos.png" label="Nodos"/>
 	<menuitem id="menuItemConfiguracion" image="/imagenes/configuraciones.png" label="Configuraciones" />
-	<menuitem id="menuItemLogOut" style="position: absolute;  left: 92vw" image="/imagenes/logout.png"   tooltiptext="${c:l('zk.toolbar.disconnect')}" label="Adminmtr" />
+	<menuitem id="menuItemLogOut" style="position: absolute;  left: 92vw" image="/imagenes/logout.png"   tooltiptext="${c:l('zk.toolbar.disconnect')}" label="N/D" />
+	<!-- sección visible en root -->
+	<menuitem  id="menuItemUsuarios"  image="/imagenes/usuarios.png" label="Usuarios" />
+	<menuitem  id="menuItemCaracteristicas"  image="/imagenes/sello.png" label="Sellos" />
 </menubar>
 
 <menubar id="submenubar" width="100%" visible="false"  scrollable = "true">
@@ -267,12 +270,10 @@
 		<div>
 			<vbox width="100%">
 				<include id="altaUsuarioInclude" visible="false" src="/altaUsuario.zul"/>
-				<separator spacing="20px"/>
 			</vbox>
 			<hbox>
-				<include width="300px" id="estrategiasInclude" visible="false" src="/configuracionEstrategiasComercializacion.zul"/>
-				<separator spacing="20px"/>
-				<include id="usuariosActualesInclude" visible="false" src="/usuariosActuales.zul"/>
+				<include width="100%" id="estrategiasInclude" visible="false" src="/configuracionEstrategiasComercializacion.zul"/>
+				<include width="100%" id="usuariosActualesInclude" visible="false" src="/usuariosActuales.zul"/>
 			</hbox>
 		</div>
 
