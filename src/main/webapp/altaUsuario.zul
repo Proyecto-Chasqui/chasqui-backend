@@ -5,7 +5,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <window id="altaUsuarioWindow" title="${c:l('zk.window.altaUsuario.title')}" border="normal"
-apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
+apply="chasqui.view.composer.AltaUsuarioComposer" width="100%">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <style>
     .title {
