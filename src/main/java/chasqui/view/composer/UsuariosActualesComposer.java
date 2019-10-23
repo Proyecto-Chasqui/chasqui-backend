@@ -18,6 +18,7 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.Messagebox.ClickEvent;
 
@@ -117,14 +118,25 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 		this.binder.loadAll();
 	}
 	
+	public void mostrarAltaUsuario() {
+		Map<String,Object>params2 = new HashMap<String,Object>();
+		params2.put("accion", "editarUsuario");
+		Events.sendEvent(Events.ON_RENDER,administracionWindow,params2);
+	}
+	
+	public void onClick$buttonGuardarNuevoUsuario() {	
+		Map<String,Object> mapNewUser = new HashMap<String,Object>();
+		mapNewUser.put("accion", "nuevoUsuario");
+		Events.sendEvent(Events.ON_USER, altaUsuarioWindow, mapNewUser);
+		mostrarAltaUsuario();
+	}
+	
 	public void editar(Vendedor u){
 		Map<String,Object>params = new HashMap<String,Object>();
 		params.put("accion", "editar");
 		params.put("usuario", u);
 		Events.sendEvent(Events.ON_USER,altaUsuarioWindow,params);
-		Map<String,Object>params2 = new HashMap<String,Object>();
-		params2.put("accion", "editarUsuario");
-		Events.sendEvent(Events.ON_RENDER,administracionWindow,params2);
+		mostrarAltaUsuario();
 	}
 	
 	public void eliminar(final Vendedor u){

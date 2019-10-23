@@ -28,13 +28,13 @@ apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
 		<listitem>
 			<listcell label="${c:l('zk.label.altaUsuario.usuario')}"/>
 			<listcell>
-				<textbox id="textboxUsername" maxlength="10"/>
+				<textbox id="textboxUsername" maxlength="64"/>
 			</listcell>
 		</listitem>
 		<listitem>
 			<listcell label="Nombre: "/>
 			<listcell>
-				<textbox id="textboxNombre" maxlength="40"/>
+				<textbox id="textboxNombre" maxlength="64"/>
 			</listcell>
 		</listitem>
 		<listitem>
@@ -46,19 +46,19 @@ apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
 		<listitem>
 			<listcell label="${c:l('zk.label.configuracion.nueva.clave')}"/>
 			<listcell>
-				<textbox id="textboxContraseña" type="password" maxlength="15"/>
+				<textbox id="textboxContraseña" type="password" maxlength="24"/>
 			</listcell>
 		</listitem>
 		<listitem>
 			<listcell label="${c:l('zk.label.configuracion.nueva.clave.repita')}"/>
 			<listcell>
-				<textbox id="textboxContraseñaRepita" type="password" maxlength="15"/>
+				<textbox id="textboxContraseñaRepita" type="password" maxlength="24"/>
 			</listcell>
 		</listitem>
 		<listitem>
 			<listcell label="${c:l('zk.label.altaUsuario.email')}"/>
 			<listcell>
-				<textbox id="textboxEmail"  maxlength="45"/>
+				<textbox id="textboxEmail"  maxlength="64"/>
 			</listcell>
 		</listitem>
 		<listitem>
@@ -70,6 +70,7 @@ apply="chasqui.view.composer.AltaUsuarioComposer" height="100%" width="100%">
 	</listbox>
 	<div align="center">
 		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
+		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardarNuevo" visible="false" image="/imagenes/save.png"/>
 		<toolbarbutton label="Cancelar" style="font-weight:bold; color:black" id="buttonCancelar" image="/imagenes/cancel_16.png"/>
 	</div>
 

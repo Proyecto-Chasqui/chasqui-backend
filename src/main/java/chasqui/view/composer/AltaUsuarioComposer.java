@@ -55,6 +55,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	private Component vcomp;
 	private Window administracionWindow;
 	private Label labelVenededor;
+	private Button buttonGuardarNuevo;
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -84,9 +85,20 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	
 	public void onClick$buttonGuardar(){
 		validacionesParaGuardar();
+		validarUsuarioExistenteConNombreCortoEditando(textboxNombreCorto.getValue());
 		this.bloquearPantalla("Guardando Nuevo Usuario...");
-		Events.echoEvent(Events.ON_NOTIFY,self,null);
+		this.guardar();
 	}
+	
+
+
+	public void onClick$buttonGuardarNuevo(){
+		validacionesParaGuardar();
+		validarUsuarioExistenteConNombreCorto(textboxNombreCorto.getValue());
+		validarPassword();
+		this.guardar();
+	}
+	
 	
 	private void validacionesParaGuardar() {
 		String username = textboxUsername.getValue();
@@ -132,20 +144,38 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		} catch (UsuarioInexistenteException e) {
 			//No existe un vendedor con ese email.
 		}
+
+		
+		
+	}
+	
+	private void validarUsuarioExistenteConNombreCorto(String nombreCorto) {
 		try{
 			Vendedor vendedorConNombreCorto =vendedorService.obtenerVendedorPorNombreCorto(nombreCorto);
 			//existe un vendedor con ese nombre corto, el mismo porque se esta editando, u otro.
-			if((vendedorConNombreCorto != null && vendedorConNombreCorto.getEmail() != model.getEmail())){
+			if((vendedorConNombreCorto != null)){
 				throw new WrongValueException(textboxNombreCorto,"Ya existe un usuario con el nombre corto ingresado");
 			}
 			
 		} catch (VendedorInexistenteException e){
 			//No existe un vendedor con ese nombre corto.
 		}
-		
-		validarPassword();
 	}
+	
+	private void validarUsuarioExistenteConNombreCortoEditando(String nombreCorto) {
+		try{
+			Vendedor vendedorConNombreCorto = vendedorService.obtenerVendedorPorNombreCorto(nombreCorto);
+			//existe un vendedor con ese nombre corto, el mismo porque se esta editando, u otro.
+			if((vendedorConNombreCorto != null && !vendedorConNombreCorto.getId().equals(model.getId()))){
+				throw new WrongValueException(textboxNombreCorto,"Ya existe un usuario con el nombre corto ingresado");
+			}
 
+			
+		} catch (VendedorInexistenteException e){
+			//No existe un vendedor con ese nombre corto.
+		}
+		
+	}
 	
 	private void validarPassword(){
 		String nuevaClave = textboxContraseña.getValue();
@@ -178,7 +208,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 			model.setPassword(encrypter.encrypt(pwd));
 			model.setUrl(urlBase);
 			if(model.getImagenPerfil() == null){
-				model.setImagenPerfil("/imagenes/usuarios/ROOT/perfil.jpg");				
+				model.setImagenPerfil("/imagenes/imagennodisponible.jpg");				
 			}
 			return model;
 		}
@@ -227,6 +257,13 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		this.binder.loadAll();
 	}
 	
+	public void crearNuevoUsuario() {
+		this.limpiarCampos();
+		labelVenededor.setValue("Creando nuevo usuario");
+		buttonGuardar.setVisible(false);
+		buttonGuardarNuevo.setVisible(true);
+	}
+	
 	public void guardar(){
 		try{      	
 			//Guardar
@@ -269,6 +306,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		textboxContraseña.setValue(null);
 		textboxUsername.setValue(null);
 		textboxUrlBase.setValue(null);
+		model = null;
 		binder.loadAll();
 	}
 	
@@ -282,12 +320,12 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	
 	public void llenarCombosConUser(Vendedor user){
 		labelVenededor.setValue("Editando datos de " + user.getNombre());
+		buttonGuardar.setVisible(true);
+		buttonGuardarNuevo.setVisible(false);
 		limpiarCampos();
 		textboxUsername.setValue(user.getUsername());
 		textboxEmail.setValue(user.getEmail());
 		textboxUrlBase.setValue(user.getUrl());		
-		// parche momentaneo hasta que todos los vendedores que fueron dados de alta ANTES de agregar este campo
-		// lo tengan incluido
 		if(user.getNombre() != null){
 			textboxNombre.setValue(user.getNombre());			
 		}
@@ -313,6 +351,16 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	public void setTextboxUrlBase(Textbox textboxUrlBase) {
 		this.textboxUrlBase = textboxUrlBase;
 	}
+
+	public Button getButtonGuardarNuevo() {
+		return buttonGuardarNuevo;
+	}
+
+	public void setButtonGuardarNuevo(Button buttonGuardarNuevo) {
+		this.buttonGuardarNuevo = buttonGuardarNuevo;
+	}
+
+
 	
 	
 	
@@ -340,6 +388,9 @@ class GuardarUsuarioEventListener implements EventListener<Event>{
 				}
 				if(params.get("accion").equals("eliminar")){
 					composer.limpiarCampos();
+				}
+				if(params.get("accion").equals("nuevoUsuario")) {
+					composer.crearNuevoUsuario();
 				}
 			}
 		}else{

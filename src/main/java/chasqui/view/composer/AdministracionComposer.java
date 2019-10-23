@@ -1332,6 +1332,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		usuariosActualesInclude.setVisible(true);
 		altaUsuarioInclude.setVisible(false);
 		estrategiasInclude.setVisible(false);
+		this.binder.loadAll();
 	}
 	
 	public void onSelect$productorComboBox(SelectEvent evt){

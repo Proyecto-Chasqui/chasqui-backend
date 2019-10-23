@@ -14,5 +14,9 @@ apply="chasqui.view.composer.UsuariosActualesComposer">
 			<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
 		</listhead>
 	</listbox>
+	<separator spacing="5px"/>
+	<div align="center">
+		<toolbarbutton label="Nuevo Usuario" style="font-weight:bold; color:black" id="buttonGuardarNuevoUsuario" image="/imagenes/newuser.png"/>
+	</div>
 </window>
 </zk>

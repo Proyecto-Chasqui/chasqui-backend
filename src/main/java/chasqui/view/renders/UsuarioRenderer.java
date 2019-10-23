@@ -44,6 +44,7 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 		
 		editar.setParent(hbox);
 		
+
 		
 		// Boton editar estrategias
 		
@@ -56,7 +57,7 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 		mapEditarEstrategias.put("usuario", u);
 		editarEstrategias.addForward(Events.ON_CLICK, usuariosActualesWindow, Events.ON_NOTIFY, mapEditarEstrategias);
 
-		editarEstrategias.setParent(hbox);
+		
 		
 		
 		// Boton cargar startup
@@ -70,7 +71,7 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 		mapCargarStartUp.put("usuario", u);
 		cargarStartUp.addForward(Events.ON_CLICK, usuariosActualesWindow, Events.ON_NOTIFY, mapCargarStartUp); 
 
-		cargarStartUp.setParent(hbox);
+		
 		
 		//Boton exportar
 		
@@ -83,7 +84,7 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 		mapExportar.put("usuario", u);
 		exportar.addForward(Events.ON_CLICK, usuariosActualesWindow, Events.ON_NOTIFY, mapExportar); 
 
-		exportar.setParent(hbox);
+		
 		
 		// Boton eliminar vendedor
 		
@@ -97,11 +98,15 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 			eliminar.setTooltiptext(Labels.getLabel("zk.toolbarbutton.administracion.tooltip.eliminar"));
 			eliminar.setImage("/imagenes/detach.png");
 			eliminar.addForward(Events.ON_CLICK, usuariosActualesWindow, Events.ON_NOTIFY,map2);
-			eliminar.setParent(hbox);			
+			eliminar.setParent(hbox);
+			editarEstrategias.setParent(hbox);
+			exportar.setParent(hbox);
+			cargarStartUp.setParent(hbox);
 		}
 		hbox.setParent(c2);
 		c2.setParent(item);
 		
+
 	}
 
 	
