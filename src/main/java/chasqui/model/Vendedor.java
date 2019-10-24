@@ -25,11 +25,13 @@ public class Vendedor extends Usuario{
 	private List<PreguntaDeConsumo> preguntasDePedidosColectivos;
 	private Integer tiempoVencimientoPedidos;
 	private DataMultimedia dataMultimedia;
+	private List<TagZonaDeCobertura> tagsZonaCobertura;
+	private List<TagTipoProducto> tagsTipoProducto;
+	private List<TagTipoOrganizacion> tagsTipoOrganizacion;
+	private List<TagEvento> tagsEvento;
 	
 	//GETs & SETs	
-	
-	//Por el momento las estrategias utilizadas estan siendo creadas con un modo default
-	//hasta que sea configurable desde el panel de administracion.
+
 	public Vendedor(String nombre,String nombreCorto, String username, String email, String pwd, String urlBase) {
 		this.setEstrategiasUtilizadas(new EstrategiasDeComercializacion());
 		this.setUsername(username);
@@ -505,6 +507,38 @@ public class Vendedor extends Usuario{
 			} 
 		}
 		return fabricanteRes;
+	}
+
+	public List<TagZonaDeCobertura> getTagsZonaCobertura() {
+		return tagsZonaCobertura;
+	}
+
+	public List<TagTipoProducto> getTagsTipoProducto() {
+		return tagsTipoProducto;
+	}
+
+	public List<TagTipoOrganizacion> getTagsTipoOrganizacion() {
+		return tagsTipoOrganizacion;
+	}
+
+	public List<TagEvento> getTagsEvento() {
+		return tagsEvento;
+	}
+
+	public void setTagsZonaCobertura(List<TagZonaDeCobertura> tagsZonaCobertura) {
+		this.tagsZonaCobertura = tagsZonaCobertura;
+	}
+
+	public void setTagsTipoProducto(List<TagTipoProducto> tagsTipoProducto) {
+		this.tagsTipoProducto = tagsTipoProducto;
+	}
+
+	public void setTagsTipoOrganizacion(List<TagTipoOrganizacion> tagsTipoOrganizacion) {
+		this.tagsTipoOrganizacion = tagsTipoOrganizacion;
+	}
+
+	public void setTagsEvento(List<TagEvento> tagsEvento) {
+		this.tagsEvento = tagsEvento;
 	}
 
 }

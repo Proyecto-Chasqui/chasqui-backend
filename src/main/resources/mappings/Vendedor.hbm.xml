@@ -89,5 +89,29 @@
             <column name="ID_DATA_MULTIMEDIA"/>
         </many-to-one>
         
+        <list name="tagsZonaCobertura" table="TAG_ZONA_COBERTURA" lazy="false">
+			<key column="TAG_ZONA_COBERTURA_ID"></key>
+			<index column="SEQUENCE"></index>
+			<one-to-many class="chasqui.model.TagZonaDeCobertura"/>
+		</list>
+		
+		<list name="tagsTipoProducto" table="TAG_TIPO_PRODUCTO" lazy="false">
+			<key column="TAG_TIPO_PRODUCTO_ID"></key>
+			<index column="SEQUENCE"></index>
+			<one-to-many class="chasqui.model.TagTipoProducto"/>
+		</list>
+
+		<list name="tagsTipoOrganizacion" table="TAG_TIPO_ORGANIZACION" lazy="false">
+			<key column="TAG_TIPO_ORGANIZACION_ID"></key>
+			<index column="SEQUENCE"></index>
+			<one-to-many class="chasqui.model.TagTipoOrganizacion"/>
+		</list>
+
+		<list name="tagsEvento" table="TAG_EVENTO" lazy="false">
+			<key column="TAG_EVENTO_ID"></key>
+			<index column="SEQUENCE"></index>
+			<one-to-many class="chasqui.model.TagEvento"/>
+		</list>
+        
     </joined-subclass>
 </hibernate-mapping>

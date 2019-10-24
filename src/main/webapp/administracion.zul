@@ -269,6 +269,11 @@
 		</div>
 		<div>
 			<vbox width="100%">
+				<include id="tagsInclude" visible="true" src="/administracionDeTags.zul"/>
+			</vbox>
+		</div>
+		<div>
+			<vbox width="100%">
 				<include id="altaUsuarioInclude" visible="false" src="/altaUsuario.zul"/>
 			</vbox>
 			<hbox>

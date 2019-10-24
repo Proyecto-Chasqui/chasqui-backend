@@ -55,6 +55,9 @@
 	   <bean id="puntoDeRetiroService" name="puntoDeRetiroService" class="chasqui.services.impl.PuntoDeRetiroServiceImpl"/>
 	    
 	   <bean id="direccionService" name="direccionService" class="chasqui.services.impl.DireccionServiceImpl"/>
+	   
+	   <bean id="tagService" name="tagService" class="chasqui.services.impl.TagServiceImpl"/>
+	   
 	   <!--  DAOS -->
 	   <bean name="usuarioDAO" id="usuarioDAO" class="chasqui.dao.impl.UsuarioDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>
@@ -124,6 +127,10 @@
 	   		<property name="sessionFactory" ref="sessionFactory"/>
 	   </bean>
 	   
+	   <bean id="tagDAO" name="tagDAO" class="chasqui.dao.impl.TagDAOHbm">
+	   		<property name="sessionFactory" ref="sessionFactory"/>
+	   </bean>
+	   
 	   <bean id="applicationContextProvider" name="applicationContextProvider" class="chasqui.model.ApplicationContextProvider"/>
 
 	   <bean id="tokenGenerator" name="tokenGenerator" class="chasqui.utils.TokenGenerator"></bean>
@@ -160,9 +167,9 @@
       <bean id="imagenAdmin" name="imagenAdmin" class="java.lang.String">
            <constructor-arg type="java.lang.String" value="${usuario.administrador.imagen}" />
     </bean>
-    <!-- ELIMINAR O COMENTAR LUEGO DE PASAR 1 VEZ A PRODUCCION -->
+    <!-- ELIMINAR O COMENTAR LUEGO DE PASAR 1 VEZ A PRODUCCION
     <bean id="fabricanteStartup" name="fabricanteStartup" class="chasqui.services.impl.FabricanteStartup" init-method="syncro"/>
-    <!-- ELIMINAR O COMENTAR LUEGO DE PASAR 1 VEZ A PRODUCCION -->
+    ELIMINAR O COMENTAR LUEGO DE PASAR 1 VEZ A PRODUCCION -->
     
     <!-- ********************** DEMO ****************************** -->
     

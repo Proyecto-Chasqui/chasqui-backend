@@ -1,0 +1,78 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./tagsWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window id="tagsWindow" border="normal" title="Configuracion de tags" apply="chasqui.view.composer.ABMTagsComposer" width="100%"  closable="true">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<!-- Seccion Nueva Pregunta -->
+<div id="configuracionTags" visible="true">
+			<tabbox>
+			<tabs>
+				<tab label="Tags Tipo Producto"/>
+				<tab label="Tags Tipo Organización"/> 
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+  				<listbox id="listboxTagTipoProductoSeleccionado" checkmark="false" selectedItem="@{tagsWindow$composer.tagTipoProductoSeleccionado}" 
+  				model="@{tagsWindow$composer.tagsTipoProductos}" mold="paging"
+				rows="5" pageSize="5"> 
+					<listhead>
+						<listheader label="Nombre" />
+						<listheader label="Descripción"/>
+						<listheader label="Acciones"/>
+					</listhead>
+					<listitem self="@{each=tagTipoProducto}">
+						<listcell label="@{tagTipoProducto.getNombre}" style="font-weight:bold;"/>
+						<listcell label="@{tagTipoProducto.getDescripcion}" style="font-weight:bold;"/>
+						<listcell>
+							<hbox align="center">
+								<image src="/imagenes/editar.png" forward="onClick=tagsWindow$composer.onEditarTagTipoProducto"/>
+								<space spacing="15px"/>
+								<image src="/imagenes/detach.png" forward="onClick=tagsWindow$composer.onEliminarTagTipoProducto"/>
+							</hbox>
+						</listcell>
+					</listitem>
+				</listbox>
+				<separator spacing="15px"/>
+					<div align="center">
+						<hbox>	
+							<button label="Nuevo Tag Tipo Producto" id="btnNuevoTagTipoProducto"/>
+						</hbox>
+					</div>
+				<separator spacing="15px"/>	
+				</tabpanel>
+				
+				</tabpanels>
+			</tabbox>
+</div>
+<!-- Sección editar/crear Pregunta -->
+<div id="crearTag" visible="false">
+			<listbox width="100%">
+				<listhead>
+					<listheader/>
+					<listheader/>
+				</listhead>
+				<listitem>
+					<listcell label="Nombre" style="text-align: center"/>
+					<listcell>
+						<textbox id="textNombre"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Descripción" style="text-align: center"/>
+					<listcell>
+						<textbox id="textDescripcion"  width="100%" rows="5" maxlength="300"/>
+					</listcell>
+				</listitem>							 
+			</listbox>
+				<div align="center">
+						 <button label="Guardar" id="btnGuardarTagProducto" />
+						 <button label="Guardar" visible="false" id="btnGuardarTagZona" />
+						 <button label="Cancelar" id="btnCancelarEdicionCreacionTag" />
+				</div>
+</div>
+			
+</window>
+</zk>
