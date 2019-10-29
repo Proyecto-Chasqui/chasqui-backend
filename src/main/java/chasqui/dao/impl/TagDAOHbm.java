@@ -66,20 +66,38 @@ public class TagDAOHbm extends HibernateDaoSupport implements TagDAO{
 
 	@Override
 	public List<TagZonaDeCobertura> obtenerTagZonaDeCobertura() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<TagZonaDeCobertura>>() {
+
+			@Override
+			public List<TagZonaDeCobertura> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(TagZonaDeCobertura.class);
+				return (List<TagZonaDeCobertura>) c.list();
+			}
+		});
 	}
 
 	@Override
 	public List<TagTipoOrganizacion> obtenerTagTipoOrganizacion() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<TagTipoOrganizacion>>() {
+
+			@Override
+			public List<TagTipoOrganizacion> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(TagTipoOrganizacion.class);
+				return (List<TagTipoOrganizacion>) c.list();
+			}
+		});
 	}
 
 	@Override
 	public List<TagEvento> obtenerTagsTagEvento() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<TagEvento>>() {
+
+			@Override
+			public List<TagEvento> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(TagEvento.class);
+				return (List<TagEvento>) c.list();
+			}
+		});
 	}
 
 	@Override

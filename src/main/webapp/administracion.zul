@@ -71,6 +71,7 @@
 	<!-- sección visible en root -->
 	<menuitem  id="menuItemUsuarios"  image="/imagenes/usuarios.png" label="Usuarios" />
 	<menuitem  id="menuItemCaracteristicas"  image="/imagenes/sello.png" label="Sellos" />
+	<menuitem  id="menuItemTags"  image="/imagenes/config_tag.png" label="Tags" />
 </menubar>
 
 <menubar id="submenubar" width="100%" visible="false"  scrollable = "true">
@@ -269,7 +270,7 @@
 		</div>
 		<div>
 			<vbox width="100%">
-				<include id="tagsInclude" visible="true" src="/administracionDeTags.zul"/>
+				<include id="tagsInclude" visible="false" src="/administracionDeTags.zul"/>
 			</vbox>
 		</div>
 		<div>

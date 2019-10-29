@@ -54,20 +54,17 @@ public class TagServiceImpl implements TagService{
 
 	@Override
 	public List<TagZonaDeCobertura> obtenerTagZonaDeCobertura() {
-		// TODO Auto-generated method stub
-		return null;
+		return tagDAO.obtenerTagZonaDeCobertura();
 	}
 
 	@Override
 	public List<TagTipoOrganizacion> obtenerTagTipoOrganizacion() {
-		// TODO Auto-generated method stub
-		return null;
+		return tagDAO.obtenerTagTipoOrganizacion();
 	}
 
 	@Override
 	public List<TagEvento> obtenerTagsTagEvento() {
-		// TODO Auto-generated method stub
-		return null;
+		return tagDAO.obtenerTagsTagEvento();
 	}
 
 	@Override

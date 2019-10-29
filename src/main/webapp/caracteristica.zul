@@ -21,7 +21,7 @@ apply="chasqui.view.composer.CaracteristicaComposer">
 							<label value="Caracteristica del Producto:"/>
 						</listcell>
 						<listcell>
-							<textbox id="txtbCaracteristica" maxlength="20"/>		
+							<textbox id="txtbCaracteristica" maxlength="64"/>		
 						</listcell>
 					</listitem>
 					<listitem>
@@ -73,7 +73,7 @@ apply="chasqui.view.composer.CaracteristicaComposer">
 							<label value="Caracteristica del Productor:" />
 						</listcell>
 						<listcell>
-							<textbox id="txtbCaracteristicaProductor" maxlength="20"/>		
+							<textbox id="txtbCaracteristicaProductor" maxlength="64"/>		
 						</listcell>
 					</listitem>
 					<listitem>

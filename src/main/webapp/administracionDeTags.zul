@@ -10,14 +10,16 @@
 <div id="configuracionTags" visible="true">
 			<tabbox>
 			<tabs>
-				<tab label="Tags Tipo Producto"/>
-				<tab label="Tags Tipo Organización"/> 
+				<tab label="Tipo Producto" image="/imagenes/tipo_productos.png"/>
+				<tab label="Tipo de organización" image="/imagenes/tipo_organizacion.png"/> 
+				<tab label="Zonas de cobertura" image="/imagenes/zona_cobertura.png"/> 
 			</tabs>
 			<tabpanels>
+			<!-- tags Tipo Producto -->
 				<tabpanel>
   				<listbox id="listboxTagTipoProductoSeleccionado" checkmark="false" selectedItem="@{tagsWindow$composer.tagTipoProductoSeleccionado}" 
   				model="@{tagsWindow$composer.tagsTipoProductos}" mold="paging"
-				rows="5" pageSize="5"> 
+				rows="8" pageSize="8"> 
 					<listhead>
 						<listheader label="Nombre" />
 						<listheader label="Descripción"/>
@@ -28,9 +30,9 @@
 						<listcell label="@{tagTipoProducto.getDescripcion}" style="font-weight:bold;"/>
 						<listcell>
 							<hbox align="center">
-								<image src="/imagenes/editar.png" forward="onClick=tagsWindow$composer.onEditarTagTipoProducto"/>
+								<image src="/imagenes/edit_tag.png" forward="onClick=tagsWindow$composer.onEditarTagTipoProducto"/>
 								<space spacing="15px"/>
-								<image src="/imagenes/detach.png" forward="onClick=tagsWindow$composer.onEliminarTagTipoProducto"/>
+								<image src="/imagenes/delete_tag.png" forward="onClick=tagsWindow$composer.onEliminarTagTipoProducto"/>
 							</hbox>
 						</listcell>
 					</listitem>
@@ -38,12 +40,71 @@
 				<separator spacing="15px"/>
 					<div align="center">
 						<hbox>	
-							<button label="Nuevo Tag Tipo Producto" id="btnNuevoTagTipoProducto"/>
+							<button label=" Nuevo Tag Tipo Producto"  image="/imagenes/new_tag.png" id="btnNuevoTagTipoProducto"/>
 						</hbox>
 					</div>
 				<separator spacing="15px"/>	
 				</tabpanel>
-				
+				<!-- tags Tipo Organización -->
+				<tabpanel>
+		  				<listbox id="listboxTagTipoOrganizacion" checkmark="false" selectedItem="@{tagsWindow$composer.tagTipoOrganizacionSeleccionado}" 
+		  				model="@{tagsWindow$composer.tagsTipoOrganizacion}" mold="paging"
+						rows="8" pageSize="8"> 
+							<listhead>
+								<listheader label="Nombre" />
+								<listheader label="Descripción"/>
+								<listheader label="Acciones"/>
+							</listhead>
+							<listitem self="@{each=tagTipoOrganizacion}">
+								<listcell label="@{tagTipoOrganizacion.getNombre}" style="font-weight:bold;"/>
+								<listcell label="@{tagTipoOrganizacion.getDescripcion}" style="font-weight:bold;"/>
+								<listcell>
+									<hbox align="center">
+										<image src="/imagenes/edit_tag.png" forward="onClick=tagsWindow$composer.onEditarTagTipoOrganizacion"/>
+										<space spacing="15px"/>
+										<image src="/imagenes/delete_tag.png" forward="onClick=tagsWindow$composer.onEliminarTagTipoOrganizacion"/>
+									</hbox>
+								</listcell>
+							</listitem>
+						</listbox>
+						<separator spacing="15px"/>
+							<div align="center">
+								<hbox>	
+									<button label=" Nuevo Tag Tipo Organización"  image="/imagenes/new_tag.png" id="btnNuevoTagTipoOrganizacion"/>
+								</hbox>
+							</div>
+						<separator spacing="15px"/>	
+				</tabpanel>
+				<!-- tags Zona de cobertura -->
+				<tabpanel>
+		  				<listbox id="listboxTagTipoTagZonaCobertura" checkmark="false" selectedItem="@{tagsWindow$composer.tagTagZonaCoberturaSeleccionado}" 
+		  				model="@{tagsWindow$composer.tagsZonaCobertura}" mold="paging"
+						rows="8" pageSize="8"> 
+							<listhead>
+								<listheader label="Nombre" />
+								<listheader label="Descripción"/>
+								<listheader label="Acciones"/>
+							</listhead>
+							<listitem self="@{each=tagZonaCobertura}">
+								<listcell label="@{tagZonaCobertura.getNombre}" style="font-weight:bold;"/>
+								<listcell label="@{tagZonaCobertura.getDescripcion}" style="font-weight:bold;"/>
+								<listcell>
+									<hbox align="center">
+										<image src="/imagenes/edit_tag.png" forward="onClick=tagsWindow$composer.onEditarTagZonaDeCobertura"/>
+										<space spacing="15px"/>
+										<image src="/imagenes/delete_tag.png" forward="onClick=tagsWindow$composer.onEliminarTagZonaDeCobertura"/>
+									</hbox>
+								</listcell>
+							</listitem>
+						</listbox>
+						<separator spacing="15px"/>
+							<div align="center">
+								<hbox>	
+									<button label=" Nuevo Tag Zona de Cobertura" image="/imagenes/new_tag.png" id="btnNuevoTagZonaCobertura"/>
+								</hbox>
+							</div>
+						<separator spacing="15px"/>	
+				</tabpanel>
 				</tabpanels>
 			</tabbox>
 </div>
@@ -68,9 +129,10 @@
 				</listitem>							 
 			</listbox>
 				<div align="center">
-						 <button label="Guardar" id="btnGuardarTagProducto" />
-						 <button label="Guardar" visible="false" id="btnGuardarTagZona" />
-						 <button label="Cancelar" id="btnCancelarEdicionCreacionTag" />
+						 <button label="Guardar" image= "/imagenes/save_tag.png" id="btnGuardarTagProducto" />
+						 <button label="Guardar" image= "/imagenes/save_tag.png" visible="false" id="btnGuardarTagZona" />
+						 <button label="Guardar" image= "/imagenes/save_tag.png" visible="false" id="btnGuardarTagOrganizacion" />
+						 <button label="Cancelar" image= "/imagenes/cancel_16.png" id="btnCancelarEdicionCreacionTag" />
 				</div>
 </div>
 			
