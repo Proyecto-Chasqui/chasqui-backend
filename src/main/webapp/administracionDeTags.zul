@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="tagsWindow" border="normal" title="Configuracion de tags" apply="chasqui.view.composer.ABMTagsComposer" width="100%"  closable="true">
+<window id="tagsWindow" border="normal" title="Configuración de tags" apply="chasqui.view.composer.ABMTagsComposer" width="100%"  closable="false">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <!-- Seccion Nueva Pregunta -->
 <div id="configuracionTags" visible="true">

@@ -2,7 +2,9 @@ package chasqui.service.rest.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.ws.rs.GET;
@@ -205,6 +207,37 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
+	
+	@GET
+	@Path("/pedidos/{idVendedor : \\d+ }")
+	@Produces("application/json")
+	public Response obtenerPedidosEnNodo(@PathParam("idVendedor") final Integer idVendedor) {
+
+		String email = obtenerEmailDeContextoDeSeguridad();
+
+		Map<Integer, Pedido> pedidos;
+
+		try {
+
+			List<Nodo> nodos = nodoService.obtenerNodosDelCliente(idVendedor, email);
+
+			pedidos = nodoService.obtenerPedidosEnNodos(nodos, email);
+
+			return Response.ok(this.toResponse(pedidos, null), MediaType.APPLICATION_JSON)
+						.build();
+
+		} catch (ClienteNoPerteneceAGCCException e) {
+			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage()))
+					.build();
+		} catch (GrupoCCInexistenteException e) {
+			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e1) {
+			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e1.getMessage())).build();
+		}
+		
+
+	}
+
 	
 	private void validarNodoParaEliminar(Nodo nodo, String emailAdministrador) throws UsuarioNoPerteneceAlGrupoDeCompras, NodoInexistenteException {
 		if(nodo == null) {
@@ -628,6 +661,8 @@ public class NodoListener {
 			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (GrupoCCInexistenteException e) {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (UsuarioNoPerteneceAlGrupoDeCompras e) {
+			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError("el usuario no pertenece al nodo")).build();
 		}
 
 			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
@@ -834,5 +869,26 @@ public class NodoListener {
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		request = mapper.readValue(aceptarRequest, AceptarRequest.class);
 		return request;
+	}
+	
+	private List<PedidoResponse> toResponse(Map<Integer, Pedido> pedidos, Pedido pedidoIndividual)
+			throws GrupoCCInexistenteException {
+		List<PedidoResponse> pedidosResponse = new ArrayList<PedidoResponse>();
+
+		Iterator<Integer> it = pedidos.keySet().iterator();
+		Integer idNodo;
+		while (it.hasNext()) {
+			//Integer idGrupo = (Integer) pedidos.keySet().iterator().next();
+			idNodo = it.next();
+			String alias = nodoService.obtenerNodoPorId(idNodo).getAlias(); // TODO
+																			// optimizar
+			pedidosResponse.add(new PedidoResponse(idNodo, alias, pedidos.get(idNodo)));
+			//it.next();
+		}
+		if (pedidoIndividual != null) {
+			pedidosResponse.add(new PedidoResponse(pedidoIndividual));
+		}
+
+		return pedidosResponse;
 	}
 }

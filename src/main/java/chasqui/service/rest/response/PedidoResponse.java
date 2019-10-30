@@ -151,6 +151,7 @@ public class PedidoResponse implements Serializable {
 		}
 		montoMinimo = p.getMontoMinimo();
 		montoActual = p.getMontoActual();
+		incentivoActual = p.getMontoTotalIncentivo();
 		productosResponse = new ArrayList<ProductoPedidoResponse>();
 		if (p.getProductosEnPedido() != null) {
 			for(ProductoPedido pp : p.getProductosEnPedido()){

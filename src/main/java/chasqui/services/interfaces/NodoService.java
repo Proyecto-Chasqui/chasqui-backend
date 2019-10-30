@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 
@@ -239,9 +240,10 @@ public interface NodoService {
 	 * @throws UsuarioInexistenteException
 	 * @throws GrupoCCInexistenteException
 	 * @throws PedidoInexistenteException
+	 * @throws UsuarioNoPerteneceAlGrupoDeCompras 
 	 */
 	@Transactional
-	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException;
+	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras;
 	/**
 	 * Retorna el pedido actual del usuario de ese nodo.
 	 * @param idNodo
@@ -294,6 +296,8 @@ public interface NodoService {
 
 	public Collection<? extends SolicitudCreacionNodo> obtenerSolicitudesDeCreacionNodosDelVendedorCon(Integer id,
 			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio);
+
+	public Map<Integer, Pedido> obtenerPedidosEnNodos(List<Nodo> nodos, String email) throws ClienteNoPerteneceAGCCException;
 
 
 }

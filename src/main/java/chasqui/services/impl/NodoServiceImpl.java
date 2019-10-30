@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 
@@ -560,24 +562,28 @@ public class NodoServiceImpl implements NodoService {
 	}
 	
 	@Override
-	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException {
+	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras {
 		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
 		Pedido pedidoVigente = nodo.obtenerPedidoIndividual(email);
-		if (pedidoVigente == null ) {
-			Pedido pedidoNuevo = pedidoService.crearPedidoIndividualEnGrupo(nodo, email, idVendedor);
-			nodo.nuevoPedidoIndividualPara(email, pedidoNuevo);
-			nodoDAO.guardarNodo(nodo);
-
-			Vendedor vendedor = usuarioService.obtenerVendedorPorID(idVendedor);
-			String nombreVendedor =vendedor.getNombre(); 
-			
-			Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
-			String nombreCliente= cliente.getUsername(); 
-			this.notificarNuevoPedidoIndividualAOtrosMiembros(nodo,email, nombreCliente, nombreVendedor);
-			
-		}
-		else{
-			throw new PedidoVigenteException(email);
+		if(nodo.pertenece(email)) {
+			if (pedidoVigente == null ) {
+				Pedido pedidoNuevo = pedidoService.crearPedidoIndividualEnGrupo(nodo, email, idVendedor);
+				nodo.nuevoPedidoIndividualPara(email, pedidoNuevo);
+				nodoDAO.guardarNodo(nodo);
+	
+				Vendedor vendedor = usuarioService.obtenerVendedorPorID(idVendedor);
+				String nombreVendedor =vendedor.getNombre(); 
+				
+				Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
+				String nombreCliente= cliente.getUsername(); 
+				this.notificarNuevoPedidoIndividualAOtrosMiembros(nodo,email, nombreCliente, nombreVendedor);
+				
+			}
+			else{
+				throw new PedidoVigenteException(email);
+			}
+		}else {
+			throw new UsuarioNoPerteneceAlGrupoDeCompras();
 		}
 		
 	}
@@ -683,6 +689,24 @@ public class NodoServiceImpl implements NodoService {
 			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio) {
 		
 		return solicitudCreacionNodoDAO.obtenerSolicitudesDeCreacionNodosDelVendedorCon(id,d,h,estado,nombreCoordinador,email, barrio);
+	}
+
+	@Override
+	public Map<Integer, Pedido> obtenerPedidosEnNodos(List<Nodo> nodos, String email) throws ClienteNoPerteneceAGCCException {
+		Map<Integer,Pedido> pedidos = new HashMap<Integer,Pedido>();
+
+		for (Nodo nodo : nodos) {
+
+			Pedido pedido = nodo.obtenerPedidoIndividual(email);
+
+			if (pedido != null) {
+				pedidos.put(nodo.getId(),nodo.obtenerPedidoIndividual(email));
+			}
+
+		}
+
+		return pedidos;
+
 	}
 	
 
