@@ -308,7 +308,7 @@
     	<!-- Pedidos -->
     	<popup id="ayudatextopedidos" width="600px">
         	<html><![CDATA[ En esta sección se listan todos los pedidos individuales <br /><br />
-        			<strong>Los pedidos estan divididos en 4 estados principales, que son ABIERTOS y <font color="blue">CONFIRMADOS</font></strong>, <font color="red">CANCELADOS</font></strong>, <font color="orange">VENCIDOS</font></strong><br /><br />
+        			<strong>Los pedidos estan divididos en 4 estados principales, que son, ABIERTOS, <font color="blue">CONFIRMADOS</font></strong>, <font color="red">CANCELADOS</font></strong> y <font color="orange">VENCIDOS</font></strong><br /><br />
         			<font><strong>ABIERTO:</font></strong> Son los pedidos que estan en proceso de compra, si no definió un vencimiento permanecerán de esta manera hasta que el usuario CANCELE o CONFIRME la compra.  </br> </br>
         			<font color="blue"><strong>CONFIRMADO:</font></strong> Son los pedidos que fueron cerrados por el comprador y que deben ser gestionados para su preparación y entrega. </br> </br>
         			<font color="orange"><strong>VENCIDO:</font></strong> Son los pedidos que pasaron el tiempo limite de compra, solo ocurre si se definio un tiempo de vencimiento para los pedidos. </br> </br>
