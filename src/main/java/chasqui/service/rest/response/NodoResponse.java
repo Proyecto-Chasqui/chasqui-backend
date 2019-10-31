@@ -27,7 +27,7 @@ public class NodoResponse implements Serializable {
 
 	private String descripcion;
 
-	private Integer idNodo;
+	private Integer id;
 	
 	private String tipo;
 	private Direccion direccionDelNodo;
@@ -78,7 +78,7 @@ public class NodoResponse implements Serializable {
 	}
 	
 	public NodoResponse(Nodo nodo) {
-		this.setIdNodo(nodo.getId());
+		this.setId(nodo.getId());
 	}
 
 	public NodoResponse(Nodo nodo,String email) throws ClienteNoPerteneceAGCCException {
@@ -94,7 +94,7 @@ public class NodoResponse implements Serializable {
 			this.miembros.add(new MiembroDeGCCResponse(miembro, pedido));
 		}
 		this.descripcion = nodo.getDescripcion();
-		this.setIdNodo(nodo.getId());
+		this.setId(nodo.getId());
 		this.setTipo(nodo.getTipo());
 		Direccion direccion = nodo.getDireccionDelNodo();
 		direccion.setGeoUbicacion(null);
@@ -138,12 +138,13 @@ public class NodoResponse implements Serializable {
 		this.barrio = barrio;
 	}
 
-	public Integer getIdNodo() {
-		return idNodo;
+
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdNodo(Integer idNodo) {
-		this.idNodo = idNodo;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	
