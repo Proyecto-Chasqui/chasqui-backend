@@ -88,6 +88,12 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
 					<button label="Ver preguntas de consumo" id="cuestionarioButton"/>
 				</listcell>
 			</listitem>
+			<listitem  id="configuracion_propiedades">
+				<listcell id="propiedades" label="Propiedades"/>
+				<listcell>
+					<button label="Ver configuración de propiedades" id="configPropsButton"/>
+				</listcell>
+			</listitem>
 			<listitem>
 				<listcell id="datosPortada" label="Pagina Principal"/>
 				<listcell id="configuracionDatosPortada">

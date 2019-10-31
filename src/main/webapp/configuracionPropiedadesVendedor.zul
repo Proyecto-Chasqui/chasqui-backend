@@ -1,0 +1,54 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionPropiedadesWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+	<window id="configuracionPropiedadesWindow" border="normal" title="Configuracion de popiedades" position="center,top"
+	apply="chasqui.view.composer.ConfiguracionPropiedadesComposer" width="50%"  closable="true">
+	<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+	
+		<tabbox>
+			<tabs>
+				<tab label="Tipo de productos que vende"/>
+				<tab label="Tipo de organización que es"/> 
+				<tab label="Zonas de operación"/> 
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+					    <hbox>
+					        <listbox id="listboxtagsproductossrc"  model="@{configuracionPropiedadesWindow$composer.tagsTipoProductos}" checkmark="true" rows="0" mold="paging" multiple="true" width="300px" >
+					            <listhead>
+					                <listheader label="Propiedades a elegir"/>
+					            </listhead>
+									<listitem self="@{each=tagTipoProducto}">
+										<listcell label="@{tagTipoProducto.getNombre}" style="font-weight:bold;"/>
+										<listcell visible="false" label="@{tagTipoProducto.getId}"  style="font-weight:bold;"/>
+									</listitem>
+					        </listbox>
+					        <vbox>
+					            <button label="=&gt;" id="buttonMoveToRight"/>
+					            <button label="&lt;=" id="buttonMoveToLeft" />
+					        </vbox>
+					        <listbox id="listboxtagsproductosdst" model="@{configuracionPropiedadesWindow$composer.tagsTipoProductosEnVendedor}" checkmark="true" mold="paging" rows="0" multiple="true">
+					            <listhead>
+					                <listheader label="Propiedades aplicadas"/>
+					            </listhead>
+					            	<listitem self="@{each=tagTipoProductoEnVendedor}">
+										<listcell label="@{tagTipoProductoEnVendedor.getNombre}"  style="font-weight:bold;"/>
+										<listcell label="@{tagTipoProductoEnVendedor.getId}" visible="false" />
+									</listitem>
+					        </listbox>
+					    </hbox>  
+				</tabpanel>
+				<tabpanel>
+					<div>B</div>
+				</tabpanel>
+				<tabpanel>
+					<div>C</div>
+				</tabpanel>
+			</tabpanels>
+		</tabbox>	
+
+	</window>
+</zk>
