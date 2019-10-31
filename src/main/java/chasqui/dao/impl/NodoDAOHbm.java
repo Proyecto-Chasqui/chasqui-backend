@@ -115,7 +115,9 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 				Criteria criteria = session.createCriteria(Nodo.class);
 				criteria.add(Restrictions.eq("vendedor.id", idVendedor))
 				.add(Restrictions.eq("esNodo", true))
-				.add(Restrictions.eq("tipo",Constantes.NODO_ABIERTO));
+				.add(Restrictions.eq("tipo",Constantes.NODO_ABIERTO))
+				.createCriteria("pedidoActual")
+				.add(Restrictions.ne("estado", Constantes.ESTADO_PEDIDO_CANCELADO));
 				
 				return (List<Nodo>) criteria.list();
 			}
