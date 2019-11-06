@@ -74,4 +74,13 @@ public class VendedorServiceImpl implements VendedorService{
 		return this.vendedorDAO.obtenerPreguntasDeConsumoColectivas(idVendedor);
 	}
 
+
+	@Override
+	public List<Vendedor> obtenerVendedoresConTags(String nombre, List<Integer> idsTagsTipoOrganizacion,
+			List<Integer> idsTagsTipoProducto, List<Integer> idsTagsZonaDeCobertura) {
+		
+		return this.vendedorDAO.obtenerVendedoresConTags(nombre,idsTagsTipoOrganizacion,
+				idsTagsTipoProducto, idsTagsZonaDeCobertura);
+	}
+
 }

@@ -133,4 +133,34 @@ public class VendedorDAOHbm  extends HibernateDaoSupport implements VendedorDAO{
 	public List<PreguntaDeConsumo> obtenerPreguntasDeConsumoColectivas(Integer idVendedor) {
 		return obtenerVendedorPorId(idVendedor).getPreguntasDePedidosColectivos();
 	}
+
+	@Override
+	public List<Vendedor> obtenerVendedoresConTags(final String nombre, final List<Integer> idsTagsTipoOrganizacion,
+			final List<Integer> idsTagsTipoProducto, final List<Integer> idsTagsZonaDeCobertura) {
+		return (List<Vendedor>) this.getHibernateTemplate().execute(new HibernateCallback<List<Vendedor>>() {
+
+			@Override
+			public List<Vendedor> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(Vendedor.class);
+				criteria.add(Restrictions.eq("isRoot", false));
+				if(! nombre.equals("")) {
+					criteria.add(Restrictions.like("nombre", "%"+nombre+"%"));
+				}
+				if(!idsTagsZonaDeCobertura.isEmpty()) {
+					criteria.createAlias("tagsZonaCobertura", "tagZonaCobertura");
+					criteria.add(Restrictions.in("tagZonaCobertura.id", idsTagsZonaDeCobertura));
+				}
+				if(! idsTagsTipoProducto.isEmpty()) {
+					criteria.createAlias("tagsTipoProducto", "tagTipoProducto");
+					criteria.add(Restrictions.in("tagTipoProducto.id", idsTagsTipoProducto));
+				}
+				if(! idsTagsTipoOrganizacion.isEmpty()) {
+					criteria.createAlias("tagsTipoOrganizacion", "tagTipoOrganizacion");
+					criteria.add(Restrictions.in("tagTipoOrganizacion.id", idsTagsTipoOrganizacion));
+				}
+				criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+				return (List<Vendedor>) criteria.list();
+			}
+		});
+	}
 }
