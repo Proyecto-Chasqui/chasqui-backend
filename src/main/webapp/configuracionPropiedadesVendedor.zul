@@ -7,7 +7,7 @@
 	<window id="configuracionPropiedadesWindow" border="normal" title="Configuración de propiedades" position="center,top"
 	apply="chasqui.view.composer.ConfiguracionPropiedadesComposer" width="50%"  closable="true">
 	<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
-				<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px;" popup="ayudatextopedidosnodos"  src="/imagenes/question.png" />
+		<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px;" popup="ayudatextopedidosnodos"  src="/imagenes/question.png" />
         
 		<tabbox >
 			<tabs>
@@ -103,9 +103,9 @@
         		 <popup id="ayudatextopedidosnodos" width="300px">
         			<html><![CDATA[ En esta sección se configuran las propiedades del catálogo, con las mismas los usuarios podrán hacer busquedas mas especificas y podrán a simple vista ver las caracteristicas distintivas de su catálogo. <br /><br />
         					Las propiedades del catálogo estan divididas en 3 tipos <br /><br />
-        					<strong>Tipo de producto:</strong> Define los tipos de productos que el catálogo ofrece, se pueden elegir hasta 5. </br> </br>
-        					<strong>Tipo de Organización:</strong> Permite mostrar que tipo de organización es la que opera el catálogo, solo se puede elegir 1.</br></br>
-        					<strong>Zonas de operación:</strong> Permite mostrar en que areas o alcance tienen las entregas/ventas, se pueden elegir hasta 3.</br></br>
+        					<strong>Tipo de producto:</strong> Define los tipos de productos que el catálogo ofrece, <strong>se pueden elegir hasta 5</strong>. </br> </br>
+        					<strong>Tipo de Organización:</strong> Permite mostrar que tipo de organización es la que opera el catálogo, <strong>solo se puede elegir 1</strong>.</br></br>
+        					<strong>Zonas de operación:</strong> Permite mostrar en que areas o alcance tienen las entregas/ventas, <strong>se pueden elegir hasta 3</strong>.</br></br>
         					]]>
         					
         			</html>

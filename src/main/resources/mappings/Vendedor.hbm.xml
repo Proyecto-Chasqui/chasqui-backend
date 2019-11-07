@@ -112,6 +112,10 @@
 			<index column="SEQUENCE"></index>
 			<many-to-many class="chasqui.model.TagEvento" column="ID_TAG_EVENTO"/>
 		</list>
+		
+		<property name="visibleEnMulticatalogo" type="java.lang.Boolean" >
+        		<column name="VISIBLE_EN_MULTICATALOGO" not-null="true" default="false" />
+    	</property>
         
     </joined-subclass>
 </hibernate-mapping>

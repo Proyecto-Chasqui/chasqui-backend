@@ -47,7 +47,7 @@ public class VendedorResponse implements Serializable{
 		this.setTagsTipoOrganizacion(v.getTagsTipoOrganizacion());
 		this.setTagsTipoProductos(v.getTagsTipoProducto());
 		this.setTagsZonaDeCobertura(v.getTagsZonaCobertura());
-		this.setVisibleEnMulticatalogo(true);
+		this.setVisibleEnMulticatalogo(v.isVisibleEnMulticatalogo());
 		if(v.getMapaZonas() != null ) {
 			this.setUrlMapa(v.getMapaZonas());
 		}else {

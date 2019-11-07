@@ -29,6 +29,7 @@ public class Vendedor extends Usuario{
 	private List<TagTipoProducto> tagsTipoProducto;
 	private List<TagTipoOrganizacion> tagsTipoOrganizacion;
 	private List<TagEvento> tagsEvento;
+	private boolean visibleEnMulticatalogo;
 	
 	//GETs & SETs	
 
@@ -43,6 +44,7 @@ public class Vendedor extends Usuario{
 		this.setUrl(urlBase);
 		this.setMontoMinimoPedido(0);
 		this.setTiempoVencimientoPedidos(0);
+		this.setVisibleEnMulticatalogo(false);
 	}
 
 	public String getNombre() {
@@ -539,6 +541,14 @@ public class Vendedor extends Usuario{
 
 	public void setTagsEvento(List<TagEvento> tagsEvento) {
 		this.tagsEvento = tagsEvento;
+	}
+
+	public boolean isVisibleEnMulticatalogo() {
+		return visibleEnMulticatalogo;
+	}
+
+	public void setVisibleEnMulticatalogo(boolean visibleEnMulticatalogo) {
+		this.visibleEnMulticatalogo = visibleEnMulticatalogo;
 	}
 
 }
