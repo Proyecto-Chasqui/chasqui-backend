@@ -898,7 +898,7 @@ public class MailService {
 	public void enviarEmailDeAvisoDeSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario) {
 		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
 		String nombrenodo = nodo.getAlias();
-		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> le acaba de enviar una solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "</strong>. <br><br> Para mas detalles acceda a desde el catalogo a 'mis grupos->" + nombrenodo +"->Solicitudes'";
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> le acaba de enviar una solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "</strong>. <br><br> Para mas detalles acceda a desde el catalogo a 'mis nodos -> " + nombrenodo +" -> Integrantes -> Solicitudes'";
 		String subject = "[EMAIL TEMPORAL] Tiene una nueva solicitud para el nodo " + nodo.getAlias() + ".";
 		enviarEmailNotificacionChasqui("", nombreUsuario, nodo.getAdministrador().getEmail(),mensaje , subject);
 		
@@ -909,7 +909,7 @@ public class MailService {
 		Nodo nodo = solicitudpertenencia.getNodo();
 		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
 		String nombrenodo = nodo.getAlias();
-		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> cancelo su solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "</strong>. <br><br> Para mas detalles acceda a desde el catalogo a 'mis grupos->" + nombrenodo +"->Solicitudes'";
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> cancelo su solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "";
 		String subject = "[EMAIL TEMPORAL] Han cancelado una solicitud para su nodo " + nodo.getAlias() + ".";
 		enviarEmailNotificacionChasqui("", nombreUsuario, nodo.getAdministrador().getEmail(),mensaje , subject);
 		
