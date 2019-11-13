@@ -106,9 +106,7 @@ public class PedidoColectivo implements IPedido{
 		Double total=0.0;
 		for(Pedido pedido: pedidosIndividuales.values()){
 			if(estaConfirmado(pedido.getEstado())){
-				if(!pedido.getCliente().getEmail().equals(this.getColectivo().getAdministrador().getEmail())) {
-					total=total+pedido.getMontoTotalIncentivo();
-				}
+				total=total+pedido.getMontoTotalIncentivo();
 			}
 		}			
 		return trim2decimals(total);
