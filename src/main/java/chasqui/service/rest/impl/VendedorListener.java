@@ -279,7 +279,7 @@ public class VendedorListener {
 	public Response obtenerVendedoresConTags(@Multipart(value="vendedoresConTagRequest", type="application/json")final String vendedoresConTagRequest){
 		try{
 			VendedoresConTagRequest request = toRequest(vendedoresConTagRequest);
-			return Response.ok(toResponse(vendedorService.obtenerVendedoresConTags(request.getNombre(),request.getIdsTagsTipoOrganizacion(), request.getIdsTagsTipoProducto(), request.getIdsTagsZonaDeCobertura())),MediaType.APPLICATION_JSON).build();
+			return Response.ok(toResponse(vendedorService.obtenerVendedoresConTags(request.getNombre(),request.getIdsTagsTipoOrganizacion(), request.getIdsTagsTipoProducto(), request.getIdsTagsZonaDeCobertura(), request.isEntregaADomicilio(), request.isUsaPuntoDeRetiro(), request.isUsaEstrategiaGrupos(), request.isUsaEstrategiaIndividual(), request.isUsaEstrategiaNodos())),MediaType.APPLICATION_JSON).build();
 		}catch(Exception e){			
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}

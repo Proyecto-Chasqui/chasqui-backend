@@ -27,6 +27,6 @@ public interface VendedorDAO {
 	public Vendedor obtenerVendedorRoot(String username);
 
 	public List<Vendedor> obtenerVendedoresConTags(String nombre, List<Integer> idsTagsTipoOrganizacion,
-			List<Integer> idsTagsTipoProducto, List<Integer> idsTagsZonaDeCobertura);
+			List<Integer> idsTagsTipoProducto, List<Integer> idsTagsZonaDeCobertura, boolean entregaADomicilio, boolean usaPuntoDeRetiro, boolean usaEstrategiaGrupos, boolean usaEstrategiaIndividual, boolean usaEstrategiaNodos);
 
 }

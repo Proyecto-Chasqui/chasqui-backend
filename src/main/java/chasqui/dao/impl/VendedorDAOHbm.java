@@ -6,7 +6,11 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -136,7 +140,8 @@ public class VendedorDAOHbm  extends HibernateDaoSupport implements VendedorDAO{
 
 	@Override
 	public List<Vendedor> obtenerVendedoresConTags(final String nombre, final List<Integer> idsTagsTipoOrganizacion,
-			final List<Integer> idsTagsTipoProducto, final List<Integer> idsTagsZonaDeCobertura) {
+			final List<Integer> idsTagsTipoProducto, final List<Integer> idsTagsZonaDeCobertura, final boolean entregaADomicilio,
+			final boolean usaPuntoDeRetiro, final boolean usaEstrategiaGrupos, final boolean usaEstrategiaIndividual, final boolean usaEstrategiaNodos) {
 		return (List<Vendedor>) this.getHibernateTemplate().execute(new HibernateCallback<List<Vendedor>>() {
 
 			@Override
@@ -158,6 +163,27 @@ public class VendedorDAOHbm  extends HibernateDaoSupport implements VendedorDAO{
 					criteria.createAlias("tagsTipoOrganizacion", "tagTipoOrganizacion");
 					criteria.add(Restrictions.in("tagTipoOrganizacion.id", idsTagsTipoOrganizacion));
 				}
+				if( entregaADomicilio || usaPuntoDeRetiro || usaEstrategiaGrupos || usaEstrategiaIndividual || usaEstrategiaNodos) {
+					criteria.createAlias("estrategiasUtilizadas", "estrategias");
+					Conjunction conjunction = Restrictions.conjunction();
+					if(entregaADomicilio) {
+						conjunction.add(Restrictions.eq("estrategias.seleccionDeDireccionDelUsuario", entregaADomicilio));
+					}
+					if(usaPuntoDeRetiro) {
+						conjunction.add(Restrictions.eq("estrategias.puntoDeEntrega", usaPuntoDeRetiro));
+					}
+					if(usaEstrategiaGrupos) {
+						conjunction.add(Restrictions.eq("estrategias.gcc", usaEstrategiaGrupos));
+					}
+					if(usaEstrategiaIndividual) {
+						conjunction.add(Restrictions.eq("estrategias.compraIndividual", usaEstrategiaIndividual));
+					}
+					if(usaEstrategiaNodos) {
+						conjunction.add(Restrictions.eq("estrategias.nodos", usaEstrategiaNodos));
+					}
+					criteria.add(conjunction);
+				}
+				
 				criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 				return (List<Vendedor>) criteria.list();
 			}

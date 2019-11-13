@@ -12,6 +12,11 @@ public class VendedoresConTagRequest  implements Serializable{
 	private List<Integer> idsTagsTipoOrganizacion;
 	private List<Integer> idsTagsTipoProducto;
 	private List<Integer> idsTagsZonaDeCobertura;
+	private boolean usaEstrategiaNodos;
+	private boolean usaEstrategiaGrupos;
+	private boolean usaEstrategiaIndividual;
+	private boolean entregaADomicilio;
+	private boolean usaPuntoDeRetiro;
 	private String nombre;
 	
 	
@@ -57,6 +62,56 @@ public class VendedoresConTagRequest  implements Serializable{
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+
+	public boolean isUsaEstrategiaNodos() {
+		return usaEstrategiaNodos;
+	}
+
+
+	public boolean isUsaEstrategiaGrupos() {
+		return usaEstrategiaGrupos;
+	}
+
+
+	public boolean isUsaEstrategiaIndividual() {
+		return usaEstrategiaIndividual;
+	}
+
+
+	public boolean isEntregaADomicilio() {
+		return entregaADomicilio;
+	}
+
+
+	public boolean isUsaPuntoDeRetiro() {
+		return usaPuntoDeRetiro;
+	}
+
+
+	public void setUsaEstrategiaNodos(boolean usaEstrategiaNodos) {
+		this.usaEstrategiaNodos = usaEstrategiaNodos;
+	}
+
+
+	public void setUsaEstrategiaGrupos(boolean usaEstrategiaGrupos) {
+		this.usaEstrategiaGrupos = usaEstrategiaGrupos;
+	}
+
+
+	public void setUsaEstrategiaIndividual(boolean usaEstrategiaIndividual) {
+		this.usaEstrategiaIndividual = usaEstrategiaIndividual;
+	}
+
+
+	public void setEntregaADomicilio(boolean entregaADomicilio) {
+		this.entregaADomicilio = entregaADomicilio;
+	}
+
+
+	public void setUsaPuntoDeRetiro(boolean usaPuntoDeRetiro) {
+		this.usaPuntoDeRetiro = usaPuntoDeRetiro;
 	}
 	
 
