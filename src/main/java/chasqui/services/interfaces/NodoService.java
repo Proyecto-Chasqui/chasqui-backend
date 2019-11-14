@@ -288,11 +288,12 @@ public interface NodoService {
 	 * @param nombreNodo
 	 * @param emailcoordinador
 	 * @param barrio
+	 * @param idZona 
 	 * @return
 	 */
 
 	List<Nodo> obtenerNodosDelVendedorCon(Integer idvendedor, Date d, Date h, String estadoNodoBool, String nombreNodo,
-			String emailcoordinador, String barrio, String tipo);
+			String emailcoordinador, String barrio, String tipo, Integer idZona);
 
 	public Collection<? extends SolicitudCreacionNodo> obtenerSolicitudesDeCreacionNodosDelVendedorCon(Integer id,
 			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio);

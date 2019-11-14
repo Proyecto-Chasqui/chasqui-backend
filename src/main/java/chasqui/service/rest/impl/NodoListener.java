@@ -352,7 +352,7 @@ public class NodoListener {
 		if(solicitud.getReintentos() > 2) {
 			throw new SolicitudPernenciaNodoException("La solicitud tiene muchos reintentos, solo puede ser invitado por el administrador de nodo");
 		}
-		if(!solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO) && !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)){
+		if(!solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO) && !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO) && !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_CANCELADO)){
 			throw new SolicitudPernenciaNodoException("La solicitud esta en gestión");
 		}
 		if(solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)){

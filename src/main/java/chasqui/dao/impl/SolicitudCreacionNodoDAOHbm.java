@@ -10,6 +10,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -105,8 +106,8 @@ public class SolicitudCreacionNodoDAOHbm extends HibernateDaoSupport implements 
 			   @Override
 			   public List<SolicitudCreacionNodo> doInHibernate(Session session) throws HibernateException, SQLException {
 			    Criteria criteria = session.createCriteria(SolicitudCreacionNodo.class, "solicitud");
-			    criteria.add(Restrictions.eq("solicitud.idVendedor", idVendedor));
-
+			    criteria.add(Restrictions.eq("solicitud.idVendedor", idVendedor))
+			    .addOrder(Order.desc("id"));
 			    List<SolicitudCreacionNodo> resultado = (List<SolicitudCreacionNodo>) criteria.list();
 			    
 			    return resultado; 
@@ -159,7 +160,7 @@ public class SolicitudCreacionNodoDAOHbm extends HibernateDaoSupport implements 
 						}
 					}
 				}
-
+				c.addOrder(Order.desc("id"));
 			    List<SolicitudCreacionNodo> resultado = (List<SolicitudCreacionNodo>) c.list();
 			    
 			    return resultado; 

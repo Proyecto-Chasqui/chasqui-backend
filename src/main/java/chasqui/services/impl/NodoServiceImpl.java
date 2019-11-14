@@ -722,8 +722,8 @@ public class NodoServiceImpl implements NodoService {
 
 	@Override
 	public List<Nodo> obtenerNodosDelVendedorCon(Integer idvendedor, Date d, Date h, String estadoNodoBool,
-			String nombreNodo, String emailcoordinador, String barrio, String tipo) {
-		return nodoDAO.obtenerNodosDelVendedorCon(idvendedor,d, h, estadoNodoBool,nombreNodo,emailcoordinador,barrio, tipo);
+			String nombreNodo, String emailcoordinador, String barrio, String tipo, Integer idZona) {
+		return nodoDAO.obtenerNodosDelVendedorCon(idvendedor,d, h, estadoNodoBool,nombreNodo,emailcoordinador,barrio, tipo,idZona);
 	}
 
 	@Override

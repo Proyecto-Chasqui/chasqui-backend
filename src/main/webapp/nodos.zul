@@ -151,6 +151,7 @@ style="overflow:auto">
 							<strong>Por barrio:</strong> Permite filtrar los nodos por el barrio. <strong>(*)</strong></br></br>
 							<strong>Por nombre nodo:</strong> Permite filtrar los nodos por el nombre. <strong>(*)</strong></br></br>
 							<strong>Por tipo:</strong> Permite filtrar los nodos por alguno de los siguientes tipos <strong><font color="blue">ABIERTO</font>, <font color="green">CERRADO</font>,<font>TODOS</font></strong>. </br> </br>
+							<strong>Buscar por zona:</strong> Permite filtrar los nodos que pertenescan a la zona seleccionada en la busqueda. </br></br>
 							<strong>Columnas:</strong> En determinadas columnas podes hacer click para ordenar los pedidos <font color="blue">ascendente/descendentemente</font> según criterios normales, es decir si es texto ordena alfabéticamente, si es número por cantidad o si es fecha por precedencia.  </br> </br>
 							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
 							<strong>(*)</strong> Para ejecutar la busqueda tenés que <font color="blue">apretar Enter</font>, además el campo soporta escribir de manera parcial por ejemplo 'maria a' o 'alb', el sistema buscara los que contengan el texto.</br> </br>
@@ -181,8 +182,8 @@ style="overflow:auto">
 						<textbox id="buscadorPorNombreNodo" placeholder="Nombre nodo" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
 					</vbox>
 					 <vbox>
-						
-						<combobox id="estadosNodosCombobox" visible="false" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosNodosList}" selectedItem="@{nodosWindow$composer.estadoNodoSeleccionado}"/>
+						<combobox id="zonasNodosCombobox" placeholder="Buscar por zona" readonly="true" model="@{nodosWindow$composer.zonas}" selectedItem="@{nodosWindow$composer.zonaSeleccionadaNodo}"/>
+				    	<combobox id="estadosNodosCombobox" visible="false" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosNodosList}" selectedItem="@{nodosWindow$composer.estadoNodoSeleccionado}"/>
 					</vbox>
 				</hbox>
 				</div>
