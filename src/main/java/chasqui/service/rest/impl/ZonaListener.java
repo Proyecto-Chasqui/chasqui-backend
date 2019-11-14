@@ -1,5 +1,6 @@
 package chasqui.service.rest.impl;
 
+import java.awt.print.Printable;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.ChasquiZonaStatus;
 import chasqui.service.rest.response.ZonaGeoJsonResponse;
 import chasqui.services.interfaces.GeoService;
+import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
 import chasqui.utils.ErrorCodes;
@@ -54,6 +56,8 @@ public class ZonaListener {
 	TokenGenerator tokenGenerator;
 	@Autowired
 	VendedorService vendedorService;
+	@Autowired
+	NodoService nodoService;
 	
 	@GET
 	@Path("/all/{idVendedor}")
@@ -117,6 +121,9 @@ public class ZonaListener {
 			request.setFechaCierre(d);
 			geoService.crearGuardarZona(request);
 			ZonaGeoJsonResponse returnZona = toEchoZona(zonaService.obtenerZonaPorId(request.getId()));
+			//enviar a un aspecto
+			nodoService.recalcularZonasParaNodos(request.getIdVendedor());
+			// fin de codigo en aspecto
 			return Response.ok(returnZona).build();
 		} catch (IOException e) {
 			statusResponse.setStatus("ERROR");
@@ -131,6 +138,7 @@ public class ZonaListener {
 			statusResponse.setStatus("ERROR");
 			return Response.ok(statusResponse).build();
 		} catch (Exception e) {
+			e.printStackTrace();
 			statusResponse.setCode("");
 			statusResponse.setStatus("ERROR");
 			return Response.ok(statusResponse).build();
@@ -151,6 +159,9 @@ public class ZonaListener {
 				geoService.eliminarZona(request);
 				statusResponse.setStatus("OK");
 				statusResponse.setCode("");
+				//enviar a un aspecto
+				nodoService.recalcularZonasParaNodos(request.getIdVendedor());
+				// fin de codigo en aspecto
 				return Response.ok(statusResponse).build();
 			}else {				
 				statusResponse.setStatus("ERROR");

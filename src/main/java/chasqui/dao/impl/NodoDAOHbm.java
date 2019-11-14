@@ -32,7 +32,14 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 		this.getHibernateTemplate().saveOrUpdate(nodo);
 		this.getHibernateTemplate().flush();
 	}
-
+	@Override
+	public void guardarNodos(List<Nodo> nodos) {
+		for(Nodo nodo: nodos) {
+			this.getHibernateTemplate().saveOrUpdate(nodo);
+		}
+		this.getHibernateTemplate().flush();		
+	}
+	@Override
 	public void guardarNodo(Nodo nodo) {
 		this.getHibernateTemplate().saveOrUpdate(nodo);
 		this.getHibernateTemplate().flush();
@@ -173,6 +180,8 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 
 		});
 	}
+
+
 
 
 }

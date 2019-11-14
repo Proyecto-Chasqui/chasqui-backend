@@ -32,6 +32,7 @@ public class NodoResponse implements Serializable {
 	private String tipo;
 	private Direccion direccionDelNodo;
 	private String barrio;
+	private ZonaResponse zona;
 	
 
 	public String getDescripcion() {
@@ -100,6 +101,10 @@ public class NodoResponse implements Serializable {
 		direccion.setGeoUbicacion(null);
 		this.setDireccionDelNodo(direccion);
 		this.setBarrio(nodo.getBarrio());
+		this.setZona(null);
+		if(nodo.getZona() != null) {
+			this.setZona(new ZonaResponse(nodo.getZona()));
+		}
 	}
 	
 
@@ -145,6 +150,14 @@ public class NodoResponse implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public ZonaResponse getZona() {
+		return zona;
+	}
+
+	public void setZona(ZonaResponse zona) {
+		this.zona = zona;
 	}
 
 	

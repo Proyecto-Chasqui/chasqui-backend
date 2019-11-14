@@ -9,6 +9,7 @@ public class Nodo extends GrupoCC{
 	private String tipo;
 	private String emailAdministradorNodo;
 	private Direccion direccionDelNodo;
+	private Zona zona;
 	private String barrio;
 	private boolean activo;
 	
@@ -109,6 +110,12 @@ public class Nodo extends GrupoCC{
 	}
 	public void setActivo(boolean activo) {
 		this.activo = activo;
+	}
+	public Zona getZona() {
+		return zona;
+	}
+	public void setZona(Zona zona) {
+		this.zona = zona;
 	}
 
 	

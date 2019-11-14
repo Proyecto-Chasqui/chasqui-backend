@@ -12,6 +12,8 @@ import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vividsolutions.jts.geom.Point;
+
 import chasqui.dao.SolicitudCreacionNodoDAO;
 import chasqui.dao.SolicitudPertenenciaNodoDAO;
 import chasqui.dao.impl.NodoDAOHbm;
@@ -57,6 +59,7 @@ import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
+import chasqui.services.interfaces.ZonaService;
 import chasqui.view.composer.Constantes;
 import freemarker.template.TemplateException;
 
@@ -78,6 +81,8 @@ public class NodoServiceImpl implements NodoService {
 	private PedidoService pedidoService;
 	@Autowired
 	private InvitacionService invitacionService;
+	@Autowired
+	private ZonaService zonaService;
 
 	@Override
 	public void crearSolicitudDeCreacionNodo(Integer idVendedor, Cliente usuario, String nombre, Direccion direccion, String tipo, String barrio, String descripcion) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException, SolicitudCreacionNodoEnGestionExistenteException, NodoYaExistenteException{
@@ -311,11 +316,24 @@ public class NodoServiceImpl implements NodoService {
 
 	@Override
 	public void aceptarSolicitud(SolicitudCreacionNodo solicitud) throws VendedorInexistenteException {
-		Nodo nodo = new Nodo(solicitud, vendedorService.obtenerVendedorPorId(solicitud.getIdVendedor()));
-		solicitud.setEstado(Constantes.SOLICITUD_NODO_APROBADO);
-		solicitudCreacionNodoDAO.guardar(solicitud);
-		nodoDAO.guardarNodo(nodo);
-		notificacionService.notificarSolicitudCreacionNodo(nodo,Constantes.SOLICITUD_NODO_APROBADO);
+		try {
+			Nodo nodo = new Nodo(solicitud, vendedorService.obtenerVendedorPorId(solicitud.getIdVendedor()));
+			Point geoubicacion = nodo.getDireccionDelNodo().getGeoUbicacion();
+			Zona subzona = zonaService.obtenerZonaDePertenenciaDeDireccion(geoubicacion,nodo.getVendedor().getId());
+			Zona zona = null;
+			if(subzona != null) {
+				zona = buscarZona(nodo.getVendedor(),subzona.getId());
+			}
+			nodo.setZona(zona);
+			solicitud.setEstado(Constantes.SOLICITUD_NODO_APROBADO);
+			solicitudCreacionNodoDAO.guardar(solicitud);
+			nodoDAO.guardarNodo(nodo);
+			notificacionService.notificarSolicitudCreacionNodo(nodo,Constantes.SOLICITUD_NODO_APROBADO);
+		} catch (Exception e){
+			e.printStackTrace();
+			throw new VendedorInexistenteException("Error al tratar de gestionar la solicitud");
+		}
+
 	}
 	
 	@Override
@@ -444,8 +462,15 @@ public class NodoServiceImpl implements NodoService {
 		nodoDAO.guardarNodo(nodo);
 		
 	}
-	
-	
+	@Override
+	public void recalcularZonasParaNodos(Integer idVendedor) {
+		List<Nodo> nodos = nodoDAO.obtenerNodosDelVendedor(idVendedor);
+		for(Nodo nodo: nodos) {;
+			Point geoubicacion = nodo.getDireccionDelNodo().getGeoUbicacion();
+			nodo.setZona(zonaService.obtenerZonaDePertenenciaDeDireccion(geoubicacion,idVendedor));
+		}
+		nodoDAO.guardarNodos(nodos);
+	}
 
 	@Override
 	public void editarNodo(Integer idNodo, String email, String alias, String descripcion, Integer idDireccion,
@@ -467,12 +492,29 @@ public class NodoServiceImpl implements NodoService {
 				throw new RequestIncorrectoException("El usuario "+nodo.getAdministrador().getNombre() + " no posee la dirección asignada");
 			}
 			nodo.setDireccionDelNodo(direccion);
+			Point geoubicacion = direccion.getGeoUbicacion();
+			Zona subzona = zonaService.obtenerZonaDePertenenciaDeDireccion(geoubicacion,nodo.getVendedor().getId());
+			Zona zona = null;
+			if(subzona != null) {
+				zona = buscarZona(nodo.getVendedor(),subzona.getId());
+			}
+			nodo.setZona(zona);
 			nodoDAO.guardarNodo(nodo);
 		}
 		else{
 			throw new RequestIncorrectoException("El usuario "+ email + " no es el administrador del grupo:"+ nodo.getAlias());
 		}
 		
+	}
+	
+	private Zona buscarZona(Vendedor vendedor, Integer idZona) {
+		Zona ret = null;
+		for(Zona pr: vendedor.getZonas()) {
+			if(pr.getId()==idZona) {
+				ret = pr;
+			}
+		}
+		return ret;
 	}
 
 	@Override

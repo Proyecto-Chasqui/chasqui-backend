@@ -298,6 +298,13 @@ public interface NodoService {
 			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio);
 
 	public Map<Integer, Pedido> obtenerPedidosEnNodos(List<Nodo> nodos, String email) throws ClienteNoPerteneceAGCCException;
+	
+	/**
+	 * Recalcula las zonas para los nodos del vendedor especificado
+	 * @param idVendedor
+	 */
+	@Transactional
+	public void recalcularZonasParaNodos(Integer idVendedor);
 
 
 }
