@@ -17,6 +17,7 @@ import org.zkoss.zul.Window;
 
 import chasqui.model.Cliente;
 import chasqui.model.Nodo;
+import chasqui.model.PedidoColectivo;
 import chasqui.view.composer.Constantes;
 
 public class NodoRenderer implements ListitemRenderer<Nodo>{
@@ -34,6 +35,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		String barrio;
 		String nombreNodo;
 		String direccion;
+		String nombreZona;
 		Cliente datacliente = ((Cliente) nodo.getAdministrador()); 
 		estado = this.parsearEstado(nodo);
 		tipo = this.renderizarTipo(nodo.getTipo());
@@ -43,6 +45,11 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		mail = datacliente.getEmail();
 		fechaCreacion = this.parsearFechaDeModificacion(nodo.getFechaCreacion());
 		barrio = nodo.getBarrio();
+		nombreZona = "No definida";
+		if(nodo.getZona()!=null) {
+			nombreZona = nodo.getZona().getNombre();
+		}
+		
 		
 		Map<String,Object>params1 = new HashMap<String,Object>();
 		Toolbarbutton c = new Toolbarbutton();
@@ -62,8 +69,8 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		Listcell c5 = new Listcell(String.valueOf(mail));
 		Listcell c6 = new Listcell(String.valueOf(direccion));
 		Listcell c7 = new Listcell(String.valueOf(barrio));
-		
-
+		Listcell c8 = new Listcell(String.valueOf(nombreZona));
+		aplicarEstiloAZona(nombreZona, c8);
 		Listcell c100 = new Listcell(); //Se usa como padre de las demas
 	
 		
@@ -78,6 +85,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		c5.setParent(item);
 		c6.setParent(item);
 		c7.setParent(item);
+		c8.setParent(item);
 		c100.setParent(item); //Padre de las demas
 		
 	}
@@ -91,11 +99,38 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		
 	}
 	private String parsearEstado(Nodo nodo) {
-		if(nodo.getPedidoActual().getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)) {
-			return ("ELIMINADO");
-		} else {
-			return ("ACTIVO");
-		}	
+		DateTime fechaDeHoy = new DateTime();
+		Integer cantidadDeDias = 90;
+		//caso inicial
+		if(nodo.getHistorial().getPedidosGrupales().isEmpty() && nodo.getPedidoActual().getFechaModificacion() != null) {
+			if(nodo.getPedidoActual().getFechaModificacion().plusDays(cantidadDeDias).isBefore(fechaDeHoy)) {
+				return "INACTIVO";
+			}
+		};
+		//caso medio
+		if(!nodo.getHistorial().getPedidosGrupales().isEmpty() && nodo.getPedidoActual().getFechaModificacion() == null) {
+			Integer idMasAlto = 0;
+			PedidoColectivo ultimoPedido = null;
+			for (PedidoColectivo pedidoColectivo: nodo.getHistorial().getPedidosGrupales()) {
+				if(pedidoColectivo.getFechaModificacion()!=null) {
+					if(pedidoColectivo.getId() > idMasAlto) {
+						idMasAlto = pedidoColectivo.getId();
+						ultimoPedido = pedidoColectivo;
+					}
+				}
+			}
+			if(ultimoPedido.getFechaModificacion().plusDays(cantidadDeDias).isBefore(fechaDeHoy)) {
+				return "INACTIVO";
+			}
+		}
+		//caso final
+		if(!nodo.getHistorial().getPedidosGrupales().isEmpty() && nodo.getPedidoActual().getFechaModificacion() != null) {
+			if(nodo.getPedidoActual().getFechaModificacion().plusDays(cantidadDeDias).isBefore(fechaDeHoy)) {
+				return "INACTIVO";
+			}
+		}
+		
+		return "ACTIVO";	
 	}
 	private String parsearFechaDeModificacion(DateTime fechaCreacion) {
 		if(fechaCreacion != null) {
@@ -113,6 +148,12 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		} else {
 			c2.setStyle("color:#34B65A;");
 		}	
+	}
+	
+	private void aplicarEstiloAZona(String zona, Listcell c2) {
+		if(zona.equals("No definida")) {
+			c2.setStyle("color:Red;");
+		} 
 	}
 	private String renderizarTipo(String tipo) {
 		return tipo.equals(Constantes.NODO_ABIERTO) ?  "ABIERTO" : "CERRADO";

@@ -18,7 +18,9 @@ import org.zkoss.zul.Messagebox.ClickEvent;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.SolicitudCreacionNodo;
+import chasqui.model.Zona;
 import chasqui.services.interfaces.NodoService;
+import chasqui.services.interfaces.ZonaService;
 
 public class GestionSolicitudCreacionNodoComposer extends GenericForwardComposer<Component>{
 
@@ -41,10 +43,12 @@ public class GestionSolicitudCreacionNodoComposer extends GenericForwardComposer
 	private String barrio;
 	private String tipoNodo;
 	private String direccion;
+	private String nombreZona;
 	private String descripcion;
 	private Cliente datacliente;
 	private SolicitudCreacionNodo solicitud;
 	private NodoService nodoService;
+	private ZonaService zonaService;
 	
 	private Component component;
 	
@@ -52,6 +56,7 @@ public class GestionSolicitudCreacionNodoComposer extends GenericForwardComposer
 		super.doAfterCompose(c);
 		component = c;
 		nodoService = (NodoService) SpringUtil.getBean("nodoService");
+		zonaService = (ZonaService) SpringUtil.getBean("zonaService");
 		binder = new AnnotateDataBinder(c);
 		solicitud = (SolicitudCreacionNodo) Executions.getCurrent().getArg().get("solicitud");
 		datacliente = ((Cliente) solicitud.getUsuarioSolicitante()); 
@@ -70,6 +75,11 @@ public class GestionSolicitudCreacionNodoComposer extends GenericForwardComposer
 		tipoNodo = this.renderizarConstante(solicitud.getTipoNodo());
 		descripcion = solicitud.getDescripcion();
 		nombreNodo = solicitud.getNombreNodo();
+		Zona zona = zonaService.obtenerZonaDePertenenciaDeDireccion(solicitud.getDomicilio().getGeoUbicacion(), solicitud.getIdVendedor());
+		nombreZona = "No definida";
+		if(zona != null) {
+			nombreZona = zona.getNombre();
+		}
 		this.setButtons(solicitud);
 	}
 
@@ -313,6 +323,14 @@ public class GestionSolicitudCreacionNodoComposer extends GenericForwardComposer
 
 	public void setSalirBtn(Button salirBtn) {
 		this.salirBtn = salirBtn;
+	}
+
+	public String getNombreZona() {
+		return nombreZona;
+	}
+
+	public void setNombreZona(String nombreZona) {
+		this.nombreZona = nombreZona;
 	}
 	
 	

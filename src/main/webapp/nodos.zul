@@ -125,6 +125,7 @@ style="overflow:auto">
         					<font color="blue"><strong>CERRADO:</font></strong> son los nodos que solo invitan usuarios y no son visibles el catalogo. </br> </br>
         					<font color="green"><strong>ACTIVO:</font></strong> son los nodos que compran activamente dentro de los 90 dias. </br> </br>
         					<font color="red"><strong>INACTIVO:</font></strong> son los nodos que <font color="red">no tienen actividad de compra</font> dentro de los 90 dias desde su ultimo pedido. </br> </br>
+        					<strong>La zona </strong> esta definida de manera automática por el sistema al detectar que la dirección del nodo esta dentro de una zona definida, si no esta dentro de alguna zona será marcada como <font color="red">No definida</font>. </br> </br>
         					<strong>El botón <image style="width:16px;height:16px;" src="./imagenes/info.png"/> Más información muestra en detalle la siguiente información del nodo</strong> </br></br>
         					<strong>Coordinador:</strong> Muestra en más detalle la información del coordinador actual del nodo.</br></br>
         					<strong>Detalles del nodo:</strong> Muestra en mas detalle la información correspondiente al nodo.</br></br>
@@ -147,7 +148,6 @@ style="overflow:auto">
         					<strong>Los filtros estan divididos en 6 busquedas principales y 1 de orden</strong><br /><br />
 							<strong>Fecha Desde/Hasta:</strong> Permite filtrar los nodos entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de creación</strong> del nodo.</br> </br>
 							<strong>Buscar por email:</strong> Permite filtrar los nodos que tengan el email con el definido en la busqueda. <strong>(*)</strong> </br></br>
-							<strong>Por estado:</strong> Permite filtrar los nodos por alguno de los siguientes estados <strong><font color="green">ACTIVO</font>, <font color="red">INACTIVO</font>,<font>TODOS</font></strong>. </br> </br>
 							<strong>Por barrio:</strong> Permite filtrar los nodos por el barrio. <strong>(*)</strong></br></br>
 							<strong>Por nombre nodo:</strong> Permite filtrar los nodos por el nombre. <strong>(*)</strong></br></br>
 							<strong>Por tipo:</strong> Permite filtrar los nodos por alguno de los siguientes tipos <strong><font color="blue">ABIERTO</font>, <font color="green">CERRADO</font>,<font>TODOS</font></strong>. </br> </br>
@@ -174,14 +174,15 @@ style="overflow:auto">
 					</vbox>
 				    <vbox>
 						<textbox id="buscadorPorUsuarioCoordinador" placeholder="Buscar por email admin" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
-						<combobox id="estadosNodosCombobox" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosNodosList}" selectedItem="@{nodosWindow$composer.estadoNodoSeleccionado}"/>
+						<combobox id="tipoNodosCombobox" placeholder="Buscar por tipo" readonly="true" model="@{nodosWindow$composer.tiposNodosList}" selectedItem="@{nodosWindow$composer.tipoNodoSeleccionado}"/>
 				    </vbox>
 				    <vbox>
 						<textbox id="buscadorBarrio" placeholder="Buscar por barrio" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
 						<textbox id="buscadorPorNombreNodo" placeholder="Nombre nodo" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
 					</vbox>
 					 <vbox>
-						<combobox id="tipoNodosCombobox" placeholder="Buscar por tipo" readonly="true" model="@{nodosWindow$composer.tiposNodosList}" selectedItem="@{nodosWindow$composer.tipoNodoSeleccionado}"/>
+						
+						<combobox id="estadosNodosCombobox" visible="false" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosNodosList}" selectedItem="@{nodosWindow$composer.estadoNodoSeleccionado}"/>
 					</vbox>
 				</hbox>
 				</div>
@@ -197,6 +198,7 @@ style="overflow:auto">
 						<listheader align="center" label="e-mail" sort="auto(administrador.email)"/>
 						<listheader align="center" label="Dirección" sort="auto(direccionDelNodo.calle, direccionDelNodo.altura, direccionDelNodo.localidad)"/>
 						<listheader align="center" label="Barrio" sort="auto(barrio)"/>
+						<listheader align="center" label="Zona" sort="auto(zona.nombre)"/>
 						<listheader align="center" label="Acciones" />
 						
 					</listhead>		

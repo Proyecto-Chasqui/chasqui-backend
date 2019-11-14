@@ -62,6 +62,10 @@ apply="chasqui.view.composer.InfoNodoComposer" width="550px">
 					<listcell label="@{infoNodoWindow$composer.barrio}"/>
 				</listitem>
 				<listitem>
+					<listcell label="Zona"/>
+					<listcell label="@{infoNodoWindow$composer.nombreZona}"/>
+				</listitem>
+				<listitem>
 					<listcell label="Tipo nodo"/>
 					<listcell label="@{infoNodoWindow$composer.tipoNodo}"/>
 				</listitem>
