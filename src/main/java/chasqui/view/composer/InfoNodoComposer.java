@@ -54,6 +54,7 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 	private String barrio;
 	private String tipoNodo;
 	private String direccion;
+	private String nombreZona;
 	private String descripcion;
 	private Cliente datacliente;
 	private Listbox listboxUsuarios;
@@ -181,6 +182,10 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 		telfijo = (datacliente.getTelefonoFijo().equals(""))? "N/D" : datacliente.getTelefonoFijo();
 		celular = (datacliente.getTelefonoMovil().equals(""))? "N/D" : datacliente.getTelefonoMovil();
 		barrio = nodo.getBarrio();
+		nombreZona = "No definida";
+		if(nodo.getZona()!=null) {
+			nombreZona = nodo.getZona().getNombre();
+		}
 		setDireccion(nodo.getDireccionDelNodo().toString());
 		tipoNodo = this.renderizarConstante(nodo.getTipo());
 		descripcion = nodo.getDescripcion();
@@ -365,5 +370,13 @@ public class InfoNodoComposer extends GenericForwardComposer<Component>{
 
 	public void setFechaCreacion(String fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
+	}
+
+	public String getNombreZona() {
+		return nombreZona;
+	}
+
+	public void setNombreZona(String nombreZona) {
+		this.nombreZona = nombreZona;
 	}
 }

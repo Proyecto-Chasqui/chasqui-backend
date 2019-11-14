@@ -19,4 +19,6 @@ public interface NodoDAO {
     public void eliminarNodo(Integer idNodo) ;
     
     public void aprobarNodo(Integer id) ;
+
+	void guardarNodos(List<Nodo> nodos);
 }

@@ -110,6 +110,8 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	private Combobox estadosNodosCombobox;
 	private Textbox buscadorBarrio;
 	private Textbox buscadorPorNombreNodo;
+	private Zona zonaSeleccionadaNodo;
+	private Combobox zonasNodosCombobox;
 	
 	//data menu nodos
 	private List<String> estadosNodosList;
@@ -210,6 +212,11 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		onBuscarNodos();
 	}
 	
+	public void onSelect$zonasNodosCombobox(SelectEvent evt) {
+		onBuscarNodos();
+	}
+	
+	
 	public void onMostrarFiltrosNodos() {
 		if(filtrosNodos.isVisible()) {
 			menuItemMostrarFiltrosNodos.setLabel("Mostrar filtros");
@@ -225,13 +232,15 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		hasta_nodo.setValue(null);
 		estadosNodosCombobox.setValue(null);
 		tipoNodosCombobox.setValue(null);
+		zonasNodosCombobox.setValue(null);
 		buscadorPorNombreNodo.setValue("");
 		buscadorPorUsuarioCoordinador.setValue("");
 		buscadorBarrio.setValue("");
+		zonaSeleccionadaNodo = null;
 		tipoNodoSeleccionado = "TODOS LOS TIPOS";
 		estadoNodoSeleccionado = "TODOS LOS ESTADOS";
 		nodos.clear();
-		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),null,null,null,null,null,null,null));
+		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),null,null,null,null,null,null,null,null));
 		Clients.showNotification("Filtros restablecidos", "info", component, "middle_center", 2000, true);
 		this.binder.loadAll();
 	}
@@ -245,13 +254,17 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		String barrio = buscadorBarrio.getValue();
 		String estado = this.evaluarEstadoNodo();
 		String tipo = this.evaluarTipo();
+		Integer idZona = null;
+		if(zonaSeleccionadaNodo != null) {
+			 idZona = zonaSeleccionadaNodo.getId();
+		}
 		if(d != null && h != null){
 			if(h.before(d)){
 				Messagebox.show("La fecha hasta debe ser posterior a la fecha desde", "Error", Messagebox.OK,Messagebox.EXCLAMATION);
 			}
 		}		
 		nodos.clear();
-		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),d,h,estado,nombreNodo,emailcoordinador,barrio,tipo));
+		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(),d,h,estado,nombreNodo,emailcoordinador,barrio,tipo,idZona));
 		this.binder.loadAll();
 	}
 	
@@ -278,6 +291,14 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 			}
 		}
 	}
+	public Zona getZonaSeleccionadaNodo() {
+		return zonaSeleccionadaNodo;
+	}
+
+	public void setZonaSeleccionadaNodo(Zona zonaSeleccionadaNodo) {
+		this.zonaSeleccionadaNodo = zonaSeleccionadaNodo;
+	}
+
 	public void onMostrarFiltrosSolicitudes() {
 		filtros_solicitudes.setVisible(!filtros_solicitudes.isVisible());
 		if(filtros_solicitudes.isVisible()) {
@@ -957,6 +978,14 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 
 	public void setFiltros_solicitudes(Div filtros_solicitudes) {
 		this.filtros_solicitudes = filtros_solicitudes;
+	}
+
+	public Combobox getZonasNodosCombobox() {
+		return zonasNodosCombobox;
+	}
+
+	public void setZonasNodosCombobox(Combobox zonasNodosCombobox) {
+		this.zonasNodosCombobox = zonasNodosCombobox;
 	}
 
 
