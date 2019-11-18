@@ -18,6 +18,7 @@ public class NodoAbiertoResponse implements Serializable {
 	private String descripcion;
 	private Direccion direccionDelNodo;
 	private String barrio;
+	private ZonaResponse zona;
 	
 	public NodoAbiertoResponse(Nodo nodo) {
 		setNombreDelNodo(nodo.getAlias());
@@ -31,6 +32,10 @@ public class NodoAbiertoResponse implements Serializable {
 		direccion.setLatitud("0.0");
 		this.setDireccionDelNodo(direccion);
 		this.setBarrio(nodo.getBarrio());
+		this.setZona(null);
+		if(nodo.getZona() != null) {
+			this.setZona(new ZonaResponse(nodo.getZona()));
+		}
 	}
 	
 	public Integer getIdNodo() {
@@ -72,6 +77,14 @@ public class NodoAbiertoResponse implements Serializable {
 
 	public void setNombreDelNodo(String nombreDelNodo) {
 		this.nombreDelNodo = nombreDelNodo;
+	}
+
+	public ZonaResponse getZona() {
+		return zona;
+	}
+
+	public void setZona(ZonaResponse zona) {
+		this.zona = zona;
 	}	
 	
 }

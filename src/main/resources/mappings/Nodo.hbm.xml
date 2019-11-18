@@ -19,6 +19,10 @@
         <property name="activo" type="java.lang.Boolean" >
         		<column name="ACTIVO" not-null="true" default="true" />
     	</property>
+    	
+    	<many-to-one name="zona" class="chasqui.model.Zona" fetch="join" not-found="ignore">
+			<column name="ID_ZONA" />
+		</many-to-one>
         
     </joined-subclass>
 </hibernate-mapping>

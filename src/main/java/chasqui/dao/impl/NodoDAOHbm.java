@@ -8,6 +8,7 @@ import org.apache.cxf.common.util.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.DateTime;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -32,7 +33,14 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 		this.getHibernateTemplate().saveOrUpdate(nodo);
 		this.getHibernateTemplate().flush();
 	}
-
+	@Override
+	public void guardarNodos(List<Nodo> nodos) {
+		for(Nodo nodo: nodos) {
+			this.getHibernateTemplate().saveOrUpdate(nodo);
+		}
+		this.getHibernateTemplate().flush();		
+	}
+	@Override
 	public void guardarNodo(Nodo nodo) {
 		this.getHibernateTemplate().saveOrUpdate(nodo);
 		this.getHibernateTemplate().flush();
@@ -45,7 +53,8 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 			public List<Nodo> doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria criteria = session.createCriteria(Nodo.class);
 				criteria.add(Restrictions.eq("vendedor.id", idVendedor))
-				.add(Restrictions.eq("esNodo", true)); 
+				.add(Restrictions.eq("esNodo", true))
+				.addOrder(Order.desc("id"));
 				return (List<Nodo>) criteria.list();
 			}
 
@@ -124,9 +133,9 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 
 		});
 	}
-
+	
 	public List<Nodo> obtenerNodosDelVendedorCon(final Integer idVendedor, final Date d, final Date h, final String estadoNodo,
-			final String nombreNodo, final String emailcoordinador, final String barrio, final String tipo) {
+			final String nombreNodo, final String emailcoordinador, final String barrio, final String tipo, final Integer idZona) {
 		return this.getHibernateTemplate().execute(new HibernateCallback<List<Nodo>>() {
 
 			@SuppressWarnings("unchecked")
@@ -167,12 +176,17 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 				if(!StringUtils.isEmpty(barrio)) {
 					c.add(Restrictions.like("barrio", "%"+barrio+"%"));
 				}
-				
+				if(idZona != null) {
+					c.add(Restrictions.eq("zona.id", idZona));
+				}
+				c.addOrder(Order.desc("id"));
 				return (List<Nodo>) c.list();
 			}
 
 		});
 	}
+
+
 
 
 }

@@ -56,6 +56,10 @@ apply="chasqui.view.composer.GestionSolicitudCreacionNodoComposer" width="30%">
 					<listcell label="@{solicitudCreacionNodoWindow$composer.barrio}"/>
 				</listitem>
 				<listitem>
+					<listcell label="Zona"/>
+					<listcell label="@{solicitudCreacionNodoWindow$composer.nombreZona}"/>
+				</listitem>
+				<listitem>
 					<listcell label="Tipo nodo"/>
 					<listcell label="@{solicitudCreacionNodoWindow$composer.tipoNodo}"/>
 				</listitem>
