@@ -30,6 +30,8 @@ public class Vendedor extends Usuario{
 	private List<TagTipoOrganizacion> tagsTipoOrganizacion;
 	private List<TagEvento> tagsEvento;
 	private boolean visibleEnMulticatalogo;
+	private boolean ventasHabilitadas;
+	private String mensajeVentasDeshabilitadas;
 	
 	//GETs & SETs	
 
@@ -549,6 +551,22 @@ public class Vendedor extends Usuario{
 
 	public void setVisibleEnMulticatalogo(boolean visibleEnMulticatalogo) {
 		this.visibleEnMulticatalogo = visibleEnMulticatalogo;
+	}
+
+	public boolean isVentasHabilitadas() {
+		return ventasHabilitadas;
+	}
+
+	public void setVentasHabilitadas(boolean ventasHabilitadas) {
+		this.ventasHabilitadas = ventasHabilitadas;
+	}
+
+	public String getMensajeVentasDeshabilitadas() {
+		return mensajeVentasDeshabilitadas;
+	}
+
+	public void setMensajeVentasDeshabilitadas(String mensajeVentasDeshabilitadas) {
+		this.mensajeVentasDeshabilitadas = mensajeVentasDeshabilitadas;
 	}
 
 }

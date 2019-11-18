@@ -29,7 +29,8 @@ public class VendedorResponse implements Serializable{
 	private List<TagTipoProducto> tagsTipoProductos;
 	private List<TagZonaDeCobertura> tagsZonaDeCobertura;
 	private boolean visibleEnMulticatalogo;
-	
+	private boolean ventasHabilitadas;
+	private String mensajeVentasDeshabilitadas;
 	
 	public VendedorResponse(){}
 	
@@ -48,6 +49,8 @@ public class VendedorResponse implements Serializable{
 		this.setTagsTipoProductos(v.getTagsTipoProducto());
 		this.setTagsZonaDeCobertura(v.getTagsZonaCobertura());
 		this.setVisibleEnMulticatalogo(v.isVisibleEnMulticatalogo());
+		this.setVentasHabilitadas(v.isVentasHabilitadas());
+		this.setMensajeVentasDeshabilitadas(v.getMensajeVentasDeshabilitadas());
 		if(v.getMapaZonas() != null ) {
 			this.setUrlMapa(v.getMapaZonas());
 		}else {
@@ -174,6 +177,22 @@ public class VendedorResponse implements Serializable{
 
 	public void setVisibleEnMulticatalogo(boolean visibleEnMulticatalogo) {
 		this.visibleEnMulticatalogo = visibleEnMulticatalogo;
+	}
+
+	public boolean isVentasHabilitadas() {
+		return ventasHabilitadas;
+	}
+
+	public void setVentasHabilitadas(boolean ventasHabilitadas) {
+		this.ventasHabilitadas = ventasHabilitadas;
+	}
+
+	public String getMensajeVentasDeshabilitadas() {
+		return mensajeVentasDeshabilitadas;
+	}
+
+	public void setMensajeVentasDeshabilitadas(String mensajeVentasDeshabilitadas) {
+		this.mensajeVentasDeshabilitadas = mensajeVentasDeshabilitadas;
 	}
 
 	

@@ -1,0 +1,47 @@
+<zk>
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionDeVentasWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<window id="configuracionDeVentasWindow" border="normal" title="Configuración de ventas" 
+apply="chasqui.view.composer.ConfiguracionDeVentasComposer" height="75%" width="50%" closable="true">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+
+<tabbox>
+			<tabs>
+				<tab label="Habilitar/deshabilitar ventas" image="/imagenes/tipo_productos.png"/>
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+				<listbox>
+					<listhead>
+						<listheader/>
+						<listheader/>
+					</listhead>
+					<listitem>
+						<listcell label="Permitir compras"/>
+						<listcell>
+							<div align="center">
+								<button  id="permitirVentasButton" label="Si" image="/imagenes/if_toggle-right.png"></button>
+							</div>
+						</listcell>
+					</listitem>
+				</listbox>
+				<div align="center" class="title" >
+					<auxhead>
+			           	<auxheader label="Texto de aviso" style="color: white;" />
+			        </auxhead>
+			       </div>
+				<textbox id="textboxMensaje" type="password" maxlength="1200" width="100%" rows="19"/>
+				<separator spacing="5px"/>
+				<div align="center">
+					<button id="guardarButtonVentas" image="/imagenes/checked_16.png" label="Guardar"></button>
+					<button visible="false" id="cancelarButtonVentas" image="/imagenes/cancel_16.png" label="Cancelar"></button>
+				</div>
+				</tabpanel>
+			</tabpanels>
+</tabbox>
+
+</window>
+</zk>

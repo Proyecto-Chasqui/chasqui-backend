@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
+import chasqui.exceptions.EstrategiaInvalidaException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.ProductoInexistenteException;
@@ -36,6 +37,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.Usuario;
+import chasqui.model.Vendedor;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
@@ -51,6 +53,7 @@ import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.services.interfaces.VendedorService;
 
 @Service
 @Path("/pedido")
@@ -69,6 +72,9 @@ public class PedidoListener {
 	
 	@Autowired
 	private GrupoService grupoService;
+	
+	@Autowired
+	private VendedorService vendedorService;
 	
 
 	@POST
@@ -184,10 +190,13 @@ public class PedidoListener {
 		String mail = obtenerEmailDeContextoDeSeguridad();
 		try{
 			Integer idVendedor = toCrearPedidoRequest(crearRequest).getIdVendedor();
+			validarEstrategiasVendedor(idVendedor);
 			pedidoService.crearPedidoIndividualPara(mail,idVendedor);
 			return Response.status(201).build();
 		}catch(PedidoVigenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch(ConfiguracionDeVendedorException e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
@@ -235,6 +244,7 @@ public class PedidoListener {
 	public Response agregarProductoAPedido(@Multipart(value="agregarRequest", type="application/json")final String agregarRequest){
 		try{
 			AgregarQuitarProductoAPedidoRequest request = toAgregarPedidoRequest(agregarRequest);
+			validarCompra(request.getIdPedido());
 			String email = obtenerEmailDeContextoDeSeguridad();
 			pedidoService.agregarProductosAPedido(request,email);
 			return Response.ok(toVencimientoEstimadoResponse(pedidoService.obtenerPedidosporId(request.getIdPedido())),MediaType.APPLICATION_JSON).build();
@@ -242,13 +252,26 @@ public class PedidoListener {
 			return Response.status(406).entity(new ChasquiError("Parametros Incorrectos")).build();
 		}catch(PedidoVigenteException | ProductoInexistenteException e){
 			return Response.status(404).entity(new ChasquiError(e.getMessage())).build();
+		}catch(ConfiguracionDeVendedorException e) {
+			return Response.status(404).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
-	
 
+	private void validarCompra(Integer idPedido) throws VendedorInexistenteException, ConfiguracionDeVendedorException {
+		Pedido pedido = pedidoService.obtenerPedidosporId(idPedido);
+		if(pedido != null) {
+			this.validarEstrategiasVendedor(pedido.getIdVendedor());
+		}
+	}
+
+	private void validarEstrategiasVendedor(Integer idVendedor) throws ConfiguracionDeVendedorException, VendedorInexistenteException {
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(idVendedor);
+		if(!vendedor.isVentasHabilitadas()) {
+			throw new ConfiguracionDeVendedorException("El vendedor por el momento no permite hacer compras o agregar mas productos, intentelo mas tarde.");
+		};		
+	}
 
 	@PUT
 	@Produces("application/json")
