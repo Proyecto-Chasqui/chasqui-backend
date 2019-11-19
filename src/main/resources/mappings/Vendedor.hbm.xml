@@ -116,6 +116,11 @@
 		<property name="visibleEnMulticatalogo" type="java.lang.Boolean" >
         		<column name="VISIBLE_EN_MULTICATALOGO" not-null="true" default="false" />
     	</property>
-        
+    	<property name="ventasHabilitadas" type="java.lang.Boolean" >
+        		<column name="VENTAS_HABILITADAS" not-null="true" default="true" />
+    	</property>
+        <property name="mensajeVentasDeshabilitadas" type="java.lang.String">
+            <column name="MENSAJE_VENTA_DESHABILITADA" />
+        </property>
     </joined-subclass>
 </hibernate-mapping>

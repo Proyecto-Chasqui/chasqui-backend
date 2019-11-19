@@ -117,7 +117,7 @@ public class ConfiguracionPropiedadesComposer extends GenericForwardComposer<Com
 	}
 	
 	public void mostrarAlertaDeSeleccion() {
-		Clients.showNotification("Debe primero seleccionar un tag",
+		Clients.showNotification("Debe primero seleccionar una propiedad",
 				"error", component, "top_center",
 				3000, true);
 	}

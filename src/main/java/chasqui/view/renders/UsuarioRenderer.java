@@ -63,7 +63,7 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 		// Boton cargar startup
 		
 		Toolbarbutton cargarStartUp = new Toolbarbutton();
-		cargarStartUp.setTooltiptext("Cargar startup");
+		cargarStartUp.setTooltiptext("Importar");
 		cargarStartUp.setImage("/imagenes/upload.png");		
 				
 		Map<String,Object> mapCargarStartUp= new HashMap<String,Object>();
