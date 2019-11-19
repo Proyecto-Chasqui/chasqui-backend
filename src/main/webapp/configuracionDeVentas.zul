@@ -10,7 +10,7 @@ apply="chasqui.view.composer.ConfiguracionDeVentasComposer" height="75%" width="
 
 <tabbox>
 			<tabs>
-				<tab label="Habilitar/deshabilitar ventas" image="/imagenes/tipo_productos.png"/>
+				<tab label="Habilitar/Deshabilitar ventas" image="/imagenes/abierto.png"/>
 			</tabs>
 			<tabpanels>
 				<tabpanel>
@@ -20,7 +20,7 @@ apply="chasqui.view.composer.ConfiguracionDeVentasComposer" height="75%" width="
 						<listheader/>
 					</listhead>
 					<listitem>
-						<listcell label="Permitir compras"/>
+						<listcell label="Permitir Ventas"/>
 						<listcell>
 							<div align="center">
 								<button  id="permitirVentasButton" label="Si" image="/imagenes/if_toggle-right.png"></button>
