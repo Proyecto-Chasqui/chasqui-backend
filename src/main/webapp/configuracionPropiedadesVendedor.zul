@@ -1,0 +1,114 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionPropiedadesWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+	<window id="configuracionPropiedadesWindow" border="normal" title="Configuración de propiedades" position="center,top"
+	apply="chasqui.view.composer.ConfiguracionPropiedadesComposer" width="50%"  closable="true">
+	<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+		<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px;" popup="ayudatextopedidosnodos"  src="/imagenes/question.png" />
+        
+		<tabbox >
+			<tabs>
+				<tab label="Tipo de productos"/>
+				<tab label="Tipo de organización"/> 
+				<tab label="Zonas de operación"/> 
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+						<hbox>
+					        <listbox id="listboxtagsproductossrc"  model="@{configuracionPropiedadesWindow$composer.tagsTipoProductos}" checkmark="true" rows="15" mold="paging" multiple="true" width="300px" >
+					            <listhead>
+					                <listheader label="Propiedades disponibles"/>
+					            </listhead>
+									<listitem self="@{each=tagTipoProducto}">
+										<listcell label="@{tagTipoProducto.getNombre}" style="font-weight:bold;"/>
+										<listcell visible="false" label="@{tagTipoProducto.getId}"  style="font-weight:bold;"/>
+									</listitem>
+					        </listbox>
+					        <vbox>
+					        	<div align="center"><label id="cant_prod"></label></div>
+					            <button image="/imagenes/flecha_der.png"  id="buttonMoveToRight"/>
+					            <button image="/imagenes/flecha_izq.png"  id="buttonMoveToLeft" />
+					        </vbox>
+					        <listbox id="listboxtagsproductosdst" model="@{configuracionPropiedadesWindow$composer.tagsTipoProductosEnVendedor}" checkmark="true" mold="paging" rows="15" multiple="true">
+					            <listhead>
+					                <listheader label="Propiedades seleccionadas"/>
+					            </listhead>
+					            	<listitem self="@{each=tagTipoProductoEnVendedor}">
+										<listcell label="@{tagTipoProductoEnVendedor.getNombre}"  style="font-weight:bold;"/>
+										<listcell label="@{tagTipoProductoEnVendedor.getId}" visible="false" />
+									</listitem>
+					        </listbox>
+		        		
+					    </hbox>  
+				</tabpanel>
+				<tabpanel>
+					    <hbox>
+					        <listbox id="listboxtagsorganizacionsrc"  model="@{configuracionPropiedadesWindow$composer.tagsTipoOrganizacion}" checkmark="true" rows="15" mold="paging" multiple="true" width="300px" >
+					            <listhead>
+					                <listheader label="Propiedades disponibles"/>
+					            </listhead>
+									<listitem self="@{each=tagTipoOrganizacion}">
+										<listcell label="@{tagTipoOrganizacion.getNombre}" style="font-weight:bold;"/>
+										<listcell visible="false" label="@{tagTipoOrganizacion.getId}"  style="font-weight:bold;"/>
+									</listitem>
+					        </listbox>
+					        <vbox>
+					        	<div align="center"><label id="cant_org"></label></div>
+					            <button image="/imagenes/flecha_der.png"  id="buttonMoverTagOrganizacionAVendedor"/>
+					            <button image="/imagenes/flecha_izq.png" id="buttonQuitarTagOrganizacionDeVendedor" />
+					        </vbox>
+					        <listbox id="listboxtagsorganizaciondst" model="@{configuracionPropiedadesWindow$composer.tagsTipoOrganizacionEnVendedor}" checkmark="true" mold="paging" rows="15" multiple="true">
+					            <listhead>
+					                <listheader label="Propiedades seleccionadas"/>
+					            </listhead>
+					            	<listitem self="@{each=tagOrganizacionEnVendedor}">
+										<listcell label="@{tagOrganizacionEnVendedor.getNombre}"  style="font-weight:bold;"/>
+										<listcell label="@{tagOrganizacionEnVendedor.getId}" visible="false" />
+									</listitem>
+					        </listbox>
+					    </hbox>  
+				</tabpanel>
+				<tabpanel>
+					    <hbox>
+					        <listbox id="listboxtagszonadecoberturasrc"  model="@{configuracionPropiedadesWindow$composer.tagsZonaDeCobertura}" checkmark="true" rows="15" mold="paging" multiple="true" width="300px" >
+					            <listhead>
+					                <listheader label="Propiedades disponibles"/>
+					            </listhead>
+									<listitem self="@{each=tagTipoZonaDeCobertura}">
+										<listcell label="@{tagTipoZonaDeCobertura.getNombre}" style="font-weight:bold;"/>
+										<listcell visible="false" label="@{tagTipoZonaDeCobertura.getId}"  style="font-weight:bold;"/>
+									</listitem>
+					        </listbox>
+					        <vbox>
+					        	<div align="center"><label  id="cant_zonas"></label></div>
+					            <button image="/imagenes/flecha_der.png" id="buttonMoverTagZonadeCoberturaAVendedor"/>
+					            <button image="/imagenes/flecha_izq.png" id="buttonQuitarTagZonaDeCoberturaDeVendedor" />
+					        </vbox>
+					        <listbox id="listboxtagszonadecoberturadst" model="@{configuracionPropiedadesWindow$composer.tagsZonaDeCoberturaEnVendedor}" checkmark="true" mold="paging" rows="15" multiple="true">
+					            <listhead>
+					                <listheader label="Propiedades elegidas"/>
+					            </listhead>
+					            	<listitem self="@{each=tagZonaDeCoberturaEnVendedor}">
+										<listcell label="@{tagZonaDeCoberturaEnVendedor.getNombre}"  style="font-weight:bold;"/>
+										<listcell label="@{tagZonaDeCoberturaEnVendedor.getId}" visible="false" />
+									</listitem>
+					        </listbox>
+					    </hbox>  
+				</tabpanel>
+			</tabpanels>
+		</tabbox>	
+        		 <popup id="ayudatextopedidosnodos" width="300px">
+        			<html><![CDATA[ En esta sección se configuran las propiedades del catálogo, con las mismas los usuarios podrán hacer busquedas mas especificas y podrán a simple vista ver las caracteristicas distintivas de su catálogo. <br /><br />
+        					Las propiedades del catálogo estan divididas en 3 tipos <br /><br />
+        					<strong>Tipo de producto:</strong> Define los tipos de productos que el catálogo ofrece, <strong>se pueden elegir hasta 5</strong>. </br> </br>
+        					<strong>Tipo de Organización:</strong> Permite mostrar que tipo de organización es la que opera el catálogo, <strong>solo se puede elegir 1</strong>.</br></br>
+        					<strong>Zonas de operación:</strong> Permite mostrar en que areas o alcance tienen las entregas/ventas, <strong>se pueden elegir hasta 3</strong>.</br></br>
+        					]]>
+        					
+        			</html>
+    				</popup>
+	</window>
+</zk>

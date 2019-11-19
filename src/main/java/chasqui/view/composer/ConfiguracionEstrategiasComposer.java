@@ -46,6 +46,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	private Checkbox puntoDeEntrega; 
 	private Checkbox entregaADomicilio;
 	private Checkbox utilizaIncentivos;
+	private Checkbox visibleEnMulticatalogo;
 	private UsuariosActualesComposer usuariosActualesComposer;
 	private AdministracionComposer admComposer;
 	private Component usuariosActualesComponent;
@@ -56,6 +57,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	private Textbox textboxTiempoVencimiento;
 	private Textbox urlMapa;
 	private Label labelVenededor;
+	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -140,6 +142,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	 	puntoDeEntrega.setChecked(estrategias.isPuntoDeEntrega());
 	 	entregaADomicilio.setChecked(estrategias.isSeleccionDeDireccionDelUsuario());
 	 	utilizaIncentivos.setChecked(estrategias.isUtilizaIncentivos());
+	 	visibleEnMulticatalogo.setChecked(usuarioSeleccionado.isVisibleEnMulticatalogo());
 	}
 	
 	private void liberarChecks(){
@@ -149,6 +152,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		puntoDeEntrega.setChecked(false);
 		entregaADomicilio.setChecked(false);
 		utilizaIncentivos.setChecked(false);
+		visibleEnMulticatalogo.setChecked(false);
 		textboxTiempoVencimiento.setValue("");
 		urlMapa.setValue("");
 		usuarioSeleccionado = null;
@@ -185,6 +189,7 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 	Integer tiempo = Integer.parseInt(textboxTiempoVencimiento.getValue());
 		 	usuarioSeleccionado.setTiempoVencimientoPedidos(tiempo);
 		 	usuarioSeleccionado.setMapaZonas(urlMapa.getValue());
+		 	usuarioSeleccionado.setVisibleEnMulticatalogo(visibleEnMulticatalogo.isChecked());
 		 	usuarioService.guardarUsuario(usuarioSeleccionado);
 		 	liberarChecks();
 		 	mostrarListaUsuarios();
@@ -315,6 +320,14 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 
 	public void setLabelVenededor(Label labelVenededor) {
 		this.labelVenededor = labelVenededor;
+	}
+
+	public Checkbox getVisibleEnMulticatalogo() {
+		return visibleEnMulticatalogo;
+	}
+
+	public void setVisibleEnMulticatalogo(Checkbox visibleEnMulticatalogo) {
+		this.visibleEnMulticatalogo = visibleEnMulticatalogo;
 	}
 
 }

@@ -31,21 +31,28 @@ import chasqui.model.Nodo;
 import chasqui.model.Direccion;
 import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.PreguntaDeConsumo;
+import chasqui.model.TagTipoOrganizacion;
+import chasqui.model.TagTipoProducto;
+import chasqui.model.TagZonaDeCobertura;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.service.rest.request.ByCategoriaRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.DireccionZonaRequest;
 import chasqui.service.rest.request.ObtenerPedidosConEstadoRequest;
+import chasqui.service.rest.request.VendedoresConTagRequest;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.DataPortadaResponse;
 import chasqui.service.rest.response.NodoAbiertoResponse;
 import chasqui.service.rest.response.PreguntaDeConsumoResponse;
 import chasqui.service.rest.response.PuntosDeRetiroResponse;
+import chasqui.service.rest.response.TagsResponse;
 import chasqui.service.rest.response.VendedorResponse;
 import chasqui.service.rest.response.ZonaGeoJsonResponse;
 import chasqui.service.rest.response.ZonaResponse;
 import chasqui.services.interfaces.DireccionService;
 import chasqui.services.interfaces.NodoService;
+import chasqui.services.interfaces.TagService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
 import chasqui.utils.TokenGenerator;
@@ -66,6 +73,9 @@ public class VendedorListener {
 	
 	@Autowired
 	DireccionService direccionService;
+	
+	@Autowired
+	TagService tagService;
 	
 	@Autowired
 	TokenGenerator tokenGenerator;
@@ -263,6 +273,29 @@ public class VendedorListener {
 		}
 	}
 	
+	@GET
+	@Path("/obtenerVendedoresConTags")
+	@Produces("application/json")
+	public Response obtenerVendedoresConTags(@Multipart(value="vendedoresConTagRequest", type="application/json")final String vendedoresConTagRequest){
+		try{
+			VendedoresConTagRequest request = toRequest(vendedoresConTagRequest);
+			return Response.ok(toResponse(vendedorService.obtenerVendedoresConTags(request.getNombre(),request.getIdsTagsTipoOrganizacion(), request.getIdsTagsTipoProducto(), request.getIdsTagsZonaDeCobertura(), request.isEntregaADomicilio(), request.isUsaPuntoDeRetiro(), request.isUsaEstrategiaGrupos(), request.isUsaEstrategiaIndividual(), request.isUsaEstrategiaNodos())),MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){			
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
+	@GET
+	@Path("/obtenerTags")
+	@Produces("application/json")
+	public Response obtenerTags(@Multipart(value="vendedoresConTagRequest", type="application/json")final String vendedoresConTagRequest){
+		try{
+			return Response.ok(toResponseTags(tagService.obtenerTagTipoOrganizacion(),tagService.obtenerTagsTipoProducto(), tagService.obtenerTagZonaDeCobertura()),MediaType.APPLICATION_JSON).build();
+		}catch(Exception e){			
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+	
 
 
 	@GET
@@ -315,5 +348,17 @@ public class VendedorListener {
 			response.add(new ZonaGeoJsonResponse(z));
 		}
 		return response;
+	}
+	
+	private TagsResponse toResponseTags( List<TagTipoOrganizacion> tagsTipoOrganizacion, List<TagTipoProducto> tagsTipoProducto, List<TagZonaDeCobertura> tagsZonaDeCobertura ) {
+		return new TagsResponse(tagsTipoOrganizacion,tagsTipoProducto, tagsZonaDeCobertura);
+	}
+	
+	private VendedoresConTagRequest toRequest(String request) throws IOException{
+		VendedoresConTagRequest vendTagRequest = new VendedoresConTagRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		vendTagRequest = mapper.readValue(request, VendedoresConTagRequest.class);
+		return vendTagRequest;
 	}
 }

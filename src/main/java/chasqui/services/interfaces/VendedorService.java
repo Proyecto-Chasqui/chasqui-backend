@@ -30,4 +30,7 @@ public interface VendedorService {
 	@Transactional
 	List<PreguntaDeConsumo> obtenerPreguntasIndividuales(Integer idVendedor);
 
+	public List<Vendedor> obtenerVendedoresConTags(String nombre, List<Integer> idsTagsTipoOrganizacion,
+			List<Integer> idsTagsTipoProducto, List<Integer> idsTagsZonaDeCobertura, boolean entregaADomicilio, boolean usaPuntoDeRetiro, boolean usaEstrategiaGrupos, boolean usaEstrategiaIndividual, boolean usaEstrategiaNodos);
+
 }

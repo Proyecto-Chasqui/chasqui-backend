@@ -71,13 +71,17 @@ apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
 							</listhead>
 							
 							<listitem>
-							         	<listcell style="text-align: center"  label="Tiempo vencimiento: "/>
+							    <listcell style="text-align: center"  label="Tiempo vencimiento: "/>
 								<listcell style="text-align: center">
 									<textbox width="100%" id="textboxTiempoVencimiento" maxlength="3" type="tel"/>
 								</listcell>	
 								<listcell style="text-align: center"  label="UrlMapa "/>
 								<listcell style="text-align: center">
 									<textbox width="100%" id="urlMapa"/>
+								</listcell>
+								<listcell style="text-align: center"  label="Visible en multicatalogo: "/>
+								<listcell style="text-align: center">
+									<checkbox id="visibleEnMulticatalogo"/>
 								</listcell>
 							</listitem>
 					</listbox>

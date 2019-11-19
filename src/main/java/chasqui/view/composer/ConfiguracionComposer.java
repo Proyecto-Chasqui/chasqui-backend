@@ -206,6 +206,11 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		w.doModal();
 	}
 	
+	public void onClick$configPropsButton(){
+		Window w = (Window) Executions.createComponents("/configuracionPropiedadesVendedor.zul", this.self, null);
+		w.doModal();
+	}
+	
 	public void onClick$buttonGuardar() throws Exception{
 		validarPassword();
 		validacionesDeCompra();

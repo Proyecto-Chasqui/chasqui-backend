@@ -1,9 +1,13 @@
 package chasqui.service.rest.response;
 
 import java.io.Serializable;
+import java.util.List;
 
 import chasqui.model.EstrategiaDeComercializacionGenerica;
 import chasqui.model.EstrategiasDeComercializacion;
+import chasqui.model.TagTipoOrganizacion;
+import chasqui.model.TagTipoProducto;
+import chasqui.model.TagZonaDeCobertura;
 import chasqui.model.Vendedor;
 
 public class VendedorResponse implements Serializable{
@@ -21,6 +25,10 @@ public class VendedorResponse implements Serializable{
 	private Integer montoMinimo;
 	private EstrategiaDeComercializacionGenerica few;
 	private EstrategiaDeComercializacionGenerica app;
+	private List<TagTipoOrganizacion> tagsTipoOrganizacion;
+	private List<TagTipoProducto> tagsTipoProductos;
+	private List<TagZonaDeCobertura> tagsZonaDeCobertura;
+	private boolean visibleEnMulticatalogo;
 	
 	
 	public VendedorResponse(){}
@@ -36,6 +44,10 @@ public class VendedorResponse implements Serializable{
 		this.setFew(new EstrategiaDeComercializacionGenerica());
 		this.setApp(new EstrategiaDeComercializacionGenerica());
 		this.inicializarEstrategias(estrategias);
+		this.setTagsTipoOrganizacion(v.getTagsTipoOrganizacion());
+		this.setTagsTipoProductos(v.getTagsTipoProducto());
+		this.setTagsZonaDeCobertura(v.getTagsZonaCobertura());
+		this.setVisibleEnMulticatalogo(v.isVisibleEnMulticatalogo());
 		if(v.getMapaZonas() != null ) {
 			this.setUrlMapa(v.getMapaZonas());
 		}else {
@@ -129,6 +141,39 @@ public class VendedorResponse implements Serializable{
 
 	public void setMontoMinimo(Integer montoMinimo) {
 		this.montoMinimo = montoMinimo;
+	}
+
+
+	public List<TagTipoProducto> getTagsTipoProductos() {
+		return tagsTipoProductos;
+	}
+
+	public void setTagsTipoProductos(List<TagTipoProducto> tagsTipoProductos) {
+		this.tagsTipoProductos = tagsTipoProductos;
+	}
+
+	public List<TagZonaDeCobertura> getTagsZonaDeCobertura() {
+		return tagsZonaDeCobertura;
+	}
+
+	public void setTagsZonaDeCobertura(List<TagZonaDeCobertura> tagsZonaDeCobertura) {
+		this.tagsZonaDeCobertura = tagsZonaDeCobertura;
+	}
+
+	public List<TagTipoOrganizacion> getTagsTipoOrganizacion() {
+		return tagsTipoOrganizacion;
+	}
+
+	public void setTagsTipoOrganizacion(List<TagTipoOrganizacion> tagsTipoOrganizacion) {
+		this.tagsTipoOrganizacion = tagsTipoOrganizacion;
+	}
+
+	public boolean isVisibleEnMulticatalogo() {
+		return visibleEnMulticatalogo;
+	}
+
+	public void setVisibleEnMulticatalogo(boolean visibleEnMulticatalogo) {
+		this.visibleEnMulticatalogo = visibleEnMulticatalogo;
 	}
 
 	
