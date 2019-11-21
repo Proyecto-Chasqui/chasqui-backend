@@ -282,12 +282,13 @@ public class MailService {
 		String cuerpoCliente;
 		String tablaDireccionDeEntrega;
 		String tablaContenidoPedido = armarTablaContenidoDePedido(p,vendedor.getEstrategiasUtilizadas().isUtilizaIncentivos());
+		String tablaContenidoPedidoSinIncentivo = armarTablaContenidoDePedido(p,false);
 		String cuerpoVendedor;
 		
 		if(p.getPerteneceAPedidoGrupal()) {
-			cuerpoCliente = armarCuerpoClienteParaPedidoGrupal(cliente.getNombre(), vendedor.getNombre());
+			cuerpoCliente = armarCuerpoClienteParaPedidoGrupal(cliente.getNombre(), vendedor.getNombre(), p.getPedidoColectivo().getColectivo().isEsNodo());
 			tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p, direccion, textoDeDireccionDeEntrega);
-			cuerpoVendedor = armarCuerpoVendedorPedidoColectivo(emailCliente);
+			cuerpoVendedor = armarCuerpoVendedorPedidoColectivo(emailCliente, p.getPedidoColectivo());
 		}else {
 			cuerpoCliente= armarCuerpoCliente(cliente.getNombre(), vendedor.getNombre());
 			tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p, direccion, textoDeDireccionDeEntrega);	
@@ -307,7 +308,7 @@ public class MailService {
 		
 		Map<String,Object> paramsVendedor = new HashMap<String,Object>();
 		paramsVendedor.put("cuerpo", cuerpoVendedor);
-		paramsVendedor.put("tablaContenidoPedido",tablaContenidoPedido);
+		paramsVendedor.put("tablaContenidoPedido",tablaContenidoPedidoSinIncentivo);
 		paramsVendedor.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
 		paramsVendedor.put("sugerencia","");
 		paramsVendedor.put("catalogoVendedor", catalogo);
@@ -390,24 +391,30 @@ public class MailService {
 	
 	public void enviarEmailCierreDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params2 = new HashMap<String,Object>();
 		Direccion direccion;
 		
 		String catalogo = this.generarUrlCatalogo(pedidoColectivo.getColectivo().getVendedor().getUrl(), pedidoColectivo.getColectivo().getVendedor().getNombreCorto());
 		params.put("catalogoVendedor", catalogo);
+		params2.put("catalogoVendedor", catalogo);
 		
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
+		String textoEnEmailParaVendedor = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
 			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b> del "+definirTexto(pedidoColectivo)+" ha sido confirmado. El detalle de tu pedido es el siguiente:";
+			textoEnEmailParaVendedor = "Se confirmó el pedido colectivo del "+definirTexto(pedidoColectivo)+". El detalle del mismo es el siguiente:";
 			textoDeDireccionDeEntrega = "La dirección elegida es la siguiente:";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
 			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() + " </b> del "+definirTexto(pedidoColectivo)+" ha sido confirmado. El detalle de tu pedido es el siguiente:";
+			textoEnEmailParaVendedor = "Se confirmó el pedido colectivo del "+definirTexto(pedidoColectivo)+". El detalle del mismo es el siguiente:";
 			textoDeDireccionDeEntrega ="El punto de retiro elegido es el siguiente:";
 		}
 		//Genero tabla de contenido de pedido de cada persona
 		String tablaContenidoDePedidoColectivo = this.armarTablaContenidoDePedidoColectivo(pedidoColectivo);
+		String tablaContenidoDePedidoColectivoSinIncentivo = this.armarTablaContenidoDePedidoColectivoIgnorandoIncentivo(pedidoColectivo);
 		//La direccion del grupo
 		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedidoColectivo, direccion,textoDeDireccionDeEntrega);
 		
@@ -418,9 +425,15 @@ public class MailService {
 		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
 		params.put("textoDetalle", textoEnEmail);
 		
-		//se envia todo a todos los integrantes del grupo
+		//Solo se envia al adminstrador
 		this.enviarMailEnThreadAparte(Constantes.PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE, pedidoColectivo.getColectivo().getAdministrador().getEmail(), formarTag(pedidoColectivo) + Constantes.PEDIDO_COLECTIVO_CONFIRMADO, params);
 		
+		params2.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivoSinIncentivo);
+		params2.put("tablaDireccionEntrega", tablaDireccionEntrega);
+		params2.put("agradecimiento", "");
+		params2.put("textoDetalle", textoEnEmailParaVendedor);
+		
+		this.enviarMailEnThreadAparte(Constantes.PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE, pedidoColectivo.getColectivo().getVendedor().getEmail(), formarTag(pedidoColectivo) + "Pedido colectivo confirmado", params2);
 	}
 	
 	private String definirTexto(PedidoColectivo p) {
@@ -488,6 +501,24 @@ public class MailService {
 		    }
 		}
 		tablaContenidoDePedidoColectivo += armarTablaConTotales(pedidoColectivo,usaIncentivo);
+		return tablaContenidoDePedidoColectivo;
+		
+	}
+	
+	private String armarTablaContenidoDePedidoColectivoIgnorandoIncentivo(PedidoColectivo pedidoColectivo) {
+		
+		String tablaContenidoDePedidoColectivo ="";
+		Boolean usaIncentivo = false;
+		Iterator<Entry<String, Pedido>> it = pedidoColectivo.getPedidosIndividuales().entrySet().iterator();
+		while (it.hasNext()) {
+		    Entry<String, Pedido> pair = it.next();
+		    Pedido pedido = pair.getValue();
+		    if(pedidosuperioraconfirmado(pedido)) {
+		    	tablaContenidoDePedidoColectivo += armarInformacionDelCliente(pedido.getCliente());
+		    	tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido,usaIncentivo);
+		    }
+		}
+		tablaContenidoDePedidoColectivo += armarTablaConTotalesACobrar(pedidoColectivo);
 		return tablaContenidoDePedidoColectivo;
 		
 	}
@@ -657,8 +688,8 @@ public class MailService {
 		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
 	}
 	
-	private String armarCuerpoVendedorPedidoColectivo(String usuario){
-		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra que pertenece a un pedido colectivo (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
+	private String armarCuerpoVendedorPedidoColectivo(String usuario, PedidoColectivo pedidoColectivo){
+		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra individual que pertenece al pedido colectivo N°"+ pedidoColectivo.getId() +" (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
 	}
 	
 	
@@ -668,9 +699,10 @@ public class MailService {
 		return null;
 	}
 
-	private String armarCuerpoClienteParaPedidoGrupal(String nombre, String nombreVendedor) {
-		return "¡"+ this.generateSpan(nombre, "00adee") +" tu pedido individual en el grupo de "+ this.generateSpan(nombreVendedor, "00adee") +" está confirmado! " +
-				"Recordá que quién administra el grupo debe confirmar el pedido grupal para que se hagan efectivos los pedidos individuales." +
+	private String armarCuerpoClienteParaPedidoGrupal(String nombre, String nombreVendedor, boolean esNodo) {
+		String tipoDeColectivo = (esNodo)?"nodo":"grupo";
+		return "¡"+ this.generateSpan(nombre, "00adee") +" tu pedido individual en el " +tipoDeColectivo+ " de "+ this.generateSpan(nombreVendedor, "00adee") +" está confirmado! " +
+				"Recordá que quién administra el "+tipoDeColectivo+" debe confirmar el pedido colectivo para que se hagan efectivos los pedidos individuales." +
 				" <br>" + "<br>" +
 				"Detalles de tu compra:";
 	}
@@ -744,6 +776,12 @@ public class MailService {
 		return tabla;
 	}
 	
+	private String armarTablaConTotalesACobrar(PedidoColectivo p) {
+		String tabla = armarHeaderTotalesACobrar();
+		tabla += armarFilaPrecioTotal(p);
+		return tabla;
+	}
+	
 	private String armarFilaTotalConIncentivos(PedidoColectivo p){
 		Double precioTotal =  p.getMontoTotal() + p.getMontoTotalDeIncentivos();
 		return  "<tr>"
@@ -787,6 +825,16 @@ public class MailService {
 			   + "<thead bgcolor=\"#313231\">" 
 			   +  "<tr height=\"32\">"
 			   +     "<th><font color=\"white\">TOTAL A PAGAR</font></th>"
+			   +  "</tr>"
+			   + "</thead>"
+			   + "<tbody>";
+	}
+	
+	private String armarHeaderTotalesACobrar() {
+		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
+			   + "<thead bgcolor=\"#313231\">" 
+			   +  "<tr height=\"32\">"
+			   +     "<th><font color=\"white\">TOTAL A COBRAR</font></th>"
 			   +  "</tr>"
 			   + "</thead>"
 			   + "<tbody>";
