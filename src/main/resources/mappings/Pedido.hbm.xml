@@ -90,8 +90,8 @@
     	
      	 <map name="respuestasAPreguntas" table="RESPUESTA_A_PREGUNTA_INDIVIDUAL"
            	 order-by="nombre" lazy="false" access="field">
-         	<key column="id_pedidoindividual"/>
-         	<map-key column="nombre" type="string"/>
+         	<key column="id_pedidoindividual" />
+         	<map-key column="nombre" type="string" length="64"/>
          	<element column="opcionSeleccionada" type="string"/>
       	</map>
 		
