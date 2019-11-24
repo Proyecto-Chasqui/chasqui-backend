@@ -48,7 +48,7 @@
 		<map name="respuestasAPreguntas" table="RESPUESTA_A_PREGUNTA_COLECTIVA"
            	 order-by="nombre" lazy="false" access="field">
          	<key column="id_colectiva"/>
-         	<map-key column="nombre" type="string"/>
+         	<map-key column="nombre" type="string" length="64"/>
          	<element column="opcionSeleccionada" type="string"/>
       	</map>
 		 

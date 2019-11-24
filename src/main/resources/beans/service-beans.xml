@@ -58,6 +58,8 @@
 	   
 	   <bean id="tagService" name="tagService" class="chasqui.services.impl.TagServiceImpl"/>
 	   
+	   <bean id="sessionListenerService" name="sessionListenerService" class="chasqui.services.impl.SessionListenerService"/>   
+
 	   <!--  DAOS -->
 	   <bean name="usuarioDAO" id="usuarioDAO" class="chasqui.dao.impl.UsuarioDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Path;
@@ -43,6 +45,7 @@ import chasqui.model.Fabricante;
 import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
+import chasqui.services.impl.SessionListenerService;
 import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
@@ -138,6 +141,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private UsuarioService usuarioService;
 	private ProductoService  productoService;
 	private ProductorService productorService;
+	private SessionListenerService sessionListenerService;
 	private Integer numeroDestacados = 0;
 	private Integer numeroMaxDestacados = 6;
 	private Textbox busquedaPorCodigoProducto;
@@ -180,6 +184,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
 		productoService = (ProductoService) SpringUtil.getBean("productoService");
 		productorService = (ProductorService) SpringUtil.getBean("productorService");
+		sessionListenerService = (SessionListenerService) SpringUtil.getBean("sessionListenerService");
 		numeroDestacados = productoService.obtenerVariantesDestacadas(usuarioLogueado.getId()).size();
 		productosFiltrados = usuarioLogueado.getProductos();
 		fabricantes = (List<Fabricante>) productorService.obtenerProductores(usuarioLogueado.getId());
@@ -1045,13 +1050,24 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$logout(){
-		Executions.getCurrent().getSession().invalidate();
-		Executions.sendRedirect("/");
+		try {
+			sessionListenerService.removeSession(usuarioLogueado.getUsername());
+			Executions.getCurrent().getSession().invalidate();
+			Executions.sendRedirect("/");
+		}catch (Exception e) {
+			Clients.showNotification("Ocurrio un error al tratar de deslogearse, intente nuevamente.", "error", admcomponent, "middle_center", 3000,true);
+		}
+		
 	}
 	
 	public void onClick$menuItemLogOut(){
-		Executions.getCurrent().getSession().invalidate();
-		Executions.sendRedirect("/");
+		try {
+			sessionListenerService.removeSession(usuarioLogueado.getUsername());
+			Executions.getCurrent().getSession().invalidate();
+			Executions.sendRedirect("/");
+		}catch (Exception e) {
+			Clients.showNotification("Ocurrio un error al tratar de deslogearse, intente nuevamente.", "error", admcomponent, "middle_center", 3000,true);
+		}
 	}
 	
 	public void onMostrarFiltrosProducto() {

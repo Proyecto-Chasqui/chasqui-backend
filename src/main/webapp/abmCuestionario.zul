@@ -84,16 +84,16 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="tru
 					<listheader/>
 				</listhead>
 				<listitem>
-					<listcell label="Pregunta" style="text-align: center"/>
+					<listcell label="Pregunta (50 caract max.)" style="text-align: center"/>
 					<listcell>
-						<textbox id="textNombrePregunta"  width="100%"/>
+						<textbox id="textNombrePregunta" maxlength="50" width="100%"/>
 					</listcell>
 				</listitem>
 				<listitem>
 					<listcell label="Respuesta" style="text-align: center"/>
 					<listcell>
 						<hbox>
-						<textbox id="textNombreRespuesta"  width="100%"/>
+						<textbox id="textNombreRespuesta" maxlength="128" width="100%"/>
 						<div id="enter" align="center">			
 						 <button label="Agregar" id="btnGuardarRespuesta" forward="enter.onOK"/>
 						</div>
