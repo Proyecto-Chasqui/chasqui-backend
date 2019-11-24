@@ -1,9 +1,15 @@
 package chasqui.view.composer;
 
+import java.util.Date;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.cxf.common.util.StringUtils;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -23,6 +29,8 @@ import org.zkoss.zul.Window;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.services.impl.MailService;
+import chasqui.services.impl.SessionListenerService;
+import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.UsuarioService;
 
 @SuppressWarnings({ "serial", "deprecation" })
@@ -43,10 +51,12 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 	
 	private UsuarioService service;
 	private MailService mailService;
+	private SessionListenerService sessionListenerService;
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		Vendedor u = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
+		sessionListenerService = (SessionListenerService) SpringUtil.getBean("sessionListenerService");
 		if(u != null){
 			Executions.sendRedirect("/administracion.zul");
 		}
@@ -70,12 +80,12 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 			return;
 		};
 		Vendedor user = null;
-		try{
-			
+		try{			
 			user =(Vendedor) service.login(usuario,password);
 			service.inicializarListasDe(user);
 			Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
 			Executions.sendRedirect("/administracion.zul");
+			listenSession(usuario, (HttpSession) Executions.getCurrent().getSession().getNativeSession());
 		}catch(Exception e){
 			labelError.setVisible(true);
 			passwordLoggin.setValue("");
@@ -83,6 +93,11 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 		}
 		
 	}
+	
+	public void listenSession(String user, HttpSession session) {
+		sessionListenerService.addOrReplaceSession(user, session);
+	}
+	
 	public void onOK$enter() throws Exception {
 		this.onClick$logginButton();  
 	}
