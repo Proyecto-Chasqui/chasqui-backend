@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -169,6 +170,9 @@ public class ABMTagsComposer extends GenericForwardComposer<Component>{
 								eliminarTagTipoProducto();
 							}
 							
+						} catch (DataIntegrityViolationException e) {
+							Clients.showNotification("No puede eliminar el tag por que uno o mas vendedores lo estan usando.", "error", component, "middle_center", 3000);
+							e.printStackTrace();						
 						} catch (Exception e) {
 							Clients.showNotification("Ocurrio un error desconocido", "error", component, "middle_center", 3000);
 							e.printStackTrace();						
