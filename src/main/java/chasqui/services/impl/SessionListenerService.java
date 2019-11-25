@@ -42,4 +42,8 @@ public class SessionListenerService {
 
         System.out.println(result.toString());
 	}
+
+	public boolean existeUnaSesionPara(String usuario) {
+		return sessions.containsKey(usuario);
+	}
 }
