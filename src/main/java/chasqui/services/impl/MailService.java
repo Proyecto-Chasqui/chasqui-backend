@@ -128,15 +128,14 @@ public class MailService {
 		String template = "";
 		String subject = "";
 		if(esNodo) {
-			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/nodos/" + encrypter.encryptURL(idInvitacion));
 			template = Constantes.TEMPLATE_INVITAR_NODO_NO_REGISTRADO;
 			subject = Constantes.SUBJECT_INVITACION_NODO_NO_REGISTRADO;
 		}else {
-			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misGrupos/invitaciones" );
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
 			template = Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO;
 			subject = Constantes.SUBJECT_INVITACION_NO_REGISTRADO;
-		}
-		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
+		}		
 		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
 		params.put("catalogoVendedor", catalogo);
 		
