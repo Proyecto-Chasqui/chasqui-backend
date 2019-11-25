@@ -446,6 +446,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 			Executions.getCurrent().getSession().invalidate();
 			Executions.sendRedirect("/");
 		}catch (Exception e) {
+			e.printStackTrace();
 			Clients.showNotification("Ocurrio un error al tratar de deslogearse, intente nuevamente.", "error", admcomponent, "middle_center", 3000,true);
 		}
 		
