@@ -176,6 +176,15 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		mostrarListaUsuarios();
 		this.liberarChecks();
 	}
+	
+	public void onCheck$colectiva() {
+		nodos.setChecked(false);
+		utilizaIncentivos.setChecked(false);
+	}
+	
+	public void onCheck$nodos() {
+		colectiva.setChecked(false);
+	}
 
 	public void onClick$buttonGuardar(){
 		if(usuarioSeleccionado != null){
