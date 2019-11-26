@@ -28,6 +28,7 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 	private Zona zonaSeleccionada;
     private PedidoColectivo pedido;
     private HistorialPedidosColectivosComposer comp;
+    private NodosComposer nodosComp;
 	private GrupoCC grupo;
 
 	private PedidoColectivoService pedidoColectivoService;
@@ -74,6 +75,7 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 		super.doAfterCompose(c);
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
 		comp = (HistorialPedidosColectivosComposer) Executions.getCurrent().getSession().getAttribute("historialPedidosColectivosComposer");
+		nodosComp = (NodosComposer) Executions.getCurrent().getSession().getAttribute("nodosComposer");
 		binder = new AnnotateDataBinder(c);
 		pedidoColectivoService = (PedidoColectivoService) SpringUtil.getBean("pedidoColectivoService");
 		grupoService = (GrupoService) SpringUtil.getBean("grupoService");
@@ -100,6 +102,7 @@ public class EditarPedidoColectivoComposer extends GenericForwardComposer<Compon
 		grupoService.guardarGrupo(grupo);
 		Events.sendEvent(Events.ON_RENDER,this.self.getParent(),null);
 		comp.binder.loadAll();
+		nodosComp.binder.loadAll();
 		this.self.detach();
 		
 	}
