@@ -67,7 +67,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	private Listbox listboxSolicitudesCreacionNodos;
 	private Listbox listboxNodos;
 	private Button confirmarEntregabtn;
-	private AnnotateDataBinder binder;
+	public AnnotateDataBinder binder;
 	private List<Zona> zonas;
 	private Button buscar;
 	private Textbox buscadorPorUsuario;
@@ -144,6 +144,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		if(vendedorLogueado != null){
 			super.doAfterCompose(c);
 			component = c;
+			Executions.getCurrent().getSession().setAttribute("nodosComposer",this);
 			tienePuntosDeRetiro = vendedorLogueado.getEstrategiasUtilizadas().isPuntoDeEntrega();
 			nodoService = (NodoService) SpringUtil.getBean("nodoService");
 			mailService = (MailService) SpringUtil.getBean("mailService");

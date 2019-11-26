@@ -571,7 +571,11 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		cantidadCaracteres.open(ckEditor,"after_end");
 	}
 	public void onCalcularTotal() {
-		totalPrecio.setValue(incentivo.getValue() + doubleboxPrecio.getValue());
+		if(incentivo.getValue() != null) {
+			totalPrecio.setValue(incentivo.getValue() + doubleboxPrecio.getValue());
+		}else {
+			totalPrecio.setValue(doubleboxPrecio.getValue());
+		}
 	}
 	
 	
