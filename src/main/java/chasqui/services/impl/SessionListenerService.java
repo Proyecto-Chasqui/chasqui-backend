@@ -36,8 +36,10 @@ public class SessionListenerService {
         result.append(type);
         result.append("HttpSession\r");
         result.append(".getId():\t\t\t" + hses.getId() + "\r");
+        try {
         result.append(".getCreationTime():\t\t" + new Date(hses.getCreationTime()).toString() + "\r");
         result.append(".getLastAccessedTime():\t\t" + new Date(hses.getLastAccessedTime()).toString() + "\r");
+        } catch (Exception e) {}
         result.append("---------------- FIN DE REPORTE DE SESION -----------\r");
 
         System.out.println(result.toString());
