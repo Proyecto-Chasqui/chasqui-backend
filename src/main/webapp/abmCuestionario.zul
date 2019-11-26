@@ -5,14 +5,15 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window id="cuestionarioWindow" border="normal" title="Configuracion del cuestionario" position="center,top"
-apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="true">
+apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <!-- Seccion Nueva Pregunta -->
 <div id="mostrarNuevaPregunta">
+		<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px;" popup="ayudatextopedidosnodos"  src="/imagenes/question.png" />
 			<tabbox>
 			<tabs>
-				<tab label="Preguntas de consumo individuales"/>
-				<tab label="Preguntas de consumo colectivo"/> 
+				<tab id="tabIndividual" label="Preguntas de consumo individuales" visible="false"/>
+				<tab id="tabColectiva" label="Preguntas de consumo colectivo"  visible="false"/> 
 			</tabs>
 			<tabpanels>
 				<tabpanel>
@@ -78,6 +79,11 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="tru
 </div>
 <!-- Sección editar/crear Pregunta -->
 <div id="editarPregunta">
+				<div align="center" class="title" >
+				<auxhead>
+            		<auxheader id="title_label" label="Configurando pregunta" style="color: white;" />
+        		</auxhead>
+        		</div>
 			<listbox width="100%">
 				<listhead>
 					<listheader/>
@@ -130,5 +136,25 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="35%"  closable="tru
 				<separator spacing="15px"/>	
 			
 </div>
+        		 <popup id="ayudatextopedidosnodos" width="500px">
+        			<html><![CDATA[ En esta sección se configuran las preguntas de consumo del catálogo, con las mismas podrá consultarle a los usuarios datos que 
+        			                crea de importancia, las mismas serán respondidas al momento de confirmar al compra y serán visibles en el resumen de la compra al exportar
+        			                su pedido. <br /><br />
+        					Las preguntas de consumo estan divididas en 2 tipos que son visibles si tiene el modo de venta correspondiente, las mismas son:<br /><br />
+        					<strong>Preguntas de consumo individuales:</strong> Son las preguntas que responderán los usuarios cuando confirmen un pedido individual <strong>que no pertenezca a una compra colectiva</strong>. </br> </br>
+        					<strong>Preguntas de consumo colectivas:</strong>  Son las preguntas que responderán los  <strong>administradores</strong> que confirmen una compra colectiva.</br>
+        					</br>
+        					<strong>Nota:</strong> Las <strong>preguntas colectivas</strong> no son visibles por los que hagan compras individules dentro de una compra colectiva, aún si tienen configuradas <strong>preguntas de consumo individuales.</strong></br></br>
+        					<strong>Aclaración:</strong> se permiten hasta <strong>5 preguntas</strong> por tipo, con un <strong>maximo de 15 respuestas</strong> para cada una. </br></br>
+        					<strong>En las lista se muestra:</strong> </br></br>
+        					<strong>Pregunta</strong> Se muestra la pregunta correspondiente</br></br>
+        					<strong>Acciones:</strong> Se muestran las siguientes acciones: </br> </br>
+        					<image src="./imagenes/editar.png"></image> Editar la pregunta </br> 
+        					<image src="./imagenes/if_toggle-right.png"><image>: Habilita/Deshabilitar la pregunta </br> 
+        					<image src="./imagenes/detach.png"><image>: Elimina la pregunta  </br></br>
+        					]]>
+        					
+        			</html>
+    				</popup>
 </window>
 </zk>

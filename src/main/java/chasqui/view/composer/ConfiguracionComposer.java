@@ -33,6 +33,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
+import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.Imagen;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
@@ -101,12 +102,22 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 //			}else if(vendedorLogueado.getFechaCierrePedido() != null){
 //				dateProximaEntrega.setValue(new Date (vendedorLogueado.getFechaCierrePedido().getMillis()));
 //			}
+			this.mostrarPreguntasSiTieneEstrategiaDeVentas(vendedorLogueado.getEstrategiasUtilizadas());
 			intboxMontoMinimo.setValue(vendedorLogueado.getMontoMinimoPedido());
 			comp.addEventListener(Events.ON_NOTIFY, new SubirArchivoListener(this));
 			binder.loadAll();			
 		}
 	}
 	
+	private void mostrarPreguntasSiTieneEstrategiaDeVentas(EstrategiasDeComercializacion estrategiasDeComercializacion) {
+		if(estrategiasDeComercializacion.isCompraIndividual() || estrategiasDeComercializacion.isGcc() || estrategiasDeComercializacion.isNodos()) {
+			cuestionarioitem.setVisible(true);
+		}else {
+			cuestionarioitem.setVisible(false);
+		}		
+		
+	}
+
 	public void onUpload$uploadImagen(UploadEvent evt){
 		Clients.showBusy("Procesando...");
 		Events.echoEvent(Events.ON_NOTIFY,this.self,evt);
