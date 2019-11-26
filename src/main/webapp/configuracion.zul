@@ -71,9 +71,9 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
 				</listcell>
 			</listitem>
 			<listitem>
-				<listcell label="${c:l('zk.label.configuracion.zonas')}"/>
+				<listcell label="Geolocalización"/>
 				<listcell>
-					<button label="${c:l('zk.label.configuracion.button.zonas')}" id="zonaButton"/>
+					<button label="Configurar Lugares de entrega" id="zonaButton"/>
 				</listcell>
 			</listitem>
 			<listitem>
@@ -85,19 +85,19 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
 			<listitem  id="cuestionarioitem">
 				<listcell id="cuestionario" label="Preguntas de consumo"/>
 				<listcell>
-					<button label="Ver preguntas de consumo" id="cuestionarioButton"/>
+					<button label="Configurar Preguntas de consumo" id="cuestionarioButton"/>
 				</listcell>
 			</listitem>
 			<listitem  id="configuracion_propiedades">
 				<listcell id="propiedades" label="Propiedades"/>
 				<listcell>
-					<button label="Ver configuración de propiedades" id="configPropsButton"/>
+					<button label="Configurar Propiedades" id="configPropsButton"/>
 				</listcell>
 			</listitem>
 			<listitem>
-				<listcell id="datosPortada" label="Pagina Principal"/>
+				<listcell id="datosPortada" label="Página Principal"/>
 				<listcell id="configuracionDatosPortada">
-					<button label="Configurar Pagina" id="configuracionDePortadaButton"/>
+					<button label="Configurar Página" id="configuracionDePortadaButton"/>
 				</listcell>
 			</listitem>
 			<listitem>

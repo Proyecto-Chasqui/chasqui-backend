@@ -100,9 +100,9 @@
 <!-- imagenes de ayuda -->
 <image id="ayudapedidoscolectivos" visible="true" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudatextopedidoscolectivos" src="/imagenes/question.png" />
 <image id="ayudapedidos" popup="tooltippedidos" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;"  src="/imagenes/question.png" />
-<image id="ayudaproductores" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaenconstruccion" src="/imagenes/question.png" />
-<image id="ayudacategorias" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudaenconstruccion" src="/imagenes/question.png" />
-<image id="ayudaproductos" visible="false" align="right" style="cursor:pointer; position:relative;margin-top:-1.6em; margin-right:1em;" popup="ayudaenconstruccion" src="/imagenes/question.png" />
+<image id="ayudaproductores" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="tooltipproductores" src="/imagenes/question.png" />
+<image id="ayudacategorias" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudatextocategorias" src="/imagenes/question.png" />
+<image id="ayudaproductos" visible="false" align="right" style="cursor:pointer; position:relative;margin-top:-1.6em; margin-right:1em;" popup="tooltipproductos" src="/imagenes/question.png" />
 
 <!-- reemplazado por submenubar  (borrar despues de testear bien)-->
 <hbox width="100%" visible = "false">
@@ -351,21 +351,133 @@
 							]]>
         					
         			</html>
+    		 </popup>
+    	<!-- Productos ayuda nuevo producto -->
+      		 <popup id="ayudatextoproductonuevo" width="600px">
+        			<html><![CDATA[ 
+        			 		Permite agregar un nuevo producto abriendo la sección correspondiente para su creación.
+        			 		]]>
+        					
+        			</html>
     		 </popup>    
-    	
+    	 <!-- Productos ayuda  filtros -->
+      		 <popup id="ayudatextomenuproductos_filtros" width="600px">
+        			<html><![CDATA[ 
+        			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
+							<strong><image style="width:16px;height:16px;" src="./imagenes/reset32.png"/>Restablecer filtros</image></strong>: Permite volver a el estado inicial de la busqueda.</font>.</br> </br>
+        					<strong>Los filtros estan divididos en 6 busquedas principales</strong><br /><br />
+							<strong>Productor:</strong> Permite filtrar los productos por el productor seleccionado</strong> del pedido.</br> </br>
+							<strong>Ocultado/Mostrado:</strong> Permite filtrar los productos por visiblidad. </br></br>
+							<strong>Nombre de producto:</strong> Permite filtrar por el nombre del producto, ignora mayúsculas y minúsculas.<strong>(*)</strong> </br> </br>
+							<strong>Código de producto:</strong> Permite filtrar los productos por el código, ignora mayúsculas y minúsculas.<strong>(*)</strong></br></br>
+							<strong>Stock menor a:</strong> Permite filtrar productos que tengam stock menor al indicado, por ejemplo si coloca menor a 100, traera productos que tengan stock 99 o menor.</br></br>
+							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
+							<strong>(*)</strong> Para ejecutar la busqueda tenés que <font color="blue">apretar Enter</font>, además el campo soporta escribir de manera parcial por ejemplo 'banana a' o 'ban', el sistema buscara los que contengan el texto.</br> </br>
+        					]]>
+        					
+        			</html>
+    		 </popup>
+    	<!-- ayuda productos -->
+    	<popup id="ayudatextoproductos" width="600px">
+        	<html><![CDATA[ En esta sección se listan todos los productos. <br /><br />
+        			Cada columna muestra lo siguentes datos del producto.<br /><br />
+        			<font><strong>Producto:</font></strong> Muestra el nombre del producto.  </br> </br>
+        			<font><strong>Productor:</strong> Muestra el nombre del productor. </br> </br>
+        			<font><strong>Categoria:</strong></font> Muestra la categoria del producto. </br> </br>
+        			<font><strong>Stock:</strong> Muestra el stock disponible hasta el momento de ese producto. </br> </br>
+        			<font><strong>Destacado:</strong> Muestra si el producto es <font color="green">Destacado</font> o <font color="red">No Destacado</font>, los productos destacados se ven primero en el catálogo. </br> </br>
+        			<font><strong>Visiblidad:</strong> Muestra si el producto es <font color="green">Visible</font> u <font color="red">Oculto</font>, los productos ocultados no pueden ser vistos en el catálogo y por lo tanto no pueden ser agregados a los pedidos. </br> </br>
+        			<font><strong>Acciones:</strong> Muestra acciones adicionales que se pueden hacer sobre un producto, que son las siguientes: </br> </br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/eye.png"/> Ver detalle:</strong> Permite ver los datos de producto en forma de solo lectura. </br> </br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/editar.png"/> Editar:</strong> Permite editar los datos del producto seleccionado.</br></br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/destacado_off.png"/> Destacar:</strong> Permite marcar como destacado el producto. <image src="./imagenes/destacado_off.png"/> no esta detacado, <image src="./imagenes/destacado_on.png"/> esta destacado.</br></br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/if_toggle-right.png"/> Ocultar/Mostrar:</strong> Permite cambiar la visiblidad del producto para que sea visible o no. <image src="./imagenes/if_toggle-left.png"/> está oculto, <image src="./imagenes/if_toggle-right.png"/> es visible. </br></br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/detach.png"/> Eliminar:</strong> Elimina el producto, <font color="red">esta acción no se puede revertir</font>. </br></br>
+        		]]>
+        					
+        </html>
+    	</popup>
+   	<!-- Productos ayuda nuevo productor -->
+      		 <popup id="ayudatextoproductornuevo" width="600px">
+        			<html><![CDATA[ 
+        			 		Permite agregar un nuevo productor abriendo la sección correspondiente para su creación.
+        			 		]]>
+        					
+        			</html>
+    		 </popup>    
+    	 <!-- productor ayuda  filtros -->
+      		 <popup id="ayudatextomenuproductor_filtros" width="600px">
+        			<html><![CDATA[ 
+        			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
+							<strong><image style="width:16px;height:16px;" src="./imagenes/reset32.png"/>Restablecer filtros</image></strong>: Permite volver a el estado inicial de la busqueda.</font>.</br> </br>
+							<strong>Por nombre:</strong> Permite filtrar los productores por el nombre. <strong>(*)</strong>.</br> </br>
+							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
+							<strong>(*)</strong> Para ejecutar la busqueda tenés que <font color="blue">apretar Enter</font>, además el campo soporta escribir de manera parcial por ejemplo 'cooperativa a' o 'coop', el sistema buscara los que contengan el texto.</br> </br>
+        					]]>
+        					
+        			</html>
+    		 </popup>
+    	<!-- ayuda productor -->
+    	<popup id="ayudatextoproductor" width="600px">
+        	<html><![CDATA[ En esta sección se listan todos los productores. <br /><br />
+        			Cada columna muestra lo siguentes datos del productor.<br /><br />
+        			<font><strong>Productor:</font></strong> Muestra el nombre del productor.  </br> </br>
+        			<font><strong>Descripción Corta:</strong> Muestra la descripción corta del productor. </br> </br>
+        			<font><strong>Sello:</strong></font> Muestra los sellos aplicados a los productores. </br> </br>
+					<font><strong>Acciones:</strong> Muestra acciones adicionales que se pueden hacer sobre un producto, que son las siguientes: </br> </br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/eye.png"/> Ver detalle:</strong> Permite ver los datos de productor en forma de solo lectura. </br> </br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/editar.png"/> Editar:</strong> Permite editar los datos del productor seleccionado.</br></br>
+					<strong><image style="width:16px;height:16px;" src="./imagenes/detach.png"/> Eliminar:</strong> Elimina el productor, <font color="red">esta acción no se puede revertir</font>. </br>
+					<strong>ADVERTENCIA:<font color="red"> No se puede eliminar un productor, si hay productos asociados al mismo. </font></strong></br>
+        		]]>
+        					
+        </html>
+    	</popup>
+    	    	<!-- ayuda productor -->
+    	<popup id="ayudatextocategorias" width="600px">
+        	<html><![CDATA[ En esta sección se listan todos las categorias. <br /><br />
+        			Cada columna muestra lo siguentes datos de las categorias.<br /><br />
+        			<font><strong>Nombre:</font></strong> Muestra el nombre de la categoria.  </br> </br><font><strong>Acciones:</strong> Muestra acciones adicionales que se pueden hacer sobre una categoria, que son las siguientes: </br> </br>
+        			<strong><image style="width:16px;height:16px;" src="./imagenes/editar.png"/> Editar:</strong> Permite editar el nombre de la categoria.</br></br>
+					<strong><image style="width:16px;height:16px;" src="./imagenes/detach.png"/> Eliminar:</strong> Elimina el la categoria, <font color="red">esta acción no se puede revertir</font>. </br>
+					<strong>ADVERTENCIA:<font color="red"> No se puede eliminar una categoria, si hay productos asociados a la misma. </font></strong></br>
+        		]]>
+        					
+        </html>
+    	</popup>
     <!-- filler de popups -->
             <popup id="ayudaenconstruccion" width="150px">
         	<html><![CDATA[ Ayuda en construcción ]]>
         					
         </html>
     	</popup>
-    	    <!-- menutooltip ayuda pedidos -->
+   <!-- menutooltip ayuda pedidos -->
      <menupopup id="tooltippedidos">
         <menuitem image="/imagenes/answers.png" label="¿Que se muestra en la lista?" popup="ayudatextopedidos"/>
          <menu image="/imagenes/answers.png" label="¿Que hacen los botones del menú?">
             <menupopup>
             	<menuitem image="/imagenes/filtrar.png" label="¿Que hacen los filtros?"  popup="ayudatextomenupedidos_filtros"/>
             	<menuitem image="/imagenes/export.png" label="¿Que el hace boton exportar pedidos?"  popup="ayudatextomenupedidos_exportar"/> 
+            </menupopup>
+        </menu>
+     </menupopup> 
+      <!-- menutooltip ayuda productos -->
+     <menupopup id="tooltipproductos">
+        <menuitem image="/imagenes/answers.png" label="¿Que se muestra en la lista?" popup="ayudatextoproductos"/>
+         <menu image="/imagenes/answers.png" label="¿Que hacen los botones del menú?">
+            <menupopup>
+            	<menuitem image="/imagenes/filtrar.png" label="¿Que hacen los filtros?"  popup="ayudatextomenuproductos_filtros"/>
+            	<menuitem image="/imagenes/plus.png" label="¿Que el hace boton Nuevo Producto?"  popup="ayudatextoproductonuevo"/> 
+            </menupopup>
+        </menu>
+      </menupopup> 
+	 <!-- menutooltip ayuda productos -->
+     <menupopup id="tooltipproductores">
+        <menuitem image="/imagenes/answers.png" label="¿Que se muestra en la lista?" popup="ayudatextoproductor"/>
+         <menu image="/imagenes/answers.png" label="¿Que hacen los botones del menú?">
+            <menupopup>
+            	<menuitem image="/imagenes/filtrar.png" label="¿Que hacen los filtros?"  popup="ayudatextomenuproductor_filtros"/>
+            	<menuitem image="/imagenes/plus.png" label="¿Que el hace boton Nuevo Productor?"  popup="ayudatextoproductornuevo"/> 
             </menupopup>
         </menu>
         

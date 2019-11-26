@@ -90,13 +90,8 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			encrypter = (Encrypter) SpringUtil.getBean("encrypter");
 			binder = new AnnotateDataBinder(comp);
 			kilometroSeleccionado = vendedorLogueado.getDistanciaCompraColectiva();
-			if(!vendedorLogueado.getEstrategiasUtilizadas().isPuntoDeEntrega()){
-				puntoderetiro.setVisible(false);
-				puntoderetiroOptions.setVisible(false);
-			}
-			if(vendedorLogueado.getEstrategiasUtilizadas().isNodos()){
-				cuestionarioitem.setVisible(false);
-			}
+			puntoderetiro.setVisible(false);
+			puntoderetiroOptions.setVisible(false);
 //			DateTime d = new DateTime(vendedorLogueado.getFechaCierrePedido());
 //			DateTime hoy = new DateTime();
 //			if(hoy.isBefore(d)){
@@ -176,7 +171,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 //		if(date==null){
 //			throw new WrongValueException(dateProximaEntrega,"La fecha de proxima entrega no puede estar vacía!");
 //		}
-		if(monto == null || monto <= 0){
+		if(monto == null || monto < 0){
 			throw new WrongValueException(intboxMontoMinimo,"El monto no debe ser menor a 0!");
 		}
 	//		if(date.before(new Date())){
