@@ -8,12 +8,13 @@
 apply="chasqui.view.composer.ConfiguracionDeVentasComposer" height="75%" width="50%" closable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 
-<tabbox>
+<tabbox  mold="accordion">
 			<tabs>
 				<tab label="Habilitar/Deshabilitar ventas" image="/imagenes/abierto.png"/>
 			</tabs>
 			<tabpanels>
 				<tabpanel>
+					<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudaventas" src="/imagenes/question.png" />
 				<listbox>
 					<listhead>
 						<listheader/>
@@ -42,6 +43,25 @@ apply="chasqui.view.composer.ConfiguracionDeVentasComposer" height="75%" width="
 				</tabpanel>
 			</tabpanels>
 </tabbox>
+        		
+        		 <popup id="ayudaventas" width="600px">
+        			<html><![CDATA[ En esta sección se pueden configurar para que habilitar o deshabilitar las ventas <br /><br />
+        					<strong>Cuando el campo <font color="blue">permitir ventas</font> esta en <font color="red">no</font>, los usuarios en el catálogo </strong> <br /><br />
+        					<strong><font color="red"> no pueden:</font></strong></br> </br>
+        					<strong>1.</strong> Agregar productos al pedido.</br>
+        					<strong>2.</strong> Abrir nuevos pedidos.</br> </br>
+        					<strong><font color="blue">pero pueden:</font></strong></br> </br>
+        					<strong>1.</strong> Confirmar el pedido que tienen en curso.</br> 
+        					<strong>2.</strong> Cancelar el pedido que tienen en curso.</br> 
+        					<strong>3.</strong> Gestionar compras colectivas que tienen en curso.</br> 
+        					<strong>4.</strong> Ver los detalles de los productos y navegar el catálogo.</br> 
+        					<strong>5.</strong> Confirmar el pedido que tienen en curso.</br> </br>
+        					Además se mostrará el texto que ingresen en <font color="blue">texto de aviso</font>, si el mismo esta vacío, se mostrará un texto por defecto. Tiene un límite de <font color="red">1200 caracteres</font>, si pega contenido superior a esta cantidad, va a ser recortado.</br></br>
+        					<strong>Nota:</strong> El campo solo soporta texto plano.
+        					]]>
+        					
+        			</html>
+    				</popup> 
 
 </window>
 </zk>

@@ -9,7 +9,7 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="tru
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <!-- Seccion Nueva Pregunta -->
 <div id="mostrarNuevaPregunta">
-		<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px;" popup="ayudatextopedidosnodos"  src="/imagenes/question.png" />
+		<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px;" popup="ayudapreguntasconsumo"  src="/imagenes/question.png" />
 			<tabbox>
 			<tabs>
 				<tab id="tabIndividual" label="Preguntas de consumo individuales" visible="false"/>
@@ -84,6 +84,7 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="tru
             		<auxheader id="title_label" label="Configurando pregunta" style="color: white;" />
         		</auxhead>
         		</div>
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudapreguntasconsumoedicion" src="/imagenes/question.png" />
 			<listbox width="100%">
 				<listhead>
 					<listheader/>
@@ -136,7 +137,7 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="tru
 				<separator spacing="15px"/>	
 			
 </div>
-        		 <popup id="ayudatextopedidosnodos" width="500px">
+        		 <popup id="ayudapreguntasconsumo" width="500px">
         			<html><![CDATA[ En esta sección se configuran las preguntas de consumo del catálogo, con las mismas podrá consultarle a los usuarios datos que 
         			                crea de importancia, las mismas serán respondidas al momento de confirmar al compra y serán visibles en el resumen de la compra al exportar
         			                su pedido. <br /><br />
@@ -156,5 +157,15 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="tru
         					
         			</html>
     				</popup>
+        		 <popup id="ayudapreguntasconsumoedicion" width="500px">
+        			<html><![CDATA[ En esta sección se configura las pregunta de consumo, puede configurar hasta 15 respuestas para la pregunta. <br /><br />
+        					Al escribir la respuesta en el campo correspondiente, puede hacer clic en <font color="blue">agregar</font> o apretar <font color="blue"> enter </font><br /><br />
+        					Las respuestas no son editables, por lo que si desea cambiarla deberá eliminarlas.
+        					]]>
+        					
+        			</html>
+    				</popup>
+    				
+
 </window>
 </zk>
