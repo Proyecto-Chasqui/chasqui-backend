@@ -4,12 +4,23 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window title="Start up! Carga de archivos" id="CargaStartUpWindow" border="normal"
+<window title="Importar datos" id="CargaStartUpWindow" border="normal"
 apply="chasqui.view.composer.CargaStartUpComposer" width="60%" closable="true" position="center,top" sizable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
-	<style>
-	
+<style>
+    .title {
+    	background-color: #00b8fc;
+    	border-style: solid;
+    	border-width: 1px;
+    	border-color:LightGray;
+    	height:25px;
+    }
     </style>
+    				<!-- Detalles -->
+				<div id="titulo" align="center" class="title" >
+					<label style="color: white; font-weight: bold;"  id="labelVenededor">Importar datos</label>
+					<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; margin-right: 0.5em" popup="ayudaimportacion"  src="/imagenes/question.png" />
+        		</div>
 	<hbox>
 		<vbox align="center">
 			<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadStartUp"  upload="true,maxsize=-1" />
@@ -25,5 +36,14 @@ apply="chasqui.view.composer.CargaStartUpComposer" width="60%" closable="true" p
 			</vbox>
 		</div>
 	</hbox>
+	        		 <popup id="ayudaimportacion" width="600px">
+        			<html><![CDATA[ Aqui se puede importar los datos de productos y productores<br /><br />
+        					<strong>Es obligatorio</strong> que el archivo que ingrese sea el mismo que exporta desde la seccion previa, ya que este importador asume su formato para su lectura.<br /><br />
+        					<strong>Aclaración errores de la sección errores:</strong> Si el archivo ingresado no es coherente, esta sección mostrara los errores de las incoherencias, en este punto no impacta la base de datos, por lo que pueden ser <font color="blue">resueltas mas tarde</font>.</br>
+        					<strong>Aclaración <font color="red">error de caracteres</font>:</strong> Puede ocurrir que en la planilla se escriban <font color="red">caracteres no soportados</font> por la Base de datos implementada en la plataforma (ocurre muy seguido con el copiar y pegar datos a la planilla), cuando esto suceda se retornará un error en un cartel <font color="red">rojo</font> informando en donde se encuentra el caracter incompatible.</br>
+        					<strong>Si esto ocurre</strong>, se debera corregir el archivo a mano y reintentar importar hasta que logre finalizar, si no lo hace, los datos importados quedaran aplicados hasta la linea del error. Por lo que si <font color="red">falla</font> deberá corregir el archivo hasta que se importe por completo o arriesga que los datos del usuario queden incoherentes.</br>
+        					]]>        					
+        			</html>
+    				</popup> 
 </window>
 </zk>
