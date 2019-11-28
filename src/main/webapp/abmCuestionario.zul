@@ -9,7 +9,7 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="tru
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <!-- Seccion Nueva Pregunta -->
 <div id="mostrarNuevaPregunta">
-		<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px;" popup="ayudapreguntasconsumo"  src="/imagenes/question.png" />
+		<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; " popup="ayudapreguntasconsumo"  src="/imagenes/question.png" />
 			<tabbox>
 			<tabs>
 				<tab id="tabIndividual" label="Preguntas de consumo individuales" visible="false"/>

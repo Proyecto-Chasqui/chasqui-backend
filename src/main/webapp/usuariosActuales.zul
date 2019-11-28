@@ -6,7 +6,20 @@
 <zk>
 <window id="usuariosActualesWindow" title="${c:l('zk.window.usuariosActuales.title')}" width="100%" border="nomal"
 apply="chasqui.view.composer.UsuariosActualesComposer">
-
+		<style>
+    .title {
+    	background-color: #00b8fc;
+    	border-style: solid;
+    	border-width: 1px;
+    	border-color:LightGray;
+    	height:25px;
+    }
+    </style>
+    				<!-- Detalles -->
+				<div id="titulo" align="center" class="title" >
+					<label style="color: white; font-weight: bold;" id="labelVenededor">Usuarios Actuales</label>
+					<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; margin-right: 0.5em" popup="ayudausuarios"  src="/imagenes/question.png" />
+        		</div>	
 	<listbox id="listboxUsuarios" model="@{usuariosActualesWindow$composer.usuarios}">
 <!-- 	selectedItem="@{usuariosActualesWindow$composer.usuarioSeleccionado}"> -->
 		<listhead>
@@ -18,5 +31,18 @@ apply="chasqui.view.composer.UsuariosActualesComposer">
 	<div align="center">
 		<toolbarbutton label="Nuevo Usuario" style="font-weight:bold; color:black" id="buttonGuardarNuevoUsuario" image="/imagenes/newuser.png"/>
 	</div>
+   <popup id="ayudausuarios" width="500px">
+       <html><![CDATA[ 
+             En esta sección se configuran los usurios vendedores, desde la misma puede:<br /><br />
+             <image src="./imagenes/newuser.png"/>: Crea un nuevo usuario </br>
+             <image src="./imagenes/editar.png"/>: Edita un usuario </br>
+             <image src="./imagenes/detach.png"/>: Elimina un usuario, <font color="red">esta acción no es reversible</font></br>
+             <image src="./imagenes/bookedit.png"/>: Edita sus estrategias de ventas</br>
+             <image src="./imagenes/upload.png"/>: Importa sus productos y productores</br>
+             <image src="./imagenes/download_data.png"/>: Exporta sus productos y productores</br>  </br>            
+             <Strong>Nota:</Strong> El usuario root no puede ser eliminado</br>
+             ]]>		
+       </html>
+    </popup>
 </window>
 </zk>
