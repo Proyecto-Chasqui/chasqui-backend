@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
@@ -179,7 +180,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 				showError("No se puede tener mas de 15 respuestas por pregunta");
 			}
 		}else{
-			Messagebox.show("La respuesta no debe ser vacia","Pregunta",Messagebox.OK,Messagebox.INFORMATION,
+			Messagebox.show("La respuesta que desea agregar no debe ser vacia","Pregunta",Messagebox.OK,Messagebox.INFORMATION,
 					new EventListener<Event>(){
 
 				public void onEvent(Event event) throws Exception {
@@ -197,6 +198,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	
 	public void onClick$btnGuardarCambios(){
 		if(isPreguntaIndividual){
+			validarPreguntaNoVacia();
 			this.guardarPreguntaIndividual();
 		}else{
 			this.guardarPreguntaColectiva();
@@ -205,6 +207,14 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 		binder.loadAll();
 	}
 	
+	private void validarPreguntaNoVacia() {
+		if(textNombrePregunta.getValue().equals("")) {
+			throw new WrongValueException(textNombrePregunta,"La pregunta no debe estar vacia");
+		}
+	}
+
+
+
 	public void onClick$btnCancelarCambios() throws VendedorInexistenteException{
 		this.limpiarCampos();
 		this.cambiarContextoAPreguntas();
