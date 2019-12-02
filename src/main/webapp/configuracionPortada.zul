@@ -17,12 +17,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
         padding:5px 18px 5px 45px;
         vertical-align:middle;
     }
-    .title {
-    	background-color: #00b8fc;
-    	border-style: solid;
-    	border-width: 1px;
-    	border-color:LightGray;
-    }
+
     </style>
 	<tabbox>
 	<tabs>

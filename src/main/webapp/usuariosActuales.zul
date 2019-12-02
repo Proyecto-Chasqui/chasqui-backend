@@ -7,16 +7,10 @@
 <window id="usuariosActualesWindow" title="${c:l('zk.window.usuariosActuales.title')}" width="100%" border="nomal"
 apply="chasqui.view.composer.UsuariosActualesComposer">
 		<style>
-    .title {
-    	background-color: #00b8fc;
-    	border-style: solid;
-    	border-width: 1px;
-    	border-color:LightGray;
-    	height:25px;
-    }
+
     </style>
     				<!-- Detalles -->
-				<div id="titulo" align="center" class="title" >
+				<div id="titulo" align="center" class="titleadmin" >
 					<label style="color: white; font-weight: bold;" id="labelVenededor">Usuarios Actuales</label>
 					<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; margin-right: 0.5em" popup="ayudausuarios"  src="/imagenes/question.png" />
         		</div>	

@@ -17,12 +17,6 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
         padding:5px 18px 5px 45px;
         vertical-align:middle;
     }
-    .title {
-    	background-color: #00b8fc;
-    	border-style: solid;
-    	border-width: 1px;
-    	border-color:LightGray;
-    }
     </style>
 <tabbox width="100%" mold="accordion">
 	<tabs >
