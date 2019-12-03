@@ -67,6 +67,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	private UsuarioService usuarioService;
 	private Imagen imagen;
 	private Listitem cuestionarioitem;
+	private Component component;
 	
 	public Listitem getCuestionarioitem() {
 		return cuestionarioitem;
@@ -81,6 +82,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		if(vendedorLogueado != null){
 			super.doAfterCompose(comp);
 			imagen = new Imagen();
+			component = comp;
 			if(vendedorLogueado.getImagenPerfil() != null){
 				imagen.setPath(vendedorLogueado.getImagenPerfil());				
 			}else{
@@ -136,8 +138,11 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
 			String path = context.getRealPath("/imagenes/");
 			imagen = fileSaver.guardarImagen(path +"/",vendedorLogueado.getUsername(),image.getContent().getName(),image.getContent().getByteData());
+			vendedorLogueado.setImagenPerfil(imagen.getPath());
+			usuarioService.guardarUsuario(vendedorLogueado);
+			Clients.showNotification("La imagen se guardó correctamente", "info", component, "middle_center", 3000,true);
 		}catch(Exception e){
-			Messagebox.show("Ha ocurrido un error al subir la imagen","Error", Messagebox.OK, Messagebox.ERROR);
+			Clients.showNotification("Ocurrió un error inesperado al tratar de agregar la imagen", "error", component, "middle_center", 3000,true);
 			e.printStackTrace();
 		}finally{
 			Clients.clearBusy();
@@ -222,13 +227,23 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		w.doModal();
 	}
 	
+	public void onClick$buttonGuardarMontoMinimo() {
+		validacionesDeCompra();
+		try {
+			vendedorLogueado.setMontoMinimoPedido(intboxMontoMinimo.getValue());
+			usuarioService.guardarUsuario(vendedorLogueado);
+			Clients.showNotification("El monto mínimo se guardó correctamente", "info", component, "middle_center", 3000,true);		
+		}catch (Exception e) {
+			Clients.showNotification("Ocurrio un error inesperado al tratar de guardar el monto mínimo", "error", component, "middle_center", 3000,true);
+		}
+	}
+	
 	public void onClick$buttonGuardar() throws Exception{
 		validarPassword();
-		validacionesDeCompra();
+		
 		//Date d = dateProximaEntrega.getValue();
 		vendedorLogueado.setDistanciaCompraColectiva(kilometroSeleccionado);
 		//vendedorLogueado.setFechaCierrePedido(new DateTime(d.getTime()));
-		vendedorLogueado.setMontoMinimoPedido(intboxMontoMinimo.getValue());
 		vendedorLogueado.setImagenPerfil(imagen.getPath());
 		usuarioService.guardarUsuario(vendedorLogueado);
 		textboxClaveActual.setValue(null);

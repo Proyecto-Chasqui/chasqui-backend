@@ -4,123 +4,174 @@
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionWindow" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
-<window id="configuracionWindow" border="normal" title="${c:l('zk.label.configuracion')}" 
-apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%">
+<window id="configuracionWindow"  
+apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%" style="overflow:auto">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
-<vbox>
-	<hbox>	
-		<listbox>
-			<listhead>
-				<listheader/>
-				<listheader/>
-			</listhead>
-			<listitem>
-				<listcell label="${c:l('zk.label.configuracion.nueva.clave')}"/>
-				<listcell>
-					<hbox>
-						<textbox id="textboxNuevaClave" type="password" maxlength="15" />
-						<image src="/imagenes/warning.png" tooltiptext="La contraseña debe ser alfa numerica y tener una cantidad mayor a 8 caracteres"/>
-					</hbox>
-				</listcell>
-			</listitem>
-			<listitem>
-				<listcell label="${c:l('zk.label.configuracion.nueva.clave.repita')}"/>
-				<listcell>
-					<hbox>
-						<textbox id="textboxNuevaClaveRepita" type="password" maxlength="15"/>
-						<image src="/imagenes/warning.png" tooltiptext="La contraseña debe ser alfa numerica y tener una cantidad mayor a 8 caracteres"/>
-					</hbox>
-				</listcell>
-			</listitem>
-			<listitem>
-				<listcell label="${c:l('zk.label.configuracion.clave.actual')}"/>
-				<listcell>
-					<textbox id="textboxClaveActual" type="password" maxlength="15"/>
-				</listcell>
-			</listitem>
-		</listbox>
-	</hbox>
-	<hbox>
-		<listbox>
-			<listhead>
-				<listheader/>
-				<listheader/>
-			</listhead>
-			<listitem>
-				<listcell label="${c:l('zk.label.configuracion.monto.minimo')}"/>
-				<listcell>
-					<intbox id="intboxMontoMinimo"/>
-				</listcell>
-			</listitem>
-<!--			<listitem>
-				<listcell label="${c:l('zk.label.configuracion.fecha.entrega')}"/>
-				<listcell>
-					<hbox>
-						<datebox id="dateProximaEntrega" placeholder="dd/MM/yyyy"/>
-					</hbox>
-				</listcell>
-			</listitem>-->
-			<listitem visible="false">
-				<listcell label="${c:l('zk.label.configuracion.compra.colectiva')}"/>
-				<listcell>
-					<hbox>
-						<combobox readonly="true" id="comboCantidadDeKilometros" selectedItem="@{configuracionWindow$composer.kilometroSeleccionado}" 
-						model="@{configuracionWindow$composer.kilometros}"/>
-						<label value="${c:l('zk.label.configuracion.kilometros')}" style="font-weight:bold; color:black"/>
-					</hbox>
-				</listcell>
-			</listitem>
-			<listitem>
-				<listcell label="Geolocalización"/>
-				<listcell>
-					<button label="Configurar Lugares de entrega" id="zonaButton"/>
-				</listcell>
-			</listitem>
-			<listitem>
-				<listcell id="puntoderetiro" label="Punto de Retiro"/>
-				<listcell id="puntoderetiroOptions">
-					<button label="Ver Puntos de Retiro" id="puntoDeRetiroButton"/>
-				</listcell>
-			</listitem>
-			<listitem  id="cuestionarioitem">
-				<listcell id="cuestionario" label="Preguntas de consumo"/>
-				<listcell>
-					<button label="Configurar Preguntas de consumo" id="cuestionarioButton"/>
-				</listcell>
-			</listitem>
-			<listitem  id="configuracion_propiedades">
-				<listcell id="propiedades" label="Propiedades"/>
-				<listcell>
-					<button label="Configurar Propiedades" id="configPropsButton"/>
-				</listcell>
-			</listitem>
-			<listitem>
-				<listcell id="datosPortada" label="Página Principal"/>
-				<listcell id="configuracionDatosPortada">
-					<button label="Configurar Página" id="configuracionDePortadaButton"/>
-				</listcell>
-			</listitem>
-			<listitem>
-				<listcell id="ventasConfig" label="Ventas"/>
-				<listcell id="configuracionDeVentas">
-					<button label="Configurar Ventas" id="configVentasButton"/>
-				</listcell>
-			</listitem>
-			<listitem>
-				<listcell>
-						<image style="height:50px; width:50px" src="@{configuracionWindow$composer.imagen.getPath}"/>					
-				</listcell>
-				<listcell>
-						<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadImagen" upload="true,maxsize=-1"/>
-				</listcell>
-			</listitem>
-		</listbox>
-	</hbox>
-	<div align="center">
-		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
-	</div>
-</vbox>
-
-
+<style>
+    .titleconfig {
+    	background-color: #00b8fc;
+    	border-style: solid;
+    	border-width: 1px;
+    	border-color:LightGray;
+    	height:35px;
+    }
+    .button_config{
+    	width:190px;
+    }
+</style>
+<div align="center">
+<tabbox width="100%" mold="accordion">
+	<tabs >
+		<tab id="tabdetalles" label="Configuración del catálogo"  image="/imagenes/catalogo_config.png"/>
+		<tab id="tabdescsellos" label="Configuración de la cuenta"  image="/imagenes/gestion.png"/>
+	</tabs>
+		<tabpanels>
+			<tabpanel>
+			<vbox>
+				<div align="center">
+				<listbox width="600px">
+					<listhead>
+						<listheader/>
+					</listhead>
+					<listitem>
+						<listcell>
+							<div id="titleadmin" align="center" class="title" >
+								<label style="color: white; font-weight: bold;" id="labelVenededor">Imagen de multicatalogo</label>
+								<image align="right" style="cursor:pointer; z-index: 100; position:relative; bottom: -1.5em; margin-top: -15px; margin-right: 0.5em" popup="ayudausuarios"  src="/imagenes/question.png" />
+        		
+							</div>
+							<separator spacing="5px"/>
+							<div align="center">
+								<image style="height:100px; width:100px" src="@{configuracionWindow$composer.imagen.getPath}"/>
+							</div>
+						</listcell>					
+					</listitem>
+					<listitem>
+						<listcell>
+							<div  align="center">
+							<fileupload label="Subir imagen" id="uploadImagen" upload="true,maxsize=-1"  image="/imagenes/upload_photo_16.png"/>	
+							</div>
+						</listcell>
+					</listitem>
+				</listbox>
+				</div>
+				<div align="center">
+				<listbox width="600px">
+					<listhead>
+						<listheader/>
+						<listheader/>
+					</listhead>
+					<listitem>
+						<listcell label="Monto mínimo de Compra"/>
+						<listcell>
+							<intbox id="intboxMontoMinimo"/><toolbarbutton  label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardarMontoMinimo" image="/imagenes/save.png"/>
+						</listcell>
+					</listitem>
+		<!--			<listitem>
+						<listcell label="${c:l('zk.label.configuracion.fecha.entrega')}"/>
+						<listcell>
+							<hbox>
+								<datebox id="dateProximaEntrega" placeholder="dd/MM/yyyy"/>
+							</hbox>
+						</listcell>
+					</listitem>-->
+					<listitem visible="false">
+						<listcell label="${c:l('zk.label.configuracion.compra.colectiva')}"/>
+						<listcell>
+							<hbox>
+								<combobox readonly="true" id="comboCantidadDeKilometros" selectedItem="@{configuracionWindow$composer.kilometroSeleccionado}" 
+								model="@{configuracionWindow$composer.kilometros}"/>
+								<label value="${c:l('zk.label.configuracion.kilometros')}" style="font-weight:bold; color:black"/>
+							</hbox>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="Geolocalización"/>
+						<listcell>
+							<button class="button_config" image="/imagenes/logistica.png" label="Configurar Geolocalización" id="zonaButton"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell id="puntoderetiro" label="Punto de Retiro"/>
+						<listcell id="puntoderetiroOptions">
+							<button class="button_config" label="Ver Puntos de Retiro" id="puntoDeRetiroButton"/>
+						</listcell>
+					</listitem>
+					<listitem  id="cuestionarioitem">
+						<listcell id="cuestionario" label="Preguntas de consumo"/>
+						<listcell>
+							<button class="button_config" image="/imagenes/preguntas_consumo.png" label="Configurar Preguntas" id="cuestionarioButton"/>
+						</listcell>
+					</listitem>
+					<listitem  id="configuracion_propiedades">
+						<listcell id="propiedades" label="Propiedades"/>
+						<listcell>
+							<button class="button_config" image="/imagenes/propiedades.png" label="Configurar Propiedades" id="configPropsButton"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell id="datosPortada" label="Página Principal"/>
+						<listcell id="configuracionDatosPortada">
+							<button class="button_config" image="/imagenes/pagina.png" label="Configurar Página" id="configuracionDePortadaButton"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell id="ventasConfig" label="Ventas"/>
+						<listcell id="configuracionDeVentas">
+							<button class="button_config" image="/imagenes/ventas.png" label="Configurar Ventas" id="configVentasButton"/>
+						</listcell>
+					</listitem>
+				</listbox>
+				</div>
+			</vbox>
+			</tabpanel>
+			<tabpanel>
+			<hbox>	
+				<div align="center">
+				<listbox width="600px">
+					<listhead>
+						<listheader/>
+						<listheader/>
+					</listhead>
+					<listitem>
+						<listcell label="${c:l('zk.label.configuracion.nueva.clave')}"/>
+						<listcell>
+							<hbox>
+								<textbox id="textboxNuevaClave" type="password" maxlength="15" />
+								<image src="/imagenes/warning.png" tooltiptext="La contraseña debe ser alfa numerica y tener una cantidad mayor a 8 caracteres"/>
+							</hbox>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="${c:l('zk.label.configuracion.nueva.clave.repita')}"/>
+						<listcell>
+							<hbox>
+								<textbox id="textboxNuevaClaveRepita" type="password" maxlength="15"/>
+								<image src="/imagenes/warning.png" tooltiptext="La contraseña debe ser alfa numerica y tener una cantidad mayor a 8 caracteres"/>
+							</hbox>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="${c:l('zk.label.configuracion.clave.actual')}"/>
+						<listcell>
+							<textbox id="textboxClaveActual" type="password" maxlength="15"/>
+						</listcell>
+					</listitem>
+				</listbox>
+				</div>
+			</hbox>
+			<div align="center">
+				<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
+			</div>
+			</tabpanel>
+		</tabpanels>
+</tabbox>
+</div>
+   <popup id="ayudausuarios" width="500px">
+       <html><![CDATA[ 
+             En esta sección se la imagen del multicatalogo, la misma será aplicada como imagen de la tarjeta de su catálogo.<br />
+             ]]>		
+       </html>
+    </popup>
 </window>
 </zk>

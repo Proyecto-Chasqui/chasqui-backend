@@ -276,8 +276,8 @@
 			</listbox>
 			</vbox>
 		</div>
-		<div>
-			<vbox>
+		<div style="position: absolute;  left: 25vw">
+			<vbox >
 				<include id="configuracionInclude" visible="false" src="/configuracion.zul"/>
 			</vbox>
 		</div>

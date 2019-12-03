@@ -27,7 +27,7 @@ apply="chasqui.view.composer.UsuariosActualesComposer">
 	</div>
    <popup id="ayudausuarios" width="500px">
        <html><![CDATA[ 
-             En esta sección se configuran los usurios vendedores, desde la misma puede:<br /><br />
+             En esta sección se configuran los usuarios vendedores, desde la misma puede:<br /><br />
              <image src="./imagenes/newuser.png"/>: Crea un nuevo usuario </br>
              <image src="./imagenes/editar.png"/>: Edita un usuario </br>
              <image src="./imagenes/detach.png"/>: Elimina un usuario, <font color="red">esta acción no es reversible</font></br>
