@@ -42,7 +42,7 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%" s
 							</div>
 							<separator spacing="5px"/>
 							<div align="center">
-								<image style="height:100px; width:100px" src="@{configuracionWindow$composer.imagen.getPath}"/>
+								<image style="height:90px; width:140px" src="@{configuracionWindow$composer.imagen.getPath}"/>
 							</div>
 						</listcell>					
 					</listitem>
@@ -169,7 +169,8 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%" s
 </div>
    <popup id="ayudausuarios" width="500px">
        <html><![CDATA[ 
-             En esta sección se la imagen del multicatalogo, la misma será aplicada como imagen de la tarjeta de su catálogo.<br />
+             En esta sección se configura la imagen del multicatalogo, la misma será aplicada como imagen de la tarjeta de su catálogo.<br /><br />
+             <strong>Aclaración:</strong> La imagen debe tener <font color="red">280px de ancho y 180px de alto</font>.             
              ]]>		
        </html>
     </popup>

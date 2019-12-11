@@ -209,7 +209,7 @@ style="overflow:auto">
 			<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudatextosolicitudes" src="/imagenes/question.png" />
         		
         		 <popup id="ayudatextosolicitudes" width="600px">
-        			<html><![CDATA[ En esta sección se listan todass las solicitudes de creación de nodos que los usuarios envian.<br /><br /></br>
+        			<html><![CDATA[ En esta sección se listan todas las solicitudes de creación de nodos que los usuarios envian.<br /><br /></br>
         					<strong>Las solicitudes de creación estan mostradas en 4 tipos de estado que son las siguientes</strong><br /><br />
         					<font color="green"><strong>EN GESTIÓN:</font></strong> Son las solicitudes enviadas por los usuarios y que <font color="blue">deben gestionarse</font>.</br> </br>
         					<font color="blue"><strong>APROBADA:</font></strong> Son las solicitudes <strong>gestionadas y aprobadas</strong> por el administrador del panel. </br> </br>
