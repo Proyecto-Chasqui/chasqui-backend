@@ -52,6 +52,7 @@ public class ProductosEnPedidoComposer extends GenericForwardComposer<Component>
 	private Listcell labelDireccionPR;
 	private String lng = "";
 	private String lat = "";
+	private boolean esIndividualConfirmado;
 	
 	public void doAfterCompose(Component c) throws Exception{
 		super.doAfterCompose(c);
@@ -69,8 +70,15 @@ public class ProductosEnPedidoComposer extends GenericForwardComposer<Component>
 	private void completarDatosDir(Pedido p) {
 		if(tieneEntregaADomicilio) {
 			this.lat = p.getDireccionEntrega().getLatitud();
-			this.lng = p.getDireccionEntrega().getLongitud();	
+			this.lng = p.getDireccionEntrega().getLongitud();
+			setEsIndividualConfirmado(!p.getPerteneceAPedidoGrupal() && estaConfirmado(p));
 		}
+	}
+
+
+	private boolean estaConfirmado(Pedido p) {
+		String estado = p.getEstado();
+		return estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)|| estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}
 
 
@@ -79,6 +87,7 @@ public class ProductosEnPedidoComposer extends GenericForwardComposer<Component>
 		if(tienePuntoDeRetiro) {
 			this.labelDireccionPR.setLabel(p.getPuntoDeRetiro().getDireccion().toString());
 			this.labelNombrePR.setLabel(p.getPuntoDeRetiro().getNombre());
+			setEsIndividualConfirmado(!p.getPerteneceAPedidoGrupal() && estaConfirmado(p));
 		}else {
 			this.labelDireccionPR.setLabel("N/D");
 			this.labelNombrePR.setLabel("N/D");
@@ -224,6 +233,16 @@ public class ProductosEnPedidoComposer extends GenericForwardComposer<Component>
 
 	public void setLabelDireccionPR(Listcell labelDireccionPR) {
 		this.labelDireccionPR = labelDireccionPR;
+	}
+
+
+	public boolean isEsIndividualConfirmado() {
+		return esIndividualConfirmado;
+	}
+
+
+	public void setEsIndividualConfirmado(boolean esIndividualConfirmado) {
+		this.esIndividualConfirmado = esIndividualConfirmado;
 	}
 
 

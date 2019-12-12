@@ -10,7 +10,7 @@ apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
 <tabbox width="100%">
 	<tabs >
 		<tab id="tabdatospedido" label="Datos del usuario"  image="/imagenes/user.png"/>
-		<tab id="tabdatosentregapedido" visible="@{pedidoWindow$composer.pedidoMostrado.esIndividual}" label="Datos de entrega"  image="/imagenes/direccion_entrega.png"/>
+		<tab id="tabdatosentregapedido" visible="@{pedidoWindow$composer.esIndividualConfirmado}" label="Datos de entrega"  image="/imagenes/direccion_entrega.png"/>
 		<tab id="tabdetalleproductos" label="Pedido"  image="/imagenes/detalle_bolsa.png"/>
 		<tab id="tabdetallepreguntas" label="Respuestas de consumo"  image="/imagenes/gestion.png"/>
 	</tabs>
