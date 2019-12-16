@@ -5,7 +5,7 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window title="Detalle Del Pedido" border="normal" id="pedidoWindow" closable="true" sizable="true"
-apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
+apply="chasqui.view.composer.ProductosEnPedidoComposer" width="800px">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <tabbox width="100%">
 	<tabs >
@@ -89,17 +89,20 @@ apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
 				<listbox model="@{pedidoWindow$composer.pedidoMostrado.getPrimero.getVariantes}" mold="paging" pageSize="10" >
 					<listhead>
 						<listheader label="Producto" hflex="1" align="center"/>
+						<listheader label="Productor" hflex="1" align="center"/>
 						<listheader label="Cantidad" hflex="1" align="center"/>
 						<listheader label="Precio por unidad" hflex="1" align="center"/>
 						<listheader label="Subtotal" hflex="1" align="center"/>
 					</listhead>
 					<listitem self="@{each=variante}" >
 						<listcell label="@{variante.getNombreProducto}"/>
+						<listcell label="@{variante.getNombreProductor}"/>
 						<listcell label="@{variante.getCantidad}"/>
 						<listcell label="@{variante.getPrecio}"/>
 						<listcell label="@{variante.getSubTotal}"/>
 					</listitem>
 					<listfoot>
+						<listfooter hflex="1"/>
 						<listfooter hflex="1"/>
 						<listfooter hflex="1"/>
 						<listfooter label="Total: " align="center" hflex="1"/>
