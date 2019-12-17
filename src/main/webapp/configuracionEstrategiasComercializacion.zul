@@ -45,7 +45,7 @@ apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
 		<listitem>
 			<listcell style="text-align: center"  label="Tiempo vencimiento: "/>
 			<listcell style="text-align: center">
-				<textbox width="100%" id="textboxTiempoVencimiento" maxlength="3" type="tel"/>
+				<textbox width="100%" id="textboxTiempoVencimiento" maxlength="5" type="tel"/>
 			</listcell>
 		</listitem>
 		<listitem>
