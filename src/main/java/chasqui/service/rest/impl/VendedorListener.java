@@ -273,7 +273,7 @@ public class VendedorListener {
 		}
 	}
 	
-	@GET
+	@POST
 	@Path("/obtenerVendedoresConTags")
 	@Produces("application/json")
 	public Response obtenerVendedoresConTags(@Multipart(value="vendedoresConTagRequest", type="application/json")final String vendedoresConTagRequest){
