@@ -8,16 +8,11 @@
 apply="chasqui.view.composer.AltaUsuarioComposer" width="100%">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <style>
-    .title {
-    	background-color: #00b8fc;
-    	border-style: solid;
-    	border-width: 1px;
-    	border-color:LightGray;
-    }
     </style>
     				<!-- Detalles -->
-				<div id="titulo" align="center" class="title" >
-					<label  id="labelVenededor">Vendedor</label>
+				<div id="titulo" align="center" class="titleadmin" >
+					<label style="color: white; font-weight: bold;"  id="labelVenededor">Vendedor</label>
+					<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; margin-right: 0.5em" popup="ayudaedicioncreacionusuarios"  src="/imagenes/question.png" />
         		</div>
 <div>
 	<listbox>
@@ -75,5 +70,18 @@ apply="chasqui.view.composer.AltaUsuarioComposer" width="100%">
 	</div>
 
 </div>
+
+   <popup id="ayudaedicioncreacionusuarios" width="500px">
+       <html><![CDATA[ 
+             En esta sección se cargan o editan los datos del usuario seleccionado:<br /><br />
+             <strong>Usuario:</strong> Es el nombre del usuario y con el cual va a ingresar al panel. Es recomendable que sea Admin[nombre] o similiares. El máximo de caracteres es <font color ="red">64</font>.<br /></br>  
+             <strong>Nombre:</strong> Es el nombre de la entidad, se usará este nombre para los emails y para mostrarse en el catálogo, debe ser el nombre real por ejemplo: Cooperativa del vidrio. El máximo de caracteres es <font color ="red">64</font>.</br></br>  
+             <strong>Nombre corto:</strong> Es el nombre resumido de la entidad se usa identificar el catálogo. Debe ser único entre los usuarios y el máximo de caracteres es <font color ="red">40</font>.</br></br>  
+             <strong>Contraseña:</strong> Es la contraseña que se le asigna a la cuenta. Este campo es <font color="red">obligatorio</font> si esta creando el usuario por primera vez, si lo esta <font color="blue">editando</font>, puede dejar este campo en blanco si no quiere modificar la contraseña del mismo.</br></br>  
+             <strong>Email:</strong> Es el email de la cuenta del vendedor, en la misma se enviaran todas las notificaciones que el sistema genere, como confirmación de pedidos, solicitudes de gestión de nodos, etc.</br></br>  
+             <strong>URL Base:</strong> En este campo se configura la URL base del Frontend, se usa para los emails que tienen redirección a secciones de los catalogos, como Mis Grupos o Mis Nodos ante una invitación a los mismos.</br>  </br>       
+             ]]>		
+       </html>
+    </popup>
 </window>
 </zk>

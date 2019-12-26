@@ -1,5 +1,6 @@
 package chasqui.view.composer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
+import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.Imagen;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
@@ -55,6 +57,8 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	private Listcell puntoderetiro;
 	private Listcell puntoderetiroOptions;
 	private Encrypter encrypter ;
+	private static final String ANCHO = "ancho";
+	private static final String ALTO = "alto";
 //	private Datebox dateProximaEntrega;
 	private Textbox textboxClaveActual;
 	private Textbox textboxNuevaClaveRepita;
@@ -66,6 +70,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 	private UsuarioService usuarioService;
 	private Imagen imagen;
 	private Listitem cuestionarioitem;
+	private Component component;
 	
 	public Listitem getCuestionarioitem() {
 		return cuestionarioitem;
@@ -80,6 +85,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		if(vendedorLogueado != null){
 			super.doAfterCompose(comp);
 			imagen = new Imagen();
+			component = comp;
 			if(vendedorLogueado.getImagenPerfil() != null){
 				imagen.setPath(vendedorLogueado.getImagenPerfil());				
 			}else{
@@ -90,13 +96,8 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			encrypter = (Encrypter) SpringUtil.getBean("encrypter");
 			binder = new AnnotateDataBinder(comp);
 			kilometroSeleccionado = vendedorLogueado.getDistanciaCompraColectiva();
-			if(!vendedorLogueado.getEstrategiasUtilizadas().isPuntoDeEntrega()){
-				puntoderetiro.setVisible(false);
-				puntoderetiroOptions.setVisible(false);
-			}
-			if(vendedorLogueado.getEstrategiasUtilizadas().isNodos()){
-				cuestionarioitem.setVisible(false);
-			}
+			puntoderetiro.setVisible(false);
+			puntoderetiroOptions.setVisible(false);
 //			DateTime d = new DateTime(vendedorLogueado.getFechaCierrePedido());
 //			DateTime hoy = new DateTime();
 //			if(hoy.isBefore(d)){
@@ -106,23 +107,90 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 //			}else if(vendedorLogueado.getFechaCierrePedido() != null){
 //				dateProximaEntrega.setValue(new Date (vendedorLogueado.getFechaCierrePedido().getMillis()));
 //			}
+			this.mostrarPreguntasSiTieneEstrategiaDeVentas(vendedorLogueado.getEstrategiasUtilizadas());
 			intboxMontoMinimo.setValue(vendedorLogueado.getMontoMinimoPedido());
 			comp.addEventListener(Events.ON_NOTIFY, new SubirArchivoListener(this));
 			binder.loadAll();			
 		}
 	}
 	
+	private void mostrarPreguntasSiTieneEstrategiaDeVentas(EstrategiasDeComercializacion estrategiasDeComercializacion) {
+		if(estrategiasDeComercializacion.isCompraIndividual() || estrategiasDeComercializacion.isGcc() || estrategiasDeComercializacion.isNodos()) {
+			cuestionarioitem.setVisible(true);
+		}else {
+			cuestionarioitem.setVisible(false);
+		}		
+		
+	}
+
 	public void onUpload$uploadImagen(UploadEvent evt){
 		Clients.showBusy("Procesando...");
 		Events.echoEvent(Events.ON_NOTIFY,this.self,evt);
+	}
+	
+	private boolean validateSizeOfImageAt(int h, int w, int margen, String statico,UploadEvent evt) {
+		boolean ret = false;
+		Integer baseAspectRatio = w / h;
+        org.zkoss.util.media.Media media = evt.getMedia();
+        if (media instanceof org.zkoss.image.Image) {
+            org.zkoss.image.Image img = (org.zkoss.image.Image) media;
+            if(statico.equals(ANCHO)) {
+            	if(img.getHeight() >= h && img.getWidth() <= (w+margen) && (img.getWidth() >= w)){
+            		ret = true;
+            	}
+            }
+            if(statico.equals(ALTO)) {
+            	if(img.getHeight() <= (h+margen) && img.getHeight() >= h && img.getWidth() >= w){
+            		ret = true;
+            	}
+            }
+            if(baseAspectRatio != img.getWidth()/img.getHeight()) {
+            	ret = false;
+            }
+        }
+		return ret;
+	}
+	
+	private boolean validateFormatAndWeigthOfImage(UploadEvent evt,List<String> formats, Integer imageSizeInKB) {
+		boolean ret = false;
+        org.zkoss.util.media.Media media = evt.getMedia();
+        if (media instanceof org.zkoss.image.Image && media.getByteData().length < imageSizeInKB * 1024 && hasAValidFormat(media,formats)) {
+           ret = true;
+        }
+		return ret;
+	}
+	
+	private boolean hasAValidFormat(Media media, List<String> formats) {
+		boolean ret = false;
+		for(String format: formats) {
+			if(!ret) {
+				ret = media.getFormat().equals(format);
+			}
+		}
+		return ret;
 	}
 	
 	public void actualizarImagen(UploadEvent evt){
 		try{
 			Media media = evt.getMedia();
 			Image image = new Image();
+			Integer alto = 180;
+			Integer ancho = 280;
+			Integer kb = 512;
+			Integer margenalto = 180;
+			Integer margenancho = 280;
+			List<String> formats = new ArrayList<String>();
+			formats.add("jpg");
+			formats.add("jpeg");
+			formats.add("png");
 			if (media instanceof org.zkoss.image.Image) {
-				image.setContent((org.zkoss.image.Image) media);
+				if(this.validateSizeOfImageAt(alto,ancho,margenalto,ALTO,evt) && this.validateSizeOfImageAt(alto,ancho,margenancho,ANCHO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
+					image.setContent((org.zkoss.image.Image) media);
+				}else {
+					String mensaje = "La imagen debe tener una dimensión de " +ancho+"px x " +alto+" px, hasta "+ (ancho+margenancho) +" px x "+(alto+margenalto)+" px, debe tener propocion 14:9 y ser de formato jpg, jpeg o png y no debe pesar mas de "+ kb +"KB";
+					Clients.showNotification(mensaje, "warning", component, "middle_center", 10000, true);
+					return;
+				}
 			} else {
 				Messagebox.show("El archivo no es una imagen o es demasiado grande","Error", Messagebox.OK, Messagebox.ERROR);
 				return;
@@ -130,8 +198,11 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
 			String path = context.getRealPath("/imagenes/");
 			imagen = fileSaver.guardarImagen(path +"/",vendedorLogueado.getUsername(),image.getContent().getName(),image.getContent().getByteData());
+			vendedorLogueado.setImagenPerfil(imagen.getPath());
+			usuarioService.guardarUsuario(vendedorLogueado);
+			Clients.showNotification("La imagen se guardó correctamente", "info", component, "middle_center", 3000,true);
 		}catch(Exception e){
-			Messagebox.show("Ha ocurrido un error al subir la imagen","Error", Messagebox.OK, Messagebox.ERROR);
+			Clients.showNotification("Ocurrió un error inesperado al tratar de agregar la imagen", "error", component, "middle_center", 3000,true);
 			e.printStackTrace();
 		}finally{
 			Clients.clearBusy();
@@ -176,7 +247,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 //		if(date==null){
 //			throw new WrongValueException(dateProximaEntrega,"La fecha de proxima entrega no puede estar vacía!");
 //		}
-		if(monto == null || monto <= 0){
+		if(monto == null || monto < 0){
 			throw new WrongValueException(intboxMontoMinimo,"El monto no debe ser menor a 0!");
 		}
 	//		if(date.before(new Date())){
@@ -216,13 +287,23 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		w.doModal();
 	}
 	
+	public void onClick$buttonGuardarMontoMinimo() {
+		validacionesDeCompra();
+		try {
+			vendedorLogueado.setMontoMinimoPedido(intboxMontoMinimo.getValue());
+			usuarioService.guardarUsuario(vendedorLogueado);
+			Clients.showNotification("El monto mínimo se guardó correctamente", "info", component, "middle_center", 3000,true);		
+		}catch (Exception e) {
+			Clients.showNotification("Ocurrio un error inesperado al tratar de guardar el monto mínimo", "error", component, "middle_center", 3000,true);
+		}
+	}
+	
 	public void onClick$buttonGuardar() throws Exception{
 		validarPassword();
-		validacionesDeCompra();
+		
 		//Date d = dateProximaEntrega.getValue();
 		vendedorLogueado.setDistanciaCompraColectiva(kilometroSeleccionado);
 		//vendedorLogueado.setFechaCierrePedido(new DateTime(d.getTime()));
-		vendedorLogueado.setMontoMinimoPedido(intboxMontoMinimo.getValue());
 		vendedorLogueado.setImagenPerfil(imagen.getPath());
 		usuarioService.guardarUsuario(vendedorLogueado);
 		textboxClaveActual.setValue(null);

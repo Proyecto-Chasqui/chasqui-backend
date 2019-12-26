@@ -8,16 +8,10 @@
 apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <style>
-    .title {
-    	background-color: #00b8fc;
-    	border-style: solid;
-    	border-width: 1px;
-    	border-color:LightGray;
-    }
     </style>
     				<!-- Detalles -->
-				<div id="titulo" align="center" class="title" >
-					<label  id="labelVenededor">Vendedor</label>
+				<div id="titulo" align="center" class="titleadmin" >
+					<label style="color: white; font-weight: bold;"  id="labelVenededor">Vendedor</label>
         		</div>
 <tabbox width="100%" mold="accordion">
 	<tabs >
@@ -26,6 +20,7 @@ apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
 	</tabs>
 			<tabpanels>
 				<tabpanel>
+						<image align="right" style="cursor:pointer; position:relative; margin-top:-2.0em; margin-right:0.5em;" popup="ayudaestrategias" src="/imagenes/question.png" />
 						<listbox>
 							<listhead>
 								<listheader/>
@@ -64,6 +59,7 @@ apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
 					</listbox>
 				</tabpanel>
 				<tabpanel>
+				<image align="right" style="cursor:pointer; position:relative; margin-top:-2.0em; margin-right:0.5em;" popup="ayudaconfigadicional" src="/imagenes/question.png" />
 					<listbox>
 						<listhead>
 								<listheader/>
@@ -88,11 +84,25 @@ apply="chasqui.view.composer.ConfiguracionEstrategiasComposer">
 				</tabpanel>
 			</tabpanels>
 </tabbox>
-
-
-         
-         
-    
+        <popup id="ayudaestrategias" width="600px">
+        	<html><![CDATA[ 
+        			En esta sección se configura las estrategias de ventas del vendedor. La mismas tienen las siguientes restricciones:</br></br>
+        			<strong> Compra por nodos</strong>: Si selecciona esta estrategia solo es compatible con <strong><font color="blue">Incentivos</font> y <font color="blue">entrega a domicilio</font></strong>, no podrá seleccionar las demás opciones.</br></br>
+        			<strong> Compra colectiva</strong>: Si selecciona esta estrategia solo es compatible con <strong><font color="blue">Compra individual</font>, <font color="blue">punto de entrega</font> y/o <font color="blue">entrega a domicilio</font> </strong>, no podrá seleccionar las demás opciones.</br></br>
+        			<strong> Compra individual</strong>: Si selecciona esta estrategia solo es compatible con <strong><font color="blue">Compra colectiva</font>, <font color="blue">punto de entrega</font> y/o <font color="blue">entrega a domicilio</font> </strong>, no podrá seleccionar las demás opciones.</br></br>			
+					]]>		
+        	</html>
+    	</popup> 
+    	<popup id="ayudaconfigadicional" width="600px">
+        	<html><![CDATA[ 
+        			En esta sección se configuran los detalles asociados la funcionalidad del catálogo</br></br>
+        			<strong> Tiempo de vencimiento</strong>: En este campo se configuran los vencimientos de los pedidos en <font color="blue">minutos</font>, si desea que los pedidos <font color="red">no</font> tengan vencimiento solo deje el <font color="blue">valor en 0</font>. </br></br>
+        			<strong> URLMapa </strong>: En este campo se configura el mapa de geolocalización, se debe poner la ruta completa en donde este hosteado, por ejemplo <font color="black"> http://chasqui.com/mapa/ </font>, si deja el campo el blanco el sistema asumirá que el mismo esta en el mismo servidor que el backend de Chasqui, infiriendo la ruta y asumiendo que genero una ruta {serverip or dominio}/map/ </strong>.</br>
+        			<strong>Nota:</strong> Importante cerrar la ruta con <strong>/</strong> al final. </br></br>
+        			<strong> Visible en multicatálogo</strong>: Seleccionar este campo permite mostrarlo en la sección de multicatálogo de la plataforma. Es <font color="blue">recomendable</font>, no marcarlo hasta que el catálogo este disponible para la compra. Por defecto esta sin marcar.
+        			]]>		
+        	</html>
+    	</popup> 
 	<div align="center">
 		<toolbarbutton label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" id="buttonGuardar" image="/imagenes/save.png"/>
 		<toolbarbutton label="Cancelar" style="font-weight:bold; color:black" id="buttonCancelar" image="/imagenes/cancel_16.png"/>

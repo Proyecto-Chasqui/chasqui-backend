@@ -28,7 +28,7 @@ public class PedidoDTO {
 		domicilio = pedido.getDireccionEntrega();
 		montoTotal = definirMontoSegunIncentivos(pedido);
 		pedidosIndividuales = new ArrayList<PedidoIndividualDTO>();
-		esIndividual = !pedido.getPerteneceAPedidoGrupal()&&pedido.getPuntoDeRetiro()==null;
+		esIndividual = !pedido.getPerteneceAPedidoGrupal();
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
 	}
 	
@@ -79,7 +79,7 @@ public class PedidoDTO {
 		PedidoIndividualDTO nuevoPedido = new PedidoIndividualDTO(userMail);
 		
 		for (ProductoPedido pp : productosPedidos) {
-			nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
+			nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad(), pp.getNombreProductor());
 		}
 
 		this.pedidosIndividuales.add(nuevoPedido);
@@ -95,7 +95,7 @@ public class PedidoDTO {
 			}
 		}else {*/
 			for (ProductoPedido pp : listaProductosEnPedido) {
-				nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
+				nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad(), pp.getNombreProductor());
 			}
 		//}
 

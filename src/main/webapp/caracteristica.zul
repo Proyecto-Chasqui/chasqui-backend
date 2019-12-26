@@ -7,6 +7,7 @@
 <window id="caracteristicaWindow" title="Configuración de sellos" border="normal" width="100%"
 apply="chasqui.view.composer.CaracteristicaComposer">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+		<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; " popup="ayudasellos"  src="/imagenes/question.png" />
 	<tabbox>
 	<tabs>
 		<tab label="Producto" id="tabProducto"/>
@@ -116,6 +117,14 @@ apply="chasqui.view.composer.CaracteristicaComposer">
 		</tabpanel>
 	</tabpanels>
 </tabbox>
-
+			 <popup id="ayudasellos" width="600px">
+        			<html><![CDATA[ En esta sección se listan todos los sellos disponibles que podrán usar los vendedores, en sus productos y productores, se dividien en 2 tipos<br /><br />
+        					<strong>Producto:</strong> Definen el tipo de producción implicada en un producto.</br>
+        					<strong>Productor:</strong> Definen el tipo de organización de un productor.</br></br>
+        					<strong> Nota:</strong> Los sellos seleccionados por los usuariso vendedores <font color="red">no pueden ser eliminados</font>, por lo que se deben crear con cuidado y conciencia.
+        					]]>
+        					
+        			</html>
+    		</popup> 
 </window>
 </zk>

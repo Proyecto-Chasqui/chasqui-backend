@@ -8,6 +8,7 @@
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <!-- Seccion Nueva Pregunta -->
 <div id="configuracionTags" visible="true">
+			<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; " popup="ayudatags"  src="/imagenes/question.png" />
 			<tabbox>
 			<tabs>
 				<tab label="Tipo Producto" image="/imagenes/tipo_productos.png"/>
@@ -17,6 +18,7 @@
 			<tabpanels>
 			<!-- tags Tipo Producto -->
 				<tabpanel>
+				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudatextopedidosnodos" src="/imagenes/question.png" />
   				<listbox id="listboxTagTipoProductoSeleccionado" checkmark="false" selectedItem="@{tagsWindow$composer.tagTipoProductoSeleccionado}" 
   				model="@{tagsWindow$composer.tagsTipoProductos}" mold="paging"
 				rows="8" pageSize="8"> 
@@ -47,6 +49,7 @@
 				</tabpanel>
 				<!-- tags Tipo Organización -->
 				<tabpanel>
+						<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudatextopedidosnodos" src="/imagenes/question.png" />
 		  				<listbox id="listboxTagTipoOrganizacion" checkmark="false" selectedItem="@{tagsWindow$composer.tagTipoOrganizacionSeleccionado}" 
 		  				model="@{tagsWindow$composer.tagsTipoOrganizacion}" mold="paging"
 						rows="8" pageSize="8"> 
@@ -107,6 +110,17 @@
 				</tabpanel>
 				</tabpanels>
 			</tabbox>
+			        		 <popup id="ayudatags" width="600px">
+        			<html><![CDATA[ En esta sección se listan todos los tags disponibles que podrán usar los vendedores, se dividien en 3 tipos<br /><br />
+        					<strong>Tipo producto:</strong> Definen el tipo de producto que vende, deben ser tipos generales y no muy especificos, por ejemplo <strong>alimentos</strong>, <strong>muebles</strong>, etc.</br>
+        					<strong>Tipo organización:</strong> Definen el tipo de organización que opera el catálogo, por ejemplo <strong>cooperativa</strong>, <strong>emprendimiento</strong>, etc.</br>
+        					<strong>Zonas decobertura:</strong> Definen las zonas que los vendedores pueden elegir y mostrar donde es su area de operación.</br>
+        					<strong> Nota:</strong> Si los tags fueron seleccionados por algun usuario <font color="red">no podran borrase</font>, por lo que deben ser creadas con cuidado. Solo podrán ser editadas, pero si cambia completamente su semantica afectará a todos los usuarios que esten la esten usando.
+        					
+        					]]>
+        					
+        			</html>
+    				</popup> 
 </div>
 <!-- Sección editar/crear Pregunta -->
 <div id="crearTag" visible="false">

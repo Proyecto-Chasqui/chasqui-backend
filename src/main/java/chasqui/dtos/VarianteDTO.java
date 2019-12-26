@@ -6,14 +6,16 @@ public class VarianteDTO {
 	
 	 private String nombreProducto;
 	 private String nombreVariante;
+	 private String nombreProductor;
 	 private Integer cantidad;
 	 private Double precio;
 	 DecimalFormat df = new DecimalFormat("#.##");
 	 
-	 public VarianteDTO(String nombreProducto, String nombreVariante, Integer cantidad, Double precio) {
+	 public VarianteDTO(String nombreProducto, String nombreVariante, Integer cantidad, Double precio, String nombreProductor) {
 		 super();
 		 this.nombreProducto = nombreProducto;
 		 this.nombreVariante = nombreVariante;
+		 this.nombreProductor = nombreProductor;
 		 this.cantidad = cantidad;
 		 this.precio = precio;
 	 }
@@ -58,6 +60,14 @@ public class VarianteDTO {
 	
 	public Double getSubTotal(){
 		return trim2decimals(this.precio * this.cantidad);
+	}
+
+	public String getNombreProductor() {
+		return nombreProductor;
+	}
+
+	public void setNombreProductor(String nombreProductor) {
+		this.nombreProductor = nombreProductor;
 	}
 
 }

@@ -5,109 +5,186 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
 <window title="Detalle Del Pedido" border="normal" id="pedidoWindow" closable="true" sizable="true"
-apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
-
-<separator spacing="20px"/>
+apply="chasqui.view.composer.ProductosEnPedidoComposer" width="800px">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
-<listbox width="100%">
-	<listhead>
-		<listheader/>
-		<listheader/>
-	</listhead>
-	<listitem>
-		<listcell label="${c:l('zk.label.pedido.usuarioCreadorGCC')}"/>
-		<listcell label="@{pedidoWindow$composer.pedidoMostrado.getEmailCliente}"/>
-	</listitem>
-	<listitem>
-		<listcell label="${c:l('zk.label.pedido.username')}"/>
-		<listcell label="@{pedidoWindow$composer.pedidoMostrado.username}"/>
-	</listitem>
-	<listitem  visible="@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
-		<listcell label="${c:l('zk.label.pedido.domicilio')}"/>
-		<listcell label="@{pedidoWindow$composer.pedidoMostrado.domicilio.toString}"/>
-	</listitem>
-	<listitem  visible= "@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
-		<listcell label="${c:l('zk.label.pedido.zona')}"/>
-		<listcell label="@{pedidoWindow$composer.pedidoMostrado.zona.toString}"/>
-	</listitem>
-</listbox>
-
-<separator spacing="30px"/>
-
-<listbox model="@{pedidoWindow$composer.pedidoMostrado.getPrimero.getVariantes}" mold="paging" pageSize="10" >
-	<listhead>
-		<listheader label="Producto" hflex="1" align="center"/>
-		<listheader label="Cantidad" hflex="1" align="center"/>
-		<listheader label="Precio por unidad" hflex="1" align="center"/>
-		<listheader label="Subtotal" hflex="1" align="center"/>
-	</listhead>
-	<listitem self="@{each=variante}" >
-		<listcell label="@{variante.getNombreProducto}"/>
-		<listcell label="@{variante.getCantidad}"/>
-		<listcell label="@{variante.getPrecio}"/>
-		<listcell label="@{variante.getSubTotal}"/>
-	</listitem>
-	<listfoot>
-		<listfooter hflex="1"/>
-		<listfooter hflex="1"/>
-		<listfooter label="Total: " align="center" hflex="1"/>
-		<listfooter label = "@{pedidoWindow$composer.pedidoMostrado.getMontoTotal}" hflex="1"/>	
-	</listfoot>
-</listbox>
-
-<separator spacing="30px"/>
-<grid width="100%" id="gridDireccion" visible="false">
- <auxhead>
-  <auxheader label="Detalles de la dirección de entrega"  align="center" colspan="2"/>
- </auxhead>
- <columns>
-  <column width="20%" zclass="none"/>
-  <column width="80%" zclass="none"/>
- </columns>
- <rows>
-  <row>
-   <cell>
-    <label value="Calle:"/>
-   </cell>
-   <cell>
-    <label id="callelbl"/>
-   </cell>
-  </row>
-  <row>
-   <cell>
-    <label value="Altura:"/>
-   </cell>
-   <cell>
-    <label id="alturalbl"/>
-   </cell>
-  </row>
-  <row>
-   <cell>
-    <label value="Codigo Postal:"/>
-   </cell>
-   <cell>
-    <label id="postallbl"/>
-   </cell>
-  </row>
-  <row>
-   <cell>
-    <label value="Departamento:"/>
-   </cell>
-   <cell>
-    <label id="departamentolbl"/>
-   </cell>
-  </row>
-  <row>
-   <cell>
-    <label value="Localidad:"/>
-   </cell>
-   <cell>
-    <label id="localidadlbl"/>
-   </cell>
-  </row>
- </rows>
-</grid>
-
+<tabbox width="100%">
+	<tabs >
+		<tab id="tabdatospedido" label="Datos del usuario"  image="/imagenes/user.png"/>
+		<tab id="tabdatosentregapedido" visible="@{pedidoWindow$composer.esIndividualConfirmado}" label="Datos de entrega"  image="/imagenes/direccion_entrega.png"/>
+		<tab id="tabdetalleproductos" label="Pedido"  image="/imagenes/detalle_bolsa.png"/>
+		<tab id="tabdetallepreguntas" label="Respuestas de consumo"  image="/imagenes/gestion.png"/>
+	</tabs>
+		<tabpanels>
+			<tabpanel>
+			<listbox width="100%">
+				<listhead>
+					<listheader width="15%" align="center"/>
+					<listheader/>
+				</listhead>
+				<listitem>
+					<listcell label="Usuario" style="font-weight:bold;"/>
+					<listcell label="@{pedidoWindow$composer.clienteDelPedido.getUsername}" style="font-weight:bold;"/>
+				</listitem>
+				<listitem>
+					<listcell label="Nombre" style="font-weight:bold;"/>
+					<listcell label="@{pedidoWindow$composer.clienteDelPedido.getNombre}" style="font-weight:bold;"/>
+				</listitem>
+				<listitem>
+					<listcell label="Apellido" style="font-weight:bold;"/>
+					<listcell label="@{pedidoWindow$composer.clienteDelPedido.getApellido}" style="font-weight:bold;"/>
+				</listitem>
+				<listitem>
+					<listcell label="Email" style="font-weight:bold;"/>
+					<listcell label="@{pedidoWindow$composer.clienteDelPedido.getEmail}" style="font-weight:bold;"/>
+				</listitem>
+				<listitem>
+					<listcell label="Telefono" style="font-weight:bold;"/>
+					<listcell label="@{pedidoWindow$composer.clienteDelPedido.getTelefonoFijo}" style="font-weight:bold;"/>
+				</listitem>
+				<listitem>
+					<listcell label="Celular" style="font-weight:bold;"/>
+					<listcell label="@{pedidoWindow$composer.clienteDelPedido.getTelefonoMovil}" style="font-weight:bold;"/>
+				</listitem>
+			</listbox>
+			</tabpanel>
+			<tabpanel>
+				<listbox width="100%" visible="@{pedidoWindow$composer.tieneEntregaADomicilio}">
+					<listhead>
+						<listheader width="25%" align="center"/>
+						<listheader align="justify"/>
+					</listhead>
+					<listitem  visible="@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+						<listcell label="Domicilio de entrega" style="font-weight:bold;"/>
+						<listcell label="@{pedidoWindow$composer.pedidoMostrado.domicilio.toString}" style="font-weight:bold;"/>
+					</listitem>
+					<listitem  visible= "@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+						<listcell label="Zona" style="font-weight:bold;"/>
+						<listcell label="@{pedidoWindow$composer.pedidoMostrado.zona.toString}" style="font-weight:bold;"/>
+					</listitem>
+					<listitem  visible= "@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+						<listcell label="Geolocalizar" style="font-weight:bold;">
+						</listcell>
+						<listcell>
+							<button label="Ver ubicación" style="font-weight:bold; color:black" id="ubicarEnMapa" image="/imagenes/logistica.png"/>
+							<image  style="cursor:pointer;" popup="ayudaUbicacion"  src="/imagenes/question.png" />
+						</listcell>
+					</listitem>
+				</listbox>
+				<listbox width="100%" visible="@{pedidoWindow$composer.tienePuntoDeRetiro}">
+					<listhead>
+						<listheader width="25%" align="center"/>
+						<listheader align="justify"/>
+					</listhead>
+					<listitem  visible="@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+						<listcell label="Punto de retiro seleccionado" style="font-weight:bold;"/>
+						<listcell id="labelNombrePR" style="font-weight:bold;"/>
+					</listitem>
+					<listitem  visible= "@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+						<listcell label="Dirección" style="font-weight:bold;"/>
+						<listcell id="labelDireccionPR" style="font-weight:bold;"/>
+					</listitem>
+				</listbox>
+			</tabpanel>
+		<tabpanel>
+				<listbox model="@{pedidoWindow$composer.pedidoMostrado.getPrimero.getVariantes}" mold="paging" pageSize="10" >
+					<listhead>
+						<listheader label="Producto" hflex="1" align="center"/>
+						<listheader label="Productor" hflex="1" align="center"/>
+						<listheader label="Cantidad" hflex="1" align="center"/>
+						<listheader label="Precio por unidad" hflex="1" align="center"/>
+						<listheader label="Subtotal" hflex="1" align="center"/>
+					</listhead>
+					<listitem self="@{each=variante}" >
+						<listcell label="@{variante.getNombreProducto}"/>
+						<listcell label="@{variante.getNombreProductor}"/>
+						<listcell label="@{variante.getCantidad}"/>
+						<listcell label="@{variante.getPrecio}"/>
+						<listcell label="@{variante.getSubTotal}"/>
+					</listitem>
+					<listfoot>
+						<listfooter hflex="1"/>
+						<listfooter hflex="1"/>
+						<listfooter hflex="1"/>
+						<listfooter label="Total: " align="center" hflex="1"/>
+						<listfooter label = "@{pedidoWindow$composer.pedidoMostrado.getMontoTotal}" hflex="1"/>	
+					</listfoot>
+				</listbox>
+				<grid width="100%" id="gridDireccion" visible="false">
+				 <auxhead>
+				  <auxheader label="Detalles de la dirección de entrega"  align="center" colspan="2"/>
+				 </auxhead>
+				 <columns>
+				  <column width="20%" zclass="none"/>
+				  <column width="80%" zclass="none"/>
+				 </columns>
+				 <rows>
+				  <row>
+				   <cell>
+				    <label value="Calle:"/>
+				   </cell>
+				   <cell>
+				    <label id="callelbl"/>
+				   </cell>
+				  </row>
+				  <row>
+				   <cell>
+				    <label value="Altura:"/>
+				   </cell>
+				   <cell>
+				    <label id="alturalbl"/>
+				   </cell>
+				  </row>
+				  <row>
+				   <cell>
+				    <label value="Codigo Postal:"/>
+				   </cell>
+				   <cell>
+				    <label id="postallbl"/>
+				   </cell>
+				  </row>
+				  <row>
+				   <cell>
+				    <label value="Departamento:"/>
+				   </cell>
+				   <cell>
+				    <label id="departamentolbl"/>
+				   </cell>
+				  </row>
+				  <row>
+				   <cell>
+				    <label value="Localidad:"/>
+				   </cell>
+				   <cell>
+				    <label id="localidadlbl"/>
+				   </cell>
+				  </row>
+				 </rows>
+				</grid>
+		</tabpanel>
+		<tabpanel >
+			  	<listbox checkmark="false"  model="@{pedidoWindow$composer.respuestasAPreguntas}" mold="paging"
+				rows="5" pageSize="5"> 
+					<listhead>
+						<listheader label="Pregunta" align="center" />
+						<listheader label="Respuesta"  align="justify"/>
+					</listhead>
+					<listitem self="@{each=respuesta}">
+						<listcell label="@{respuesta.key}" style="font-weight:bold;" />
+						<listcell>
+							<label value="@{respuesta.value}" style="font-weight:bold;"/>
+						</listcell>
+					</listitem>
+				</listbox>
+		</tabpanel>
+	</tabpanels>
+</tabbox>
+   <popup id="ayudaUbicacion" width="300px">
+       <html><![CDATA[ 
+             Se abrirá una nueva pestaña con la ubicación de la dirección basada en las coordenadas generadas por el usuario cliente.</br></br>
+             <strong>Nota:</strong> Es posible que el <font color="blue">navegador bloquee la ventana</font>, si sucede y desea ver la ubicación asígnele los permisos al panel.
+             ]]>		
+       </html>
+    </popup>
 </window>
 </zk>
 

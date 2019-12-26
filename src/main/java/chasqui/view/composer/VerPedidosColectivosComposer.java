@@ -41,6 +41,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Window;
 
 import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
@@ -96,6 +97,17 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 	private GrupoCC grupo;
 	private Boolean exportar;
 	private Window window;
+	private Cliente clienteDelPedido;
+	private PedidoColectivo pedidoColectivo;
+	private String direccion;
+	private String zona;
+	private String nombrePr;
+	private boolean tieneEntregaADomicilio = false;
+	private boolean tienePuntoDeRetiro = false;
+	private boolean estaConfirmado = false;
+	private boolean tieneRespuestas = false;
+	private Map<String,String> respuestas = new HashMap<String,String>();
+	private Tab tabdatosusuario;
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -113,10 +125,53 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 			exportar = (Boolean) Executions.getCurrent().getArg().get("exportar");
 			idPedidoColectivo= (Integer) Executions.getCurrent().getArg().get("id");
 			pedidosCopiaSinFiltrar.addAll(pedidosDentroDeColectivo);
+			pedidoColectivo = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
+			clienteDelPedido = pedidoColectivo.getColectivo().getAdministrador();
+			completardatos();
 			binder = new AnnotateDataBinder(component);
 			listBoxPedidosColectivos.setItemRenderer(new PedidoRenderer((Window) component));
 			binder.loadAll();
 			
+		}
+	}
+	
+	private void completardatos() {
+		estaConfirmado = validarConfirmado();
+		respuestas = pedidoColectivo.getRespuestasAPreguntas();
+		tieneRespuestas = respuestas.size() > 0;
+		direccion = "N/D";
+		if(pedidoColectivo.getColectivo().isEsNodo()) {
+			tabdatosusuario.setLabel("Datos del coordinador");
+		}
+		if(pedidoColectivo.getDireccionEntrega() != null) {
+			tieneEntregaADomicilio = true;
+			direccion = pedidoColectivo.getDireccionEntrega().toString();
+		}else {
+			tieneEntregaADomicilio = false;
+		}
+		if(pedidoColectivo.getZona() != null) {
+			zona = pedidoColectivo.getZona().toString();
+		}else {
+			zona = "No definida";
+		}
+		if(pedidoColectivo.getPuntoDeRetiro() != null) {
+			tienePuntoDeRetiro = true;
+			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion().toString();
+			nombrePr = pedidoColectivo.getPuntoDeRetiro().getNombre();
+		}else {
+			nombrePr = "N/D";
+		}
+	}
+	
+	private boolean validarConfirmado() {
+		return pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO) || pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
+	}
+
+	public void onClick$ubicarEnMapa() {
+		if(tieneEntregaADomicilio) {
+			String lat = pedidoColectivo.getDireccionEntrega().getLatitud();
+			String lng = pedidoColectivo.getDireccionEntrega().getLongitud();
+			Executions.getCurrent().sendRedirect("https://www.google.com/maps?q="+ lat+","+lng, "_blank");
 		}
 	}
 	
@@ -339,6 +394,78 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 
 	public void setExportar(Boolean exportar) {
 		this.exportar = exportar;
+	}
+
+	public Cliente getClienteDelPedido() {
+		return clienteDelPedido;
+	}
+
+	public void setClienteDelPedido(Cliente clienteDelPedido) {
+		this.clienteDelPedido = clienteDelPedido;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getZona() {
+		return zona;
+	}
+
+	public void setZona(String zona) {
+		this.zona = zona;
+	}
+
+	public boolean isTieneEntregaADomicilio() {
+		return tieneEntregaADomicilio;
+	}
+
+	public void setTieneEntregaADomicilio(boolean tieneEntregaADomicilio) {
+		this.tieneEntregaADomicilio = tieneEntregaADomicilio;
+	}
+
+	public boolean isTienePuntoDeRetiro() {
+		return tienePuntoDeRetiro;
+	}
+
+	public void setTienePuntoDeRetiro(boolean tienePuntoDeRetiro) {
+		this.tienePuntoDeRetiro = tienePuntoDeRetiro;
+	}
+
+	public String getNombrePr() {
+		return nombrePr;
+	}
+
+	public void setNombrePr(String nombrePr) {
+		this.nombrePr = nombrePr;
+	}
+
+	public boolean isEstaConfirmado() {
+		return estaConfirmado;
+	}
+
+	public void setEstaConfirmado(boolean estaConfirmado) {
+		this.estaConfirmado = estaConfirmado;
+	}
+
+	public boolean isTieneRespuestas() {
+		return tieneRespuestas;
+	}
+
+	public void setTieneRespuestas(boolean tieneRespuestas) {
+		this.tieneRespuestas = tieneRespuestas;
+	}
+
+	public Map<String, String> getRespuestas() {
+		return respuestas;
+	}
+
+	public void setRespuestas(Map<String, String> respuestas) {
+		this.respuestas = respuestas;
 	}
 	
 	

@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="configuracionPortadaWindow" style="text-align: center; font-weight:bold;" border="normal" title="Configuración de pagina de bienvenida" position="center,top"
+<window id="configuracionPortadaWindow" style="text-align: center; font-weight:bold;" border="normal" title="Configuración de página de bienvenida" position="center,top"
 apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable="true">
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <style>
@@ -17,12 +17,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
         padding:5px 18px 5px 45px;
         vertical-align:middle;
     }
-    .title {
-    	background-color: #00b8fc;
-    	border-style: solid;
-    	border-width: 1px;
-    	border-color:LightGray;
-    }
+
     </style>
 	<tabbox>
 	<tabs>

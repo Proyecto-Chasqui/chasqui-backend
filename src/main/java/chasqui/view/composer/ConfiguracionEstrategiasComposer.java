@@ -177,13 +177,31 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		this.liberarChecks();
 	}
 	
+	public void onCheck$individual() {
+		nodos.setChecked(false);
+		utilizaIncentivos.setChecked(false);
+	}
+	
 	public void onCheck$colectiva() {
 		nodos.setChecked(false);
 		utilizaIncentivos.setChecked(false);
 	}
 	
 	public void onCheck$nodos() {
-		colectiva.setChecked(false);
+		if(nodos.isChecked()) {
+			colectiva.setChecked(false);
+			individual.setChecked(false);
+		}else {
+			utilizaIncentivos.setChecked(false);
+		}		
+	}
+	
+	public void onCheck$utilizaIncentivos() {
+		if(utilizaIncentivos.isChecked()) {
+			colectiva.setChecked(false);
+			nodos.setChecked(true);
+			individual.setChecked(false);
+		}
 	}
 
 	public void onClick$buttonGuardar(){
