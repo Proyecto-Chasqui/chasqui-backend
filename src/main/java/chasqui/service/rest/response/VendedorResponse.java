@@ -57,7 +57,11 @@ public class VendedorResponse implements Serializable{
 		}else {
 			this.setUrlMapa("");
 		}
-		this.setPortadaVisible(v.getDataMultimedia().getDataPortada().isPortadaVisible());
+		if(v.getDataMultimedia() == null) {
+			this.setPortadaVisible(false);
+		}else {
+			this.setPortadaVisible(v.getDataMultimedia().getDataPortada().isPortadaVisible());
+		}
 	}
 	
 	private void inicializarEstrategias(EstrategiasDeComercializacion estrategia) {
