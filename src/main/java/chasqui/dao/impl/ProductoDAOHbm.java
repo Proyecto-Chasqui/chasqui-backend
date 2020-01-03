@@ -26,7 +26,7 @@ import chasqui.model.Variante;
 public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 	
 	@Override
-	public List<Variante> obtenerVariantesPorMultiplesFiltros(final Integer idVendedor, final Integer idCategoria, final Integer idMedalla, final Integer idProductor, final Integer idSelloProductor,final String query, final Integer pagina,
+	public List<Variante> obtenerVariantesPorMultiplesFiltros(final Integer idVendedor, final Integer idCategoria, final List<Integer> idsSellosProducto, final Integer idProductor, final List<Integer> idsSellosProductor,final String query, final Integer pagina,
 			final Integer cantidadDeItems, final Integer numeroDeOrden) {
 		
 		final Integer inicio = calcularInicio(pagina,cantidadDeItems);
@@ -43,18 +43,18 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				if(query!=null){
 					c.add(Restrictions.like("producto.nombre", "%"+query+"%"));
 				}
-				 if(idCategoria != null){
+				if(idCategoria != null){
 					 c.createAlias("producto.categoria", "categoria")
 					 .add(Restrictions.eq("categoria.id", idCategoria));
-				 }
-				 if(idMedalla != null){
-					 c.createAlias("producto.caracteristicas","caracteristicasProducto")
-					 .add(Restrictions.eq("caracteristicasProducto.id", idMedalla));
-				 }
-				 if(idSelloProductor != null){
-					 c.createAlias("fabricante.caracteristicas", "caracteristicasProductor")
-					  .add(Restrictions.eq("caracteristicasProductor.id", idSelloProductor));
-				 }
+				}
+				if(!idsSellosProducto.isEmpty()) {
+					c.createAlias("producto.caracteristicas","caracteristicasProducto");
+					c.add(Restrictions.in("caracteristicasProducto.id", idsSellosProducto));
+				}
+				if(!idsSellosProductor.isEmpty()) {
+					c.createAlias("fabricante.caracteristicas", "caracteristicasProductor");
+					c.add(Restrictions.in("caracteristicasProductor.id", idsSellosProductor));
+				}
 				 if(idProductor !=null){
 				  c.add(Restrictions.eq("fabricante.id", idProductor));
 				 }
@@ -107,7 +107,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 	
 
 	@Override
-	public Long obtenerTotalVariantesPorMultiplesFiltros(final Integer idVendedor, final Integer idCategoria, final Integer idMedalla, final Integer idProductor, final Integer idSelloProductor,final String query) {
+	public Long obtenerTotalVariantesPorMultiplesFiltros(final Integer idVendedor, final Integer idCategoria, final List<Integer> idsSellosProducto, final Integer idProductor, final List<Integer> idsSellosProductor,final String query) {
 		
 		return this.getHibernateTemplate().execute(new HibernateCallback<Long>() {
 
@@ -121,18 +121,18 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				if(query!=null){
 					c.add(Restrictions.like("producto.nombre", "%"+query+"%"));
 				}
-				 if(idCategoria != null){
+				if(idCategoria != null){
 					 c.createAlias("producto.categoria", "categoria")
 					 .add(Restrictions.eq("categoria.id", idCategoria));
-				 }
-				 if(idMedalla != null){
-					 c.createAlias("producto.caracteristicas","caracteristicasProducto")
-					 .add(Restrictions.eq("caracteristicasProducto.id", idMedalla));
-				 }
-				 if(idSelloProductor != null){
-					 c.createAlias("fabricante.caracteristicas", "caracteristicasProductor")
-					  .add(Restrictions.eq("caracteristicasProductor.id", idSelloProductor));
-				 }
+				}
+				if(!idsSellosProducto.isEmpty()) {
+					c.createAlias("producto.caracteristicas","caracteristicasProducto");
+					c.add(Restrictions.in("caracteristicasProducto.id", idsSellosProducto));
+				}
+				if(!idsSellosProductor.isEmpty()) {
+					c.createAlias("fabricante.caracteristicas", "caracteristicasProductor");
+					c.add(Restrictions.in("caracteristicasProductor.id", idsSellosProductor));
+				}
 				 if(idProductor !=null){
 				  c.add(Restrictions.eq("fabricante.id", idProductor));
 				 }

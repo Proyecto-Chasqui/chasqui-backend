@@ -24,6 +24,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 		<tab label="Imágenes"/>
 		<tab label="Textos"/>
 		<tab label="Contacto"/>
+		<tab label="Configuración"/>
 	</tabs>
 	<tabpanels>
 		<tabpanel>
@@ -235,6 +236,34 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
 				<div align="center">
 						<toolbarbutton id="buttonGuardarContacto" label="Guardar" style="font-weight:bold; color:black" image="/imagenes/save.png"></toolbarbutton>
 				</div>
+		</tabpanel>
+		<tabpanel>
+				<div align="center" class="title">
+					<auxhead sclass="category-center">
+            			<auxheader label="Mostrar Bienvenida"  style="color: white;"  colspan="6" rowspan="1" />
+        			</auxhead>
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextoconfigportada" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudatextoconfigportada" width="400px">
+        			<html><![CDATA[ En esta sección puede mostrar u ocultar la pestaña bienvenida visible en el catálogo, por defecto esta oculta y es recomendable habilitarla cuando los datos del texto, contacto e imagenes esten completas.
+        					]]>        					
+        			</html>
+    				</popup> 		
+				</div>
+			<listbox width="100%">
+					<listhead>
+						<listheader/>
+						<listheader/>
+					</listhead>
+					<listitem>
+						<listcell label="Mostrar Bienvenida"/>
+						<listcell>
+							<div align="center">
+								<button  id="mostrarBienvenidaButton" label="No" image="/imagenes/if_toggle-left.png"></button>
+							</div>
+						</listcell>
+					</listitem>
+			</listbox>
 		</tabpanel>
 	</tabpanels>
 </tabbox>

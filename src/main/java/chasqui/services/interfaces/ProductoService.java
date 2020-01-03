@@ -54,11 +54,11 @@ public interface ProductoService {
 	public List<Variante> obtenerProductosConMedallaEnProductor(Integer medallaId);
 	
 	public Long totalVariantesBajoMultiplesFiltros(Integer idCategoria, Integer idMedalla, Integer idProductor);
-	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor,Integer idSelloProductor, String query,Integer pagina, Integer cantItems, Integer numeroDeOrden);
+	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
+			Integer idProductor,List<Integer> idsSellosProductor, String query,Integer pagina, Integer cantItems, Integer numeroDeOrden);
 	
-	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor, Integer idSelloProductor, String query);
+	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
+			Integer idProductor, List<Integer> idsSellosProductor, String query);
 	Variante obtenerVariantePorCodigoProducto(String codigoProducto, Integer idVendedor);
 	
 	

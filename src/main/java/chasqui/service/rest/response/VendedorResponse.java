@@ -31,6 +31,7 @@ public class VendedorResponse implements Serializable{
 	private boolean visibleEnMulticatalogo;
 	private boolean ventasHabilitadas;
 	private String mensajeVentasDeshabilitadas;
+	private boolean portadaVisible;
 	
 	public VendedorResponse(){}
 	
@@ -56,6 +57,7 @@ public class VendedorResponse implements Serializable{
 		}else {
 			this.setUrlMapa("");
 		}
+		this.setPortadaVisible(v.getDataMultimedia().getDataPortada().isPortadaVisible());
 	}
 	
 	private void inicializarEstrategias(EstrategiasDeComercializacion estrategia) {
@@ -193,6 +195,14 @@ public class VendedorResponse implements Serializable{
 
 	public void setMensajeVentasDeshabilitadas(String mensajeVentasDeshabilitadas) {
 		this.mensajeVentasDeshabilitadas = mensajeVentasDeshabilitadas;
+	}
+
+	public boolean isPortadaVisible() {
+		return portadaVisible;
+	}
+
+	public void setPortadaVisible(boolean portadaVisible) {
+		this.portadaVisible = portadaVisible;
 	}
 
 	

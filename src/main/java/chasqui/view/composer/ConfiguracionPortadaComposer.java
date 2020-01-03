@@ -19,6 +19,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
@@ -80,7 +81,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	private Textbox celular;
 	private Textbox pais;
 	private Textbox provincia;
-	
+	private Button mostrarBienvenidaButton;
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -98,9 +99,27 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		comp.addEventListener(Events.ON_USER, new DescargarImagenPortadaEventListener(this));
 		listImagenesBanner.setItemRenderer(imgRender);
 		listImagenesPortada.setItemRenderer(imgRender);
+		this.ajustarBotonBienvenida(vendedorLogueado);
 		binder.loadAll();
 	}
 	
+	private void ajustarBotonBienvenida(Vendedor vendedor) {
+		if(vendedor.getDataMultimedia().getDataPortada().isPortadaVisible()) {
+			this.mostrarBienvenidaButton.setImage("/imagenes/if_toggle-right.png");
+			this.mostrarBienvenidaButton.setLabel("Si");
+		}else {
+			this.mostrarBienvenidaButton.setImage("/imagenes/if_toggle-left.png");
+			this.mostrarBienvenidaButton.setLabel("No");
+		}		
+	}
+	
+	public void onClick$mostrarBienvenidaButton() {
+		vendedorLogueado.getDataMultimedia().getDataPortada().setPortadaVisible(!vendedorLogueado.getDataMultimedia().getDataPortada().isPortadaVisible());
+		this.ajustarBotonBienvenida(vendedorLogueado);
+		this.usuarioService.guardarUsuario(vendedorLogueado);
+		Clients.showNotification("Los cambios se guardaron correctamente", "info", window, "middle_center", 3000,true);
+	}
+
 	private void llenarDatosDeImagenesDeVendedor(DataMultimedia data) {
 		if(data != null) {
 			imagenesBanner = data.getDataPortada().getImagenesDeBanner();
@@ -556,6 +575,14 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 
 	public void setCelular(Textbox celular) {
 		this.celular = celular;
+	}
+
+	public Button getMostrarBienvenidaButton() {
+		return mostrarBienvenidaButton;
+	}
+
+	public void setMostrarBienvenidaButton(Button mostrarBienvenidaButton) {
+		this.mostrarBienvenidaButton = mostrarBienvenidaButton;
 	}
 
 }
