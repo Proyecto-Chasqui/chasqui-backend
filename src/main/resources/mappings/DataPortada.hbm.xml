@@ -29,5 +29,8 @@
             <one-to-many class="chasqui.model.Imagen" />
         </list>
         <property name="textoBienvenida" type="text"></property>
+        <property name="portadaVisible" type="java.lang.Boolean" >
+        	<column name="PORTADA_VISIBLE" not-null="true" default="false" />
+    	</property>
     </class>
 </hibernate-mapping>

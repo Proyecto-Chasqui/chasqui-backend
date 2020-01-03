@@ -10,6 +10,7 @@ public class DataPortada {
 	private List<Imagen> imagenesDePortada = new ArrayList<Imagen>();
 	private List<Imagen> imagenesDeBanner = new ArrayList<Imagen>();
 	private String textoBienvenida = "";
+	private boolean portadaVisible;
 	
 	public DataPortada() {
 		
@@ -53,6 +54,14 @@ public class DataPortada {
 
 	public void setTextoBienvenida(String textoBienvenida) {
 		this.textoBienvenida = textoBienvenida;
+	}
+
+	public boolean isPortadaVisible() {
+		return portadaVisible;
+	}
+
+	public void setPortadaVisible(boolean portadaVisible) {
+		this.portadaVisible = portadaVisible;
 	}
 	
 	
