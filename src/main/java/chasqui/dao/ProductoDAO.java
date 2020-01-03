@@ -58,12 +58,12 @@ public interface ProductoDAO {
 	 * 
 	 * @inheritDoc
 	 */
-	public Long obtenerTotalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor, Integer idSelloProductor, String query);
+	public Long obtenerTotalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
+			Integer idProductor, List<Integer> idsSellosProductor, String query);
 
 	Variante obtenervariantePorCodigoProducto(String codigoProducto, Integer idVendedor);
 
-	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor, Integer idSelloProductor, String query, Integer pagina, Integer cantidadDeItems,
+	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
+			Integer idProductor,  List<Integer> idsSellosProductor, String query, Integer pagina, Integer cantidadDeItems,
 			Integer numeroDeOrden);
 }

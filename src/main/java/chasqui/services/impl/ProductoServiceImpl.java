@@ -185,9 +185,9 @@ public class ProductoServiceImpl implements ProductoService {
 	}
 
 	@Override
-	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor,Integer idSelloProductor, String query, Integer pagina, Integer cantItems, Integer numeroDeOrden) {
-		return productoDAO.obtenerVariantesPorMultiplesFiltros(idVendedor, idCategoria, idMedalla, idProductor, idSelloProductor, query, pagina, cantItems, numeroDeOrden);
+	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
+			Integer idProductor,List<Integer> idsSellosProductor, String query, Integer pagina, Integer cantItems, Integer numeroDeOrden) {
+		return productoDAO.obtenerVariantesPorMultiplesFiltros(idVendedor, idCategoria, idsSellosProducto, idProductor, idsSellosProductor, query, pagina, cantItems, numeroDeOrden);
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public class ProductoServiceImpl implements ProductoService {
 	}
 	
 	@Override
-	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla, Integer idProductor, Integer idSelloProductor, String query){
-		return productoDAO.obtenerTotalVariantesPorMultiplesFiltros(idVendedor, idCategoria, idMedalla, idProductor, idSelloProductor, query);
+	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto, Integer idProductor, List<Integer> idsSellosProductor, String query){
+		return productoDAO.obtenerTotalVariantesPorMultiplesFiltros(idVendedor, idCategoria, idsSellosProducto, idProductor, idsSellosProductor, query);
 	}
 }
