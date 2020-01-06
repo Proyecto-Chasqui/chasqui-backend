@@ -41,6 +41,7 @@ public class ProductorRenderer implements ListitemRenderer<Fabricante>{
 				caracteristica.setSrc(c.getPathImagen());
 				caracteristica.setHeight("24px");
 				caracteristica.setWidth("24px");
+				caracteristica.setParent(c3);
 			}
 		}
 		Listcell c4 = new Listcell();
