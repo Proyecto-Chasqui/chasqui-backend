@@ -7,12 +7,16 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
+
+import chasqui.model.CaracteristicaProductor;
 import chasqui.model.Fabricante;
 
 public class ProductorRenderer implements ListitemRenderer<Fabricante>{
@@ -27,9 +31,18 @@ public class ProductorRenderer implements ListitemRenderer<Fabricante>{
 		
 		Listcell c1 = new Listcell(f.getNombre());
 		Listcell c2 = new Listcell(f.getDescripcionCorta());
-		
-		String caracteristica = (f.getCaracteristica()==null)? Labels.getLabel("zk.label.administracion.caracteristicanull"): f.getCaracteristica().getNombre();
-		Listcell c3 = new Listcell(caracteristica);
+		Listcell c3;
+		if(f.getCaracteristicas().isEmpty()) {
+			c3 = new Listcell(Labels.getLabel("zk.label.administracion.caracteristicanull"));
+		}else {
+			c3 = new Listcell();
+			for(CaracteristicaProductor c : f.getCaracteristicas()) {
+				Image caracteristica = new Image();
+				caracteristica.setSrc(c.getPathImagen());
+				caracteristica.setHeight("24px");
+				caracteristica.setWidth("24px");
+			}
+		}
 		Listcell c4 = new Listcell();
 		Hbox hbox = new Hbox();
 		
