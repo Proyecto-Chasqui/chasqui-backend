@@ -49,6 +49,7 @@ style="overflow:auto">
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarpedidosnodos" visible="true">
 				<menuitem id="menuItemMostrarFiltrosPedidosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosPedidosNodos"/>
 				<menuitem id="menuItemReiniciarFiltrosPedidosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onReiniciarFiltrosPedidosNodos"/>
+				<menuitem id="menuItemActualizarPedidos"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarPedidos"/>
 			</menubar>
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltros" src="/imagenes/question.png" />
         		
@@ -138,6 +139,7 @@ style="overflow:auto">
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarnodos" visible="true">
 				<menuitem id="menuItemMostrarFiltrosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosNodos"/>
 				<menuitem id="menuItemReiniciarFiltrosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposNodos"/>
+				<menuitem id="menuItemActualizarNodos"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarNodos"/>
 			</menubar>
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltrosnodos" src="/imagenes/question.png" />
         		
@@ -227,6 +229,7 @@ style="overflow:auto">
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarsolicitudes" visible="true">
 				<menuitem id="menuItemMostrarFiltrosSolicitudes" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosSolicitudes"/>
 				<menuitem id="menuItemReiniciarFiltrosSolicitudes" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposSolicitudes"/>
+				<menuitem id="menuItemActualizarSolicitudes"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarSolicitudes"/>
 			</menubar>
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltrossolicitud" src="/imagenes/question.png" />
         		

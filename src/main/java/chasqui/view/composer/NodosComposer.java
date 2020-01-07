@@ -201,20 +201,34 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		return pedidosColectivos;
 	}
 	
+	public void onActualizarSolicitudes() {
+		onBuscarSolicitudes();
+		Clients.showNotification("Lista de solicitudes actualizada", "info", component, "middle_center", 2000, true);
+	}
+	
+	public void onActualizarNodos() {
+		onBuscarNodos();
+		Clients.showNotification("Lista de nodos actualizada", "info", component, "middle_center", 2000, true);
+	}
+	
 	public void onSelect$estadosNodosCombobox(SelectEvent evt) {
 		onBuscarNodos();
+		menuItemReiniciarFiltrosNodos.setVisible(true);
 	}
 	
 	public void onSelect$estadosSolicitud(SelectEvent evt) {
 		onBuscarSolicitudes();
+		menuItemReiniciarFiltrosSolicitudes.setVisible(true);
 	}
 
 	public void onSelect$tipoNodosCombobox(SelectEvent evt) {
 		onBuscarNodos();
+		menuItemReiniciarFiltrosNodos.setVisible(true);
 	}
 	
 	public void onSelect$zonasNodosCombobox(SelectEvent evt) {
 		onBuscarNodos();
+		menuItemReiniciarFiltrosNodos.setVisible(true);
 	}
 	
 	
@@ -247,7 +261,6 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	}
 	
 	public void onBuscarNodos() {
-		menuItemReiniciarFiltrosNodos.setVisible(true);
 		Date d = desde_nodo.getValue();
 		Date h = hasta_nodo.getValue();
 		String nombreNodo = buscadorPorNombreNodo.getValue();
@@ -325,7 +338,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	}
 	
 	public void onBuscarSolicitudes() {
-		menuItemReiniciarFiltrosSolicitudes.setVisible(true);
+		
 		Date d = desde_solicitud.getValue();
 		Date h = hasta_solicitud.getValue();
 		String email = buscadorSolicitudEmailCoordinador.getValue();
@@ -355,6 +368,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 
 	public void onBuscar(){
 		onClick$buscar();
+		menuItemReiniciarFiltrosPedidosNodos.setVisible(true);
 	}
 	
 	public void onMostrarFiltrosPedidosNodos() {
@@ -364,6 +378,11 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		}else {
 			menuItemMostrarFiltrosPedidosNodos.setLabel("Mostrar Filtros");
 		}
+	}
+	
+	public void onActualizarPedidos() {
+		onClick$buscar();
+		Clients.showNotification("Lista de pedidos actualizada", "info", component, "middle_center", 2000, true);
 	}
 	
 	public void onReiniciarFiltrosPedidosNodos() {
@@ -396,7 +415,7 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	}
 
 	public void onClick$buscar(){
-		menuItemReiniciarFiltrosPedidosNodos.setVisible(true);
+		
 		Date d = desde.getValue();
 		Date h = hasta.getValue();
 		String email = buscadorPorUsuario.getValue();
