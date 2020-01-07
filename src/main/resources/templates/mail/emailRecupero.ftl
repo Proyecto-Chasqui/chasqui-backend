@@ -47,7 +47,7 @@ Bienvenido a Chasqui
 					<br><br>		
 					Contraseña: <div style="font-weight: bold; color: #00adee; display: inline; padding-left: 8px;">${passwordUsuario}</div>
 					  <br><br>
-					Recomendamos que una vez que ingrese la cambie en la sección <strong> Perfil </strong> seleccionando la pestaña <strong> Cambio de contraseña </strong>.
+					Recomendamos que una vez que ingrese, la cambie en la sección <strong> Perfil </strong> seleccionando la pestaña <strong> Cambio de contraseña </strong>.
 									
 					
 </td>
