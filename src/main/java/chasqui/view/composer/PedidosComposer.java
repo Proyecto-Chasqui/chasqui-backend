@@ -161,10 +161,29 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 			}
 		}		
 		pedidos.clear();
-		pedidos.addAll(pedidoService.obtenerPedidosIndividualesDeVendedorConPRPorNombre(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId,nombrePR,email));
+		pedidos.addAll(eliminarPedidosConNDEnFechaModificacion((List<Pedido>) pedidoService.obtenerPedidosIndividualesDeVendedorConPRPorNombre(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId,nombrePR,email)));
 		this.binder.loadAll();
 	}
+	
+	private List<Pedido> eliminarPedidosConNDEnFechaModificacion(List<Pedido> pedidosIndividuales) {
+		if(desde.getValue() != null || hasta.getValue() != null) {
+			ArrayList<Pedido> pedidos = new ArrayList<Pedido>();
+			for(Pedido p : pedidosIndividuales) {
+				if(p.getFechaModificacion() != null && estaConfirmado(p)) {
+					pedidos.add(p);
+				}
+			}
+			return pedidos;
+		}else {
+			return pedidosIndividuales;
+		}
+		
+	}
 
+	private boolean estaConfirmado(Pedido p) {
+		String estado = p.getEstado();
+		return estado.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || estado.equals(Constantes.ESTADO_PEDIDO_ENTREGADO) || estado.equals(Constantes.ESTADO_PEDIDO_PREPARADO);
+	}
 
 	public List<Pedido> getPedidos() {
 		return pedidos;

@@ -429,8 +429,24 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		if(zonaSeleccionada !=null){
 			zonaId = zonaSeleccionada.getId();
 		}
-		pedidosNodos.addAll(pedidoColectivoService.obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(vendedorLogueado.getId(),d,h,estadoSeleccionado,zonaId, prSeleccionado, email));
+		pedidosNodos.addAll(eliminarPedidosConNDEnFechaModificacion(pedidoColectivoService.obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(vendedorLogueado.getId(),d,h,estadoSeleccionado,zonaId, prSeleccionado, email)));
+		
 		this.binder.loadAll();
+	}
+
+	private List<PedidoColectivo> eliminarPedidosConNDEnFechaModificacion(List<PedidoColectivo> pedidosNodos) {
+		if(desde.getValue() != null || hasta.getValue() != null) {
+			ArrayList<PedidoColectivo> pedidos = new ArrayList<PedidoColectivo>();
+			for(PedidoColectivo p : pedidosNodos) {
+				if(p.getFechaModificacion() != null && !p.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+					pedidos.add(p);
+				}
+			}
+			return pedidos;
+		}else {
+			return pedidosNodos;
+		}
+		
 	}
 
 	public List<String> getEstados() {

@@ -176,6 +176,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		this.binder.loadAll();
 	}
 	
+	
 	public List<PedidoColectivo> filtrarColectivosInactivos(Collection<? extends PedidoColectivo> collection) {
 		List<PedidoColectivo> pedidosActivos = new ArrayList<PedidoColectivo>();
 		if(collection != null) {
@@ -185,7 +186,22 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 				}
 			}
 		}
-		return (List<PedidoColectivo>) pedidosActivos;
+		return eliminarPedidosConNDEnFechaModificacion(pedidosActivos);
+	}
+	
+	private List<PedidoColectivo> eliminarPedidosConNDEnFechaModificacion(List<PedidoColectivo> pedidosNodos) {
+		if(desde.getValue() != null || hasta.getValue() != null) {
+			ArrayList<PedidoColectivo> pedidos = new ArrayList<PedidoColectivo>();
+			for(PedidoColectivo p : pedidosNodos) {
+				if(p.getFechaModificacion() != null && !p.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) && !p.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+					pedidos.add(p);
+				}
+			}
+			return pedidos;
+		}else {
+			return pedidosNodos;
+		}
+		
 	}
 
 	public List<Pedido> getPedidos() {

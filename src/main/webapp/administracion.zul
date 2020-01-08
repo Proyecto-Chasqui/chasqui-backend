@@ -111,7 +111,7 @@
 	</menu>
 </menubar>
 <!-- imagenes de ayuda -->
-<image id="ayudapedidoscolectivos" visible="true" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudatextopedidoscolectivos" src="/imagenes/question.png" />
+<image id="ayudapedidoscolectivos" visible="true" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="tooltippedidoscolectivos" src="/imagenes/question.png" />
 <image id="ayudapedidos" popup="tooltippedidos" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;"  src="/imagenes/question.png" />
 <image id="ayudaproductores" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="tooltipproductores" src="/imagenes/question.png" />
 <image id="ayudacategorias" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudatextocategorias" src="/imagenes/question.png" />
@@ -318,6 +318,23 @@
         					
         </html>
     	</popup>
+    	<!-- Pedidos menu filtros -->
+      		 <popup id="ayudatextomenupedidos_filtros_colectivos" width="600px">
+        			<html><![CDATA[ 
+        			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
+							<strong><image style="width:16px;height:16px;" src="./imagenes/reset32.png"/>Restablecer filtros</image></strong>: Permite volver a el estado inicial de la busqueda.</font>.</br> </br>
+        					<strong>Los filtros estan divididos en 6 busquedas principales</strong><br /><br />
+							<strong>Fecha Desde/Hasta:</strong> Permite filtrar los pedidos entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de cierre</strong> del pedido colectivo, tenga en cuenta que al <strong>aplicar este filtro</strong> solo se mostraran todos los pedidos colectivos que posean fecha de cierre que solo esta disponible en los pedidos con estados <strong><font color="blue">CONFIRMADO</font>,<font color="violet">PREPARADO</font> o <font color="green">ENTREGADO</font></strong>.</br> </br>
+							<strong>Buscar por email:</strong> Permite filtrar los nodos que tengan el email del administrador con el definido en la busqueda. <strong>(*)</strong> </br></br>
+							<strong>Por estado:</strong> Permite filtrar los nodos por alguno de los siguientes estados <strong><font color="blue">CONFIRMADO</font>, <font>ABIERTO</font>, <font color="green">ENTREGADO</font>, <font color="violet">PREPARADO</font></strong>. </br> </br>
+							<strong>Por Zona:</strong> Permite filtrar las Zonas definidas.</br></br>
+							<strong>Por punto de retiro:</strong> Permite filtrar los puntos de retiro definidos si se utilizan.</br></br>
+							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
+							<strong>(*)</strong> Para ejecutar la busqueda tenés que <font color="blue">apretar Enter</font>, además el campo soporta escribir de manera parcial por ejemplo 'maria a' o 'alb', el sistema buscara los que contengan el texto.</br> </br>
+        					]]>
+        					
+        			</html>
+    		 </popup>
     	<!-- Pedidos -->
     	<popup id="ayudatextopedidos" width="600px">
         	<html><![CDATA[ En esta sección se listan todos los pedidos individuales <br /><br />
@@ -344,9 +361,9 @@
         			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
 							<strong><image style="width:16px;height:16px;" src="./imagenes/reset32.png"/>Restablecer filtros</image></strong>: Permite volver a el estado inicial de la busqueda.</font>.</br> </br>
         					<strong>Los filtros estan divididos en 6 busquedas principales</strong><br /><br />
-							<strong>Fecha Desde/Hasta:</strong> Permite filtrar los pedidos entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de creación</strong> del pedido.</br> </br>
+							<strong>Fecha Desde/Hasta:</strong> Permite filtrar los pedidos entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de cierre</strong> del pedido, tenga en cuenta que al <strong>aplicar este filtro</strong> solo se mostraran todos los pedidos que posean fecha de cierre que solo esta disponible en los pedidos con estados <strong><font color="blue">CONFIRMADO</font>,<font color="violet">PREPARADO</font> o <font color="green">ENTREGADO</font></strong>.</br> </br>
 							<strong>Buscar por email:</strong> Permite filtrar los nodos que tengan el email con el definido en la busqueda. <strong>(*)</strong> </br></br>
-							<strong>Por estado:</strong> Permite filtrar los nodos por alguno de los siguientes estados <strong><font color="blue">CONFIRMADO</font>, <font color="red">CANCELADO</font>, <font>ABIERTO</font>, <font color="green">ENTREGADO</font>, <font color="orange">VENCIDO</font>, <font color="violet">ENTREGADO</font></strong>. </br> </br>
+							<strong>Por estado:</strong> Permite filtrar los nodos por alguno de los siguientes estados <strong><font color="blue">CONFIRMADO</font>, <font color="red">CANCELADO</font>, <font>ABIERTO</font>, <font color="green">ENTREGADO</font>, <font color="orange">VENCIDO</font>, <font color="violet">PREPARADO</font></strong>. </br> </br>
 							<strong>Por Zona:</strong> Permite filtrar las Zonas definidas.</br></br>
 							<strong>Por punto de retiro:</strong> Permite filtrar los puntos de retiro definidos si se utilizan.</br></br>
 							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
@@ -471,6 +488,15 @@
             <menupopup>
             	<menuitem image="/imagenes/filtrar.png" label="¿Que hacen los filtros?"  popup="ayudatextomenupedidos_filtros"/>
             	<menuitem image="/imagenes/export.png" label="¿Que el hace boton exportar pedidos?"  popup="ayudatextomenupedidos_exportar"/> 
+            </menupopup>
+        </menu>
+     </menupopup> 
+      <!-- menutooltip ayuda pedidos colectivos -->
+     <menupopup id="tooltippedidoscolectivos">
+        <menuitem image="/imagenes/answers.png" label="¿Que se muestra en la lista?" popup="ayudatextopedidoscolectivos"/>
+         <menu image="/imagenes/answers.png" label="¿Que hacen los botones del menú?">
+            <menupopup>
+            	<menuitem image="/imagenes/filtrar.png" label="¿Que hacen los filtros?"  popup="ayudatextomenupedidos_filtros_colectivos"/>
             </menupopup>
         </menu>
      </menupopup> 

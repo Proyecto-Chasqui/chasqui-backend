@@ -125,15 +125,15 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 				if (d != null && h != null) {
 					DateTime desde = new DateTime(d.getTime());
 					DateTime hasta = new DateTime(h.getTime());
-					c.add(Restrictions.between("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
+					c.add(Restrictions.between("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
 				}else{
 					if(d!=null){
 						DateTime desde = new DateTime(d.getTime());
-						c.add(Restrictions.ge("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0)));
+						c.add(Restrictions.ge("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0)));
 					}else{
 						if(h!=null){
 							DateTime hasta = new DateTime(h.getTime());
-							c.add(Restrictions.le("pedidoColectivo.fechaCreacion", hasta.plusDays(1).withHourOfDay(0)));
+							c.add(Restrictions.le("pedidoColectivo.fechaModificacion", hasta.plusDays(1).withHourOfDay(0)));
 						}
 					}
 				}
@@ -189,15 +189,15 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 					if (d != null && h != null) {
 						DateTime desde = new DateTime(d.getTime());
 						DateTime hasta = new DateTime(h.getTime());
-						pedidosColectivos.add(Restrictions.between("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
+						pedidosColectivos.add(Restrictions.between("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
 					}else{
 						if(d!=null){
 							DateTime desde = new DateTime(d.getTime());
-							pedidosColectivos.add(Restrictions.ge("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0)));
+							pedidosColectivos.add(Restrictions.ge("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0)));
 						}else{
 							if(h!=null){
 								DateTime hasta = new DateTime(h.getTime());
-								pedidosColectivos.add(Restrictions.le("pedidoColectivo.fechaCreacion", hasta.plusDays(1).withHourOfDay(0)));
+								pedidosColectivos.add(Restrictions.le("pedidoColectivo.fechaModificacion", hasta.plusDays(1).withHourOfDay(0)));
 							}
 						}
 					}
@@ -263,15 +263,15 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 				if (d != null && h != null) {
 					DateTime desde = new DateTime(d.getTime());
 					DateTime hasta = new DateTime(h.getTime());
-					c.add(Restrictions.between("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
+					c.add(Restrictions.between("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
 				}else{
 					if(d!=null){
 						DateTime desde = new DateTime(d.getTime());
-						c.add(Restrictions.ge("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0)));
+						c.add(Restrictions.ge("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0)));
 					}else{
 						if(h!=null){
 							DateTime hasta = new DateTime(h.getTime());
-							c.add(Restrictions.le("pedidoColectivo.fechaCreacion", hasta.plusDays(1).withHourOfDay(0)));
+							c.add(Restrictions.le("pedidoColectivo.fechaModificacion", hasta.plusDays(1).withHourOfDay(0)));
 						}
 					}
 				}
