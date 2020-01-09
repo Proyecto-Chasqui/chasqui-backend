@@ -30,5 +30,7 @@ public interface PedidoColectivoDAO {
 			Integer idVendedor, Date d, Date h, String estadoSeleccionado, Integer zonaId, String prSeleccionado,
 			String email);
 
+	public void eliminar(PedidoColectivo p);
+
 	
 }

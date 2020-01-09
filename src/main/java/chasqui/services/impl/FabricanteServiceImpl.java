@@ -69,4 +69,13 @@ public class FabricanteServiceImpl implements ProductorService{
 		
 	}
 
+
+	@Override
+	public void eliminarProductores(List<Fabricante> productores) {
+		for(Fabricante p : productores) {
+			fabricanteDAO.delete(p);
+		}
+		
+	}
+
 }

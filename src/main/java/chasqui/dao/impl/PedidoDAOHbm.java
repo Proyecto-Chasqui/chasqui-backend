@@ -18,6 +18,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.PedidoDAO;
 import chasqui.model.Pedido;
+import chasqui.model.ProductoPedido;
 import chasqui.model.Zona;
 import chasqui.view.composer.Constantes;
 
@@ -370,6 +371,21 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				return (List<Pedido>) c.list();
 			}
 		});
+	}
+
+	@Override
+	public void eliminar(Pedido p) {
+		this.getHibernateTemplate().delete(p);
+		this.getHibernateTemplate().flush();
+	}
+	
+
+	@Override
+	public void eliminarProductosPedidos(List <ProductoPedido> productoPedido) {
+			for(ProductoPedido pp: productoPedido) {
+				this.getHibernateTemplate().delete(pp);
+			}		
+			this.getHibernateTemplate().flush();
 	}
 
 

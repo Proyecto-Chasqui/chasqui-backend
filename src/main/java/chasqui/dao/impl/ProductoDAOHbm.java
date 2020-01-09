@@ -20,6 +20,7 @@ import chasqui.dao.ProductoDAO;
 import chasqui.exceptions.ProductoInexistenteException;
 import chasqui.model.Caracteristica;
 import chasqui.model.Imagen;
+import chasqui.model.Producto;
 import chasqui.model.Variante;
 
 @SuppressWarnings("unchecked")
@@ -104,7 +105,22 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 			  c.addOrder(Order.asc("id"));
 		}
 	}
-	
+
+	@Override
+	public List<Variante> obtenerTodasLasVariantes(final Integer idVendedor) {
+
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<Variante>>() {
+
+			@Override
+			public List<Variante> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(Variante.class, "variante");
+				c.createAlias("variante.producto", "producto");
+				c.createAlias("producto.fabricante", "fabricante");
+				c.add(Restrictions.eq("fabricante.idVendedor",idVendedor));
+				return (List<Variante>)c.list();
+			}
+		});
+	}
 
 	@Override
 	public Long obtenerTotalVariantesPorMultiplesFiltros(final Integer idVendedor, final Integer idCategoria, final List<Integer> idsSellosProducto, final Integer idProductor, final List<Integer> idsSellosProductor,final String query) {
@@ -507,6 +523,19 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 				return  (List<Variante>)c.list();
 			}
 		});
+	}
+
+	@Override
+	public void eliminarVariante(Variante variante) {
+		this.getHibernateTemplate().delete(variante);
+		this.getHibernateTemplate().flush();
+		
+	}
+
+	@Override
+	public void eliminarProducto(Producto producto) {
+		this.getHibernateTemplate().delete(producto);
+		this.getHibernateTemplate().flush();
 	}
 
 

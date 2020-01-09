@@ -750,6 +750,37 @@ public class NodoServiceImpl implements NodoService {
 		return pedidos;
 
 	}
+
+	@Override
+	public List<Nodo> obtenerNodosDeVendedor(Integer id) {
+		return nodoDAO.obtenerNodosDelVendedor(id);
+	}
+
+	@Override
+	public void eliminarNodos(List<Nodo> nodos) {
+		for(Nodo nodo: nodos) {
+			nodoDAO.eliminarNodo(nodo.getId());
+		}
+	}
+
+	@Override
+	public void eliminarSolicitudesDeCreacionNodo(
+			Collection<? extends SolicitudCreacionNodo> solicitudesDeCreacionNodos) {
+		solicitudCreacionNodoDAO.eliminarSolicitudes(solicitudesDeCreacionNodos);
+		
+	}
+
+	@Override
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeVendedor(Integer id) {
+		return solicitudPertenenciaNodoDAO.obtenerSolicitudesDePretenenciaDeVendedor(id);
+	}
+
+	@Override
+	public void eliminarSolicitudesDePertenenciaANodo(
+			List<SolicitudPertenenciaNodo> solicitudesDePertenenciaDeVendedor) {
+		solicitudPertenenciaNodoDAO.eliminarSolicitudesDePertenencia(solicitudesDePertenenciaDeVendedor);
+		
+	}
 	
 
 }

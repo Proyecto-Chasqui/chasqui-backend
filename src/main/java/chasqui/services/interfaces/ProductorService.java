@@ -29,4 +29,6 @@ public interface ProductorService {
 			throws VendedorInexistenteException;
 	@Transactional
 	public void guardarProductores(List<Fabricante> nuevosProductores);
+	@Transactional
+	public void eliminarProductores(List<Fabricante> productores);
 }

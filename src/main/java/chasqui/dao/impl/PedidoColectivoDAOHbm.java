@@ -293,5 +293,11 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 			}
 		});
 	}
+	@Override
+	public void eliminar(PedidoColectivo p) {
+		this.getHibernateTemplate().delete(p);
+		this.getHibernateTemplate().flush();
+		
+	}
 
 }

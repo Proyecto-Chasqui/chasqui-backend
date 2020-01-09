@@ -8,6 +8,7 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.model.Caracteristica;
 import chasqui.model.Imagen;
 import chasqui.model.Pedido;
+import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.service.rest.request.ByCategoriaRequest;
 import chasqui.service.rest.request.ByMedallaRequest;
@@ -60,6 +61,10 @@ public interface ProductoService {
 	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
 			Integer idProductor, List<Integer> idsSellosProductor, String query);
 	Variante obtenerVariantePorCodigoProducto(String codigoProducto, Integer idVendedor);
+	@Transactional
+	public void eliminarVariantes(List<Variante> obtenerVariantesPorMultiplesFiltros);
+	List<Variante> obtenerTodasLasVariantes(Integer idVendedor);
+	void eliminarProducto(List<Producto> productos);
 	
 	
 }

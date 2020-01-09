@@ -34,5 +34,7 @@ public interface SolicitudCreacionNodoDAO {
 
 	public Collection<? extends SolicitudCreacionNodo> obtenerSolicitudesDeCreacionNodosDelVendedorCon(Integer id,
 			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio);
+	@Transactional
+	public void eliminarSolicitudes(Collection<? extends SolicitudCreacionNodo> solicitudesDeCreacionNodos);
 	
 }

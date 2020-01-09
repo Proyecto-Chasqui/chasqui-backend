@@ -67,6 +67,12 @@ public class PedidoServiceImpl implements PedidoService {
 	public List<Pedido> obtenerPedidosExpirados(Integer idVendedor) {
 		return pedidoDAO.obtenerPedidosAbiertosConFechaVencida(idVendedor);
 	}
+	@Override
+	public void eliminarPedidos(List<Pedido> pedidos) {
+		for(Pedido p : pedidos) {
+			pedidoDAO.eliminar(p);
+		}
+	}
 
 
 	@Override
@@ -585,6 +591,12 @@ public class PedidoServiceImpl implements PedidoService {
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedorConPRPorNombre(Integer id, Date d, Date h,
 			String estadoSeleccionado, Integer zonaId, String nombrePuntoRetiro, String email) {
 		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedorPRPorNombre( id, d, h,estadoSeleccionado,zonaId,nombrePuntoRetiro, email);
+	}
+
+	@Override
+	public void eliminarProductosPedidos(List<ProductoPedido> productoPedido) {
+		this.pedidoDAO.eliminarProductosPedidos(productoPedido);
+		
 	}
 
 }
