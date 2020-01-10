@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.springframework.transaction.annotation.Transactional;
 
 import chasqui.model.Pedido;
+import chasqui.model.ProductoPedido;
 import chasqui.model.Zona;
 
 public interface PedidoDAO {
@@ -46,5 +48,8 @@ public interface PedidoDAO {
 	List<Pedido> obtenerPedidosIndividualesDeVendedorPRPorNombre(Integer idVendedor, Date desde, Date hasta,
 			String estadoSeleccionado, Integer zonaId, String idPuntoRetiro, String email);
 
+	public void eliminar(Pedido p);
+	@Transactional
+	public void eliminarProductosPedidos(List<ProductoPedido> productoPedido);
 
 }

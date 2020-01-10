@@ -167,6 +167,14 @@ public class SolicitudCreacionNodoDAOHbm extends HibernateDaoSupport implements 
 			   }
 		});
 	}
+
+	@Override
+	public void eliminarSolicitudes(Collection<? extends SolicitudCreacionNodo> solicitudesDeCreacionNodos) {
+		for(SolicitudCreacionNodo solicitud: solicitudesDeCreacionNodos) {
+			this.getSession().delete(solicitud);
+			this.getSession().flush();
+		}
+	}
 	
 	
 

@@ -24,5 +24,7 @@ public interface ZonaService {
 	public Zona obtenerZonaPorId(Integer zonaID);
 	@Transactional
 	public Zona obtenerZonaDePertenenciaDeDireccion(final Point punto, final Integer idVendedor);
+	@Transactional
+	public void eliminarZonas(List<Zona> obtenerZonas);
 
 }

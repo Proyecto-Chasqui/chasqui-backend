@@ -636,6 +636,13 @@ public class GrupoServiceImpl implements GrupoService {
 		}
 		
 	}
+
+	@Override
+	public void eliminarGrupos(List<GrupoCC> obtenerGruposDe) {
+		for(GrupoCC gcc: obtenerGruposDe) {
+			grupoDao.eliminarGrupoCC(gcc);
+		}
+	}
 	
 	
 

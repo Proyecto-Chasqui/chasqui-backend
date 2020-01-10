@@ -307,5 +307,16 @@ public interface NodoService {
 	@Transactional
 	public void recalcularZonasParaNodos(Integer idVendedor);
 
+	public List<Nodo> obtenerNodosDeVendedor(Integer id);
+	@Transactional
+	public void eliminarNodos(List<Nodo> obtenerNodosDeVendedor);
+
+	public void eliminarSolicitudesDeCreacionNodo(
+			Collection<? extends SolicitudCreacionNodo> obtenerSolicitudesDeCreacionNodosDelVendedorCon);
+
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeVendedor(Integer id);
+
+	public void eliminarSolicitudesDePertenenciaANodo(List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeVendedor);
+
 
 }

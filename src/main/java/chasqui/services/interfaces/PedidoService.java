@@ -18,6 +18,7 @@ import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
+import chasqui.model.ProductoPedido;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 
@@ -122,4 +123,10 @@ public interface PedidoService {
 	
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedorConPRPorNombre(Integer id, Date d, Date h,
 			String estadoSeleccionado, Integer zonaId, String nombrePuntoRetiro, String email);
+	@Transactional
+	void eliminarPedidos(List<Pedido> pedidos);
+
+	@Transactional
+	public void eliminarProductosPedidos(List<ProductoPedido> productosPedidos);
+
 }

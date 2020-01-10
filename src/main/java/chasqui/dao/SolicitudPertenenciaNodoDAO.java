@@ -2,6 +2,8 @@ package chasqui.dao;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import chasqui.model.SolicitudPertenenciaNodo;
 
 public interface SolicitudPertenenciaNodoDAO {
@@ -16,4 +18,8 @@ public interface SolicitudPertenenciaNodoDAO {
 
 	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(Integer idUsuario,
 			Integer idVendedor);
+
+	public List<SolicitudPertenenciaNodo> obtenerSolicitudesDePretenenciaDeVendedor(Integer id);
+	@Transactional
+	public void eliminarSolicitudesDePertenencia(List<SolicitudPertenenciaNodo> solicitudesDePertenenciaDeVendedor);
 }	

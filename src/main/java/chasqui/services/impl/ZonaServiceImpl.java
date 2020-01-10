@@ -66,6 +66,14 @@ public class ZonaServiceImpl implements ZonaService{
 		return zonaDAO.obtenerZonaDePertenenciaDeDireccion(punto, idVendedor);
 	}
 
+	@Override
+	public void eliminarZonas(List<Zona> zonas) {
+		for(Zona zona:zonas) {
+			zonaDAO.eliminar(zona);
+		}
+		
+	}
+
 	
 	
 	
