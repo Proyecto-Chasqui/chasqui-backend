@@ -178,7 +178,7 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 	
 	public void eliminar(final Vendedor u){
 		
-		Messagebox.show(Labels.getLabel("zk.message.eliminar.usuario",new String[]{u.getUsername()}),
+		Messagebox.show("Advertencia: Esta acción no es reversible aun si ocurre un error, es recomendable hacer un backup de la BD antes de proseguir. " + Labels.getLabel("zk.message.eliminar.usuario" ,new String[]{u.getUsername()}),
 				Labels.getLabel("zk.tittle.eliminar.usuario"), Messagebox.YES | Messagebox.NO,Messagebox.QUESTION, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
 						switch ((Integer) event.getData()){
@@ -191,6 +191,7 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 								usuarios.remove(u);
 								usuarioService.eliminarUsuario(u);
 								binder.loadAll();
+								Clients.showNotification("El vendedor fue eliminado correctamente","info", vcomp, "middle_center", 3000,true);
 								} catch (Exception e) {
 									eliminarCompletamente(u);
 								}
@@ -204,7 +205,7 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 	}
 	
 	public void eliminarCompletamente(final Vendedor u) {
-		Messagebox.show("El usuario requiere una eliminación mas profunda, esto demorara un poco mas ¿desea eliminarlo ahora?",
+		Messagebox.show("Eliminar el vendedor " + u.getUsername() +" requiere de un borrado mas intensivo, el proceso sera mas lento. ¿desea eliminarlo ahora?",
 				Labels.getLabel("zk.tittle.eliminar.usuario"), Messagebox.YES | Messagebox.NO,Messagebox.QUESTION, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
 						switch ((Integer) event.getData()){
@@ -227,9 +228,11 @@ public class UsuariosActualesComposer extends GenericForwardComposer<Component> 
 								usuarios.remove(u);
 								usuarioService.eliminarUsuario(u);
 								binder.loadAll();
+								Clients.showNotification("El vendedor fue eliminado correctamente","info", vcomp, "middle_center", 3000,true);
 								} catch (Exception e) {
-									
-								}
+									e.printStackTrace();	
+									Clients.showNotification("Ocurrio un error desconocido, reintente borrar el usuario, si el error persiste, reestablesca la BD a su estado anterior.","error", vcomp, "middle_center", 3000,true);
+									}
 							
 							case Messagebox.NO:
 								return;
