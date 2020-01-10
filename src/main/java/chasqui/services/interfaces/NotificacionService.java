@@ -157,4 +157,6 @@ public interface NotificacionService {
 	void notificarConfirmacionNodoCompraOtroMiembro(String emailVendedor, String emailCliente, String nombreCliente,
 			String alias);
 
+	public void enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(Nodo nodo);
+
 }

@@ -812,9 +812,9 @@ public class MailService {
 		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
 			   + "<thead bgcolor=\"#313231\">" 
 			   +  "<tr height=\"32\">"
-			   +     "<th><font color=\"white\">TOTAL DE INCENTIVO</font></th>"
-			   +     "<th><font color=\"white\">TOTAL A PAGAR</font></th>"
-			   +     "<th><font color=\"white\">TOTAL DEL PEDIDO COLECTIVO</font></th>"
+			   +     "<th><font color=\"white\">INGRESO NODO</font></th>"
+			   +     "<th><font color=\"white\">COSTO AL NODO</font></th>"
+			   +     "<th><font color=\"white\">PRECIO FINAL</font></th>"
 			   +  "</tr>"
 			   + "</thead>"
 			   + "<tbody>";
@@ -977,6 +977,17 @@ public class MailService {
 		}
 		String subject = "Tu solicitud de ingreso a " + nombrenodo + " a sido "+estado+".";
 		enviarEmailNotificacionChasqui("", nombreUsuario, usuario.getEmail(),mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(Nodo nodo) {
+		String nombreUsuario = nodo.getAdministrador().getNombre() + " " + nodo.getAdministrador().getApellido();
+		String tipoNodoAnterior = nodo.getTipo().equals(Constantes.NODO_ABIERTO)?"<font color='blue'>Cerrado</font>":"<font color='green'>Abierto</font>";
+		String tipoNodo = nodo.getTipo().equals(Constantes.NODO_ABIERTO)?"<font color='green'>Abierto</font>":"<font color='blue'>Cerrado</font>";
+		String nombreNodo = nodo.getAlias();
+		String mensaje = "</br> El Administrador <strong>"+ nombreUsuario +"</strong> del nodo <strong>"+ nombreNodo +"</strong> cambio la visibilidad de <strong>"+ tipoNodoAnterior + "</strong> a <strong>" + tipoNodo + "</strong>.";
+		String subject = "Aviso de cambio de visiblidad en nodo "+nodo.getAlias()+".";
+		enviarEmailNotificacionChasqui("", nodo.getVendedor().getNombre(), nodo.getVendedor().getEmail() ,mensaje , subject);
 		
 	}
 	
