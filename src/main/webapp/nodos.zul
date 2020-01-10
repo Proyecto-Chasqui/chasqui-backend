@@ -49,6 +49,7 @@ style="overflow:auto">
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarpedidosnodos" visible="true">
 				<menuitem id="menuItemMostrarFiltrosPedidosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosPedidosNodos"/>
 				<menuitem id="menuItemReiniciarFiltrosPedidosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onReiniciarFiltrosPedidosNodos"/>
+				<menuitem id="menuItemActualizarPedidos"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarPedidos"/>
 			</menubar>
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltros" src="/imagenes/question.png" />
         		
@@ -57,7 +58,7 @@ style="overflow:auto">
         			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
 							<strong><image style="width:16px;height:16px;" src="./imagenes/reset32.png"/>Restablecer filtros</image></strong>: Permite volver a el estado inicial de la busqueda, <font color="blue">solo sera visible cuando se aplique la misma</font>.</br> </br>
         					<strong>Los filtros estan divididos en 4 busquedas principales y 1 de orden</strong><br /><br />
-							<strong>Fecha Desde/Hasta:</strong> Permite filtrar los pedidos entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de creación</strong> del pedido.</br> </br>
+							<strong>Fecha Desde/Hasta:</strong> Permite filtrar los pedidos entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de cierre</strong> del pedido, tenga en cuenta que al <strong>aplicar este filtro</strong> solo se mostraran todos los pedidos que posean fecha de cierre que solo esta disponible en los pedidos con estados <strong><font color="blue">CONFIRMADO</font>,<font color="violet">PREPARADO</font> o <font color="green">ENTREGADO</font></strong>.</br> </br>
 							<strong>Buscar por email:</strong> Permite filtrar los pedidos que tengan al coordinador con el email definido en la busqueda, <font color="blue">para ejecutar la busqueda debera apretar <strong>Enter</strong></font>. </br>
 							<strong>Aclaración:</strong> El campo soporta escribir el email parcial por ejemplo 'email@' o 'alb', el sistema buscara los emails que contengan el texto.</br> </br>
 							<strong>Por estado:</strong> Permite filtrar los pedidos por alguno de los siguientes estados <strong>ABIERTO</font>, <font color="blue">CONFIRMADO</font>, <font color="magenta">PREPARADO</font>, <font color="green">ENTREGADO</font></strong>. </br> </br>
@@ -138,6 +139,7 @@ style="overflow:auto">
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarnodos" visible="true">
 				<menuitem id="menuItemMostrarFiltrosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosNodos"/>
 				<menuitem id="menuItemReiniciarFiltrosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposNodos"/>
+				<menuitem id="menuItemActualizarNodos"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarNodos"/>
 			</menubar>
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltrosnodos" src="/imagenes/question.png" />
         		
@@ -227,6 +229,7 @@ style="overflow:auto">
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarsolicitudes" visible="true">
 				<menuitem id="menuItemMostrarFiltrosSolicitudes" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosSolicitudes"/>
 				<menuitem id="menuItemReiniciarFiltrosSolicitudes" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposSolicitudes"/>
+				<menuitem id="menuItemActualizarSolicitudes"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarSolicitudes"/>
 			</menubar>
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltrossolicitud" src="/imagenes/question.png" />
         		

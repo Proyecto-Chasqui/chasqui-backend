@@ -477,6 +477,7 @@ public class NodoServiceImpl implements NodoService {
 			String tipoNodo, String barrio) throws RequestIncorrectoException {
 		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
 		if (nodo.getAdministrador().getEmail().equals(email)) {
+			boolean cambioTipo = !tipoNodo.equals(nodo.getTipo());
 			nodo.setAlias(alias);
 			nodo.setDescripcion(descripcion);
 			nodo.setEmailAdministradorNodo(email);
@@ -500,6 +501,9 @@ public class NodoServiceImpl implements NodoService {
 			}
 			nodo.setZona(zona);
 			nodoDAO.guardarNodo(nodo);
+			if(cambioTipo) {
+				notificacionService.enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(nodo);
+			}
 		}
 		else{
 			throw new RequestIncorrectoException("El usuario "+ email + " no es el administrador del grupo:"+ nodo.getAlias());

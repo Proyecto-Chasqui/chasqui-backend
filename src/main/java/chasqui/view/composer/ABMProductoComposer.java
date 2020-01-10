@@ -216,9 +216,11 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		validaciones();
 		ejecutarValidaciones();
 		guardarImagenNoDisponible();
+		boolean productoNuevo = false;
 		model.setNombre(nombreProducto.getValue());
 		model.setCaracteristicas(caracteristicas);
 		if(model.getId() == null){
+			productoNuevo = true;
 			categoriaSeleccionada.agregarProducto(model);							
 		}
 		model.setCategoria(categoriaSeleccionada);
@@ -242,7 +244,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		modelv.setCantidadReservada(0);
 		modelv.setProducto(model);
 		
-		if(model == null){			
+		if(model == null){	
 			modelv.setDestacado(false);
 			model.getVariantes().add(modelv);			
 		}else{
@@ -252,9 +254,16 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			model.setVariantes(variantes);
 		}
 		usuarioService.guardarUsuario(usuario);
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("accion", "productoGuardado");		
-		Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
+		if(productoNuevo) {
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("accion", "productoGuardado");		
+			Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
+		}else {
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("accion", "productoEditado");		
+			Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
+
+		}
 		this.self.detach();
 	}
 	

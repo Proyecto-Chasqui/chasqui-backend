@@ -1293,6 +1293,12 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		}
 	}
 	
+	public void notificar(String string, String tipo, String posicion) {
+		Clients.showNotification(string,
+				tipo, admcomponent, posicion,
+				3000,true);		
+	}
+	
 	public void onVisualizarProducto(Producto p){
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("accion", Constantes.VENTANA_MODO_LECTURA);
@@ -1807,6 +1813,8 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void setTagsInclude(Include tagsInclude) {
 		this.tagsInclude = tagsInclude;
 	}
+
+
 	
 //	public void setVisibleEstrategiasConfig(Boolean b){
 //		estrategiasInclude.setVisible(b);
@@ -1865,7 +1873,14 @@ class ProductoEventListener implements EventListener<Event>{
 			return;
 		}
 		if(params.get("accion").equals("productoGuardado")){
-			this.composer.onClick$buscarProducto();
+			composer.onClick$buscarProducto();
+			composer.notificar("Nuevo producto agregado","info","middle_center");
+			return;
+		}
+		if(params.get("accion").equals("productoEditado")){
+			composer.refresh();
+			composer.notificar("Los cambios del producto se guardaron correctamente","info","middle_center");
+			return;
 		}
 		Producto p = (Producto) params.get("producto");
 		Fabricante f = (Fabricante) params.get("productor");

@@ -252,6 +252,7 @@ public class MailService {
 		params.put("cuerpo", mensaje);
 		params.put("catalogoVendedor","");
 		
+		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NOTIFICACION, emailClienteDestino, subject, params);
 		
 	}
@@ -596,8 +597,8 @@ public class MailService {
 				}
 				
 				if(Constantes.TEMPLATE_NOTIFICACION.equals(template)) {
-					ClassPathResource resource = new ClassPathResource("templates/imagenes/recuperacion.png");
-					helper.addInline("recuperacion", resource);
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/notificacion.jpg");
+					helper.addInline("notificacion", resource);
 				}
 				
 				if(Constantes.TEMPLATE_INVITACION_CHASQUI.equals(template)) {
@@ -811,9 +812,9 @@ public class MailService {
 		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
 			   + "<thead bgcolor=\"#313231\">" 
 			   +  "<tr height=\"32\">"
-			   +     "<th><font color=\"white\">TOTAL DE INCENTIVO</font></th>"
-			   +     "<th><font color=\"white\">TOTAL A PAGAR</font></th>"
-			   +     "<th><font color=\"white\">TOTAL DEL PEDIDO COLECTIVO</font></th>"
+			   +     "<th><font color=\"white\">INGRESO NODO</font></th>"
+			   +     "<th><font color=\"white\">COSTO AL NODO</font></th>"
+			   +     "<th><font color=\"white\">PRECIO FINAL</font></th>"
 			   +  "</tr>"
 			   + "</thead>"
 			   + "<tbody>";
@@ -911,7 +912,7 @@ public class MailService {
 		return (url + slash + "#/" + nombreCorto + "/bienvenida");
 	}
 	
-	//mock emails para nodos, hay que gestionar templates especificos para cada caso.
+	//Seccion de emails genericos de notificacion
 	public void enviarEmailDeGestionDeSolicitudCreacionNodoFinalizada(Nodo nodo, Vendedor vendedor, String emailAdministradorNodo,
 			String estadoSolicitudNodo) {
 		String nombreUsuario = nodo.getAdministrador().getNombre() + " " +nodo.getAdministrador().getApellido();
@@ -919,7 +920,7 @@ public class MailService {
 		String estado = (estadoSolicitudNodo.equals(Constantes.SOLICITUD_NODO_APROBADO))? "aprobado":"rechazado";
 		String fin = ".";
 		String mensaje = inicio + estado + fin;
-		String subject = "[EMAIL TEMPORAL] Su solicitud de nodo a "+ vendedor.getNombre() +" a sido " + estado + ".";
+		String subject = "Su solicitud de nodo a "+ vendedor.getNombre() +" a sido " + estado + ".";
 		enviarEmailNotificacionChasqui("", nombreUsuario, emailAdministradorNodo,mensaje , subject);
 		
 	}
@@ -927,7 +928,7 @@ public class MailService {
 	public void enviarEmailDeSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombrenodo, Cliente usuario) throws VendedorInexistenteException {
 		String nombreUsuario = usuario.getNombre() + " " + usuario.getApellido();
 		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> a enviado una solicitud de creación de nodo con nombre <strong>"+ nombrenodo + "</strong>, para obtener mas información y gestionar la solicitud, puede hacerlo desde el panel de administración en la sección <strong>nodos->solicitudes</strong>";
-		String subject = "[EMAIL TEMPORAL] Tiene una nueva solicitud de nodo.";
+		String subject = "Tiene una nueva solicitud de nodo.";
 		Vendedor vendedor = vendedorService.obtenerVendedorPorId(idVendedor);
 		enviarEmailNotificacionChasqui("", nombreUsuario, vendedor.getEmail() ,mensaje , subject);
 		
@@ -936,7 +937,7 @@ public class MailService {
 	public void enviarEmailDeCancelacionDeSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombrenodo, Cliente usuario) throws VendedorInexistenteException {
 		String nombreUsuario = usuario.getNombre() + " " + usuario.getApellido();
 		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> a cancelado su solicitud de creación de nodo con nombre <strong>"+ nombrenodo + "</strong>.";
-		String subject = "[EMAIL TEMPORAL] Se cancelo una solicitud de nodo.";
+		String subject = "Se cancelo una solicitud de nodo.";
 		Vendedor vendedor = vendedorService.obtenerVendedorPorId(idVendedor);
 		enviarEmailNotificacionChasqui("", nombreUsuario, vendedor.getEmail() ,mensaje , subject);
 		
@@ -946,7 +947,7 @@ public class MailService {
 		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
 		String nombrenodo = nodo.getAlias();
 		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> le acaba de enviar una solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "</strong>. <br><br> Para mas detalles acceda a desde el catalogo a 'mis nodos -> " + nombrenodo +" -> Integrantes -> Solicitudes'";
-		String subject = "[EMAIL TEMPORAL] Tiene una nueva solicitud para el nodo " + nodo.getAlias() + ".";
+		String subject = "Tiene una nueva solicitud para el nodo " + nodo.getAlias() + ".";
 		enviarEmailNotificacionChasqui("", nombreUsuario, nodo.getAdministrador().getEmail(),mensaje , subject);
 		
 	}
@@ -957,7 +958,7 @@ public class MailService {
 		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
 		String nombrenodo = nodo.getAlias();
 		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> cancelo su solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "";
-		String subject = "[EMAIL TEMPORAL] Han cancelado una solicitud para su nodo " + nodo.getAlias() + ".";
+		String subject = "Han cancelado una solicitud para su nodo " + nodo.getAlias() + ".";
 		enviarEmailNotificacionChasqui("", nombreUsuario, nodo.getAdministrador().getEmail(),mensaje , subject);
 		
 	}
@@ -974,8 +975,19 @@ public class MailService {
 		}else {
 			mensaje = mensaje + ".";
 		}
-		String subject = "[EMAIL TEMPORAL] Tu solicitud de ingreso a " + nombrenodo + " a sido "+estado+".";
+		String subject = "Tu solicitud de ingreso a " + nombrenodo + " a sido "+estado+".";
 		enviarEmailNotificacionChasqui("", nombreUsuario, usuario.getEmail(),mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(Nodo nodo) {
+		String nombreUsuario = nodo.getAdministrador().getNombre() + " " + nodo.getAdministrador().getApellido();
+		String tipoNodoAnterior = nodo.getTipo().equals(Constantes.NODO_ABIERTO)?"<font color='blue'>Cerrado</font>":"<font color='green'>Abierto</font>";
+		String tipoNodo = nodo.getTipo().equals(Constantes.NODO_ABIERTO)?"<font color='green'>Abierto</font>":"<font color='blue'>Cerrado</font>";
+		String nombreNodo = nodo.getAlias();
+		String mensaje = "</br> El Administrador <strong>"+ nombreUsuario +"</strong> del nodo <strong>"+ nombreNodo +"</strong> cambio la visibilidad de <strong>"+ tipoNodoAnterior + "</strong> a <strong>" + tipoNodo + "</strong>.";
+		String subject = "Aviso de cambio de visiblidad en nodo "+nodo.getAlias()+".";
+		enviarEmailNotificacionChasqui("", nodo.getVendedor().getNombre(), nodo.getVendedor().getEmail() ,mensaje , subject);
 		
 	}
 	

@@ -336,4 +336,10 @@ public class NotificacionServiceImpl implements NotificacionService{
 		
 	}
 
+	@Override
+	public void enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(Nodo nodo) {
+		mailService.enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(nodo);
+		
+	}
+
 }

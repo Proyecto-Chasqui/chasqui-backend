@@ -43,12 +43,12 @@ Bienvenido a Chasqui
 
 <tr style="height: 21px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 21px;">
-                      Se ha solicitado el recupero de contraseña. Sus nuevas credenciales para ingresar al sistema son:  
-					<br><br>
-					Usuario: <span style="font-weight: bold; color: #00adee;">${nombreUsuario}</span>
+                      Se ha solicitado el recupero de contraseña
 					<br><br>		
 					Contraseña: <div style="font-weight: bold; color: #00adee; display: inline; padding-left: 8px;">${passwordUsuario}</div>
-					  <br>				
+					  <br><br>
+					Recomendamos que una vez que ingrese, la cambie en la sección <strong> Perfil </strong> seleccionando la pestaña <strong> Cambio de contraseña </strong>.
+									
 					
 </td>
 </tr>
