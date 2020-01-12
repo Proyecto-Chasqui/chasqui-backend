@@ -96,7 +96,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private boolean modoEdicion;
 	private Doublebox incentivo;
 	private Doublebox totalPrecio;
-	
+	private static final String ANCHO = "ancho";
+	private static final String ALTO = "alto";
 	private Auxheader auxheaderproducto;
 	private Popup cantidadCaracteres;
 	private Label mensaje;
@@ -543,21 +544,74 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		ckEditor.setDisabled(true);
 		
 	}
+	private boolean validateSizeOfImageAt(Double h, Double w, Double margenalto, String statico,UploadEvent evt) {
+		boolean ret = false;
+		Double baseAspectRatio = w / h;
+		org.zkoss.util.media.Media media = evt.getMedia();		
+        if (media instanceof org.zkoss.image.Image) {
+            org.zkoss.image.Image img = (org.zkoss.image.Image) media;
+    		Double imageHeight = Double.valueOf(img.getHeight());
+    		Double imageWidth = Double.valueOf(img.getWidth());
+            if(statico.equals(ANCHO)) {
+            	if(imageHeight >= h && imageWidth <= (w+margenalto) && (imageWidth >= w)){
+            		ret = true;
+            	}
+            }
+            if(statico.equals(ALTO)) {
+            	if(imageHeight <= (h+margenalto) && imageHeight>= h && imageWidth >= w){
+            		ret = true;
+            	}
+            }
+            if(baseAspectRatio != imageWidth/imageHeight) {
+            	ret = false;
+            }
+        }
+		return ret;
+	}
 	
-	public void onUpload$uploadImagen(UploadEvent evt){
-			
-		if(imagenes.size() == Constantes.CANT_MAX_IMAGENES_VARIEDAD){
-			throw new WrongValueException(listImagenes,"No se pueden agregar mas de 3 imágenes por producto");
-		}else {
+	private boolean validateFormatAndWeigthOfImage(UploadEvent evt,List<String> formats, Integer imageSizeInKB) {
+		boolean ret = false;
+        org.zkoss.util.media.Media media = evt.getMedia();
+        if (media instanceof org.zkoss.image.Image && media.getByteData().length < imageSizeInKB * 1024 && hasAValidFormat(media,formats)) {
+           ret = true;
+        }
+		return ret;
+	}
+	
+	private boolean hasAValidFormat(Media media, List<String> formats) {
+		boolean ret = false;
+		for(String format: formats) {
+			if(!ret) {
+				ret = media.getFormat().equals(format);
+			}
+		}
+		return ret;
+	}
+	
+	public void actualizarImagen(UploadEvent evt){
+		try{
 			Media media = evt.getMedia();
 			Image image = new Image();
+			Double alto = 690.0;
+			Double ancho = 1080.0;
+			Integer kb = 512;
+			Double margenalto = 690.0;
+			Double margenancho = 1080.0;
+			List<String> formats = new ArrayList<String>();
+			formats.add("jpg");
+			formats.add("jpeg");
+			formats.add("png");
 			if (media instanceof org.zkoss.image.Image) {
-				image.setContent((org.zkoss.image.Image) media);
+				if(this.validateSizeOfImageAt(alto,ancho,margenalto,ALTO,evt) && this.validateSizeOfImageAt(alto,ancho,margenancho,ANCHO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
+					image.setContent((org.zkoss.image.Image) media);
+				}else {
+					String mensaje = "La imagen debe tener una dimensión de " +ancho.intValue()+"px x " +alto.intValue()+" px, hasta "+ (ancho.intValue()+margenancho.intValue()) +" px x "+(alto.intValue()+margenalto.intValue())+" px, debe tener propocion 12:6 y ser de formato jpg, jpeg o png y no debe pesar mas de "+ kb +"KB";
+					Clients.showNotification(mensaje, "warning", listImagenes, "middle_center", 10000, true);
+					return;
+				}
 			} else {
-				Messagebox.show("El archivo no es una imagen o es demasiado grande","Error", Messagebox.OK, Messagebox.ERROR);
-				return;
+				Clients.showNotification("El archivo no se pudo procesar correctamente o no se trata de una imagen, reintente subirla, si el problema persiste consulte con el administrador.", "error", listImagenes, "middle_center", 10000, true);
 			}
-			
 			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
 			String path = context.getRealPath("/imagenes/");
 			Imagen imagen = fileSaver.guardarImagen(path ,usuario.getUsername(),image.getContent().getName(),image.getContent().getByteData());
@@ -565,8 +619,25 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			imagen.setPreview(false);
 			imagenes.add(imagen);
 			binder.loadAll();
+			Clients.showNotification("La imagen se guardó correctamente", "info", listImagenes, "middle_center", 3000,true);
+		}catch(Exception e){
+			Clients.showNotification("Ocurrió un error inesperado al tratar de agregar la imagen", "error", listImagenes, "middle_center", 3000,true);
+			e.printStackTrace();
+		}finally{
+			Clients.clearBusy();
+			binder.loadAll();
 		}
 	}
+	public void onUpload$uploadImagen(UploadEvent evt){
+			
+		if(imagenes.size() == Constantes.CANT_MAX_IMAGENES_VARIEDAD){
+			throw new WrongValueException(listImagenes,"No se pueden agregar mas de 3 imágenes por producto");
+		}else {
+			actualizarImagen(evt);
+		}
+	}
+	
+	
 	
 	public void onChanging$ckEditor(InputEvent evt) {
 		Integer total = Jsoup.parse(evt.getValue()).wholeText().length();

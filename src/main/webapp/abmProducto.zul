@@ -93,11 +93,12 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
         		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaImagenes" src="/imagenes/question.png" />
         		
         		 <popup id="ayudaImagenes" width="400px">
-        			<html><![CDATA[ En esta sección podrá agregar imágenes al producto. <br /><br />
+        			<html><![CDATA[ En esta sección se configuran las imágenes del producto. <br /><br />
         					Haciendo click en el icono <image src="./imagenes/destacado_on.png"/> define que imagen es la principal.<br />
         					Si no define ninguna se mostrará la primera como principal.<br /> <br />
-        					Es recomendable que las imágenes sean de resolución <strong>16:9</strong> y no exeda el peso en más de </strong> <font color="red"> 512Kb</font> para asegurar una veloz carga del catálogo. <br /><br />
-        					<strong>Nota: </strong>Solo puede agregar hasta <font color="red">3 imágenes</font></u> por producto.
+        		             <strong>Aclaración:</strong> La imagen debe tener entre <font color="red">1080px de ancho</font> por <font color="red">690px de alto</font> y <font color="red">2160px de ancho</font> por <font color="red">1380px de alto</font>, mantener una relación aspecto de <font color="red">12:6</font>, ser de formato jpg,jpeg,png y no pesar mas de <font color="red">512kb</font>. </br></br>
+        		             <strong>Algunos ejemplos de dimensiones validas son: <font color="blue">1092x696</font>, <font color="blue">1104x702</font>, <font color="blue">1116x708</font> ,<font color="blue">1128x714</font>.</br></br>
+        		             <strong>Nota: </strong>Solo puede agregar hasta <font color="red">3 imágenes</font></u> por producto.
         					]]>
         					
         			</html>

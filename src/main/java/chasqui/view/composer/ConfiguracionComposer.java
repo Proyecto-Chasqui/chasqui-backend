@@ -128,23 +128,25 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		Events.echoEvent(Events.ON_NOTIFY,this.self,evt);
 	}
 	
-	private boolean validateSizeOfImageAt(int h, int w, int margen, String statico,UploadEvent evt) {
+	private boolean validateSizeOfImageAt(Double h, Double w, Double margenalto, String statico,UploadEvent evt) {
 		boolean ret = false;
-		Integer baseAspectRatio = w / h;
-        org.zkoss.util.media.Media media = evt.getMedia();
+		Double baseAspectRatio = w / h;
+		org.zkoss.util.media.Media media = evt.getMedia();		
         if (media instanceof org.zkoss.image.Image) {
             org.zkoss.image.Image img = (org.zkoss.image.Image) media;
+    		Double imageHeight = Double.valueOf(img.getHeight());
+    		Double imageWidth = Double.valueOf(img.getWidth());
             if(statico.equals(ANCHO)) {
-            	if(img.getHeight() >= h && img.getWidth() <= (w+margen) && (img.getWidth() >= w)){
+            	if(imageHeight >= h && imageWidth <= (w+margenalto) && (imageWidth >= w)){
             		ret = true;
             	}
             }
             if(statico.equals(ALTO)) {
-            	if(img.getHeight() <= (h+margen) && img.getHeight() >= h && img.getWidth() >= w){
+            	if(imageHeight <= (h+margenalto) && imageHeight>= h && imageWidth >= w){
             		ret = true;
             	}
             }
-            if(baseAspectRatio != img.getWidth()/img.getHeight()) {
+            if(baseAspectRatio != imageWidth/imageHeight) {
             	ret = false;
             }
         }
@@ -174,11 +176,11 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		try{
 			Media media = evt.getMedia();
 			Image image = new Image();
-			Integer alto = 180;
-			Integer ancho = 280;
+			Double alto = 180.0;
+			Double ancho = 280.0;
 			Integer kb = 512;
-			Integer margenalto = 180;
-			Integer margenancho = 280;
+			Double margenalto = 180.0;
+			Double margenancho = 280.0;
 			List<String> formats = new ArrayList<String>();
 			formats.add("jpg");
 			formats.add("jpeg");
@@ -187,13 +189,12 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 				if(this.validateSizeOfImageAt(alto,ancho,margenalto,ALTO,evt) && this.validateSizeOfImageAt(alto,ancho,margenancho,ANCHO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
 					image.setContent((org.zkoss.image.Image) media);
 				}else {
-					String mensaje = "La imagen debe tener una dimensión de " +ancho+"px x " +alto+" px, hasta "+ (ancho+margenancho) +" px x "+(alto+margenalto)+" px, debe tener propocion 14:9 y ser de formato jpg, jpeg o png y no debe pesar mas de "+ kb +"KB";
+					String mensaje = "La imagen debe tener una dimensión de " +ancho.intValue()+"px x " +alto.intValue()+" px, hasta "+ (ancho.intValue()+margenancho.intValue()) +" px x "+(alto.intValue()+margenalto.intValue())+" px, debe tener propocion 14:9 y ser de formato jpg, jpeg o png y no debe pesar mas de "+ kb +"KB";
 					Clients.showNotification(mensaje, "warning", component, "middle_center", 10000, true);
 					return;
 				}
 			} else {
-				Messagebox.show("El archivo no es una imagen o es demasiado grande","Error", Messagebox.OK, Messagebox.ERROR);
-				return;
+				Clients.showNotification("El archivo no se pudo procesar correctamente o no se trata de una imagen, reintente subirla, si el problema persiste consulte con el administrador.", "error", component, "middle_center", 10000, true);
 			}
 			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
 			String path = context.getRealPath("/imagenes/");
