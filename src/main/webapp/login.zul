@@ -13,7 +13,7 @@
 <separator height="30%"/>
 	<vbox style="padding-left:40%;">
 	<div align="center">
-		<image src="/imagenes/logo_ch_login_beta.png"/>
+		<image src="/imagenes/logo_ch_login.png"/>
 	</div>
 	<div id="enter" align="center">
 		<vbox>

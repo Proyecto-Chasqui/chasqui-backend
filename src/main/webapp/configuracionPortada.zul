@@ -109,7 +109,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
         		 <popup id="ayudaImagenLogo" width="400px">
         			<html><![CDATA[ En esta sección pueden agregar el logo, situado arriba al izquierda de la página general. <br /><br />
         					Se puede agregar solo <font color="red">una imagen</font> y es <font color="blue">recomendable</font> que se agregue para una mejor distinción del catálogo.<br /><br />
-        					<strong>Nota: </strong>La imagen debe tener un tamaño entre <font color="red">124x40</font> y <font color="red">300x40</font>, no deben pesar más de <font color="red">1MB</font> debe ser de formato <font color="red"> jpg, jpeg, png </font>y es <font color="blue">recomendable</font> que tenga transaparencia para una mejor presentación.
+        					<strong>Nota: </strong>La imagen debe tener un tamaño entre <font color="red">124x55</font> y <font color="red">300x55</font>, no deben pesar más de <font color="red">1MB</font> debe ser de formato <font color="red"> jpg, jpeg, png </font>y es <font color="blue">recomendable</font> que tenga transaparencia para una mejor presentación.
         					]]>
         					
         			</html>
