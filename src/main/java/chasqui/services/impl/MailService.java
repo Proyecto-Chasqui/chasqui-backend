@@ -792,7 +792,7 @@ public class MailService {
 				+"</tbody>"
 				+"</table>"
 				+"<br>"
-				+"<strong>Aclaración:</strong> En el <strong>incentivo total</strong> esta incluido el de tu <strong>pedido como administrador</strong>.";
+				+"<strong>Aclaración:</strong> En el <strong>ingreso nodo</strong> esta incluido el de tu <strong>pedido como administrador</strong>.";
 				
 				
 		//"<tr><td>"+ pp.getNombreProducto() + pp.getNombreVariante() + "</td><td>" +pp.getPrecio()+ "</td><td> "+ pp.getCantidad() +"</td></tr>";

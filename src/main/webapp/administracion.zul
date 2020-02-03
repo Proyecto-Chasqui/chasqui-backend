@@ -50,7 +50,7 @@
 			<row zclass="none">
 				<hbox>
 					<space spacing="5px"/>
-					<image src="/imagenes/logo_ch_admn.png" height="auto" width="auto"/>
+					<image src="/imagenes/logo_ch_admn_1.png" height="auto" width="auto"/>
 				</hbox>
 				<div>
 					<label value="${c:l('zk.label.administrador')}" style="font-size:30px;font-weight:bold; color:white"/>
