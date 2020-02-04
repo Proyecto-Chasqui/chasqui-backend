@@ -300,7 +300,7 @@ public class MailService {
 		params.put("cuerpo", cuerpoCliente);
 		params.put("tablaContenidoPedido",tablaContenidoPedido);
 		params.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
-		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(),vendedor.getNombreCorto()) + "> bienvenida</a>"));
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>",  "<strong>entregas</strong>")); //"<a href="+ generarUrlEntregas(vendedor.getUrl(), vendedor.getNombreCorto())  + "> entregas </a>"));
 		params.put("textoDetalle", textoEnEmail);
 		params.put("catalogoVendedor", catalogo);
 
@@ -371,7 +371,7 @@ public class MailService {
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
 		params.put("textoDetalle", textoEnEmail);
 		params.put("textoDeDireccionDeEntrega", textoDeDireccionDeEntrega);
-		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(), vendedor.getNombreCorto()) + "> bienvenida </a>"));
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>","<strong>entregas</strong>")); //"<a href="+ generarUrlEntregas(vendedor.getUrl(), vendedor.getNombreCorto())  + "> entregas </a>"));
 		
 		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), formarTag(pedido) +Constantes.PEDIDO_PREPARADO_SUBJECT, params);
 		
@@ -467,7 +467,7 @@ public class MailService {
 		params.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivo);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
 		Vendedor vendedor= pedidoColectivo.getColectivo().getVendedor();
-		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(), vendedor.getNombreCorto())  + "> bienvenida </a>"));
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<strong>entregas</strong>")); //"<a href="+ generarUrlEntregas(vendedor.getUrl(), vendedor.getNombreCorto())  + "> entregas </a>"));
 		params.put("textoDetalle", textoEnEmail);
 		
 		
@@ -907,9 +907,9 @@ public class MailService {
 		return (url + slash + "#/" + nombreCorto + "/productos");
 	}
 	
-	private String generarUrlBienvenida(String url, String nombreCorto){
+	private String generarUrlEntregas(String url, String nombreCorto){
 		String slash = (url.endsWith("/"))?"":"/";
-		return (url + slash + "#/" + nombreCorto + "/bienvenida");
+		return (url + slash + "#/" + nombreCorto + "/puntosDeEntrega");
 	}
 	
 	//Seccion de emails genericos de notificacion
