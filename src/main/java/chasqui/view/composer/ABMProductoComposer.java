@@ -170,6 +170,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		imgRender.setLectura(true);
 		listImagenes.setDisabled(false);
 		listitemincentivo.setVisible(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos());
+		incentivo.setValue(0.0);
 		if(model.getCategoria() != null && model.getFabricante() != null){
 			categoriaSeleccionada = model.getCategoria();
 			productorSeleccionado = model.getFabricante();
@@ -241,6 +242,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		modelv.setPrecio(doubleboxPrecio.getValue());
 		if(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos()) {
 			modelv.setIncentivo(incentivo.getValue());
+		}else {
+			modelv.setIncentivo(0.0);
 		}
 		modelv.setCantidadReservada(0);
 		modelv.setProducto(model);

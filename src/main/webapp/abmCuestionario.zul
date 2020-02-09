@@ -158,10 +158,10 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="tru
         			</html>
     				</popup>
         		 <popup id="ayudapreguntasconsumoedicion" width="500px">
-        			<html><![CDATA[ En esta sección se configura las pregunta de consumo, puede configurar hasta 15 respuestas para la pregunta. <br /><br />
-        					Al escribir la respuesta en el campo correspondiente, puede hacer clic en <font color="blue">agregar</font> o apretar <font color="blue"> enter </font><br /><br />
+        			<html><![CDATA[ En esta sección se configura la pregunta de consumo, puede configurar hasta 15 respuestas para la pregunta. <br /><br />
+        					Al escribir la respuesta en el campo correspondiente, puede hacer clic en <font color="blue">agregar</font> o apretar <font color="blue">enter</font>.<br /><br />
         					Las respuestas no son editables, por lo que si desea cambiarla deberá eliminarlas.<br/><br />
-        					<font color="blue">Respuesta libre:</font> Si desea que el usuario responda la pregunta escribiendo el texto, <font color="blue"> no agregue ninguna respuesta </font>.
+        					<font color="blue">Respuesta libre:</font> Si desea que el usuario responda la pregunta escribiendo el texto, <font color="blue"> no agregue ninguna respuesta</font>.
         					]]>
         					
         			</html>
