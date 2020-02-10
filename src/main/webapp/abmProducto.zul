@@ -59,7 +59,7 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 						<listcell label="${c:l('zk.listcell.label.abmProducto.fabricante') } *"/>
 						<listcell>
 							<hbox>
-								<toolbarbutton image="/imagenes/plus.png" id="botonAgregarFabricante" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"/>
+								<toolbarbutton image="/imagenes/plus.png" id="botonAgregarFabricante" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')} *"/>
 								<combobox width="100%" readonly="true" id="comboFabricantes" model="@{productosWindow$composer.usuario.fabricantes}" selectedItem="@{productosWindow$composer.productorSeleccionado }"/>
 							</hbox>
 						</listcell>

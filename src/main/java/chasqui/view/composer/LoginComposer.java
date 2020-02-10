@@ -115,7 +115,10 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 	    		Messagebox.EXCLAMATION, null, new EventListener<ClickEvent>(){
 	
 			public void onEvent(ClickEvent event) throws Exception {
-				String edata= event.getData().toString();
+				String edata = "";
+				if (event.getData() != null){
+					edata= event.getData().toString();
+				}
 				switch (edata){
 				case "YES":
 					try {
@@ -127,6 +130,7 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 					}
 					
 				case "ABORT":
+				default:
 				}
 			}
 			});
