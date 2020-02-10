@@ -169,9 +169,9 @@ apply="chasqui.view.composer.ConfiguracionComposer" height="100%" width="100%" s
 </div>
    <popup id="ayudausuarios" width="500px">
        <html><![CDATA[ 
-             En esta sección se configura la imagen del multicatalogo, la misma será aplicada como imagen de la tarjeta de su catálogo.<br /><br />
-             <strong>Aclaración:</strong> La imagen debe tener entre <font color="red">280px de ancho</font> por <font color="red">180px de alto</font> y <font color="red">560px de ancho</font> por <font color="red">360px de alto</font>, mantener una relación aspecto de <font color="red">14:9</font>, ser de formato jpg,jpeg,png y no pesar mas de <font color="red">512kb</font>. </br></br>
-             <strong>Algunos ejemplos de dimensiones validas son: <font color="blue">294x189</font>, <font color="blue">308x198</font>, <font color="blue">324x207</font> ,<font color="blue">340x216</font>.
+             En esta sección se configura la imagen del multicatálogo, la misma será aplicada como imagen de la tarjeta de su catálogo.<br /><br />
+             <strong>Aclaración:</strong> La imagen debe tener entre <font color="red">280px de ancho</font> por <font color="red">180px de alto</font> y <font color="red">560px de ancho</font> por <font color="red">360px de alto</font>, mantener una relación aspecto de <font color="red">14:9</font>, ser de formato jpg,jpeg,png y no pesar más de <font color="red">512kb</font>. </br></br>
+             <strong>Algunos ejemplos de dimensiones válidas son: <font color="blue">294x189</font>, <font color="blue">308x198</font>, <font color="blue">324x207</font> ,<font color="blue">340x216</font>.
              ]]>		
        </html>
     </popup>

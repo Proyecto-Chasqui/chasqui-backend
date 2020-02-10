@@ -145,7 +145,7 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="tru
         					<strong>Preguntas de consumo individuales:</strong> Son las preguntas que responderán los usuarios cuando confirmen un pedido individual <strong>que no pertenezca a una compra colectiva</strong>. </br> </br>
         					<strong>Preguntas de consumo colectivas:</strong>  Son las preguntas que responderán los  <strong>administradores</strong> que confirmen una compra colectiva.</br>
         					</br>
-        					<strong>Nota:</strong> Las <strong>preguntas colectivas</strong> no son visibles por los que hagan compras individules dentro de una compra colectiva, aún si tienen configuradas <strong>preguntas de consumo individuales.</strong></br></br>
+        					<strong>Nota:</strong> Las <strong>preguntas colectivas</strong> sólo serán visibles para el administrador del grupo, que es quien confirma la compra grupal.</br></br>
         					<strong>Aclaración:</strong> se permiten hasta <strong>5 preguntas</strong> por tipo, con un <strong>maximo de 15 respuestas</strong> para cada una. </br></br>
         					<strong>En las lista se muestra:</strong> </br></br>
         					<strong>Pregunta</strong> Se muestra la pregunta correspondiente</br></br>
@@ -161,7 +161,7 @@ apply="chasqui.view.composer.ABMCuestionarioComposer" width="45%"  closable="tru
         			<html><![CDATA[ En esta sección se configura la pregunta de consumo, puede configurar hasta 15 respuestas para la pregunta. <br /><br />
         					Al escribir la respuesta en el campo correspondiente, puede hacer clic en <font color="blue">agregar</font> o apretar <font color="blue">enter</font>.<br /><br />
         					Las respuestas no son editables, por lo que si desea cambiarla deberá eliminarlas.<br/><br />
-        					<font color="blue">Respuesta libre:</font> Si desea que el usuario responda la pregunta escribiendo el texto, <font color="blue"> no agregue ninguna respuesta</font>.
+        					<font color="blue">Respuesta libre:</font> Si desea que el usuario responda la pregunta escribiendo el texto, <font color="blue"> no agregue ninguna respuesta y haga click en <strong>guardar cambios</strong>.</font>.
         					]]>
         					
         			</html>

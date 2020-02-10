@@ -34,7 +34,7 @@ apply="chasqui.view.composer.ConfiguracionDeVentasComposer" height="75%" width="
 			           	<auxheader label="Texto de aviso" style="color: white;" />
 			        </auxhead>
 			       </div>
-				<textbox id="textboxMensaje" type="password" maxlength="1200" width="100%" rows="19"/>
+				<textbox id="textboxMensaje" placeholder="Escriba acá..." type="password" maxlength="1200" width="100%" rows="19"/>
 				<separator spacing="5px"/>
 				<div align="center">
 					<button id="guardarButtonVentas" image="/imagenes/checked_16.png" label="Guardar"></button>

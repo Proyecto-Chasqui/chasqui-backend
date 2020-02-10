@@ -245,7 +245,7 @@ apply="chasqui.view.composer.ConfiguracionPortadaComposer" width="50%"  closable
         		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextoconfigportada" src="/imagenes/question.png" />
         		
         		 <popup id="ayudatextoconfigportada" width="400px">
-        			<html><![CDATA[ En esta sección puede mostrar u ocultar la pestaña bienvenida visible en el catálogo, por defecto esta oculta y es recomendable habilitarla cuando los datos del texto, contacto e imagenes esten completas.
+        			<html><![CDATA[ En esta sección puede mostrar u ocultar la pestaña bienvenida visible en el catálogo, por defecto está oculta y es recomendable habilitarla cuando los datos del texto, contacto e imágenes estén completas.
         					]]>        					
         			</html>
     				</popup> 		
