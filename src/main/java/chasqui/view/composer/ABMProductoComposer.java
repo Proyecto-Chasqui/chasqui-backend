@@ -171,6 +171,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		listImagenes.setDisabled(false);
 		listitemincentivo.setVisible(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos());
 		incentivo.setValue(0.0);
+		doubleboxPrecio.setValue(0.0);
+		totalPrecio.setReadonly(true);
 		if(model.getCategoria() != null && model.getFabricante() != null){
 			categoriaSeleccionada = model.getCategoria();
 			productorSeleccionado = model.getFabricante();
@@ -181,8 +183,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		if(!model.getVariantes().isEmpty()){
 			modelv = model.getVariantes().get(0);
 			doubleboxPrecio.setValue(modelv.getPrecio());
-			incentivo.setValue(modelv.getIncentivo());
-			totalPrecio.setReadonly(true);
+			incentivo.setValue(modelv.getIncentivo());			
 			totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
 			intboxStock.setValue(modelv.getStock());
 			textboxCodigo.setValue(modelv.getCodigo());
@@ -654,11 +655,18 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		cantidadCaracteres.open(ckEditor,"after_end");
 	}
 	public void onCalcularTotal() {
-		if(incentivo.getValue() != null) {
+		if(incentivo.getValue() != null && doubleboxPrecio.getValue() != null) {
 			totalPrecio.setValue(incentivo.getValue() + doubleboxPrecio.getValue());
-		}else {
+		}
+		if(doubleboxPrecio.getValue() != null && incentivo.getValue() == null) {
 			totalPrecio.setValue(doubleboxPrecio.getValue());
 		}
+		if(doubleboxPrecio.getValue() == null && incentivo.getValue() != null) {
+			totalPrecio.setValue(incentivo.getValue());
+		}
+		if(doubleboxPrecio.getValue() == null && incentivo.getValue() == null) {
+			totalPrecio.setValue(0.0);
+		}		
 	}
 	
 	

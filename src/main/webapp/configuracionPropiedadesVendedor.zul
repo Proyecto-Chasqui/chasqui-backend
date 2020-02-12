@@ -101,11 +101,11 @@
 			</tabpanels>
 		</tabbox>	
         		 <popup id="ayudatextopedidosnodos" width="300px">
-        			<html><![CDATA[ En esta sección se configuran las propiedades del catálogo, con las mismas los usuarios podrán hacer busquedas mas especificas y podrán a simple vista ver las caracteristicas distintivas de su catálogo. <br /><br />
-        					Las propiedades del catálogo estan divididas en 3 tipos <br /><br />
+        			<html><![CDATA[ En esta sección se configuran las propiedades del catálogo, con las mismas los usuarios podrán hacer busquedas más específicas y podrán a simple vista ver las características distintivas de su catálogo. <br /><br />
+        					Las propiedades del catálogo están divididas en 3 tipos <br /><br />
         					<strong>Tipo de producto:</strong> Define los tipos de productos que el catálogo ofrece, <strong>se pueden elegir hasta 5</strong>. </br> </br>
         					<strong>Tipo de Organización:</strong> Permite mostrar que tipo de organización es la que opera el catálogo, <strong>solo se puede elegir 1</strong>.</br></br>
-        					<strong>Zonas de operación:</strong> Permite mostrar en que areas o alcance tienen las entregas/ventas, <strong>se pueden elegir hasta 3</strong>.</br></br>
+        					<strong>Zonas de operación:</strong> Permite mostrar en que áreas o alcance tienen las entregas/ventas, <strong>se pueden elegir hasta 3</strong>.</br></br>
         					]]>
         					
         			</html>
