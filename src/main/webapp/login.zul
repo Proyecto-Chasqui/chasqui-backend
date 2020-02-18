@@ -37,6 +37,14 @@
 		</vbox>
 	</div>
 	</vbox>
+	<vbox style="padding-left:37%;">
+	<div align="justify" width="40%">
+		 <label style="color: red" value="Advertencia:"/> El panel de administración soporta  <label style="color: red" value="solo un usuario logueado por cuenta"/>, si hay un usuario utilizando el panel y decide loguear con su cuenta, el mismo será <label style="color: red" value="expulsado"/> para permitirle el ingreso.
+	</div>
+	<div align="justify" width="40%">
+		Por favor asegúrese de que no haya nadie mas utilizando la cuenta antes de ingresar.
+	</div>
+	</vbox>
 
 <!-- 	</html:form> -->
 	
