@@ -382,7 +382,7 @@ public class Cliente extends Usuario {
 		List<PuntoDeRetiro> prs= vendedorDao.obtenerPuntosDeRetiroDeVendedor(idVendedor);
 		boolean ret = false;
 		for(PuntoDeRetiro p : prs){
-			if(p.getId() == idPuntoDeRetiro){
+			if(p.getId().equals(idPuntoDeRetiro)){
 				ret= true;
 			}
 		}
