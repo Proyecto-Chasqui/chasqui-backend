@@ -34,6 +34,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
 
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.Imagen;
 import chasqui.model.Vendedor;
@@ -299,18 +300,25 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 		}
 	}
 	
+	public void sincWithBD() throws VendedorInexistenteException {
+		Vendedor user =(Vendedor) usuarioService.obtenerUsuarioPorID(vendedorLogueado.getId());
+		usuarioService.inicializarListasDe(user);
+		Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
+		vendedorLogueado = user;
+	}
+	
 	public void onClick$buttonGuardar() throws Exception{
 		validarPassword();
-		
+		sincWithBD();
 		//Date d = dateProximaEntrega.getValue();
-		vendedorLogueado.setDistanciaCompraColectiva(kilometroSeleccionado);
+		//vendedorLogueado.setDistanciaCompraColectiva(kilometroSeleccionado);
 		//vendedorLogueado.setFechaCierrePedido(new DateTime(d.getTime()));
-		vendedorLogueado.setImagenPerfil(imagen.getPath());
+		//vendedorLogueado.setImagenPerfil(imagen.getPath());
 		usuarioService.guardarUsuario(vendedorLogueado);
 		textboxClaveActual.setValue(null);
 		textboxNuevaClave.setValue(null);
 		textboxNuevaClaveRepita.setValue(null);
-		Messagebox.show("Las configuracion se han guardado correctamente","Información",Messagebox.OK,Messagebox.INFORMATION);
+		Messagebox.show("Los cambios se ha guardado correctamente","Información",Messagebox.OK,Messagebox.INFORMATION);
 		this.binder.loadAll();
 	}
 	
