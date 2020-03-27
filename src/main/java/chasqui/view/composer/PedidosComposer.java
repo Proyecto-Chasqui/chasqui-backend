@@ -420,7 +420,10 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
 	
 				public void onEvent(ClickEvent event) throws Exception {
-					String edata= event.getData().toString();
+					String edata = "NO";
+					if(event.getData() != null) {
+						edata = event.getData().toString();
+					}
 					switch (edata){
 					case "YES":
 						try {
@@ -460,7 +463,10 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
 
 			public void onEvent(ClickEvent event) throws Exception {
-				String edata= event.getData().toString();
+				String edata = "NO";
+				if(event.getData() != null) {
+					edata = event.getData().toString();
+				}
 				switch (edata){
 				case "YES":
 					try {
@@ -474,13 +480,6 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 					}
 					break;
 				case "NO":
-					try {
-						export.fullexport(pedidos);
-						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
-					} catch (Exception e) {
-						Clients.showNotification(e.getMessage(), "error", window, "middle_center", 20000, true);
-						e.printStackTrace();
-					}
 					break;
 				case "ABORT":
 				}

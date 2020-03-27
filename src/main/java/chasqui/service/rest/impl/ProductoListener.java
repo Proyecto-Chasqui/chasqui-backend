@@ -108,7 +108,7 @@ public class ProductoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	//probar
+	
 	@POST
 	@Path("/productosByMultiplesFiltros")
 	@Produces("application/json")

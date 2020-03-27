@@ -87,7 +87,7 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			super.doAfterCompose(comp);
 			imagen = new Imagen();
 			component = comp;
-			if(vendedorLogueado.getImagenPerfil() != null){
+			if(vendedorLogueado.getImagenPerfil() != null || vendedorLogueado.getImagenPerfil().equals("/imagenes/usuarios/ROOT/perfil.jpg")){
 				imagen.setPath(vendedorLogueado.getImagenPerfil());				
 			}else{
 				imagen.setPath("/imagenes/subirImagen.png");

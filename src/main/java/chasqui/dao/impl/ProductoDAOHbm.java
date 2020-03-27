@@ -48,13 +48,17 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 					 c.createAlias("producto.categoria", "categoria")
 					 .add(Restrictions.eq("categoria.id", idCategoria));
 				}
-				if(!idsSellosProducto.isEmpty()) {
-					c.createAlias("producto.caracteristicas","caracteristicasProducto");
-					c.add(Restrictions.in("caracteristicasProducto.id", idsSellosProducto));
-				}
-				if(!idsSellosProductor.isEmpty()) {
-					c.createAlias("fabricante.caracteristicas", "caracteristicasProductor");
-					c.add(Restrictions.in("caracteristicasProductor.id", idsSellosProductor));
+				if(!idsSellosProducto.isEmpty() || !idsSellosProductor.isEmpty()) {
+					Disjunction disjuntion = Restrictions.disjunction();
+					if(!idsSellosProducto.isEmpty()) {
+						c.createAlias("producto.caracteristicas","caracteristicasProducto");
+						disjuntion.add(Restrictions.in("caracteristicasProducto.id", idsSellosProducto));
+					}
+					if(!idsSellosProductor.isEmpty()) {
+						c.createAlias("fabricante.caracteristicas", "caracteristicasProductor");
+						disjuntion.add(Restrictions.in("caracteristicasProductor.id", idsSellosProductor));
+					}
+					c.add(disjuntion);
 				}
 				 if(idProductor !=null){
 				  c.add(Restrictions.eq("fabricante.id", idProductor));
@@ -74,8 +78,7 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 		if(numeroDeOrden == null) {
 			numeroDeOrden = 0;
 		}
-		System.out.print(numeroDeOrden%10);
-		switch(numeroDeOrden%9) {
+		switch(numeroDeOrden%11) {
 		  case 0:
 			  c.addOrder(Order.asc("producto.nombre"));
 		    break;
@@ -101,6 +104,10 @@ public class ProductoDAOHbm extends HibernateDaoSupport implements ProductoDAO{
 			  c.addOrder(Order.desc("variante.codigo"));
 		  case 8:
 			  c.addOrder(Order.asc("variante.codigo"));
+		  case 9:
+			  c.addOrder(Order.asc("variante.precio"));
+		  case 10:
+			  c.addOrder(Order.desc("variante.precio"));
 		  default:
 			  c.addOrder(Order.asc("id"));
 		}

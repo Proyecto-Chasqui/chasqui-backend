@@ -39,7 +39,11 @@ public class VendedorResponse implements Serializable{
 		id = v.getId();
 		nombre = v.getNombre();
 		nombreCorto = v.getNombreCorto();
-		imagen = v.getImagenPerfil();
+		if(v.getImagenPerfil() == null || v.getImagenPerfil().equals("/imagenes/usuarios/ROOT/perfil.jpg")) {
+			imagen = "/imagenes/imagennodisponible.jpg";
+		}else {
+			imagen = v.getImagenPerfil();
+		}
 		tiempoDeVencimiento = v.getTiempoVencimientoPedidos();
 		montoMinimo = v.getMontoMinimoPedido();
 		EstrategiasDeComercializacion estrategias = v.getEstrategiasUtilizadas();
