@@ -135,7 +135,7 @@ public class Variante {
 	}
 	
 	public boolean tieneStockParaReservar(Integer cantidad) {
-		return this.getStock() - (this.getCantidadReservada() + cantidad)> 0;
+		return this.getStock() - (this.getCantidadReservada() + cantidad)>= 0;
 	}
 	
 	public void reservarCantidad(Integer cantidad) {

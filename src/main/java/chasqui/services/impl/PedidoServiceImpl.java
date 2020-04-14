@@ -438,7 +438,7 @@ public class PedidoServiceImpl implements PedidoService {
 			throw new ProductoInexistenteException(
 					"No se puede quitar mas cantidad de un producto de la que el usuario posee en su pedido");
 		}
-		if(pedido.getIdVendedor() != v.getIdVendedor()) {
+		if(!pedido.getIdVendedor().equals(v.getIdVendedor())) {
 			throw new ProductoInexistenteException(
 					"No se puede quitar un producto que no es del vendedor");
 		}
@@ -466,7 +466,7 @@ public class PedidoServiceImpl implements PedidoService {
 		if (!v.tieneStockParaReservar(request.getCantidad())) {
 			throw new ProductoInexistenteException("El producto no posee más Stock");
 		}
-		if(v.getIdVendedor() != p.getIdVendedor()) {
+		if(!v.getIdVendedor().equals(p.getIdVendedor())) {
 			throw new ProductoInexistenteException("El producto no pertenece al vendedor solicitado");
 		}
 	}

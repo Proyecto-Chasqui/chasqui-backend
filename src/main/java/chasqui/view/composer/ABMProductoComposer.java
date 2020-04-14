@@ -181,7 +181,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			
 		}
 		if(!model.getVariantes().isEmpty()){
-			modelv = model.getVariantes().get(0);
+			modelv = productodao.obtenervariantePor(model.getVariantes().get(0).getId());
 			doubleboxPrecio.setValue(modelv.getPrecio());
 			incentivo.setValue(modelv.getIncentivo());			
 			totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
@@ -246,7 +246,13 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		}else {
 			modelv.setIncentivo(0.0);
 		}
-		modelv.setCantidadReservada(0);
+		if(modelv.getCantidadReservada() != null) {
+			if(modelv.getCantidadReservada() < 0) {
+				modelv.setCantidadReservada(0);
+			}
+		}else {
+			modelv.setCantidadReservada(0);
+		}
 		modelv.setProducto(model);
 		
 		if(model == null){	
@@ -723,6 +729,10 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		}
 		if(previews > 1){
 			throw new WrongValueException(tabdetalles,"No se puede elegir mas de una imagen de previsualización");
+		}
+		
+		if(stock < modelv.getCantidadReservada()) {
+			throw new WrongValueException(tabdetalles,"Hay pedidos abiertos que tienen reservado este producto, no puede ser menor a "+model.getVariantes().get(0).getCantidadReservada());
 		}
 		
 		
