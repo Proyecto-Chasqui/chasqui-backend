@@ -57,6 +57,10 @@ apply="chasqui.view.composer.ProductosEnPedidoComposer" width="800px">
 						<listcell label="Domicilio de entrega" style="font-weight:bold;"/>
 						<listcell label="@{pedidoWindow$composer.pedidoMostrado.domicilio.toString}" style="font-weight:bold;"/>
 					</listitem>
+					<listitem  visible="@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+						<listcell label="Comentario del comprador" style="font-weight:bold;"/>
+						<listcell label="@{pedidoWindow$composer.pedidoMostrado.comentario}" style="font-weight:bold;"/>
+					</listitem>
 					<listitem  visible= "@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
 						<listcell label="Zona" style="font-weight:bold;"/>
 						<listcell label="@{pedidoWindow$composer.pedidoMostrado.zona.toString}" style="font-weight:bold;"/>
@@ -82,6 +86,10 @@ apply="chasqui.view.composer.ProductosEnPedidoComposer" width="800px">
 					<listitem  visible= "@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
 						<listcell label="Dirección" style="font-weight:bold;"/>
 						<listcell id="labelDireccionPR" style="font-weight:bold;"/>
+					</listitem>
+					<listitem  visible="@{pedidoWindow$composer.pedidoMostrado.esIndividual}">
+						<listcell label="Comentario del comprador" style="font-weight:bold;"/>
+						<listcell label="@{pedidoWindow$composer.pedidoMostrado.comentario}" style="font-weight:bold;"/>
 					</listitem>
 				</listbox>
 			</tabpanel>

@@ -102,6 +102,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 	private String direccion;
 	private String zona;
 	private String nombrePr;
+	private String comentario;
 	private boolean tieneEntregaADomicilio = false;
 	private boolean tienePuntoDeRetiro = false;
 	private boolean estaConfirmado = false;
@@ -161,6 +162,12 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		}else {
 			nombrePr = "N/D";
 		}
+		if(pedidoColectivo.getComentario() != null) {
+			comentario = pedidoColectivo.getComentario();
+		}else {
+			comentario = "";
+		}
+		
 	}
 	
 	private boolean validarConfirmado() {
@@ -466,6 +473,14 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 
 	public void setRespuestas(Map<String, String> respuestas) {
 		this.respuestas = respuestas;
+	}
+
+	public String getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
 	}
 	
 	

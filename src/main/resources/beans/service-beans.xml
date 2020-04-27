@@ -169,9 +169,11 @@
       <bean id="imagenAdmin" name="imagenAdmin" class="java.lang.String">
            <constructor-arg type="java.lang.String" value="${usuario.administrador.imagen}" />
     </bean>
-    <!-- ELIMINAR O COMENTAR LUEGO DE PASAR 1 VEZ A PRODUCCION
-    <bean id="fabricanteStartup" name="fabricanteStartup" class="chasqui.services.impl.FabricanteStartup" init-method="syncro"/>
-    ELIMINAR O COMENTAR LUEGO DE PASAR 1 VEZ A PRODUCCION -->
+    
+    <bean id="operationsOnStartUp" name="operationsOnStartUp" class="chasqui.services.impl.OperationsOnStartup" init-method="corregirReservas"/>
+    <!-- COMENTAR "operationsOnStartUp" LUEGO DE PASAR 1 VEZ A PRODUCCION
+    -->
+
     
     <!-- ********************** DEMO ****************************** -->
     

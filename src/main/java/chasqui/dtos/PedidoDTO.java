@@ -20,6 +20,7 @@ public class PedidoDTO {
 	private List<PedidoIndividualDTO> pedidosIndividuales;
 	private Boolean esIndividual = true;
 	private Boolean sinConfirmar = false;
+	private String comentario = "";
 
 	public PedidoDTO(Pedido pedido) {
 		this.emailCliente = pedido.getCliente().getEmail();
@@ -30,6 +31,7 @@ public class PedidoDTO {
 		pedidosIndividuales = new ArrayList<PedidoIndividualDTO>();
 		esIndividual = !pedido.getPerteneceAPedidoGrupal();
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		comentario = pedido.getComentario();
 	}
 	
 	public PedidoDTO(PedidoColectivo pedido, GrupoCC grupo) {
@@ -41,6 +43,7 @@ public class PedidoDTO {
 		pedidosIndividuales = new ArrayList<PedidoIndividualDTO>();
 		esIndividual = false;
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		comentario = pedido.getComentario();
 	}
 	
 	private double definirMontoSegunIncentivos(Pedido pedido) {
@@ -154,6 +157,14 @@ public class PedidoDTO {
 
 	public void setSinConfirmar(Boolean sinConfirmar) {
 		this.sinConfirmar = sinConfirmar;
+	}
+
+	public String getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
 	}
 
 

@@ -67,6 +67,10 @@
 						<listcell label="@{verPedidosColectivosWindow$composer.direccion}" style="font-weight:bold;"/>
 					</listitem>
 					<listitem>
+						<listcell label="Comentario del comprador" style="font-weight:bold;"/>
+						<listcell label="@{verPedidosColectivosWindow$composer.comentario}" style="font-weight:bold;"/>
+					</listitem>
+					<listitem>
 						<listcell label="Zona" style="font-weight:bold;"/>
 						<listcell label="@{verPedidosColectivosWindow$composer.zona}" style="font-weight:bold;"/>
 					</listitem>
@@ -91,6 +95,10 @@
 					<listitem>
 						<listcell label="Dirección" style="font-weight:bold;"/>
 						<listcell label="@{verPedidosColectivosWindow$composer.direccion}" id="labelDireccionPR" style="font-weight:bold;"/>
+					</listitem>
+					<listitem>
+						<listcell label="Comentario del comprador" style="font-weight:bold;"/>
+						<listcell label="@{verPedidosColectivosWindow$composer.comentario}" style="font-weight:bold;"/>
 					</listitem>
 				</listbox>
 			</tabpanel>
