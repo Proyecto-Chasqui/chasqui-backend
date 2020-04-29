@@ -10,7 +10,7 @@ apply="chasqui.view.composer.ABMCategoriaComposer" border="normal" width="20%" h
 <div align="center">
 	<hbox>
 		<label value="${c:l('zk.listheader.label.abmCategoria.nombre')}"/>
-		<textbox maxlength="20" id="textboxNombreCategoria"/>
+		<textbox maxlength="128" id="textboxNombreCategoria"/>
 	</hbox>
 	<separator spacing="20px"/>
 	<div align="center">

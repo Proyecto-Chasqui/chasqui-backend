@@ -132,6 +132,14 @@ public class Pedido implements IPedido {
 		return trim2decimals(monto);
 	}
 	
+	public Double getMontoTotalIncentivo() {
+		double monto = 0.0; 
+		for (ProductoPedido p : productosEnPedido) {
+			monto = monto + (p.getCantidad() * p.getIncentivo());
+		}
+		return trim2decimals(monto);
+	}
+	
 	private Double trim2decimals(Double d) {
 		String trim = df.format(d); 
 		Double value = Double.parseDouble(trim.replace(",","."));
@@ -229,6 +237,45 @@ public class Pedido implements IPedido {
 			throw new EstadoPedidoIncorrectoException("El pedido no está abierto, su estado es: " + this.getEstado());
 		}
 	}
+	
+	/**
+	 * Usado para el exporter
+	 */
+	public void agregarProductoPedidoConValidaciones(ProductoPedido pp, DateTime nuevoVencimiento) throws EstadoPedidoIncorrectoException {
+		if(this.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)||this.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)){
+			this.setEstado(Constantes.ESTADO_PEDIDO_ABIERTO);
+			this.setProductosEnPedido(new HashSet<ProductoPedido>());
+			this.fechaDeVencimiento = nuevoVencimiento;
+			this.setMontoActual(new Double(0.0));
+			this.alterable = true;
+			this.setFechaCreacion(new DateTime());
+		}
+		
+		if (this.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+			this.fechaDeVencimiento = nuevoVencimiento;
+			this.agregarProductoPedidoApedido(pp);
+		} else {
+			throw new EstadoPedidoIncorrectoException("El pedido no está abierto, su estado es: " + this.getEstado());
+		}
+	}
+
+	private void agregarProductoPedidoApedido(ProductoPedido pp) {
+		if (existeProductoEnPedido(pp)) {
+			if(existeProductoEnPedidoConMismoPrecio(pp)) {
+				sumarCantidadAProductoExistente(pp);
+			}else{
+				productosEnPedido.add(pp);
+			}
+		} else {
+			productosEnPedido.add(pp);
+		}
+		
+	}
+
+	private boolean existeProductoEnPedidoConMismoPrecio(ProductoPedido pp) {
+		ProductoPedido p = encontrarProductoEnPedido(pp);
+		return p.getPrecio().equals(pp.getPrecio());
+	}
 
 	private void sumarCantidadAProductoExistente(ProductoPedido pp) {
 		ProductoPedido p = encontrarProductoEnPedido(pp);
@@ -271,7 +318,7 @@ public class Pedido implements IPedido {
 
 	@Override
 	public Double getMontoTotal() {
-		return this.montoActual;
+		return this.getMontoActual();
 	}
 
 	@Override

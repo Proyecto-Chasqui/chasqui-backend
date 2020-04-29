@@ -16,117 +16,192 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
         min-height:60px;
         padding:5px 18px 5px 45px;
         vertical-align:middle;
-    }</style>
-<vbox>
-	<listbox>
-		<listhead>
-			<listheader/>
-			<listheader/>
-			<listheader/>
-			<listheader/>
-		</listhead>
-		<listitem>
-			<listcell label="${c:l('zk.listheader.label.abmCategoria.nombre')} *"/>
-			<listcell>
-				<textbox width="190px" id="nombreProducto" placeholder="i.e: Mermelada" />
-			</listcell>
-			<listcell label="${c:l('zk.listcell.label.abmVariedad.codigo')} *"/>
-		<listcell>
-			<textbox width="180px" id="textboxCodigo" placeholder="Ingresar código del artículo"/>
-		</listcell>
-		</listitem>
-		<listitem>
-			<listcell label="${c:l('zk.listcell.label.abmProducto.categoria')} * "/>
-			<listcell>
-				<hbox>
-					<toolbarbutton id="botonAgregarCategoria" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')} *" image="/imagenes/plus.png"/>
-					<combobox width="160px" readonly="true" id="comboCategorias" model="@{productosWindow$composer.usuario.categorias}" selectedItem="@{productosWindow$composer.categoriaSeleccionada }"/>
-				</hbox>
-			</listcell>
-			<listcell label="${c:l('zk.listcell.label.abmVariedad.precio')} *"/>	
-			<listcell>
-				<doublebox width="180px" id="doubleboxPrecio" placeholder="I.E: 10.20"/>
-			</listcell>
-		</listitem>
-		<listitem>
-			<listcell label="${c:l('zk.listcell.label.abmProducto.fabricante') } *"/>
-			<listcell>
-				<hbox>
-					<toolbarbutton image="/imagenes/plus.png" id="botonAgregarFabricante" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"/>
-					<combobox width="160px" readonly="true" id="comboFabricantes" model="@{productosWindow$composer.usuario.fabricantes}" selectedItem="@{productosWindow$composer.productorSeleccionado }"/>
-				</hbox>
-			</listcell>
-			<listcell label="${c:l('zk.listcell.label.abmVariedad.stock')} *"/>
-			<listcell>
-				<intbox width="180px" id="intboxStock" placeholder="I.E: 4"/>
-			</listcell>
-		</listitem>
-	</listbox>
-<hbox>
-<listbox id="listImagenes" width="95%" model="@{productosWindow$composer.imagenes}"  rows="3">
-	<listhead>
-		<listheader label="${c:l('zk.listcell.label.abmVariedad.imagen') }"/>
-		<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
-	</listhead>
-	<listitem self="@{each=imagen}">
-		<listcell label="@{imagen.getNombre}"/>
-		<listcell>
-			<hbox>
-				<image src="/imagenes/destacado_off.png"/>
-				<space spacing="10px"/>
-				<image src="/imagenes/trash.png"/>
-				<space spacing="10px"/>
-				<image src="/imagenes/download.png" />
-			</hbox>
-		</listcell>
-	</listitem>	
-</listbox>
-<div	align="center">
-	<fileupload label="${c:l('zk.button.label.examinar')}" id="uploadImagen"  upload="true,maxsize=-1" />
-</div>
-</hbox>
-<div align="center" > Descripción* </div>
-<ckeditor width="100%" height="100px" id="ckEditor" toolbar="Simple" customConfigurationsPath="/js/config.js"/>
- 
-	  <listbox id="listboxCaracteristicas" mold="paging" pageSize="3" selectedItem="@{productosWindow$composer.caracteristicaSeleccionada}"
-		model="@{productosWindow$composer.model.caracteristicas}" rows="3">
-		<auxhead>
-			<auxheader colspan="2">
-				<combobox id="comboCaracteristicas" placeholder="Seleccione un sello"  readonly="true" model="@{productosWindow$composer.caracteristicasProducto}"
-				selectedItem="@{productosWindow$composer.caracteristicaProductoSeleccionada}"
-				itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"/>
-			</auxheader>
-		</auxhead>
-		<listhead>
-			<listheader label="${c:l('zk.listcell.label.abmProducto.caracteristica')}"/>
-			<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
-		</listhead>
-		<listitem self="@{each=caracteristica}">			
-			<listcell>
-				<image src="@{caracteristica.getPathImagen}" height="16px" width="16px"/>
-				<label  maxlength="25" value="@{caracteristica.getNombre}"/>
-			</listcell>
-			<listcell>
-				<image src="/imagenes/trash.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.eliminar')}"
-				forward="onClick=productosWindow$composer.onEliminarCaracteristica" visible="@{productosWindow$composer.modoEdicion}"/>
-			</listcell>
-		</listitem>
-	</listbox>
-</vbox>
-<div align="center">
-	<hbox>
-		<toolbarbutton id="botonGuardar" label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" image="/imagenes/save.png"/>
-		<space spacing="20px"/>
-		<toolbarbutton id="botonCancelar" label="${c:l('zk.button.label.cancelar')}" style="font-weight:bold; color:black" image="/imagenes/cancel.png"/>
-	</hbox>
-</div>
+    }
+    </style>
+<tabbox width="100%" mold="accordion">
+	<tabs >
+		<tab id="tabdetalles" label="Detalles e imagen"  image="/imagenes/productos.png"/>
+		<tab id="tabdescsellos" label="Descripción y sellos"  image="/imagenes/gestion.png"/>
+	</tabs>
+		<tabpanels>
+			<tabpanel>
+				<!-- Detalles -->
+				<div align="center" class="title" >
+				<auxhead>
+            		<auxheader label="Detalles" style="color: white;" />
+        		</auxhead>
+        		</div>
+				<listbox>
+					<listhead>
+						<listheader width="20%"/>
+						<listheader/>
+						<listheader width="20%"/>
+						<listheader/>
+					</listhead>
+					<listitem>
+						<listcell label="${c:l('zk.listheader.label.abmCategoria.nombre')} *"/>
+						<listcell>
+							<textbox width="100%" id="nombreProducto" placeholder="i.e: Mermelada" />
+						</listcell>
+						<listcell label="${c:l('zk.listcell.label.abmVariedad.codigo')} *"/>
+						<listcell>
+							<textbox width="100%" id="textboxCodigo" placeholder="Ingresar código del artículo"/>
+						</listcell>
+					</listitem>
+					<listitem>
+						<listcell label="${c:l('zk.listcell.label.abmProducto.categoria')} * "/>
+						<listcell>
+							<hbox>
+								<toolbarbutton id="botonAgregarCategoria" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')} *" image="/imagenes/plus.png"/>
+								<combobox width="100%" readonly="true" id="comboCategorias" model="@{productosWindow$composer.usuario.categorias}" selectedItem="@{productosWindow$composer.categoriaSeleccionada }"/>
+							</hbox>
+						</listcell>
+						<listcell label="${c:l('zk.listcell.label.abmProducto.fabricante') } *"/>
+						<listcell>
+							<hbox>
+								<toolbarbutton image="/imagenes/plus.png" id="botonAgregarFabricante" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')} *"/>
+								<combobox width="100%" readonly="true" id="comboFabricantes" model="@{productosWindow$composer.usuario.fabricantes}" selectedItem="@{productosWindow$composer.productorSeleccionado }"/>
+							</hbox>
+						</listcell>
+					</listitem>
+					<listitem>			
+						<listcell label="${c:l('zk.listcell.label.abmVariedad.stock')} *"/>
+						<listcell>
+							<intbox width="100%" id="intboxStock" placeholder="I.E: 4" constraint="no negative"/>
+						</listcell>
+						<listcell label="${c:l('zk.listcell.label.abmVariedad.precio')} *"/>	
+						<listcell>
+							<doublebox width="100%" id="doubleboxPrecio" placeholder="I.E: 10.20" forward="onChange=productosWindow$composer.onCalcularTotal" constraint="no negative"	/>
+						</listcell>
+					</listitem>
+					<listitem id="listitemincentivo" visible="false">			
+						<listcell label="Incentivo"/>
+						<listcell>
+							<doublebox width="100%" id="incentivo" placeholder="I.E: 4" forward="onChange=productosWindow$composer.onCalcularTotal" constraint="no negative"/>
+						</listcell>
+						<listcell label="Precio total"/>	
+						<listcell>
+							<doublebox width="100%" id="totalPrecio"/>
+						</listcell>
+					</listitem>
+				</listbox>
+								<!-- Detalles -->
+				<div align="center" class="title">
+				<auxhead>
+            		<auxheader label="Imágenes" style="color: white;" />
+        		</auxhead>
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaImagenes" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudaImagenes" width="400px">
+        			<html><![CDATA[ En esta sección se configuran las imágenes del producto. <br /><br />
+        					Haciendo click en el icono <image src="./imagenes/destacado_on.png"/> define que imagen es la principal.<br />
+        					Si no define ninguna se mostrará la primera como principal.<br /> <br />
+        		             <strong>Aclaración:</strong> La imagen debe tener entre <font color="red">1080px de ancho</font> por <font color="red">690px de alto</font> y <font color="red">2160px de ancho</font> por <font color="red">1380px de alto</font>, mantener una relación aspecto de <font color="red">12:6</font>, ser de formato jpg,jpeg,png y no pesar mas de <font color="red">512kb</font>. </br></br>
+        		             <strong>Algunos ejemplos de dimensiones validas son: <font color="blue">1092x696</font>, <font color="blue">1104x702</font>, <font color="blue">1116x708</font> ,<font color="blue">1128x714</font>.</br></br>
+        		             <strong>Nota: </strong>Solo puede agregar hasta <font color="red">3 imágenes</font></u> por producto.
+        					]]>
+        					
+        			</html>
+    				</popup>
+        		</div>
+					<listbox id="listImagenes" model="@{productosWindow$composer.imagenes}"  rows="3">
+						<listhead>
+							<listheader label="${c:l('zk.listcell.label.abmVariedad.imagen') }"/>
+							<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+						</listhead>
+						<listitem self="@{each=imagen}">
+							<listcell label="@{imagen.getNombre}"/>
+							<listcell>
+								<hbox>
+									<image src="/imagenes/destacado_off.png"/>
+									<space spacing="10px"/>
+									<image src="/imagenes/trash.png"/>
+									<space spacing="10px"/>
+									<image src="/imagenes/download.png" />
+								</hbox>
+							</listcell>
+						</listitem>	
+					</listbox>
 
+					<div align="center" style="margin-top:5px;">
+						<fileupload label="Subir imagen"  id="uploadImagen"  upload="true,maxsize=-1" image="/imagenes/upload_photo_16.png" />
+					</div>
+			</tabpanel>
+			<tabpanel>
+				<!-- Descripcion -->
+				<div align="center" class="title">
+				<auxhead>
+            		<auxheader id="auxheaderproducto" label="Descripción * (max 355 carácteres)" style="color: white;"> </auxheader>
+        		</auxhead>
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudadesc" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudadesc" width="400px">
+        			<html><![CDATA[ Campo de descripción del producto. <br /><br />
+        					<strong>Nota:</strong> Tenga en cuenta que si pega un texto mayor a 355 carácteres
+           					<font color="red">será recortado</font>.<br /></u>
+        					]]></html>
+    				</popup>
+        		</div>
+				<textbox width="100%" id="ckEditor" maxlength="355" rows="5" forward="onClick=productosWindow$composer.onCalcularTotalCaracteres"/>
+				<popup id="cantidadCaracteres" width="12%">
+					<label id="mensaje" />
+   				</popup>
+				<!-- Sellos -->
+				<div align="center" class="title">
+			    <auxhead sclass="category-center">
+            		<auxheader label="Sellos" style="color:white;"/>
+        		</auxhead>
+        		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudaSellos" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudaSellos" width="400px">
+        			<html><![CDATA[ Area de selección de sellos, se puede elegir tantos como hay disponibles. <br /> <br />
+        					<strong>Nota:</strong> Los sellos de productor
+           					<font color="red">no son visibles en esta sección</font>,</u> sin embargo son aplicados al producto.
+        					]]></html>
+    				</popup>
+        		</div>
+					  <listbox id="listboxCaracteristicas" mold="paging" pageSize="3" selectedItem="@{productosWindow$composer.caracteristicaSeleccionada}"
+						model="@{productosWindow$composer.model.caracteristicas}" rows="3">
+						<auxhead>
+							<auxheader colspan="2">
+								<combobox id="comboCaracteristicas" placeholder="Seleccione un sello"  readonly="true" model="@{productosWindow$composer.caracteristicasProducto}"
+								selectedItem="@{productosWindow$composer.caracteristicaProductoSeleccionada}"
+								itemRenderer="chasqui.view.renders.ComboCaracteristicaRenderer"/>
+							</auxheader>
+						</auxhead>
+						<listhead>
+							<listheader label="${c:l('zk.listcell.label.abmProducto.caracteristica')}"/>
+							<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+						</listhead>
+						<listitem self="@{each=caracteristica}">			
+							<listcell>
+								<image src="@{caracteristica.getPathImagen}" height="16px" width="16px"/>
+								<label  maxlength="25" value="@{caracteristica.getNombre}"/>
+							</listcell>
+							<listcell>
+								<image src="/imagenes/trash.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.eliminar')}"
+								forward="onClick=productosWindow$composer.onEliminarCaracteristica" visible="@{productosWindow$composer.modoEdicion}"/>
+							</listcell>
+						</listitem>
+					</listbox>
+			</tabpanel>
+		</tabpanels>
+</tabbox>
 
-<popup id="popUpCaracteristica">
+	<div align="center">
 		<hbox>
-			<textbox id="agregarCaractTextbox" maxlength="20"/>
-			<button id="agregarCaractButton" label="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"/>
+			<toolbarbutton id="botonGuardar" label="${c:l('zk.button.label.guardar')}" style="font-weight:bold; color:black" image="/imagenes/save.png"/>
+			<space spacing="20px"/>
+			<toolbarbutton id="botonCancelar" label="${c:l('zk.button.label.cancelar')}" style="font-weight:bold; color:black" image="/imagenes/cancel.png"/>
 		</hbox>
-</popup>
+	</div>
+	
+	
+	<popup id="popUpCaracteristica">
+			<hbox>
+				<textbox id="agregarCaractTextbox" maxlength="20"/>
+				<button id="agregarCaractButton" label="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"/>
+			</hbox>
+	</popup>
 </window>
 </zk>

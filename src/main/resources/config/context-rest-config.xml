@@ -26,8 +26,9 @@ http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
        <ref bean="catalogoListener"/>
        <ref bean="categoriaListener"/>
        <ref bean="productorListener"/>
-       <ref bean="caracteristicaListener"/>
-       <ref bean="nodoListener"/>   
+       <ref bean="caracteristicaListener"/>  
+       <ref bean="zonaListener"/>
+       <ref bean="puntoDeRetiroListener"/>
     </jaxrs:serviceBeans>
     <jaxrs:extensionMappings>
       <entry key="json" value="application/json" />
@@ -46,10 +47,11 @@ http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
 
 	<jaxrs:server  address="/user">
 		<jaxrs:serviceBeans>
+			<ref bean="nodoListener"/>
  			<ref bean="usuarioListener"/>
  			<ref bean="pedidoListener"/>
  			<ref bean="grupoListener"/>
-				
+			
  		</jaxrs:serviceBeans>
 		<jaxrs:extensionMappings>
 			<entry key="json" value="application/json" />
@@ -76,5 +78,6 @@ http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
 	<bean id="pedidoListener" class="chasqui.service.rest.impl.PedidoListener"/>
 	<bean id="nodoListener" class="chasqui.service.rest.impl.NodoListener"/>
 	<bean id="grupoListener" class="chasqui.service.rest.impl.GrupoListener"/>
-
+	<bean id="zonaListener" class="chasqui.service.rest.impl.ZonaListener"/>
+	<bean id="puntoDeRetiroListener" class="chasqui.service.rest.impl.PuntoDeRetiroListener"/>
 </beans>

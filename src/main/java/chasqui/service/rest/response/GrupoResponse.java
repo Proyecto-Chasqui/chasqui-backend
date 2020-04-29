@@ -24,7 +24,7 @@ public class GrupoResponse implements Serializable{
 
 	private String descripcion;
 
-	private Integer idGrupo;
+	private Integer id;
 	
 
 	public String getDescripcion() {
@@ -71,7 +71,7 @@ public class GrupoResponse implements Serializable{
 	}
 	
 	public GrupoResponse(GrupoCC grupo) {
-		this.setIdGrupo(grupo.getId());
+		this.setId(grupo.getId());
 	}
 
 	public GrupoResponse(GrupoCC grupo,String email) throws ClienteNoPerteneceAGCCException {
@@ -87,7 +87,7 @@ public class GrupoResponse implements Serializable{
 			this.miembros.add(new MiembroDeGCCResponse(miembro, pedido));
 		}
 		this.descripcion = grupo.getDescripcion();
-		this.setIdGrupo(grupo.getId());
+		this.setId(grupo.getId());
 	}
 	
 
@@ -100,12 +100,13 @@ public class GrupoResponse implements Serializable{
 		this.miembros = miembros;
 	}
 
-	public Integer getIdGrupo() {
-		return idGrupo;
+
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdGrupo(Integer idGrupo) {
-		this.idGrupo = idGrupo;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

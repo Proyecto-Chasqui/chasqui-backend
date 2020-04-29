@@ -148,8 +148,7 @@ public class GrupoServiceImpl implements GrupoService {
 	public void confirmarInvitacionGCC(Integer idInvitacion, String emailCliente) throws UsuarioInexistenteException {
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);		
 		InvitacionAGCC invitacion = invitacionService.obtenerInvitacionAGCCporID(idInvitacion);		
-		GrupoCC grupo = grupoDao.obtenerGrupoPorId(invitacion.getIdGrupo());
-		
+		GrupoCC grupo = grupoDao.obtenerGrupoAbsolutoPorId(invitacion.getIdGrupo());
 		invitacionService.aceptarInvitacionAGCC(invitacion);
 		
 		grupo.registrarInvitacionAceptada(cliente);
@@ -167,11 +166,13 @@ public class GrupoServiceImpl implements GrupoService {
 	public void rechazarInvitacionGCC(Integer idInvitacion, String emailCliente) throws UsuarioInexistenteException {
 		Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);		
 		InvitacionAGCC invitacion = invitacionService.obtenerInvitacionAGCCporID(idInvitacion);		
-		GrupoCC grupo = grupoDao.obtenerGrupoPorId(invitacion.getIdGrupo());
+		GrupoCC grupo = grupoDao.obtenerGrupoAbsolutoPorId(invitacion.getIdGrupo());
 		invitacionService.rechazarInvitacionAGCC(invitacion);		
 		grupo.registrarInvitacionRechazada(cliente);
 		grupo.quitarMiembro(cliente);
-		notificacionService.notificar(cliente.getEmail(), grupo.getAdministrador().getEmail(), "El usuario con el email " + cliente.getEmail() + " que invitaste, rechazo tu invitacion al grupo "+ grupo.getAlias() , null);
+		String tipo = (grupo.isEsNodo())? "nodo": "grupo";
+		String mensaje = "El usuario con el email " + cliente.getEmail() + " que invitaste, rechazo tu invitacion al " + tipo + " " + grupo.getAlias();
+		notificacionService.notificar(cliente.getEmail(), grupo.getAdministrador().getEmail(), mensaje, null);
 		grupoDao.guardarGrupo(grupo);
 	}
 
@@ -349,15 +350,18 @@ public class GrupoServiceImpl implements GrupoService {
 	@Override
 	@Dateable
 	public void confirmarPedidoColectivo(Integer idGrupo, String emailSolicitante, Integer idDomicilio, Integer idPuntoDeRetiro, String comentario, List<OpcionSeleccionadaRequest>opcionesSeleccionadas, Integer idZona) throws EstadoPedidoIncorrectoException, NoAlcanzaMontoMinimoException, RequestIncorrectoException, DireccionesInexistentes, UsuarioInexistenteException {
-		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
+		GrupoCC grupo = grupoDao.obtenerGrupoAbsolutoPorId(idGrupo);
 		
 		//Confirmar que el idDomicilio le pertenezca al solicitante
 		Cliente solicitante = (Cliente) usuarioService.obtenerClientePorEmail(emailSolicitante);
 		Direccion direccion = solicitante.obtenerDireccionConId(idDomicilio);
 		PuntoDeRetiro puntoderetiro = buscarpuntoderetiro(grupo.getVendedor(), idPuntoDeRetiro);
 		Zona zona=null;
-		if(idZona != null){
-			zona = buscarZona(grupo.getVendedor(),idZona);
+		if(direccion != null){
+			Zona subzona = zonaService.obtenerZonaDePertenenciaDeDireccion(direccion.getGeoUbicacion(), grupo.getVendedor().getId());
+			if(subzona != null) {
+				zona = buscarZona(grupo.getVendedor(),subzona.getId());
+			}			
 		}
 		if(!(direccion == null ^ puntoderetiro == null)){
 			throw new DireccionesInexistentes("El punto de retiro o direccion seleccionada no existe"); 
@@ -372,24 +376,25 @@ public class GrupoServiceImpl implements GrupoService {
 				actualizarMiembroGCC(miembroDeGCC);
 			}
 			grupoDao.guardarGrupo(grupo);
-			for (MiembroDeGCC miembroDeGCC : miembros) {
-				if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
-					Pedido p = pc.buscarPedidoParaCliente(miembroDeGCC.getEmail());
-					if(p != null) {
-						if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
-							notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+			//definir mejor respecto a nodo, cuando esten los incentivos.
+				for (MiembroDeGCC miembroDeGCC : miembros) {
+					if(miembroDeGCC.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+						Pedido p = pc.buscarPedidoParaCliente(miembroDeGCC.getEmail());
+						if(p != null) {
+							if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getCliente().getEmail().equals(grupo.getAdministrador().getEmail())) {
+								notificacionService.notificarConfirmacionPedidoColectivo(idGrupo, emailSolicitante,grupo.getAlias(),miembroDeGCC.getEmail(), miembroDeGCC.getNickname(), grupo.getVendedor().getNombre());
+							}
 						}
 					}
 				}
-			}
-			mailService.enviarEmailCierreDePedidoColectivo(pc);
+				mailService.enviarEmailCierreDePedidoColectivo(pc);
+
 		}
 		else{
-			throw new RequestIncorrectoException("El usuario "+emailSolicitante + " no es el administrador del grupo:"+ grupo.getAlias());
+			throw new RequestIncorrectoException("El usuario "+emailSolicitante + " no es el administrador de :"+ grupo.getAlias());
 		}
 		
 	}
-	
 	private void actualizarMiembroGCC(MiembroDeGCC miembroDeGCC) {
 		try {
 			Usuario usuario = null;
@@ -630,6 +635,13 @@ public class GrupoServiceImpl implements GrupoService {
 			throw new EstadoPedidoIncorrectoException("El grupo no puede ser eliminado, por que hay pedidos abiertos o confirmados");
 		}
 		
+	}
+
+	@Override
+	public void eliminarGrupos(List<GrupoCC> obtenerGruposDe) {
+		for(GrupoCC gcc: obtenerGruposDe) {
+			grupoDao.eliminarGrupoCC(gcc);
+		}
 	}
 	
 	

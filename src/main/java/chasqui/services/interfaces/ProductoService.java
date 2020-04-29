@@ -8,6 +8,7 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.model.Caracteristica;
 import chasqui.model.Imagen;
 import chasqui.model.Pedido;
+import chasqui.model.Producto;
 import chasqui.model.Variante;
 import chasqui.service.rest.request.ByCategoriaRequest;
 import chasqui.service.rest.request.ByMedallaRequest;
@@ -54,12 +55,16 @@ public interface ProductoService {
 	public List<Variante> obtenerProductosConMedallaEnProductor(Integer medallaId);
 	
 	public Long totalVariantesBajoMultiplesFiltros(Integer idCategoria, Integer idMedalla, Integer idProductor);
-	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor,Integer idSelloProductor, String query,Integer pagina, Integer cantItems, Integer numeroDeOrden);
+	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
+			Integer idProductor,List<Integer> idsSellosProductor, String query,Integer pagina, Integer cantItems, Integer numeroDeOrden);
 	
-	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor, Integer idSelloProductor, String query);
+	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
+			Integer idProductor, List<Integer> idsSellosProductor, String query);
 	Variante obtenerVariantePorCodigoProducto(String codigoProducto, Integer idVendedor);
+	@Transactional
+	public void eliminarVariantes(List<Variante> obtenerVariantesPorMultiplesFiltros);
+	List<Variante> obtenerTodasLasVariantes(Integer idVendedor);
+	void eliminarProducto(List<Producto> productos);
 	
 	
 }

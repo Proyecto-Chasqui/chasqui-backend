@@ -1,0 +1,154 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./tagsWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+<window id="tagsWindow" border="normal" title="Configuración de tags" apply="chasqui.view.composer.ABMTagsComposer" width="100%"  closable="false">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+<!-- Seccion Nueva Pregunta -->
+<div id="configuracionTags" visible="true">
+			<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; " popup="ayudatags"  src="/imagenes/question.png" />
+			<tabbox>
+			<tabs>
+				<tab label="Tipo Producto" image="/imagenes/tipo_productos.png"/>
+				<tab label="Tipo de organización" image="/imagenes/tipo_organizacion.png"/> 
+				<tab label="Zonas de cobertura" image="/imagenes/zona_cobertura.png"/> 
+			</tabs>
+			<tabpanels>
+			<!-- tags Tipo Producto -->
+				<tabpanel>
+				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudatextopedidosnodos" src="/imagenes/question.png" />
+  				<listbox id="listboxTagTipoProductoSeleccionado" checkmark="false" selectedItem="@{tagsWindow$composer.tagTipoProductoSeleccionado}" 
+  				model="@{tagsWindow$composer.tagsTipoProductos}" mold="paging"
+				rows="8" pageSize="8"> 
+					<listhead>
+						<listheader label="Nombre" />
+						<listheader label="Descripción"/>
+						<listheader label="Acciones"/>
+					</listhead>
+					<listitem self="@{each=tagTipoProducto}">
+						<listcell label="@{tagTipoProducto.getNombre}" style="font-weight:bold;"/>
+						<listcell label="@{tagTipoProducto.getDescripcion}" style="font-weight:bold;"/>
+						<listcell>
+							<hbox align="center">
+								<image src="/imagenes/edit_tag.png" forward="onClick=tagsWindow$composer.onEditarTagTipoProducto"/>
+								<space spacing="15px"/>
+								<image src="/imagenes/delete_tag.png" forward="onClick=tagsWindow$composer.onEliminarTagTipoProducto"/>
+							</hbox>
+						</listcell>
+					</listitem>
+				</listbox>
+				<separator spacing="15px"/>
+					<div align="center">
+						<hbox>	
+							<button label=" Nuevo Tag Tipo Producto"  image="/imagenes/new_tag.png" id="btnNuevoTagTipoProducto"/>
+						</hbox>
+					</div>
+				<separator spacing="15px"/>	
+				</tabpanel>
+				<!-- tags Tipo Organización -->
+				<tabpanel>
+						<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudatextopedidosnodos" src="/imagenes/question.png" />
+		  				<listbox id="listboxTagTipoOrganizacion" checkmark="false" selectedItem="@{tagsWindow$composer.tagTipoOrganizacionSeleccionado}" 
+		  				model="@{tagsWindow$composer.tagsTipoOrganizacion}" mold="paging"
+						rows="8" pageSize="8"> 
+							<listhead>
+								<listheader label="Nombre" />
+								<listheader label="Descripción"/>
+								<listheader label="Acciones"/>
+							</listhead>
+							<listitem self="@{each=tagTipoOrganizacion}">
+								<listcell label="@{tagTipoOrganizacion.getNombre}" style="font-weight:bold;"/>
+								<listcell label="@{tagTipoOrganizacion.getDescripcion}" style="font-weight:bold;"/>
+								<listcell>
+									<hbox align="center">
+										<image src="/imagenes/edit_tag.png" forward="onClick=tagsWindow$composer.onEditarTagTipoOrganizacion"/>
+										<space spacing="15px"/>
+										<image src="/imagenes/delete_tag.png" forward="onClick=tagsWindow$composer.onEliminarTagTipoOrganizacion"/>
+									</hbox>
+								</listcell>
+							</listitem>
+						</listbox>
+						<separator spacing="15px"/>
+							<div align="center">
+								<hbox>	
+									<button label=" Nuevo Tag Tipo Organización"  image="/imagenes/new_tag.png" id="btnNuevoTagTipoOrganizacion"/>
+								</hbox>
+							</div>
+						<separator spacing="15px"/>	
+				</tabpanel>
+				<!-- tags Zona de cobertura -->
+				<tabpanel>
+		  				<listbox id="listboxTagTipoTagZonaCobertura" checkmark="false" selectedItem="@{tagsWindow$composer.tagTagZonaCoberturaSeleccionado}" 
+		  				model="@{tagsWindow$composer.tagsZonaCobertura}" mold="paging"
+						rows="8" pageSize="8"> 
+							<listhead>
+								<listheader label="Nombre" />
+								<listheader label="Descripción"/>
+								<listheader label="Acciones"/>
+							</listhead>
+							<listitem self="@{each=tagZonaCobertura}">
+								<listcell label="@{tagZonaCobertura.getNombre}" style="font-weight:bold;"/>
+								<listcell label="@{tagZonaCobertura.getDescripcion}" style="font-weight:bold;"/>
+								<listcell>
+									<hbox align="center">
+										<image src="/imagenes/edit_tag.png" forward="onClick=tagsWindow$composer.onEditarTagZonaDeCobertura"/>
+										<space spacing="15px"/>
+										<image src="/imagenes/delete_tag.png" forward="onClick=tagsWindow$composer.onEliminarTagZonaDeCobertura"/>
+									</hbox>
+								</listcell>
+							</listitem>
+						</listbox>
+						<separator spacing="15px"/>
+							<div align="center">
+								<hbox>	
+									<button label=" Nuevo Tag Zona de Cobertura" image="/imagenes/new_tag.png" id="btnNuevoTagZonaCobertura"/>
+								</hbox>
+							</div>
+						<separator spacing="15px"/>	
+				</tabpanel>
+				</tabpanels>
+			</tabbox>
+			        		 <popup id="ayudatags" width="600px">
+        			<html><![CDATA[ En esta sección se listan todos los tags disponibles que podrán usar los vendedores, se dividien en 3 tipos<br /><br />
+        					<strong>Tipo producto:</strong> Definen el tipo de producto que vende, deben ser tipos generales y no muy especificos, por ejemplo <strong>alimentos</strong>, <strong>muebles</strong>, etc.</br>
+        					<strong>Tipo organización:</strong> Definen el tipo de organización que opera el catálogo, por ejemplo <strong>cooperativa</strong>, <strong>emprendimiento</strong>, etc.</br>
+        					<strong>Zonas decobertura:</strong> Definen las zonas que los vendedores pueden elegir y mostrar donde es su area de operación.</br>
+        					<strong> Nota:</strong> Si los tags fueron seleccionados por algun usuario <font color="red">no podran borrase</font>, por lo que deben ser creadas con cuidado. Solo podrán ser editadas, pero si cambia completamente su semantica afectará a todos los usuarios que esten la esten usando.
+        					
+        					]]>
+        					
+        			</html>
+    				</popup> 
+</div>
+<!-- Sección editar/crear Pregunta -->
+<div id="crearTag" visible="false">
+			<listbox width="100%">
+				<listhead>
+					<listheader/>
+					<listheader/>
+				</listhead>
+				<listitem>
+					<listcell label="Nombre" style="text-align: center"/>
+					<listcell>
+						<textbox id="textNombre"  width="100%"/>
+					</listcell>
+				</listitem>
+				<listitem>
+					<listcell label="Descripción" style="text-align: center"/>
+					<listcell>
+						<textbox id="textDescripcion"  width="100%" rows="5" maxlength="300"/>
+					</listcell>
+				</listitem>							 
+			</listbox>
+				<div align="center">
+						 <button label="Guardar" image= "/imagenes/save_tag.png" id="btnGuardarTagProducto" />
+						 <button label="Guardar" image= "/imagenes/save_tag.png" visible="false" id="btnGuardarTagZona" />
+						 <button label="Guardar" image= "/imagenes/save_tag.png" visible="false" id="btnGuardarTagOrganizacion" />
+						 <button label="Cancelar" image= "/imagenes/cancel_16.png" id="btnCancelarEdicionCreacionTag" />
+				</div>
+</div>
+			
+</window>
+</zk>

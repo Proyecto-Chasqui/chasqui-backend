@@ -53,8 +53,13 @@
 	   <bean id="pedidoColectivoService" name="pedidoColectivoService" class="chasqui.services.impl.PedidoColectivoServiceImpl"/>
 	   
 	   <bean id="puntoDeRetiroService" name="puntoDeRetiroService" class="chasqui.services.impl.PuntoDeRetiroServiceImpl"/>
+	    
+	   <bean id="direccionService" name="direccionService" class="chasqui.services.impl.DireccionServiceImpl"/>
+	   
+	   <bean id="tagService" name="tagService" class="chasqui.services.impl.TagServiceImpl"/>
 	   
 	   <bean id="sessionListenerService" name="sessionListenerService" class="chasqui.services.impl.SessionListenerService"/>   
+
 	   <!--  DAOS -->
 	   <bean name="usuarioDAO" id="usuarioDAO" class="chasqui.dao.impl.UsuarioDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>
@@ -111,7 +116,26 @@
 	   <bean id="puntoDeRetiroDAO" name="puntoDeRetiroDAO" class="chasqui.dao.impl.PuntoDeRetiroDAOHbm">
 	   		<property name="sessionFactory" ref="sessionFactory"/>
 	   </bean>
+	   
+	   <bean id="solicitudCreacionNodoDAO" name="solicitudCreacionNodoDAO" class = "chasqui.dao.impl.SolicitudCreacionNodoDAOHbm">
+	   		<property name="sessionFactory" ref="sessionFactory"/>
+	   </bean>
+	   
+	   <bean id="solicitudPertenenciaNodoDAO" name="solicitudPertenenciaNodoDAO" class="chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm">
+	   		<property name="sessionFactory" ref="sessionFactory"/>
+	   </bean>
+	   
+	   <bean id="direccionDAO" name="direccionDAO" class="chasqui.dao.impl.DireccionDAOHbm">
+	   		<property name="sessionFactory" ref="sessionFactory"/>
+	   </bean>
+	   
+	   <bean id="tagDAO" name="tagDAO" class="chasqui.dao.impl.TagDAOHbm">
+	   		<property name="sessionFactory" ref="sessionFactory"/>
+	   </bean>
+	   
 	   <bean id="applicationContextProvider" name="applicationContextProvider" class="chasqui.model.ApplicationContextProvider"/>
+
+	   <bean id="tokenGenerator" name="tokenGenerator" class="chasqui.utils.TokenGenerator"></bean>
 	   <!--  <bean id="webSocketManager" name="webSocketManager" class="chasqui.service.websocket.impl.WebSocketManager"></bean> -->
 	   <!-- SERVICIO EMAIL -->
 	   
@@ -145,9 +169,11 @@
       <bean id="imagenAdmin" name="imagenAdmin" class="java.lang.String">
            <constructor-arg type="java.lang.String" value="${usuario.administrador.imagen}" />
     </bean>
-    <!-- ELIMINAR O COMENTAR LUEGO DE PASAR 1 VEZ A PRODUCCION -->
-    <bean id="fabricanteStartup" name="fabricanteStartup" class="chasqui.services.impl.FabricanteStartup" init-method="syncro"/>
-    <!-- ELIMINAR O COMENTAR LUEGO DE PASAR 1 VEZ A PRODUCCION -->
+    
+    <bean id="operationsOnStartUp" name="operationsOnStartUp" class="chasqui.services.impl.OperationsOnStartup" init-method="corregirReservas"/>
+    <!-- COMENTAR "operationsOnStartUp" LUEGO DE PASAR 1 VEZ A PRODUCCION
+    -->
+
     
     <!-- ********************** DEMO ****************************** -->
     
@@ -222,6 +248,6 @@
     <!-- AOP -->
     <aop:aspectj-autoproxy />
     <bean name="loggerAspect" class="chasqui.aspect.LoggerAspect"/>
-    <bean name="dateableAspect" class="chasqui.aspect.DateableAspect"/>
+    <bean name="dateableAspect" class="chasqui.aspect.DateableAspect"/> 
 	   
 </beans>

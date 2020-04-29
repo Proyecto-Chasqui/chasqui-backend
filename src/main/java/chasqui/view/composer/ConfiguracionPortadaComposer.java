@@ -19,6 +19,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
@@ -80,7 +81,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	private Textbox celular;
 	private Textbox pais;
 	private Textbox provincia;
-	
+	private Button mostrarBienvenidaButton;
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -98,9 +99,27 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		comp.addEventListener(Events.ON_USER, new DescargarImagenPortadaEventListener(this));
 		listImagenesBanner.setItemRenderer(imgRender);
 		listImagenesPortada.setItemRenderer(imgRender);
+		this.ajustarBotonBienvenida(vendedorLogueado);
 		binder.loadAll();
 	}
 	
+	private void ajustarBotonBienvenida(Vendedor vendedor) {
+		if(vendedor.getDataMultimedia().getDataPortada().isPortadaVisible()) {
+			this.mostrarBienvenidaButton.setImage("/imagenes/if_toggle-right.png");
+			this.mostrarBienvenidaButton.setLabel("Si");
+		}else {
+			this.mostrarBienvenidaButton.setImage("/imagenes/if_toggle-left.png");
+			this.mostrarBienvenidaButton.setLabel("No");
+		}		
+	}
+	
+	public void onClick$mostrarBienvenidaButton() {
+		vendedorLogueado.getDataMultimedia().getDataPortada().setPortadaVisible(!vendedorLogueado.getDataMultimedia().getDataPortada().isPortadaVisible());
+		this.ajustarBotonBienvenida(vendedorLogueado);
+		this.usuarioService.guardarUsuario(vendedorLogueado);
+		Clients.showNotification("Los cambios se guardaron correctamente", "info", window, "middle_center", 3000,true);
+	}
+
 	private void llenarDatosDeImagenesDeVendedor(DataMultimedia data) {
 		if(data != null) {
 			imagenesBanner = data.getDataPortada().getImagenesDeBanner();
@@ -194,9 +213,9 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 	}
 
 	public void onUpload$uploadImagenLogo(UploadEvent evt) {
-		Integer alto = 40;
+		Integer alto = 55;
 		Integer ancho = 124;
-		Integer kb = 1024;
+		Integer kb = 512;
 		Integer margen = 176;
 		List<String> formats = new ArrayList<String>();
 		formats.add("png");
@@ -205,7 +224,7 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 		if(this.validateSizeOfImageAt(alto,ancho,margen,ALTO,evt) && validateFormatAndWeigthOfImage(evt, formats,kb)) {
 			this.actualizarImagen(evt,LOGO);
 		}else {
-			String mensaje = "La imagen debe tener entre " +ancho+"px x " +alto+"px y " +(ancho + margen) +"px x " +alto+"px, debe ser de formato jpg, jpeg, png y no debe pesar mas de "+ kb /1024 +"MB";
+			String mensaje = "La imagen debe tener entre " +ancho+"px x " +alto+"px y " +(ancho + margen) +"px x " +alto+"px, debe ser de formato jpg, jpeg, png y no debe pesar mas de "+ kb +"kb";
 			Clients.showNotification(mensaje, "warning", window, "middle_center", 10000, true);
 		}	
 	}
@@ -556,6 +575,14 @@ public class ConfiguracionPortadaComposer extends GenericForwardComposer<Compone
 
 	public void setCelular(Textbox celular) {
 		this.celular = celular;
+	}
+
+	public Button getMostrarBienvenidaButton() {
+		return mostrarBienvenidaButton;
+	}
+
+	public void setMostrarBienvenidaButton(Button mostrarBienvenidaButton) {
+		this.mostrarBienvenidaButton = mostrarBienvenidaButton;
 	}
 
 }

@@ -23,4 +23,12 @@ public interface GrupoDAO {
 	List<GrupoCC> obtenerGruposEnUnArea(Geometry area);
 
 	List<GrupoCC> obtenerGruposDeVendedorCon(Integer idVendedor, Date d, Date h, String estadoSeleccionado);
+
+	/**
+	 * Este metodo obtiene todos los grupos, independientemente de si es un nodo o solo GCC.
+	 * Usar solo en casos en los que se use la funcionalidad de GCC desde Nodos.
+	 * @param idGrupo
+	 * @return
+	 */
+	public GrupoCC obtenerGrupoAbsolutoPorId(Integer idGrupo);
 }

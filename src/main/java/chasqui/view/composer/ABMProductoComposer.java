@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
 import org.apache.cxf.common.util.StringUtils;
+import org.jsoup.Jsoup;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
@@ -23,21 +24,26 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Auxheader;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
@@ -74,6 +80,9 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private Toolbarbutton botonCancelar;
 	private Textbox agregarCaractTextbox;
 	private Popup popUpCaracteristica;
+	private Tab tabdetalles;
+	private Tab tabdescsellos;
+	private Listitem listitemincentivo;
 	private Producto model;
 	private List<Caracteristica> caracteristicas;
 	private Categoria categoriaSeleccionada;
@@ -85,6 +94,13 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private FabricanteDAO fabricantedao;
 	private Vendedor usuario;
 	private boolean modoEdicion;
+	private Doublebox incentivo;
+	private Doublebox totalPrecio;
+	private static final String ANCHO = "ancho";
+	private static final String ALTO = "alto";
+	private Auxheader auxheaderproducto;
+	private Popup cantidadCaracteres;
+	private Label mensaje;
 	
 	
 	private UsuarioService usuarioService;
@@ -98,7 +114,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private Doublebox doubleboxPrecio; 
 	private Intbox intboxStock;
 	private Textbox textboxCodigo; 
-	private CKeditor ckEditor; 
+	private Textbox ckEditor; 
 	private Fileupload uploadImagen; 
 	private Listbox listImagenes;	
 	private ImagenesRender imgRender;
@@ -153,6 +169,10 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		modoEdicion= true;
 		imgRender.setLectura(true);
 		listImagenes.setDisabled(false);
+		listitemincentivo.setVisible(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos());
+		incentivo.setValue(0.0);
+		doubleboxPrecio.setValue(0.0);
+		totalPrecio.setReadonly(true);
 		if(model.getCategoria() != null && model.getFabricante() != null){
 			categoriaSeleccionada = model.getCategoria();
 			productorSeleccionado = model.getFabricante();
@@ -161,11 +181,13 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			
 		}
 		if(!model.getVariantes().isEmpty()){
-			modelv = model.getVariantes().get(0);
+			modelv = productodao.obtenervariantePor(model.getVariantes().get(0).getId());
 			doubleboxPrecio.setValue(modelv.getPrecio());
+			incentivo.setValue(modelv.getIncentivo());			
+			totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
 			intboxStock.setValue(modelv.getStock());
 			textboxCodigo.setValue(modelv.getCodigo());
-			ckEditor.setValue(modelv.getDescripcion());
+			ckEditor.setValue(Jsoup.parse(modelv.getDescripcion()).wholeText());
 			imagenes.addAll(modelv.getImagenes());
 			
 		}
@@ -197,9 +219,11 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		validaciones();
 		ejecutarValidaciones();
 		guardarImagenNoDisponible();
+		boolean productoNuevo = false;
 		model.setNombre(nombreProducto.getValue());
 		model.setCaracteristicas(caracteristicas);
 		if(model.getId() == null){
+			productoNuevo = true;
 			categoriaSeleccionada.agregarProducto(model);							
 		}
 		model.setCategoria(categoriaSeleccionada);
@@ -217,10 +241,21 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		modelv.setImagenes(imagenes);
 		modelv.setStock(intboxStock.getValue());
 		modelv.setPrecio(doubleboxPrecio.getValue());
-		modelv.setCantidadReservada(0);
+		if(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos()) {
+			modelv.setIncentivo(incentivo.getValue());
+		}else {
+			modelv.setIncentivo(0.0);
+		}
+		if(modelv.getCantidadReservada() != null) {
+			if(modelv.getCantidadReservada() < 0) {
+				modelv.setCantidadReservada(0);
+			}
+		}else {
+			modelv.setCantidadReservada(0);
+		}
 		modelv.setProducto(model);
-
-		if(model == null){			
+		
+		if(model == null){	
 			modelv.setDestacado(false);
 			model.getVariantes().add(modelv);			
 		}else{
@@ -230,9 +265,16 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			model.setVariantes(variantes);
 		}
 		usuarioService.guardarUsuario(usuario);
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("accion", "productoGuardado");		
-		Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
+		if(productoNuevo) {
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("accion", "productoGuardado");		
+			Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
+		}else {
+			Map<String,Object> params = new HashMap<String,Object>();
+			params.put("accion", "productoEditado");		
+			Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), params);
+
+		}
 		this.self.detach();
 	}
 	
@@ -264,19 +306,19 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private void validaciones(){
 		String nombre = nombreProducto.getValue();
 		if(StringUtils.isEmpty(nombre)){
-			throw new WrongValueException(nombreProducto,"El nombre no debe ser vacio!");
+			throw new WrongValueException(tabdetalles,"El nombre no debe ser vacio!");
 		}
 		if(categoriaSeleccionada == null){
-			throw new WrongValueException(comboCategorias,"Se debe seleccionar una categoria");
+			throw new WrongValueException(tabdetalles,"Se debe seleccionar una categoria");
 		}
 		if(productorSeleccionado == null){
-			throw new WrongValueException(comboFabricantes,"Se debe seleccionar un productor");
+			throw new WrongValueException(tabdetalles,"Se debe seleccionar un productor");
 		}
 		if(textboxCodigo == null || textboxCodigo.getValue().equals("")){
-			throw new WrongValueException(textboxCodigo,"Se debe escribir un codigo de producto	");
+			throw new WrongValueException(tabdetalles,"Se debe escribir un codigo de producto	");
 		}
 		if(existeCodigo(textboxCodigo.getValue())) {
-			throw new WrongValueException(textboxCodigo,"El código del producto ya existe");
+			throw new WrongValueException(tabdetalles,"El código del producto ya existe");
 		}
 	}
 	
@@ -480,12 +522,15 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		comboFabricantes.setValue(productorSeleccionado.toString());
 		comboCategorias.setValue(categoriaSeleccionada.toString());
 		//textboxNombre.setValue(modelv.getNombre());
-		ckEditor.setValue(modelv.getDescripcion());
+		ckEditor.setValue(Jsoup.parse(modelv.getDescripcion()).text());
+		onCalcularTotalCaracteres();
 		
 	}
 	
 	public void inicializarModoLectura(){
 		llenarCampos();
+		incentivo.setValue(modelv.getIncentivo());
+		totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
 		modoEdicion = false;
 		textboxCodigo.setDisabled(true);
 		comboCaracteristicas.setDisabled(true);
@@ -502,24 +547,81 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		doubleboxPrecio.setDisabled(true);
 		intboxStock.setDisabled(true);
 		uploadImagen.setDisabled(true);
-		ckEditor.setCustomConfigurationsPath("/js/ckEditorReadOnly.js");
+		listitemincentivo.setVisible(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos());
+		listitemincentivo.setDisabled(true);
+		incentivo.setReadonly(true);
+		totalPrecio.setReadonly(true);
+		ckEditor.setDisabled(true);
 		
 	}
+	private boolean validateSizeOfImageAt(Double h, Double w, Double margenalto, String statico,UploadEvent evt) {
+		boolean ret = false;
+		Double baseAspectRatio = w / h;
+		org.zkoss.util.media.Media media = evt.getMedia();		
+        if (media instanceof org.zkoss.image.Image) {
+            org.zkoss.image.Image img = (org.zkoss.image.Image) media;
+    		Double imageHeight = Double.valueOf(img.getHeight());
+    		Double imageWidth = Double.valueOf(img.getWidth());
+            if(statico.equals(ANCHO)) {
+            	if(imageHeight >= h && imageWidth <= (w+margenalto) && (imageWidth >= w)){
+            		ret = true;
+            	}
+            }
+            if(statico.equals(ALTO)) {
+            	if(imageHeight <= (h+margenalto) && imageHeight>= h && imageWidth >= w){
+            		ret = true;
+            	}
+            }
+            if(baseAspectRatio != imageWidth/imageHeight) {
+            	ret = false;
+            }
+        }
+		return ret;
+	}
 	
-	public void onUpload$uploadImagen(UploadEvent evt){
-			
-		if(imagenes.size() == Constantes.CANT_MAX_IMAGENES_VARIEDAD){
-			throw new WrongValueException(listImagenes,"No se pueden agregar mas de 3 imágenes por producto");
-		}else {
+	private boolean validateFormatAndWeigthOfImage(UploadEvent evt,List<String> formats, Integer imageSizeInKB) {
+		boolean ret = false;
+        org.zkoss.util.media.Media media = evt.getMedia();
+        if (media instanceof org.zkoss.image.Image && media.getByteData().length < imageSizeInKB * 1024 && hasAValidFormat(media,formats)) {
+           ret = true;
+        }
+		return ret;
+	}
+	
+	private boolean hasAValidFormat(Media media, List<String> formats) {
+		boolean ret = false;
+		for(String format: formats) {
+			if(!ret) {
+				ret = media.getFormat().equals(format);
+			}
+		}
+		return ret;
+	}
+	
+	public void actualizarImagen(UploadEvent evt){
+		try{
 			Media media = evt.getMedia();
 			Image image = new Image();
+			Double alto = 690.0;
+			Double ancho = 1080.0;
+			Integer kb = 512;
+			Double margenalto = 690.0;
+			Double margenancho = 1080.0;
+			List<String> formats = new ArrayList<String>();
+			formats.add("jpg");
+			formats.add("jpeg");
+			formats.add("png");
 			if (media instanceof org.zkoss.image.Image) {
-				image.setContent((org.zkoss.image.Image) media);
+				if(this.validateSizeOfImageAt(alto,ancho,margenalto,ALTO,evt) && this.validateSizeOfImageAt(alto,ancho,margenancho,ANCHO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
+					image.setContent((org.zkoss.image.Image) media);
+				}else {
+					String mensaje = "La imagen debe tener una dimensión de " +ancho.intValue()+"px x " +alto.intValue()+" px, hasta "+ (ancho.intValue()+margenancho.intValue()) +" px x "+(alto.intValue()+margenalto.intValue())+" px, debe tener propocion 12:6 y ser de formato jpg, jpeg o png y no debe pesar mas de "+ kb +"KB";
+					Clients.showNotification(mensaje, "warning", listImagenes, "middle_center", 10000, true);
+					return;
+				}
 			} else {
-				Messagebox.show("El archivo no es una imagen o es demasiado grande","Error", Messagebox.OK, Messagebox.ERROR);
-				return;
+				Clients.showNotification("El archivo no se pudo procesar correctamente o no se trata de una imagen, reintente subirla, si el problema persiste consulte con el administrador.", "error", listImagenes, "middle_center", 10000, true);
 			}
-			
 			ServletContext context = Sessions.getCurrent().getWebApp().getServletContext();
 			String path = context.getRealPath("/imagenes/");
 			Imagen imagen = fileSaver.guardarImagen(path ,usuario.getUsername(),image.getContent().getName(),image.getContent().getByteData());
@@ -527,9 +629,51 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			imagen.setPreview(false);
 			imagenes.add(imagen);
 			binder.loadAll();
+			Clients.showNotification("La imagen se guardó correctamente", "info", listImagenes, "middle_center", 3000,true);
+		}catch(Exception e){
+			Clients.showNotification("Ocurrió un error inesperado al tratar de agregar la imagen", "error", listImagenes, "middle_center", 3000,true);
+			e.printStackTrace();
+		}finally{
+			Clients.clearBusy();
+			binder.loadAll();
 		}
 	}
-
+	public void onUpload$uploadImagen(UploadEvent evt){
+			
+		if(imagenes.size() == Constantes.CANT_MAX_IMAGENES_VARIEDAD){
+			throw new WrongValueException(listImagenes,"No se pueden agregar mas de 3 imágenes por producto");
+		}else {
+			actualizarImagen(evt);
+		}
+	}
+	
+	
+	
+	public void onChanging$ckEditor(InputEvent evt) {
+		Integer total = Jsoup.parse(evt.getValue()).wholeText().length();
+		mensaje.setValue("Cant. carácteres: "+total+"/355");
+		cantidadCaracteres.open(ckEditor,"after_end");
+	}
+	
+	public void onCalcularTotalCaracteres() {
+		Integer total = Jsoup.parse(ckEditor.getValue()).wholeText().length();
+		mensaje.setValue("Cant. carácteres: "+total+"/355");
+		cantidadCaracteres.open(ckEditor,"after_end");
+	}
+	public void onCalcularTotal() {
+		if(incentivo.getValue() != null && doubleboxPrecio.getValue() != null) {
+			totalPrecio.setValue(incentivo.getValue() + doubleboxPrecio.getValue());
+		}
+		if(doubleboxPrecio.getValue() != null && incentivo.getValue() == null) {
+			totalPrecio.setValue(doubleboxPrecio.getValue());
+		}
+		if(doubleboxPrecio.getValue() == null && incentivo.getValue() != null) {
+			totalPrecio.setValue(incentivo.getValue());
+		}
+		if(doubleboxPrecio.getValue() == null && incentivo.getValue() == null) {
+			totalPrecio.setValue(0.0);
+		}		
+	}
 	
 	
 	public void refresh() {
@@ -551,21 +695,31 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	
 	private void ejecutarValidaciones() throws IOException{
 		Double precio = doubleboxPrecio.getValue();
+		Double vincentivo = incentivo.getValue();
 		Integer stock = intboxStock.getValue();
-		String descripcion = ckEditor.getValue();
+		String descripcion = Jsoup.parse(ckEditor.getValue()).text();
 
 		if(precio == null || precio < 0){
-			throw new WrongValueException(doubleboxPrecio,"El precio debe ser mayor a 0");
+			throw new WrongValueException(tabdetalles,"El precio no debe ser menor a 0");
 		}
+		
+		if(vincentivo == null || vincentivo < 0){
+			throw new WrongValueException(tabdetalles,"El Incentivo no debe ser negativo");
+		}
+		
+		if(vincentivo + precio < 0){
+			throw new WrongValueException(tabdetalles,"El el precio total no debe ser menor a 0");
+		}
+		
 		if(stock == null || stock < 0){
-			throw new WrongValueException(intboxStock,"El Stock debe ser mayor a 0");
+			throw new WrongValueException(tabdetalles,"El Stock debe ser mayor a 0");
 		}
 		if(StringUtils.isEmpty(descripcion)){
-			throw new WrongValueException(ckEditor,"La descripción no debe ser vacia");
+			throw new WrongValueException(tabdescsellos,"La descripción no debe ser vacia");
 		}
 		
 		if(descripcion.length() > 355){
-			throw new WrongValueException(ckEditor,"La descripción es demasiado larga");
+			throw new WrongValueException(tabdescsellos,"La descripción es demasiado larga");
 		}
 		int previews = 0;
 		for(Imagen i : imagenes){
@@ -574,7 +728,11 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			}
 		}
 		if(previews > 1){
-			throw new WrongValueException(listImagenes,"No se puede elegir mas de una imagen de previsualización");
+			throw new WrongValueException(tabdetalles,"No se puede elegir mas de una imagen de previsualización");
+		}
+		
+		if(stock < modelv.getCantidadReservada()) {
+			throw new WrongValueException(tabdetalles,"Hay pedidos abiertos que tienen reservado este producto, no puede ser menor a "+model.getVariantes().get(0).getCantidadReservada());
 		}
 		
 		
@@ -587,6 +745,54 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 
 	public void setImagenes(List<Imagen> imagenes) {
 		this.imagenes = imagenes;
+	}
+
+	public Tab getTabdetalles() {
+		return tabdetalles;
+	}
+
+	public void setTabdetalles(Tab tabdetalles) {
+		this.tabdetalles = tabdetalles;
+	}
+
+	public Tab getTabdescsellos() {
+		return tabdescsellos;
+	}
+
+	public void setTabdescsellos(Tab tabdescsellos) {
+		this.tabdescsellos = tabdescsellos;
+	}
+
+	public Listitem getListitemincentivo() {
+		return listitemincentivo;
+	}
+
+	public void setListitemincentivo(Listitem listitemincentivo) {
+		this.listitemincentivo = listitemincentivo;
+	}
+
+	public Doublebox getIncentivo() {
+		return incentivo;
+	}
+
+	public void setIncentivo(Doublebox incentivo) {
+		this.incentivo = incentivo;
+	}
+
+	public Doublebox getTotalPrecio() {
+		return totalPrecio;
+	}
+
+	public void setTotalPrecio(Doublebox totalPrecio) {
+		this.totalPrecio = totalPrecio;
+	}
+
+	public Label getMensaje() {
+		return mensaje;
+	}
+
+	public void setMensaje(Label mensaje) {
+		this.mensaje = mensaje;
 	}
 	
 }

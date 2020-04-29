@@ -30,7 +30,7 @@ import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.genericEvents.RefreshListener;
 import chasqui.view.genericEvents.Refresher;
-
+@Deprecated
 public class ABMNodoComposer extends GenericForwardComposer implements Refresher {
 
 	private Vendedor vendedor;

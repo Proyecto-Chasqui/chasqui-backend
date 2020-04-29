@@ -7,9 +7,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.cxf.common.util.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -25,6 +27,7 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
@@ -52,6 +55,7 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 	private UsuarioService service;
 	private MailService mailService;
 	private SessionListenerService sessionListenerService;
+	private boolean forceLogin = false;
 
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
@@ -75,23 +79,62 @@ public class LoginComposer  extends GenericForwardComposer<Component>{
 		if (!password.matches("^[a-zA-Z0-9]*$") || password.length() < 8){
 			labelError.setVisible(true);
 			passwordLoggin.setValue("");
-			usernameLoggin.setValue("");
 			binder.loadAll();
 			return;
 		};
 		Vendedor user = null;
 		try{			
 			user =(Vendedor) service.login(usuario,password);
-			service.inicializarListasDe(user);
-			Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
-			Executions.sendRedirect("/administracion.zul");
-			listenSession(usuario, (HttpSession) Executions.getCurrent().getSession().getNativeSession());
+			if(sessionListenerService.existeUnaSesionPara(usuario) && !forceLogin) {
+				advertenciaDeIngreso(usuario);
+			}else {
+				forceLogin=false;
+				iniciarPanel(usuario,user);				
+			}
 		}catch(Exception e){
 			labelError.setVisible(true);
 			passwordLoggin.setValue("");
-			usernameLoggin.setValue("");
 		}
 		
+	}
+	
+	public void iniciarPanel(String nombreUsuario, Vendedor user) {
+		service.inicializarListasDe(user);
+		Executions.getCurrent().getSession().setAttribute(Constantes.SESSION_USERNAME, user);
+		Executions.sendRedirect("/administracion.zul");
+		listenSession(nombreUsuario, (HttpSession) Executions.getCurrent().getSession().getNativeSession());
+	}
+	
+	private void advertenciaDeIngreso(final String nombreUsuario) {
+		
+		Messagebox.show(
+				"Hay una sesion activa para el usuario "+ nombreUsuario +", si ingresa desconectará al usuario actual ¿Desea ingresar de todas maneras?",
+				"Advertencia",
+	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
+	    		new String[] {"Si","No"},
+	    		Messagebox.EXCLAMATION, null, new EventListener<ClickEvent>(){
+	
+			public void onEvent(ClickEvent event) throws Exception {
+				String edata = "";
+				if (event.getData() != null){
+					edata= event.getData().toString();
+				}
+				switch (edata){
+				case "YES":
+					try {
+						forceLogin = true;
+						Clients.showNotification("Ya puede ingresar", "info", logginButton, "after_center", 3000, true);
+					}catch (Exception e) {
+						e.printStackTrace();						
+						Clients.showNotification("Ocurrio un error desconocido", "error", logginButton, "after_center", 3000);
+					}
+					
+				case "ABORT":
+				default:
+				}
+			}
+			});
+
 	}
 	
 	public void listenSession(String user, HttpSession session) {

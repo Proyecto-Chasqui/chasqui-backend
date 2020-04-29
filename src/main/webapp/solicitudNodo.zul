@@ -7,7 +7,7 @@
 <window title="Detalle Del Pedido" border="normal" id="solicitudNodoWindow" closable="true" 
 apply="chasqui.view.composer.ProductosEnPedidoComposer" width="50%">
 
-
+<!-- Deprecado, borrar al terminar la seccion nueva de nodos -->
 <listbox model="@{solicitudNodoWindow$composer.nodosSolicitados}" mold="paging" pageSize="10" >
 	<listhead>
 		<listheader label="Alias del Nodo" hflex="1" align="center"/>

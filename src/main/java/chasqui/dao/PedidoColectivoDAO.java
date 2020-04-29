@@ -25,5 +25,12 @@ public interface PedidoColectivoDAO {
 
 	Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedorConPRPorNombre(Integer vendedorid, Date d,
 			Date h, String estadoSeleccionado, Integer zonaId, String puntoRetiro, String emailAdmin);
+
+	public List<PedidoColectivo> obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(
+			Integer idVendedor, Date d, Date h, String estadoSeleccionado, Integer zonaId, String prSeleccionado,
+			String email);
+
+	public void eliminar(PedidoColectivo p);
+
 	
 }

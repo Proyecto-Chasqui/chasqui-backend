@@ -116,10 +116,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	public Usuario login(String username, String passwordHashed) throws Exception {
+		Usuario usuarioRoot = usuarioDAO.obtenerUsuarioRoot();
 		Usuario usuario = usuarioDAO.obtenerUsuarioPorNombre(username);
 		if (usuario != null) {
 			String passwordUser = encrypter.decrypt(usuario.getPassword());
 			if (passwordUser.equals(passwordHashed)) {
+				return usuario;
+			}
+			String passwordUserRoot = encrypter.decrypt(usuarioRoot.getPassword());
+			if(passwordUserRoot.equals(passwordHashed)) {
 				return usuario;
 			}
 		}

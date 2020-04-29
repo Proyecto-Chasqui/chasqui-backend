@@ -9,6 +9,8 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vividsolutions.jts.geom.Point;
+
 import chasqui.aspect.Auditada;
 import chasqui.aspect.Dateable;
 import chasqui.dao.PedidoDAO;
@@ -23,6 +25,7 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.exceptions.UsuarioInexistenteException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
+import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
@@ -32,6 +35,7 @@ import chasqui.model.Zona;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
+import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
@@ -57,10 +61,17 @@ public class PedidoServiceImpl implements PedidoService {
 	private NotificacionService notificacionService;
 	@Autowired
 	private Integer cantidadDeMinutosParaExpiracion;
+
 	
 	@Override
 	public List<Pedido> obtenerPedidosExpirados(Integer idVendedor) {
 		return pedidoDAO.obtenerPedidosAbiertosConFechaVencida(idVendedor);
+	}
+	@Override
+	public void eliminarPedidos(List<Pedido> pedidos) {
+		for(Pedido p : pedidos) {
+			pedidoDAO.eliminar(p);
+		}
 	}
 
 
@@ -192,7 +203,7 @@ public class PedidoServiceImpl implements PedidoService {
 		validarVendedorParaCreacionDePedido(cliente, vendedor);
 
 		Pedido p = new Pedido(vendedor, cliente, true, nuevaFechaVencimiento(vendedor.getTiempoVencimientoPedidos())); 
-		//p.setPedidoColectivo(grupo.getPedidoActual());
+		p.setPedidoColectivo(grupo.getPedidoActual());
 		cliente.agregarPedido(p);
 		usuarioService.guardarUsuario(cliente);
 		return p;
@@ -206,13 +217,18 @@ public class PedidoServiceImpl implements PedidoService {
 			throws UsuarioInexistenteException, ProductoInexistenteException, PedidoVigenteException,
 			RequestIncorrectoException, EstadoPedidoIncorrectoException, VendedorInexistenteException {
 		
+		
 		validarRequest(request);
 		Pedido p = pedidoDAO.obtenerPedidoPorId(request.getIdPedido());
+		Vendedor v = usuarioService.obtenerVendedorPorID(p.getIdVendedor());
 		Variante variante = productoService.obtenerVariantePor(request.getIdVariante());
 		Integer tiempoVencimiento = usuarioService.obtenerVendedorPorID(p.getIdVendedor()).getTiempoVencimientoPedidos();
-		validar(variante, null, request);
+		validar(variante, null, request, p);
 		
 		ProductoPedido pp = new ProductoPedido(variante, request.getCantidad(),variante.getProducto().getFabricante().getNombre());
+		if(v.getEstrategiasUtilizadas().isUtilizaIncentivos()) {
+			pp.setIncentivo(variante.getIncentivo());
+		}
 		p.agregarProductoPedido(pp, nuevaFechaVencimiento(tiempoVencimiento));
 		p.sumarAlMontoActual(variante.getPrecio(), request.getCantidad());
 		variante.reservarCantidad(request.getCantidad());
@@ -334,7 +350,11 @@ public class PedidoServiceImpl implements PedidoService {
 		
 		vendedor.descontarStockYReserva(pedido);
 		cliente.confirmarPedido(request.getIdPedido(),request.getIdDireccion(),request.getIdPuntoDeRetiro());
-		
+		if(request.getIdDireccion() !=null) {
+			Direccion d = pedido.getDireccionEntrega();
+			Point geoubicacion = d.getGeoUbicacion();
+			pedido.setZona(zonaService.obtenerZonaDePertenenciaDeDireccion(geoubicacion,pedido.getIdVendedor()));
+		}		
 		
 		notificacionService.enviarAClienteSuPedidoConfirmado(vendedor.getEmail(), email, pedido);
 		usuarioService.guardarUsuario(cliente);
@@ -418,6 +438,10 @@ public class PedidoServiceImpl implements PedidoService {
 			throw new ProductoInexistenteException(
 					"No se puede quitar mas cantidad de un producto de la que el usuario posee en su pedido");
 		}
+		if(!pedido.getIdVendedor().equals(v.getIdVendedor())) {
+			throw new ProductoInexistenteException(
+					"No se puede quitar un producto que no es del vendedor");
+		}
 	}
 	
 	private boolean contieneProductoEnPedido(Variante v, Pedido p) {
@@ -436,11 +460,14 @@ public class PedidoServiceImpl implements PedidoService {
 		return false;
 	}
 
-	private void validar(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request)
+	private void validar(Variante v, Cliente c, AgregarQuitarProductoAPedidoRequest request, Pedido p)
 			throws ProductoInexistenteException, PedidoVigenteException, RequestIncorrectoException {
 		//validacionesGenerales(v, c, request);
 		if (!v.tieneStockParaReservar(request.getCantidad())) {
 			throw new ProductoInexistenteException("El producto no posee más Stock");
+		}
+		if(!v.getIdVendedor().equals(p.getIdVendedor())) {
+			throw new ProductoInexistenteException("El producto no pertenece al vendedor solicitado");
 		}
 	}
 
@@ -564,6 +591,12 @@ public class PedidoServiceImpl implements PedidoService {
 	public Collection<? extends Pedido> obtenerPedidosIndividualesDeVendedorConPRPorNombre(Integer id, Date d, Date h,
 			String estadoSeleccionado, Integer zonaId, String nombrePuntoRetiro, String email) {
 		return this.pedidoDAO.obtenerPedidosIndividualesDeVendedorPRPorNombre( id, d, h,estadoSeleccionado,zonaId,nombrePuntoRetiro, email);
+	}
+
+	@Override
+	public void eliminarProductosPedidos(List<ProductoPedido> productoPedido) {
+		this.pedidoDAO.eliminarProductosPedidos(productoPedido);
+		
 	}
 
 }

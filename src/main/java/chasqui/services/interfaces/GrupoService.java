@@ -120,4 +120,6 @@ public interface GrupoService {
 	public void guardarGrupo(GrupoCC grupo);
 	@Transactional
 	public void vaciarGrupoCC(Integer idGrupo) throws EstadoPedidoIncorrectoException;
+	@Transactional
+	public void eliminarGrupos(List<GrupoCC> obtenerGruposDe);
 }

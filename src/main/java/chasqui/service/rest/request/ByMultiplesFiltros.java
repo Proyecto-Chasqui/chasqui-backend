@@ -1,12 +1,14 @@
 package chasqui.service.rest.request;
 
+import java.util.List;
+
 public class ByMultiplesFiltros extends ProductoRequest{
 	
 	private Integer idVendedor;
 	private Integer idCategoria;
-	private Integer idMedalla;
+	private List<Integer> idsSellosProducto;
 	private Integer idProductor;
-	private Integer idMedallaProductor;
+	private List<Integer> idsSellosProductor;
 	private Integer numeroDeOrden;
 	private String query;
 	
@@ -17,12 +19,6 @@ public class ByMultiplesFiltros extends ProductoRequest{
 		this.idCategoria = idCategoria;
 	}
 	
-	public Integer getIdMedalla() {
-		return idMedalla;
-	}
-	public void setIdMedalla(Integer idMedalla) {
-		this.idMedalla = idMedalla;
-	}
 	public Integer getIdProductor() {
 		return idProductor;
 	}
@@ -36,12 +32,7 @@ public class ByMultiplesFiltros extends ProductoRequest{
 	public void setIdVendedor(Integer idVendedor) {
 		this.idVendedor = idVendedor;
 	}
-	public Integer getIdMedallaProductor() {
-		return idMedallaProductor;
-	}
-	public void setIdMedallaProductor(Integer idSelloProductor) {
-		this.idMedallaProductor = idSelloProductor;
-	}
+
 	public String getQuery() {
 		return query;
 	}
@@ -52,9 +43,9 @@ public class ByMultiplesFiltros extends ProductoRequest{
 	public String toString(){
 		return "ByMultiplesFiltros [ idVendedor: " + this.getIdVendedor()
 								   + "idCategoria: "+ this.getIdCategoria()
-								   + " idMedalla: " + this.getIdMedalla()
-								   + "idMedallaProductor: " + this.getIdMedallaProductor()
-								   + " idProductor: " + this.getIdProductor()
+								   + "idsSellosProductos: [" + this.getIdsSellosProducto() + "]"
+								   + "idsSellosProductor: [" + this.getIdsSellosProductor() +"]"
+								   + "idProductor: " + this.getIdProductor()
 								   + "query" + this.getQuery()
 								   + " pagina: "+ this.getPagina()
 								   + " precio: "+this.getPrecio()
@@ -67,6 +58,18 @@ public class ByMultiplesFiltros extends ProductoRequest{
 	}
 	public void setNumeroDeOrden(Integer numeroDeOrden) {
 		this.numeroDeOrden = numeroDeOrden;
+	}
+	public List<Integer> getIdsSellosProductor() {
+		return idsSellosProductor;
+	}
+	public void setIdsSellosProductor(List<Integer> idsSellosProductor) {
+		this.idsSellosProductor = idsSellosProductor;
+	}
+	public List<Integer> getIdsSellosProducto() {
+		return idsSellosProducto;
+	}
+	public void setIdsSellosProducto(List<Integer> idsSellosProducto) {
+		this.idsSellosProducto = idsSellosProducto;
 	}
 
 

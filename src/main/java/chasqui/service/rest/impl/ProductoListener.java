@@ -114,11 +114,11 @@ public class ProductoListener {
 	@Produces("application/json")
 	public Response obtenerProductosConMultiplesFiltros(@Multipart(value="productoRequest", type="application/json")final String productoRequest){
 		try{
-			ByMultiplesFiltros request = toByMultiplesFiltros(productoRequest);	
-			List<Variante> productos= productoService.obtenerVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(),request.getIdMedalla(), request.getIdProductor(), request.getIdMedallaProductor(), request.getQuery(), request.getPagina(), request.getCantItems(), request.getNumeroDeOrden());
+			ByMultiplesFiltros request = toByMultiplesFiltros(productoRequest);
+			List<Variante> productos= productoService.obtenerVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(),request.getIdsSellosProducto(), request.getIdProductor(), request.getIdsSellosProductor(), request.getQuery(), request.getPagina(), request.getCantItems(), request.getNumeroDeOrden());
 			///
 
-			Long cantidadDeVariantes = productoService.totalVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(), request.getIdMedalla(), request.getIdProductor(), request.getIdMedallaProductor(), request.getQuery());
+			Long cantidadDeVariantes = productoService.totalVariantesPorMultiplesFiltros(request.getIdVendedor(), request.getIdCategoria(), request.getIdsSellosProducto(), request.getIdProductor(), request.getIdsSellosProductor(), request.getQuery());
 			Double cantidadDeProductos = Double.valueOf(cantidadDeVariantes.doubleValue());
 			Long cantidadDePaginas =  (long) Math.ceil(cantidadDeProductos / Double.valueOf(request.getCantItems()));
 			///

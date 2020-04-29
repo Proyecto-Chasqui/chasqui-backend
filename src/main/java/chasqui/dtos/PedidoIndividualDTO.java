@@ -21,9 +21,9 @@ public class PedidoIndividualDTO {
 		return variantes;
 	}
 
-	public void addVariante(Double precio, String nombreProducto, String nombreVariante, Integer cantidad) {
+	public void addVariante(Double precio, String nombreProducto, String nombreVariante, Integer cantidad, String nombreProductor) {
 		
-		VarianteDTO nuevaVariante = new VarianteDTO(nombreProducto, nombreVariante, cantidad, precio);
+		VarianteDTO nuevaVariante = new VarianteDTO(nombreProducto, nombreVariante, cantidad, precio, nombreProductor);
 		this.variantes.add(nuevaVariante);
 	
 	}

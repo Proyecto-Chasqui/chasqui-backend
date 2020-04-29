@@ -18,6 +18,9 @@
         <property name="precio" type="java.lang.Double">
             <column name="PRECIO" />
         </property>
+        <property name="incentivo" type="java.lang.Double">
+            <column name="INCENTIVO" default="0.0"/>
+        </property>
         <property name="nombreProducto" type="java.lang.String">
             <column name="NOMBRE_PRODUCTO" />
         </property>

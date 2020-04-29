@@ -36,6 +36,7 @@ public class PedidoResponse implements Serializable {
 	private String fechaVencimiento;
 	private Double montoMinimo;
 	private Double montoActual;
+	private Double incentivoActual;
 	private String nombreVendedor;
 	private ZonaResponse zona;
 	private DireccionResponse direccion;
@@ -150,6 +151,7 @@ public class PedidoResponse implements Serializable {
 		}
 		montoMinimo = p.getMontoMinimo();
 		montoActual = p.getMontoActual();
+		incentivoActual = p.getMontoTotalIncentivo();
 		productosResponse = new ArrayList<ProductoPedidoResponse>();
 		if (p.getProductosEnPedido() != null) {
 			for(ProductoPedido pp : p.getProductosEnPedido()){
@@ -217,6 +219,7 @@ public class PedidoResponse implements Serializable {
 		fechaVencimiento = (p.getFechaDeVencimiento()!=null)?f.format(p.getFechaDeVencimiento().toDate()):null;
 		montoMinimo = p.getMontoMinimo();
 		montoActual = p.getMontoActual();
+		incentivoActual = p.getMontoTotalIncentivo();
 		productosResponse = new ArrayList<ProductoPedidoResponse>();
 		if (p.getProductosEnPedido() != null) {
 			for(ProductoPedido pp : p.getProductosEnPedido()){
@@ -287,6 +290,16 @@ public class PedidoResponse implements Serializable {
 
 	public void setCliente(ClienteResponse cliente) {
 		this.cliente = cliente;
+	}
+
+
+	public Double getIncentivoActual() {
+		return incentivoActual;
+	}
+
+
+	public void setIncentivoActual(Double incentivoActual) {
+		this.incentivoActual = incentivoActual;
 	}
 	
 

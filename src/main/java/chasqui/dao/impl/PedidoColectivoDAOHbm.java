@@ -125,15 +125,15 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 				if (d != null && h != null) {
 					DateTime desde = new DateTime(d.getTime());
 					DateTime hasta = new DateTime(h.getTime());
-					c.add(Restrictions.between("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
+					c.add(Restrictions.between("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
 				}else{
 					if(d!=null){
 						DateTime desde = new DateTime(d.getTime());
-						c.add(Restrictions.ge("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0)));
+						c.add(Restrictions.ge("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0)));
 					}else{
 						if(h!=null){
 							DateTime hasta = new DateTime(h.getTime());
-							c.add(Restrictions.le("pedidoColectivo.fechaCreacion", hasta.plusDays(1).withHourOfDay(0)));
+							c.add(Restrictions.le("pedidoColectivo.fechaModificacion", hasta.plusDays(1).withHourOfDay(0)));
 						}
 					}
 				}
@@ -189,15 +189,15 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 					if (d != null && h != null) {
 						DateTime desde = new DateTime(d.getTime());
 						DateTime hasta = new DateTime(h.getTime());
-						pedidosColectivos.add(Restrictions.between("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
+						pedidosColectivos.add(Restrictions.between("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
 					}else{
 						if(d!=null){
 							DateTime desde = new DateTime(d.getTime());
-							pedidosColectivos.add(Restrictions.ge("pedidoColectivo.fechaCreacion", desde.withHourOfDay(0)));
+							pedidosColectivos.add(Restrictions.ge("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0)));
 						}else{
 							if(h!=null){
 								DateTime hasta = new DateTime(h.getTime());
-								pedidosColectivos.add(Restrictions.le("pedidoColectivo.fechaCreacion", hasta.plusDays(1).withHourOfDay(0)));
+								pedidosColectivos.add(Restrictions.le("pedidoColectivo.fechaModificacion", hasta.plusDays(1).withHourOfDay(0)));
 							}
 						}
 					}
@@ -242,6 +242,62 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 				return pedidoRet;
 			}
 		});
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PedidoColectivo>  obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(final Integer vendedorid, final Date d, final Date h, final String estadoSeleccionado, final Integer zonaId,
+			final String puntoRetiro, final String emailAdmin) {
+		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<PedidoColectivo>>() {
+
+			@Override
+			public List<PedidoColectivo> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(PedidoColectivo.class, "pedidoColectivo")
+				.createAlias("pedidoColectivo.colectivo", "grupoCC")
+				.createAlias("grupoCC.vendedor", "vendedor")
+				.add(Restrictions.eq("vendedor.id", vendedorid))
+				.add(Restrictions.eq("grupoCC.esNodo", true))
+				.addOrder(Order.desc("pedidoColectivo.id"));
+				if (!StringUtils.isEmpty(estadoSeleccionado)) {
+					c.add(Restrictions.eq("pedidoColectivo.estado", estadoSeleccionado));
+				}
+				if (d != null && h != null) {
+					DateTime desde = new DateTime(d.getTime());
+					DateTime hasta = new DateTime(h.getTime());
+					c.add(Restrictions.between("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0), hasta.plusDays(1).withHourOfDay(0)));
+				}else{
+					if(d!=null){
+						DateTime desde = new DateTime(d.getTime());
+						c.add(Restrictions.ge("pedidoColectivo.fechaModificacion", desde.withHourOfDay(0)));
+					}else{
+						if(h!=null){
+							DateTime hasta = new DateTime(h.getTime());
+							c.add(Restrictions.le("pedidoColectivo.fechaModificacion", hasta.plusDays(1).withHourOfDay(0)));
+						}
+					}
+				}
+				if(puntoRetiro!=null && !puntoRetiro.equals("")) {
+					c.createAlias("pedidoColectivo.puntoDeRetiro", "puntoDeRetiro");
+					c.add(Restrictions.eq("puntoDeRetiro.nombre",puntoRetiro));
+				}
+				if(zonaId != null) {
+					c.createAlias("pedidoColectivo.zona", "zona");
+					c.add(Restrictions.eq("zona.id",zonaId));
+				}
+				if(emailAdmin!=null) {
+					if(!emailAdmin.equals("")){
+						c.createAlias("grupoCC.administrador", "administrador");
+						c.add(Restrictions.like("administrador.email", "%"+emailAdmin+"%"));
+					}
+				}
+				return c.list();
+			}
+		});
+	}
+	@Override
+	public void eliminar(PedidoColectivo p) {
+		this.getHibernateTemplate().delete(p);
+		this.getHibernateTemplate().flush();
+		
 	}
 
 }

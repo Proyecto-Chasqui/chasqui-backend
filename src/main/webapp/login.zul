@@ -1,32 +1,31 @@
-<zk>
-<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?page title="PANEL CHASQUI" contentType="text/html;charset=UTF-8"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./loginWindow" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 
+<zk>
 
 
-<window id="loginWindow" border="normal" apply="chasqui.view.composer.LoginComposer" width="100%"
-style="align=center;" visible="true" height="100%">
+<window id="loginWindow" apply="chasqui.view.composer.LoginComposer" width="100%"
+ visible="true" height="100%">
 <!-- 	<html:form action="j_spring_security_check" method="POST"  xmlns:html="native"> -->
 <separator height="30%"/>
 	<vbox style="padding-left:40%;">
 	<div align="center">
-		<image src="/imagenes/logo_ch_login_beta.png"/>
+		<image src="/imagenes/logo_ch_login_1.png"/>
 	</div>
-	<separator height="10px"/>
 	<div id="enter" align="center">
 		<vbox>
 			<label id="labelError" style="font-weight:bold;color:red" value="${c:l('zk.label.error.loggin')}"
 			visible="false"/>
 			<hbox>
 				<label value="${c:l('zk.loggin.username')}" style="font-size:15px;font-weight:bold;"/>
-				<textbox maxlength="10" id="usernameLoggin" name="j_username" />		
+				<textbox maxlength="64" id="usernameLoggin" name="j_username" />		
 			</hbox>
 			<hbox>
 				<label value="${c:l('zk.loggin.password')}" style="font-size:15px;font-weight:bold;"/>
-				<textbox id="passwordLoggin" maxlength="15" type="password" name="j_password"/>
+				<textbox id="passwordLoggin" maxlength="24" type="password" name="j_password"/>
 			</hbox>
 			<div align="center">
 				<vbox >

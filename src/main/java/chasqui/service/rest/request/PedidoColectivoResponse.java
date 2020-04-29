@@ -19,6 +19,7 @@ public class PedidoColectivoResponse {
 	private String fechaCreacion;
 	private String fechaModificacion;
 	private Double montoTotal;
+	private Double incentivoTotal;
 	private ZonaResponse zona;
 	private DireccionResponse direccion;
 	private PuntoDeRetiroResponse puntoDeRetiro;
@@ -77,6 +78,7 @@ public class PedidoColectivoResponse {
 		fechaCreacion = f.format(p.getFechaCreacion().toDate());
 		fechaModificacion = (p.getFechaModificacion()!=null)?f.format(p.getFechaModificacion().toDate()):null;
 		montoTotal = p.getMontoTotal();
+		incentivoTotal = p.getMontoTotalDeIncentivos();
 		cargarDireccionYZonaSeleccionadaDePedidoColectivo(p);
 		setPedidos(crearListaDePedidos(p));
 	}
@@ -133,5 +135,13 @@ public class PedidoColectivoResponse {
 
 	public void setPedidos(List<PedidoResponse> pedidos) {
 		this.pedidos = pedidos;
+	}
+
+	public Double getIncentivoTotal() {
+		return incentivoTotal;
+	}
+
+	public void setIncentivoTotal(Double incentivoTotal) {
+		this.incentivoTotal = incentivoTotal;
 	}
 }

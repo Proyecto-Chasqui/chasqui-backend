@@ -16,6 +16,7 @@ public class ProductoPedidoResponse implements Serializable{
 	private Double precio;
 	private Integer cantidad;
 	private String imagen;
+	private Double incentivo;
 	
 	public String getNombre() {
 		return nombre;
@@ -56,6 +57,14 @@ public class ProductoPedidoResponse implements Serializable{
 		this.idVariante = idVariante;
 	}
 	
+	public Double getIncentivo() {
+		return incentivo;
+	}
+
+	public void setIncentivo(Double incentivo) {
+		this.incentivo = incentivo;
+	}
+	
 	
 	public ProductoPedidoResponse(){}
 	public ProductoPedidoResponse(ProductoPedido p){
@@ -64,7 +73,10 @@ public class ProductoPedidoResponse implements Serializable{
 		precio = p.getPrecio();
 		nombre = p.getNombreProducto() +" "+ p.getNombreVariante();
 		idVariante = p.getIdVariante();
+		incentivo = p.getIncentivo();
 	}
+
+
 
 	
 	

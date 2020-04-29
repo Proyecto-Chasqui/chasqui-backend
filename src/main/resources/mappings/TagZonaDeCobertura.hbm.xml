@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="all">
+    <joined-subclass name="chasqui.model.TagZonaDeCobertura" extends="chasqui.model.Tag" table="TAG_ZONA_COBERTURA" lazy="false">
+        <key>
+            <column name="ID" />
+        </key>        
+    </joined-subclass>
+</hibernate-mapping>

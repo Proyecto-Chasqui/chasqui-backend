@@ -24,6 +24,7 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -35,9 +36,11 @@ import org.zkoss.zul.Messagebox.ClickEvent;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.Categoria;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
+import chasqui.model.Producto;
 import chasqui.model.ProductoPedido;
 import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Vendedor;
@@ -96,6 +99,8 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private Combobox prCombobox;
 	private String prSeleccionado;
 	private VendedorService vendedorService;
+	private Div filtros;
+	private XlsExporter export  = new XlsExporter();
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -106,6 +111,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 			windowComponent = component;
 			grupo = (GrupoCC) Executions.getCurrent().getArg().get("Grupo");
 			component.addEventListener(Events.ON_USER, new HitorialPedidosColectivosEventListener(this,grupo));
+			component.addEventListener(Events.ON_RENDER, new RenderEventListener(this));
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
 			pedidoColectivoService = (PedidoColectivoService) SpringUtil.getBean("pedidoColectivoService");
@@ -170,17 +176,32 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		this.binder.loadAll();
 	}
 	
+	
 	public List<PedidoColectivo> filtrarColectivosInactivos(Collection<? extends PedidoColectivo> collection) {
-		/*List<PedidoColectivo> pedidosActivos = new ArrayList<PedidoColectivo>();
+		List<PedidoColectivo> pedidosActivos = new ArrayList<PedidoColectivo>();
 		if(collection != null) {
 			for(PedidoColectivo pedido: collection) {
-				if(pedido.tieneAlgunPedidoConfirmado()) {
+				if(!pedido.getColectivo().isEsNodo()) {
 					pedidosActivos.add(pedido);
 				}
 			}
 		}
-		*/
-		return (List<PedidoColectivo>) collection;
+		return eliminarPedidosConNDEnFechaModificacion(pedidosActivos);
+	}
+	
+	private List<PedidoColectivo> eliminarPedidosConNDEnFechaModificacion(List<PedidoColectivo> pedidosNodos) {
+		if(desde.getValue() != null || hasta.getValue() != null) {
+			ArrayList<PedidoColectivo> pedidos = new ArrayList<PedidoColectivo>();
+			for(PedidoColectivo p : pedidosNodos) {
+				if(p.getFechaModificacion() != null && !p.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) && !p.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+					pedidos.add(p);
+				}
+			}
+			return pedidos;
+		}else {
+			return pedidosNodos;
+		}
+		
 	}
 
 	public List<Pedido> getPedidos() {
@@ -425,8 +446,41 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		this.prSeleccionado = prSeleccionado;
 	}
 
+	public Div getFiltros() {
+		return filtros;
+	}
+
+	public void setFiltros(Div filtros) {
+		this.filtros = filtros;
+	}
+
+	public void onMostrarFiltros() {
+		this.filtros.setVisible(!filtros.isVisible());
+		
+	}
+
+	public void exportarPedidoColectivo(Integer idPedidoColectivo) {
+		export.exportarPedidoColectivo(idPedidoColectivo, windowComponent, pedidoColectivoService, usuarioLogueado);
+		this.binder.loadAll();
+	}
 
 
+
+}
+
+class RenderEventListener implements EventListener<Event>{
+
+	HistorialPedidosColectivosComposer composer;
+	public RenderEventListener(HistorialPedidosColectivosComposer historialPedidosColectivosComposer) {
+		this.composer = historialPedidosColectivosComposer;
+	}
+
+	public void onEvent(Event event) throws Exception {
+		
+		composer.onMostrarFiltros();
+		
+	}
+	
 }
 
 class HitorialPedidosColectivosEventListener implements EventListener<Event>{
@@ -453,6 +507,10 @@ class HitorialPedidosColectivosEventListener implements EventListener<Event>{
 			
 		}
 		
+		if(accion.equals("exportar")) {
+			composer.exportarPedidoColectivo(p.getId());
+		}
+		
 		if(accion.equals(PedidosComposer.ACCION_PREPARAR)){
 			composer.onPreguntarPerpararEntrega(p);				
 		}
@@ -469,6 +527,7 @@ class HitorialPedidosColectivosEventListener implements EventListener<Event>{
 		if(accion.equals(PedidosComposer.ACCION_NOTIFICAR)){
 			composer.onNotificar(p);				
 		}
+
 			
 	}
 }

@@ -12,6 +12,7 @@ import chasqui.exceptions.RequestIncorrectoException;
 import chasqui.model.Caracteristica;
 import chasqui.model.Imagen;
 import chasqui.model.Pedido;
+import chasqui.model.Producto;
 import chasqui.model.ProductoPedido;
 import chasqui.model.Variante;
 import chasqui.service.rest.request.ByCategoriaRequest;
@@ -185,9 +186,9 @@ public class ProductoServiceImpl implements ProductoService {
 	}
 
 	@Override
-	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla,
-			Integer idProductor,Integer idSelloProductor, String query, Integer pagina, Integer cantItems, Integer numeroDeOrden) {
-		return productoDAO.obtenerVariantesPorMultiplesFiltros(idVendedor, idCategoria, idMedalla, idProductor, idSelloProductor, query, pagina, cantItems, numeroDeOrden);
+	public List<Variante> obtenerVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto,
+			Integer idProductor,List<Integer> idsSellosProductor, String query, Integer pagina, Integer cantItems, Integer numeroDeOrden) {
+		return productoDAO.obtenerVariantesPorMultiplesFiltros(idVendedor, idCategoria, idsSellosProducto, idProductor, idsSellosProductor, query, pagina, cantItems, numeroDeOrden);
 	}
 
 	@Override
@@ -196,7 +197,26 @@ public class ProductoServiceImpl implements ProductoService {
 	}
 	
 	@Override
-	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, Integer idMedalla, Integer idProductor, Integer idSelloProductor, String query){
-		return productoDAO.obtenerTotalVariantesPorMultiplesFiltros(idVendedor, idCategoria, idMedalla, idProductor, idSelloProductor, query);
+	public Long totalVariantesPorMultiplesFiltros(Integer idVendedor, Integer idCategoria, List<Integer> idsSellosProducto, Integer idProductor, List<Integer> idsSellosProductor, String query){
+		return productoDAO.obtenerTotalVariantesPorMultiplesFiltros(idVendedor, idCategoria, idsSellosProducto, idProductor, idsSellosProductor, query);
+	}
+	
+	@Override
+	public List<Variante> obtenerTodasLasVariantes(Integer idVendedor){
+		return productoDAO.obtenerTodasLasVariantes(idVendedor);
+	}
+	@Override
+	public void eliminarVariantes(List<Variante> Variantes) {
+		for(Variante variante: Variantes) {
+			productoDAO.eliminarVariante(variante);
+		}
+		
+	}
+	@Override
+	public void eliminarProducto(List<Producto> productos) {
+		for(Producto producto: productos) {
+			productoDAO.eliminarProducto(producto);
+		}
+		
 	}
 }

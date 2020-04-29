@@ -18,6 +18,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.PedidoDAO;
 import chasqui.model.Pedido;
+import chasqui.model.ProductoPedido;
 import chasqui.model.Zona;
 import chasqui.view.composer.Constantes;
 
@@ -343,15 +344,15 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				if (desde != null && hasta != null) {
 					DateTime d = new DateTime(desde.getTime());
 					DateTime h = new DateTime(hasta.getTime());
-					c.add(Restrictions.between("pedido.fechaCreacion", d.withHourOfDay(0), h.plusDays(1).withHourOfDay(0)));
+					c.add(Restrictions.between("pedido.fechaModificacion", d.withHourOfDay(0), h.plusDays(1).withHourOfDay(0)));
 				}else{
 					if(desde!=null){
 						DateTime d = new DateTime(desde.getTime());
-						c.add(Restrictions.ge("pedido.fechaCreacion", d.withHourOfDay(0)));
+						c.add(Restrictions.ge("pedido.fechaModificacion", d.withHourOfDay(0)));
 					}else{
 						if(hasta!=null){
 							DateTime h = new DateTime(hasta.getTime());
-							c.add(Restrictions.le("pedido.fechaCreacion", h.plusDays(1).withHourOfDay(0)));
+							c.add(Restrictions.le("pedido.fechaModificacion", h.plusDays(1).withHourOfDay(0)));
 						}
 					}
 				}
@@ -370,6 +371,21 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				return (List<Pedido>) c.list();
 			}
 		});
+	}
+
+	@Override
+	public void eliminar(Pedido p) {
+		this.getHibernateTemplate().delete(p);
+		this.getHibernateTemplate().flush();
+	}
+	
+
+	@Override
+	public void eliminarProductosPedidos(List <ProductoPedido> productoPedido) {
+			for(ProductoPedido pp: productoPedido) {
+				this.getHibernateTemplate().delete(pp);
+			}		
+			this.getHibernateTemplate().flush();
 	}
 
 

@@ -20,10 +20,13 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -65,6 +68,14 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 
 	CKeditor ckEditor;
 	CKeditor ckEditorProductor;
+	
+	private Button nuevaCaracteristicaProducto;
+	private Button nuevaCaracteristicaProductor;
+	private Button cancelarAgregarProductor;
+	private Button cancelarAgregarProducto;
+	
+	private Div datosCaracteristicaProducto;
+	private Div datosCaracteristicaProductor;
 
 	ICaracteristica caracteristicaAEditar;
 	private Component window;
@@ -98,7 +109,7 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 		ltbCaracteristicas.setItemRenderer(new CaracteristicaRenderer((Window) c, false));
 		ltbCaracteristicasProductor.setItemRenderer(new CaracteristicaProductorRenderer((Window) c, false));
 		fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
-
+		this.ocultarPaneles();
 		c.addEventListener(Events.ON_NOTIFY, new ArchivoListener(this));
 		c.addEventListener(Events.ON_UPLOAD, new ArchivoListener(this));
 		c.addEventListener(Events.ON_USER, new ArchivoListener(this));
@@ -126,14 +137,18 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 			c.setDescripcion(descripcion);
 			caracteristicas.add(c);
 		}
-		Clients.showNotification("Agregada la caracterisitica, debe guardarla " , "info", window, "middle_center",
-				3000, true);
+		guardarCaracteristica();
+		limpiarCamposProducto();
+		ocultarPaneles();
+		caracteristicaAEditar = null;
+		this.binder.loadAll();
+	}
+	
+	public void limpiarCamposProducto() {
 		txtbCaracteristica.setValue(null);
 		imagen = null;
 		imgIcon.setSrc(null);
 		ckEditor.setValue(null);
-		caracteristicaAEditar = null;
-		this.binder.loadAll();
 	}
 
 	private void validarNombreDeCaracteristicaProducto(String nombre) {
@@ -145,7 +160,25 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 	private boolean existeUnaCaracteristicaProductoConElMismoNombre(String nombre) {
 		return service.existeCaracteristicaProductoConNombre(nombre);
 	}
-
+	
+	public void onClick$cancelarAgregarProducto() {
+		limpiarCamposProducto();
+		mostrarListasyTabs();
+		this.mostrarTabs();
+		caracteristicaAEditar = null;
+	}
+	
+	public void onClick$cancelarAgregarProductor() {
+		limpiarCamposProductor();
+		mostrarListasyTabs();
+		caracteristicaAEditar = null;
+	}
+	
+	private void mostrarListasyTabs() {
+		ocultarPaneles();
+		this.mostrarListasDeCaracteristicas();
+		this.mostrarTabs();
+	}
 	/*
 	 * Evento disparado por el boton Agregar (Productor)
 	 */
@@ -166,14 +199,34 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 			c.setDescripcion(descripcion);
 			caracteristicasProductor.add(c);
 		}
-		Clients.showNotification("Agregada la caracterisitica, debe guardarla " , "info", window, "middle_center",
-				3000, true);
+		guardarCaracteristicaProductor();
+		limpiarCamposProductor();
+		ocultarPaneles();
+		caracteristicaAEditar = null;
+		this.binder.loadAll();
+	}
+	
+	public void onClick$nuevaCaracteristicaProductor(){
+		limpiarCamposProductor();
+		datosCaracteristicaProductor.setVisible(true);
+		ocultarListasDeCaracteristicas();
+		tabProducto.setVisible(false);
+		caracteristicaAEditar = null;
+	}
+	
+	public void onClick$nuevaCaracteristicaProducto(){
+		limpiarCamposProductor();
+		datosCaracteristicaProducto.setVisible(true);
+		ocultarListasDeCaracteristicas();
+		tabProductor.setVisible(false);
+		caracteristicaAEditar = null;
+	}
+	
+	private void limpiarCamposProductor() {
 		txtbCaracteristicaProductor.setValue(null);
 		ckEditorProductor.setValue(null);
 		imagenProductor = null;
 		imgIconProductor.setSrc(null);
-		caracteristicaAEditar = null;
-		this.binder.loadAll();
 	}
 
 	/*
@@ -255,10 +308,16 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 			Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), null);
 			this.self.detach();
 		}
+		this.mostrarListasDeCaracteristicas();
+		this.mostrarTabs();
 		Clients.clearBusy();
-		Messagebox.show("Las caracteristicas de los productores se han guardado correctamente", "Información",
+		Messagebox.show("La caracteristica de productor se ha guardado correctamente", "Información",
 				Messagebox.OK, Messagebox.INFORMATION);
 
+	}
+	public void mostrarTabs() {
+		tabProducto.setVisible(true);
+		tabProductor.setVisible(true);
 	}
 
 	/*
@@ -275,8 +334,10 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 			Events.sendEvent(Events.ON_NOTIFY, this.self.getParent(), null);
 			this.self.detach();
 		}
+		this.mostrarListasDeCaracteristicas();
+		this.mostrarTabs();
 		Clients.clearBusy();
-		Messagebox.show("Las caracteristicas de los productos se han guardado correctamente", "Información",
+		Messagebox.show("La caracteristica de producto se han guardado correctamente", "Información",
 				Messagebox.OK, Messagebox.INFORMATION);
 	}
 
@@ -341,18 +402,39 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 		Messagebox.show("Está seguro de eliminar la caracteristica seleccionada??", "Advertencia",
 				Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new DialogoBorrar(tipo, c, this));
 	}
+	
+	public void ocultarListasDeCaracteristicas() {
+		ltbCaracteristicas.setVisible(false);
+		ltbCaracteristicasProductor.setVisible(false);
+		nuevaCaracteristicaProducto.setVisible(false);
+		nuevaCaracteristicaProductor.setVisible(false);
+	}
+	
+	public void mostrarListasDeCaracteristicas() {
+		ltbCaracteristicas.setVisible(true);
+		ltbCaracteristicasProductor.setVisible(true);
+		nuevaCaracteristicaProducto.setVisible(true);
+		nuevaCaracteristicaProductor.setVisible(true);
+	}
+	
+	public void ocultarPaneles() {
+		datosCaracteristicaProducto.setVisible(false);
+		datosCaracteristicaProductor.setVisible(false);
+	}
 
 	/*
 	 * Determina el tipo de caracteristica (PRODUCTO/PRODUCTOR)
 	 */
 	public void editarCaracteristica(ICaracteristica c, String tipo) {
-
+		
 		if (tipo.equals(CaracteristicaRenderer.CTE_PRODUCTO)) {
 
 			if (imagen != null) {
 				throw new WrongValueException(imgIcon, "Hay cambios pendientes");
 			}
-
+			datosCaracteristicaProducto.setVisible(true);
+			ocultarListasDeCaracteristicas();
+			tabProductor.setVisible(false);
 			this.cargarCaracteristicaProducto((Caracteristica) c);
 			caracteristicaAEditar = (Caracteristica) c;
 		} else {
@@ -360,7 +442,9 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 			if (imagenProductor != null) {
 				throw new WrongValueException(imgIconProductor, "Hay cambios pendientes");
 			}
-
+			datosCaracteristicaProductor.setVisible(true);
+			ocultarListasDeCaracteristicas();
+			tabProducto.setVisible(false);
 			this.cargarCaracteristicaProductor((CaracteristicaProductor) c);
 			caracteristicaAEditar = (CaracteristicaProductor) c;
 		}
@@ -418,6 +502,56 @@ public class CaracteristicaComposer extends GenericForwardComposer<Component> {
 		caracteristicasProductor.remove(caracteristica);
 		binder.loadAll();
 	}
+
+
+	public Button getNuevaCaracteristicaProducto() {
+		return nuevaCaracteristicaProducto;
+	}
+
+	public void setNuevaCaracteristicaProducto(Button nuevaCaracteristicaProducto) {
+		this.nuevaCaracteristicaProducto = nuevaCaracteristicaProducto;
+	}
+
+	public Button getNuevaCaracteristicaProductor() {
+		return nuevaCaracteristicaProductor;
+	}
+
+	public void setNuevaCaracteristicaProductor(Button nuevaCaracteristicaProductor) {
+		this.nuevaCaracteristicaProductor = nuevaCaracteristicaProductor;
+	}
+
+	public Div getDatosCaracteristicaProductor() {
+		return datosCaracteristicaProductor;
+	}
+
+	public void setDatosCaracteristicaProductor(Div datosCaracteristicaProductor) {
+		this.datosCaracteristicaProductor = datosCaracteristicaProductor;
+	}
+
+	public Div getDatosCaracteristicaProducto() {
+		return datosCaracteristicaProducto;
+	}
+
+	public void setDatosCaracteristicaProducto(Div datosCaracteristicaProducto) {
+		this.datosCaracteristicaProducto = datosCaracteristicaProducto;
+	}
+
+	public Button getCancelarAgregarProductor() {
+		return cancelarAgregarProductor;
+	}
+
+	public void setCancelarAgregarProductor(Button cancelarAgregarProductor) {
+		this.cancelarAgregarProductor = cancelarAgregarProductor;
+	}
+
+	public Button getCancelarAgregarProducto() {
+		return cancelarAgregarProducto;
+	}
+
+	public void setCancelarAgregarProducto(Button cancelarAgregarProducto) {
+		this.cancelarAgregarProducto = cancelarAgregarProducto;
+	}
+
 }
 
 class DialogoBorrar implements EventListener<Event> {

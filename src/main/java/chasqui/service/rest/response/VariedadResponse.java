@@ -30,6 +30,7 @@ public class VariedadResponse implements Serializable{
 	private String descripcion;
 	private Boolean destacado;
 	private Double precio;
+	private Double incentivo;
 	private Integer stock;
 	private List<CaracteristicaResponse>medallasProducto;
 	private List<CaracteristicaResponse>medallasProductor;
@@ -157,6 +158,7 @@ public class VariedadResponse implements Serializable{
 		precioParteEntera = precioStr.substring(0,precioStr.lastIndexOf("."));
 		precioParteDecimal =  precioStr.substring(precioStr.lastIndexOf(".")+1);
 		precio = v.getPrecio();
+		incentivo = v.getIncentivo();
 		stock = v.getStock();
 		descripcion = v.getDescripcion();
 		if(p.getCaracteristicas() != null && !p.getCaracteristicas().isEmpty()){
@@ -172,6 +174,12 @@ public class VariedadResponse implements Serializable{
 			}
 		}
 		codigoArticulo = v.getCodigo();
+	}
+	public Double getIncentivo() {
+		return incentivo;
+	}
+	public void setIncentivo(Double incentivo) {
+		this.incentivo = incentivo;
 	}
 	
 }

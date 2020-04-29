@@ -40,7 +40,6 @@ public class NodoServiceTest extends GenericSetUp {
 		nodo = new Nodo();
 		nodo.setAdministrador(clienteJuanPerez);
 		nodo.setAlias(NODO_ALIAS);
-		nodo.setEstado(Constantes.ESTADO_NODO_APROBADO);
 		nodo.setTipo(Constantes.NODO_ABIERTO);
 		nodo.setVendedor(vendedor);
 		nodoService.guardarNodo(nodo);
@@ -82,10 +81,7 @@ public class NodoServiceTest extends GenericSetUp {
 		nodoService.altaNodo(OTRO_NODO_ALIAS, CLIENTE_MAIL, DIRECCION_LOCALIDAD, DIRECCION_CALLE, DIRECCION_ALTURA,
 				CLIENTE_TELEFONO_FIJO, vendedor.getId(), DESCRIPCION_NODO);
 		Nodo nodo = nodoService.obtenerNodoPorAlias(OTRO_NODO_ALIAS);
-		assertEquals(Constantes.ESTADO_NODO_SOLICITADO, nodo.getEstado());
-		nodoService.aprobarNodoPorAlias(OTRO_NODO_ALIAS);
 		nodo = nodoService.obtenerNodoPorAlias(OTRO_NODO_ALIAS);
-		assertEquals(Constantes.ESTADO_NODO_APROBADO, nodo.getEstado());
 	}
 
 	@Test
@@ -100,9 +96,7 @@ public class NodoServiceTest extends GenericSetUp {
 	public void testAprobarNodo() throws VendedorInexistenteException {
 		List<Nodo> nodos = nodoService.obtenerNodosDelVendedor(vendedor.getId());
 		assertTrue(nodos != null);
-		nodoService.aprobarNodoPorId(nodos.get(0).getId());
 		nodo = nodoService.obtenerNodosDelVendedor(vendedor.getId()).get(0);
-		assertEquals(nodo.getEstado(), Constantes.ESTADO_NODO_APROBADO);
 	}
 
 	@After

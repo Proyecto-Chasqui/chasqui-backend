@@ -89,5 +89,38 @@
             <column name="ID_DATA_MULTIMEDIA"/>
         </many-to-one>
         
+        <list name="tagsZonaCobertura" inverse="false" table="VENDEDOR_TAG_ZONA_COBERTURA" lazy="false">
+			<key column="ID_VENDEDOR"></key>
+			<index column="SEQUENCE"></index>
+			<many-to-many class="chasqui.model.TagZonaDeCobertura" column="ID_TAG_ZONA_COBERTURA"/>
+		</list>
+		
+		<list name="tagsTipoProducto" inverse="false" table="VENDEDOR_TAG_TIPO_PRODUCTO" lazy="false">
+			<key column="ID_VENDEDOR"></key>
+			<index column="SEQUENCE"></index>
+			<many-to-many class="chasqui.model.TagTipoProducto" column="ID_TAG_TIPO_PRODUCTO"/>
+		</list>
+
+		<list name="tagsTipoOrganizacion" inverse="false" table="VENDEDOR_TAG_TIPO_ORGANIZACION" lazy="false">
+			<key column="ID_VENDEDOR"></key>
+			<index column="SEQUENCE"></index>
+			<many-to-many class="chasqui.model.TagTipoOrganizacion" column="ID_TAG_TIPO_ORGANIZACION"/>
+		</list>
+
+		<list name="tagsEvento" inverse="false" table="VENDEDOR_TAG_EVENTO" lazy="false">
+			<key column="ID_VENDEDOR"></key>
+			<index column="SEQUENCE"></index>
+			<many-to-many class="chasqui.model.TagEvento" column="ID_TAG_EVENTO"/>
+		</list>
+		
+		<property name="visibleEnMulticatalogo" type="java.lang.Boolean" >
+        		<column name="VISIBLE_EN_MULTICATALOGO" not-null="true" default="false" />
+    	</property>
+    	<property name="ventasHabilitadas" type="java.lang.Boolean" >
+        		<column name="VENTAS_HABILITADAS" not-null="true" default="true" />
+    	</property>
+        <property name="mensajeVentasDeshabilitadas" type="text">
+            <column name="MENSAJE_VENTA_DESHABILITADA" />
+        </property>
     </joined-subclass>
 </hibernate-mapping>

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.InvitacionExistenteException;
@@ -36,16 +38,17 @@ public class GrupoCC {
 	private Vendedor vendedor;
 
 	private List<MiembroDeGCC> cache;
+	
+	private DateTime fechaCreacion;
+	
+	private boolean esNodo = false;
 
 	// Constructor
 	public GrupoCC() {
 	}
-
-	public GrupoCC(Cliente administrador, String alias, String descripcion) {
+	
+	public GrupoCC(Cliente administrador, String alias, String descripcion, boolean esNodo) {
 		this.administrador = administrador;
-		Direccion dirAdmin = administrador.obtenerDireccionPredeterminada();
-		
-		//this.setDomicilioEntrega((dirAdmin == null) ? null : new Direccion(dirAdmin)); //TODO la relación con Dirección se deja en Nodo 2017.09.21
 		this.setAlias(alias);
 		this.setDescripcion(descripcion);
 		this.pedidosHabilitados = true;
@@ -55,6 +58,23 @@ public class GrupoCC {
 		this.pedidoActual = new PedidoColectivo();
 		this.pedidoActual.setColectivo(this);
 		this.historial = new HistorialGCC(this.id);
+		this.setFechaCreacion(DateTime.now());
+		this.esNodo = esNodo;
+	}
+
+	public GrupoCC(Cliente administrador, String alias, String descripcion) {
+		this.administrador = administrador;
+		this.setAlias(alias);
+		this.setDescripcion(descripcion);
+		this.pedidosHabilitados = true;
+		this.cache = new ArrayList<MiembroDeGCC>();
+		this.invitarAlGrupo(administrador);
+		this.registrarInvitacionAceptada(administrador);
+		this.pedidoActual = new PedidoColectivo();
+		this.pedidoActual.setColectivo(this);
+		this.historial = new HistorialGCC(this.id);
+		this.setFechaCreacion(DateTime.now());
+		this.esNodo = false;
 	}
 
 	// Gets & Sets
@@ -224,7 +244,7 @@ public class GrupoCC {
 		miembro.rechazarInvitacion();
 	}
 
-	private MiembroDeGCC findMiembro(String emailCliente) {
+	protected MiembroDeGCC findMiembro(String emailCliente) {
 		for (MiembroDeGCC miembro : cache) {
 			if (miembro.getEmail().equals(emailCliente)) {
 				return miembro;
@@ -285,7 +305,7 @@ public class GrupoCC {
 		this.pedidoActual.setComentario(comentario);
 		this.pedidoActual.confirmarte();
 		this.historial.agregarAHistorial(this.pedidoActual);
-		this.historial.setId(this.id);
+		this.historial.setIdGCC(this.id);
 		this.pedidoActual = new PedidoColectivo();
 		this.pedidoActual.setColectivo(this);
 	}
@@ -358,6 +378,22 @@ public class GrupoCC {
 	public void vaciarGrupo() throws EstadoPedidoIncorrectoException {
 		this.cache.clear();
 		this.pedidoActual.cancelar();
+	}
+
+	public DateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(DateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public boolean isEsNodo() {
+		return esNodo;
+	}
+
+	public void setEsNodo(boolean esNodo) {
+		this.esNodo = esNodo;
 	}
 
 }

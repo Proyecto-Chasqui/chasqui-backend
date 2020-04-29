@@ -12,10 +12,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -50,27 +52,53 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	private Textbox textboxUrlBase;
 	
 	private String passwordInicial;
-	
-	
+	private Component vcomp;
+	private Window administracionWindow;
+	private Label labelVenededor;
+	private Button buttonGuardarNuevo;
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
+		vcomp = comp;
 		binder = new AnnotateDataBinder(comp);
 		service = (UsuarioService) SpringUtil.getBean("usuarioService");
 		mailService = (MailService) SpringUtil.getBean("mailService");
 		vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
 		encrypter = (Encrypter) SpringUtil.getBean("encrypter");
+		administracionWindow = (Window) findAdministracionWindow(comp);
 		comp.addEventListener(Events.ON_NOTIFY, new GuardarUsuarioEventListener(this));
 		comp.addEventListener(Events.ON_USER, new GuardarUsuarioEventListener(this));
 		binder.loadAll();
 	}
 	
+	private Component findAdministracionWindow(Component comp) {
+		if(comp.getParent() instanceof Window && comp.getParent().getId().equals("administracionWindow")){
+			return comp.getParent();
+		}
+		return findAdministracionWindow(comp.getParent());
+	}
+	
+	public void onClick$buttonCancelar(){
+		mostrarListaUsuarios();
+		this.limpiarCampos();
+	}
 	
 	public void onClick$buttonGuardar(){
 		validacionesParaGuardar();
+		validarUsuarioExistenteConNombreCortoEditando(textboxNombreCorto.getValue());
 		this.bloquearPantalla("Guardando Nuevo Usuario...");
-		Events.echoEvent(Events.ON_NOTIFY,self,null);
+		this.guardar();
 	}
+	
+
+
+	public void onClick$buttonGuardarNuevo(){
+		validacionesParaGuardar();
+		validarUsuarioExistenteConNombreCorto(textboxNombreCorto.getValue());
+		validarPassword();
+		this.guardar();
+	}
+	
 	
 	private void validacionesParaGuardar() {
 		String username = textboxUsername.getValue();
@@ -116,20 +144,38 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		} catch (UsuarioInexistenteException e) {
 			//No existe un vendedor con ese email.
 		}
+
+		
+		
+	}
+	
+	private void validarUsuarioExistenteConNombreCorto(String nombreCorto) {
 		try{
 			Vendedor vendedorConNombreCorto =vendedorService.obtenerVendedorPorNombreCorto(nombreCorto);
 			//existe un vendedor con ese nombre corto, el mismo porque se esta editando, u otro.
-			if((vendedorConNombreCorto != null && vendedorConNombreCorto.getEmail() != model.getEmail())){
+			if((vendedorConNombreCorto != null)){
 				throw new WrongValueException(textboxNombreCorto,"Ya existe un usuario con el nombre corto ingresado");
 			}
 			
 		} catch (VendedorInexistenteException e){
 			//No existe un vendedor con ese nombre corto.
 		}
-		
-		validarPassword();
 	}
+	
+	private void validarUsuarioExistenteConNombreCortoEditando(String nombreCorto) {
+		try{
+			Vendedor vendedorConNombreCorto = vendedorService.obtenerVendedorPorNombreCorto(nombreCorto);
+			//existe un vendedor con ese nombre corto, el mismo porque se esta editando, u otro.
+			if((vendedorConNombreCorto != null && !vendedorConNombreCorto.getId().equals(model.getId()))){
+				throw new WrongValueException(textboxNombreCorto,"Ya existe un usuario con el nombre corto ingresado");
+			}
 
+			
+		} catch (VendedorInexistenteException e){
+			//No existe un vendedor con ese nombre corto.
+		}
+		
+	}
 	
 	private void validarPassword(){
 		String nuevaClave = textboxContraseña.getValue();
@@ -162,7 +208,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 			model.setPassword(encrypter.encrypt(pwd));
 			model.setUrl(urlBase);
 			if(model.getImagenPerfil() == null){
-				model.setImagenPerfil("/imagenes/usuarios/ROOT/perfil.jpg");				
+				model.setImagenPerfil("/imagenes/imagennodisponible.jpg");				
 			}
 			return model;
 		}
@@ -191,6 +237,12 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		chequearTodosLosCamposEnBlanco();
 	}
 	
+	public void mostrarListaUsuarios() {
+		Map<String,Object>params2 = new HashMap<String,Object>();
+		params2.put("accion", "mostrarListaUsuarios");
+		Events.sendEvent(Events.ON_RENDER, administracionWindow, params2);
+	}
+	
 	public void chequearTodosLosCamposEnBlanco(){
 		String username = textboxUsername.getValue();
 		String email = textboxEmail.getValue();
@@ -203,6 +255,13 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 			model = null;
 		}
 		this.binder.loadAll();
+	}
+	
+	public void crearNuevoUsuario() {
+		this.limpiarCampos();
+		labelVenededor.setValue("Creando nuevo usuario");
+		buttonGuardar.setVisible(false);
+		buttonGuardarNuevo.setVisible(true);
 	}
 	
 	public void guardar(){
@@ -229,6 +288,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 			params.put("usuario", v);
 			params.put("accion", "crear");
 			Events.sendEvent(Events.ON_NOTIFY, usuariosActualesWindow, params);
+			mostrarListaUsuarios();
 		}catch(Exception e){
 			e.printStackTrace();
 			alert(e.getMessage());
@@ -246,6 +306,7 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 		textboxContraseña.setValue(null);
 		textboxUsername.setValue(null);
 		textboxUrlBase.setValue(null);
+		model = null;
 		binder.loadAll();
 	}
 	
@@ -258,12 +319,13 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	}
 	
 	public void llenarCombosConUser(Vendedor user){
+		labelVenededor.setValue("Editando datos de " + user.getNombre());
+		buttonGuardar.setVisible(true);
+		buttonGuardarNuevo.setVisible(false);
 		limpiarCampos();
 		textboxUsername.setValue(user.getUsername());
 		textboxEmail.setValue(user.getEmail());
 		textboxUrlBase.setValue(user.getUrl());		
-		// parche momentaneo hasta que todos los vendedores que fueron dados de alta ANTES de agregar este campo
-		// lo tengan incluido
 		if(user.getNombre() != null){
 			textboxNombre.setValue(user.getNombre());			
 		}
@@ -289,6 +351,16 @@ public class AltaUsuarioComposer extends GenericForwardComposer<Component> {
 	public void setTextboxUrlBase(Textbox textboxUrlBase) {
 		this.textboxUrlBase = textboxUrlBase;
 	}
+
+	public Button getButtonGuardarNuevo() {
+		return buttonGuardarNuevo;
+	}
+
+	public void setButtonGuardarNuevo(Button buttonGuardarNuevo) {
+		this.buttonGuardarNuevo = buttonGuardarNuevo;
+	}
+
+
 	
 	
 	
@@ -316,6 +388,9 @@ class GuardarUsuarioEventListener implements EventListener<Event>{
 				}
 				if(params.get("accion").equals("eliminar")){
 					composer.limpiarCampos();
+				}
+				if(params.get("accion").equals("nuevoUsuario")) {
+					composer.crearNuevoUsuario();
 				}
 			}
 		}else{

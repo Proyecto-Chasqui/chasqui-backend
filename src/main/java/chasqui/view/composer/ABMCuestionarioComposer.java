@@ -5,18 +5,22 @@ import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Auxheader;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import chasqui.exceptions.VendedorInexistenteException;
+import chasqui.model.EstrategiasDeComercializacion;
 import chasqui.model.PreguntaDeConsumo;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.UsuarioService;
@@ -45,6 +49,8 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	private Integer indice = -1;
 	private Listbox listboxPreguntaIndividual;
 	private Listbox listboxPreguntaColectiva;
+	private Tab tabIndividual;
+	private Tab tabColectiva;
 	
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -53,10 +59,28 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 		preguntasIndividualesDeConsumo = usuario.getPreguntasDePedidosIndividuales();
 		preguntasColectivasDeConsumo = usuario.getPreguntasDePedidosColectivos();
 		this.editarPregunta.setVisible(false);
+		this.hacerVisiblesTabsSegunStrategias(usuario.getEstrategiasUtilizadas());
 		binder = new AnnotateDataBinder(comp);
 		binder.loadAll();
 	}
 	
+	
+	
+	private void hacerVisiblesTabsSegunStrategias(EstrategiasDeComercializacion estrategiasUtilizadas) {
+		if(estrategiasUtilizadas.isNodos() || estrategiasUtilizadas.isGcc()) {
+			tabColectiva.setVisible(true);
+			tabColectiva.setSelected(true);
+		}
+		
+		if(estrategiasUtilizadas.isCompraIndividual()) {
+			tabIndividual.setVisible(estrategiasUtilizadas.isCompraIndividual());
+			tabIndividual.setSelected(true);
+		}
+		
+	}
+
+
+
 	//Area de metodos para selección de preguntas
 	
 	private void cambiarContextoAEditar(){
@@ -81,6 +105,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 		preguntaColectivaSeleccionada = null;
 		binder.loadAll();
 	}
+	
 	
 	public void onEditarPreguntaIndividual(){
 			this.indice = this.preguntasIndividualesDeConsumo.indexOf(preguntaIndividualSeleccionada);
@@ -155,7 +180,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 				showError("No se puede tener mas de 15 respuestas por pregunta");
 			}
 		}else{
-			Messagebox.show("La respuesta no debe ser vacia","Pregunta",Messagebox.OK,Messagebox.INFORMATION,
+			Messagebox.show("La respuesta que desea agregar no debe ser vacia","Pregunta",Messagebox.OK,Messagebox.INFORMATION,
 					new EventListener<Event>(){
 
 				public void onEvent(Event event) throws Exception {
@@ -173,6 +198,7 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 	
 	public void onClick$btnGuardarCambios(){
 		if(isPreguntaIndividual){
+			validarPreguntaNoVacia();
 			this.guardarPreguntaIndividual();
 		}else{
 			this.guardarPreguntaColectiva();
@@ -181,6 +207,14 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 		binder.loadAll();
 	}
 	
+	private void validarPreguntaNoVacia() {
+		if(textNombrePregunta.getValue().equals("")) {
+			throw new WrongValueException(textNombrePregunta,"La pregunta no debe estar vacia");
+		}
+	}
+
+
+
 	public void onClick$btnCancelarCambios() throws VendedorInexistenteException{
 		this.limpiarCampos();
 		this.cambiarContextoAPreguntas();
@@ -402,6 +436,22 @@ public class ABMCuestionarioComposer extends GenericForwardComposer<Component>{
 
 	public void setListboxPreguntaColectiva(Listbox listboxPreguntaColectiva) {
 		this.listboxPreguntaColectiva = listboxPreguntaColectiva;
+	}
+
+	public Tab getTabIndividual() {
+		return tabIndividual;
+	}
+
+	public void setTabIndividual(Tab tabIndividual) {
+		this.tabIndividual = tabIndividual;
+	}
+
+	public Tab getTabColectiva() {
+		return tabColectiva;
+	}
+
+	public void setTabColectiva(Tab tabColectiva) {
+		this.tabColectiva = tabColectiva;
 	}
 
 

@@ -18,6 +18,9 @@
         <property name="compraIndividual" type="java.lang.Boolean" column="PERMITE_COMPRA_INDIVIDUAL"/>
         <property name="puntoDeEntrega" type="java.lang.Boolean" column="PERMITE_PUNTO_DE_ENTREGA"/>
         <property name="seleccionDeDireccionDelUsuario" type="java.lang.Boolean" column="PERMITE_ELEGIR_DIRECCION"/>
+        <property name="utilizaIncentivos" type="java.lang.Boolean">
+            <column name="UTILIZA_INCENTIVOS" not-null="true" default="false"/>
+        </property>
         <property name="nodosEnApp" type="java.lang.Boolean" column="PERMITE_NODOS_APP"/>
         <property name="gccEnApp" type="java.lang.Boolean" column="PERMITE_GCC_APP"/>
         <property name="compraIndividualEnApp" type="java.lang.Boolean" column="PERMITE_COMPRA_INDIVIUDAL_APP"/>

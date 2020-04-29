@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.vividsolutions.jts.geom.Point;
+
 import chasqui.model.Zona;
 
 public interface ZonaService {
@@ -20,5 +22,9 @@ public interface ZonaService {
 	public Zona buscarZonaProxima(Integer idVendedor);
 	@Transactional
 	public Zona obtenerZonaPorId(Integer zonaID);
+	@Transactional
+	public Zona obtenerZonaDePertenenciaDeDireccion(final Point punto, final Integer idVendedor);
+	@Transactional
+	public void eliminarZonas(List<Zona> obtenerZonas);
 
 }

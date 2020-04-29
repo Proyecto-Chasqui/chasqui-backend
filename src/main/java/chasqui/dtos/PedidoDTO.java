@@ -20,16 +20,18 @@ public class PedidoDTO {
 	private List<PedidoIndividualDTO> pedidosIndividuales;
 	private Boolean esIndividual = true;
 	private Boolean sinConfirmar = false;
+	private String comentario = "";
 
 	public PedidoDTO(Pedido pedido) {
 		this.emailCliente = pedido.getCliente().getEmail();
 		this.username = pedido.getCliente().getUsername();
 		this.zona = pedido.getZona();
 		domicilio = pedido.getDireccionEntrega();
-		montoTotal = pedido.getMontoActual();
+		montoTotal = definirMontoSegunIncentivos(pedido);
 		pedidosIndividuales = new ArrayList<PedidoIndividualDTO>();
-		esIndividual = !pedido.getPerteneceAPedidoGrupal()&&pedido.getPuntoDeRetiro()==null;
+		esIndividual = !pedido.getPerteneceAPedidoGrupal();
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		comentario = pedido.getComentario();
 	}
 	
 	public PedidoDTO(PedidoColectivo pedido, GrupoCC grupo) {
@@ -41,8 +43,24 @@ public class PedidoDTO {
 		pedidosIndividuales = new ArrayList<PedidoIndividualDTO>();
 		esIndividual = false;
 		sinConfirmar = !pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		comentario = pedido.getComentario();
 	}
-
+	
+	private double definirMontoSegunIncentivos(Pedido pedido) {
+			/* eliminar cuando se confirme la funcionalidad de nodos
+			boolean esColectivo = pedido.getPerteneceAPedidoGrupal();
+			if(esColectivo) {
+				GrupoCC colectivo = pedido.getPedidoColectivo().getColectivo();
+				boolean conIncentivo = colectivo.getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
+				if(conIncentivo) {
+					if(colectivo.getAdministrador().getEmail().equals(pedido.getCliente().getEmail())) {
+						return pedido.getMontoActual() + pedido.getMontoTotalIncentivo();
+					}			
+				}
+			}*/
+			return pedido.getMontoActual();
+	}
+	
 	public List<PedidoIndividualDTO> getPedidosIndividuales() {
 		return pedidosIndividuales;
 	}
@@ -62,14 +80,32 @@ public class PedidoDTO {
 	public void addPedidoIndividual(String userMail, List<ProductoPedido> productosPedidos) {
 
 		PedidoIndividualDTO nuevoPedido = new PedidoIndividualDTO(userMail);
-
+		
 		for (ProductoPedido pp : productosPedidos) {
-			nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
+			nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad(), pp.getNombreProductor());
 		}
 
 		this.pedidosIndividuales.add(nuevoPedido);
 
 	}
+	//usado para mostrar el precio correcto, si es admin o no en los productos del panel (si el incentivo esta activado). Eliminar cuando
+	// se confirme la funcionalidad de nodos.
+	public void addPedidoIndividual(String email, List<ProductoPedido> listaProductosEnPedido, boolean esAdmin) {
+		PedidoIndividualDTO nuevoPedido = new PedidoIndividualDTO(email);
+/*		if(esAdmin) {
+			for (ProductoPedido pp : listaProductosEnPedido) {
+				nuevoPedido.addVariante(pp.getPrecio() + pp.getIncentivo(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad());
+			}
+		}else {*/
+			for (ProductoPedido pp : listaProductosEnPedido) {
+				nuevoPedido.addVariante(pp.getPrecio(), pp.getNombreProducto(), pp.getNombreVariante(), pp.getCantidad(), pp.getNombreProductor());
+			}
+		//}
+
+		this.pedidosIndividuales.add(nuevoPedido);
+		
+	}
+	
 
 	public Direccion getDomicilio() {
 		return domicilio;
@@ -122,6 +158,15 @@ public class PedidoDTO {
 	public void setSinConfirmar(Boolean sinConfirmar) {
 		this.sinConfirmar = sinConfirmar;
 	}
-	
+
+	public String getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
+	}
+
+
 	
 }

@@ -41,6 +41,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Window;
 
 import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
@@ -96,6 +97,18 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 	private GrupoCC grupo;
 	private Boolean exportar;
 	private Window window;
+	private Cliente clienteDelPedido;
+	private PedidoColectivo pedidoColectivo;
+	private String direccion;
+	private String zona;
+	private String nombrePr;
+	private String comentario;
+	private boolean tieneEntregaADomicilio = false;
+	private boolean tienePuntoDeRetiro = false;
+	private boolean estaConfirmado = false;
+	private boolean tieneRespuestas = false;
+	private Map<String,String> respuestas = new HashMap<String,String>();
+	private Tab tabdatosusuario;
 	
 	public void doAfterCompose(Component component) throws Exception{
 		idsSeleccionados = new ArrayList<Integer>();
@@ -113,10 +126,59 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 			exportar = (Boolean) Executions.getCurrent().getArg().get("exportar");
 			idPedidoColectivo= (Integer) Executions.getCurrent().getArg().get("id");
 			pedidosCopiaSinFiltrar.addAll(pedidosDentroDeColectivo);
+			pedidoColectivo = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
+			clienteDelPedido = pedidoColectivo.getColectivo().getAdministrador();
+			completardatos();
 			binder = new AnnotateDataBinder(component);
 			listBoxPedidosColectivos.setItemRenderer(new PedidoRenderer((Window) component));
 			binder.loadAll();
 			
+		}
+	}
+	
+	private void completardatos() {
+		estaConfirmado = validarConfirmado();
+		respuestas = pedidoColectivo.getRespuestasAPreguntas();
+		tieneRespuestas = respuestas.size() > 0;
+		direccion = "N/D";
+		if(pedidoColectivo.getColectivo().isEsNodo()) {
+			tabdatosusuario.setLabel("Datos del coordinador");
+		}
+		if(pedidoColectivo.getDireccionEntrega() != null) {
+			tieneEntregaADomicilio = true;
+			direccion = pedidoColectivo.getDireccionEntrega().toString();
+		}else {
+			tieneEntregaADomicilio = false;
+		}
+		if(pedidoColectivo.getZona() != null) {
+			zona = pedidoColectivo.getZona().toString();
+		}else {
+			zona = "No definida";
+		}
+		if(pedidoColectivo.getPuntoDeRetiro() != null) {
+			tienePuntoDeRetiro = true;
+			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion().toString();
+			nombrePr = pedidoColectivo.getPuntoDeRetiro().getNombre();
+		}else {
+			nombrePr = "N/D";
+		}
+		if(pedidoColectivo.getComentario() != null) {
+			comentario = pedidoColectivo.getComentario();
+		}else {
+			comentario = "";
+		}
+		
+	}
+	
+	private boolean validarConfirmado() {
+		return pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO) || pedidoColectivo.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
+	}
+
+	public void onClick$ubicarEnMapa() {
+		if(tieneEntregaADomicilio) {
+			String lat = pedidoColectivo.getDireccionEntrega().getLatitud();
+			String lng = pedidoColectivo.getDireccionEntrega().getLongitud();
+			Executions.getCurrent().sendRedirect("https://www.google.com/maps?q="+ lat+","+lng, "_blank");
 		}
 	}
 	
@@ -187,11 +249,23 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		try {
 			Clients.showBusy(window,"Generando el archivo, por favor espere...");
 			PedidoColectivo pedidoc = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
-			this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
-			List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
-			pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
-			pedidomerge = obtenerSoloConfirmados(pedidomerge);
-			export.exportColectivos(pedidomerge);
+			/* eliminar cuando se confirme la funcionalidad completa de nodos.
+			if(pedidoc.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos() && pedidoc.getColectivo().isEsNodo()) {
+				this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+				List<Pedido> pedidomerge = this.pedidoColectivoMergeParaIncentivos(pedidosDentroDeColectivo,pedidoc);
+				this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+				alterarPreciosDelPedidoDelAdmin(pedidosDentroDeColectivo,pedidoc.getColectivo().getAdministrador().getEmail());
+				pedidomerge.addAll(pedidosDentroDeColectivo);
+				pedidomerge = obtenerSoloConfirmados(pedidomerge);
+				export.exportColectivos(pedidomerge);
+			}else {
+			*/
+				this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+				List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
+				pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
+				pedidomerge = obtenerSoloConfirmados(pedidomerge);
+				export.exportColectivos(pedidomerge);
+			//}
 			Clients.clearBusy(window);
 			Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 		} catch (Exception e) {
@@ -203,6 +277,62 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		this.binder.loadAll();
 	}
 	
+	private List<Pedido> alterarPreciosDelPedidoDelAdmin(List<Pedido> pedidosmerge, String email) {
+		List<Pedido> pedidos = new ArrayList<Pedido> ();
+		for(Pedido p: pedidosmerge) {
+			if(p.getCliente().getEmail().equals(email)) {
+				alterarPreciosConIncentivo(p);
+				pedidos.add(p);
+			}else {
+				pedidos.add(p);
+			}
+		}
+		return pedidos;
+	}
+
+	private void alterarPreciosConIncentivo(Pedido p) {
+		for(ProductoPedido pp : p.getProductosEnPedido()){
+			pp.setPrecio(pp.getPrecio() + pp.getIncentivo());
+		}
+	}
+
+	private List<Pedido> pedidoColectivoMergeParaIncentivos(List<Pedido> pedidosDentroDeColectivo,
+			PedidoColectivo pedidoColectivo) throws EstadoPedidoIncorrectoException {
+		List<Pedido>pedidoGrupalCompleto = new ArrayList<Pedido>();
+		Pedido pedidogeneralgrupal = new Pedido(usuarioLogueado,pedidoColectivo.getColectivo().getAdministrador(),false, new DateTime());
+		pedidogeneralgrupal.setDireccionEntrega(pedidoColectivo.getDireccionEntrega());
+		pedidogeneralgrupal.setPuntoDeRetiro(pedidoColectivo.getPuntoDeRetiro());
+		pedidogeneralgrupal.setComentario(pedidoColectivo.getComentario());
+		pedidogeneralgrupal.setZona(pedidoColectivo.getZona());
+		pedidogeneralgrupal.setRespuestasAPreguntas(pedidoColectivo.getRespuestasAPreguntas());
+		String emailadmin = pedidoColectivo.getColectivo().getAdministrador().getEmail();
+		for(Pedido p : pedidosDentroDeColectivo){
+			if(this.pedidoEnEstadoConfirmado(p)){
+				if(p.getCliente().getEmail().equals(emailadmin)) {
+					for(ProductoPedido pp : p.getProductosEnPedido()){
+						ProductoPedido ppcopia = copiarProducto(pp);
+						ppcopia.setPrecio(ppcopia.getPrecio() + ppcopia.getIncentivo());
+						pedidogeneralgrupal.agregarProductoPedidoConValidaciones(ppcopia, null);
+					}
+				}else {
+					for(ProductoPedido pp : p.getProductosEnPedido()){
+						ProductoPedido ppcopia = copiarProducto(pp);
+						pedidogeneralgrupal.agregarProductoPedidoConValidaciones(ppcopia, null);
+					}
+				}
+			}
+		}
+		
+		pedidogeneralgrupal.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		pedidoGrupalCompleto.add(pedidogeneralgrupal);
+		return pedidoGrupalCompleto;
+	}
+
+	private void alterarPreciosDePedidoAdministrador(List<Pedido> pedidosDentroDeColectivo2, String emailadmin) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private List<Pedido> obtenerSoloConfirmados(List<Pedido> pedidosTotales){
 		List<Pedido> pedidos = new ArrayList<Pedido> ();
 		
@@ -232,7 +362,8 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 			if(this.pedidoEnEstadoConfirmado(p)){
 				for(ProductoPedido pp : p.getProductosEnPedido()){
 					ProductoPedido ppcopia = copiarProducto(pp);
-					pedidogeneralgrupal.agregarProductoPedido(ppcopia, null);
+					//si falla cambiar a "agregarProductoPedido(ppcopia,null)";
+					pedidogeneralgrupal.agregarProductoPedidoConValidaciones(ppcopia, null);
 				}
 			}
 		}
@@ -252,6 +383,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		ppc.setNombreProducto(pp.getNombreProducto());
 		ppc.setNombreVariante(pp.getNombreVariante());
 		ppc.setPrecio(pp.getPrecio());
+		ppc.setIncentivo(pp.getIncentivo());
 		return ppc;
 	}
 
@@ -269,6 +401,86 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 
 	public void setExportar(Boolean exportar) {
 		this.exportar = exportar;
+	}
+
+	public Cliente getClienteDelPedido() {
+		return clienteDelPedido;
+	}
+
+	public void setClienteDelPedido(Cliente clienteDelPedido) {
+		this.clienteDelPedido = clienteDelPedido;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getZona() {
+		return zona;
+	}
+
+	public void setZona(String zona) {
+		this.zona = zona;
+	}
+
+	public boolean isTieneEntregaADomicilio() {
+		return tieneEntregaADomicilio;
+	}
+
+	public void setTieneEntregaADomicilio(boolean tieneEntregaADomicilio) {
+		this.tieneEntregaADomicilio = tieneEntregaADomicilio;
+	}
+
+	public boolean isTienePuntoDeRetiro() {
+		return tienePuntoDeRetiro;
+	}
+
+	public void setTienePuntoDeRetiro(boolean tienePuntoDeRetiro) {
+		this.tienePuntoDeRetiro = tienePuntoDeRetiro;
+	}
+
+	public String getNombrePr() {
+		return nombrePr;
+	}
+
+	public void setNombrePr(String nombrePr) {
+		this.nombrePr = nombrePr;
+	}
+
+	public boolean isEstaConfirmado() {
+		return estaConfirmado;
+	}
+
+	public void setEstaConfirmado(boolean estaConfirmado) {
+		this.estaConfirmado = estaConfirmado;
+	}
+
+	public boolean isTieneRespuestas() {
+		return tieneRespuestas;
+	}
+
+	public void setTieneRespuestas(boolean tieneRespuestas) {
+		this.tieneRespuestas = tieneRespuestas;
+	}
+
+	public Map<String, String> getRespuestas() {
+		return respuestas;
+	}
+
+	public void setRespuestas(Map<String, String> respuestas) {
+		this.respuestas = respuestas;
+	}
+
+	public String getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
 	}
 	
 	

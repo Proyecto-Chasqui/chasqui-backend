@@ -7,6 +7,7 @@ public class ProductoPedido {
 	private Integer id;
 	private Integer idVariante;
 	private Double precio;
+	private Double incentivo;
 	private String nombreProducto;
 	private String nombreVariante;
 	private Integer cantidad;
@@ -24,6 +25,7 @@ public class ProductoPedido {
 		precio = v.getPrecio();
 		imagen = (v.getImagenes().size()>0)?v.getImagenes().get(0).getPath():null;
 		setNombreProductor(vnombreProductor);
+		incentivo = 0.0;
 	}
 
 	//GETs & SETs
@@ -101,6 +103,14 @@ public class ProductoPedido {
 
 	public void setNombreProductor(String nombreProductor) {
 		this.nombreProductor = nombreProductor;
+	}
+
+	public Double getIncentivo() {
+		return incentivo;
+	}
+
+	public void setIncentivo(Double incentivo) {
+		this.incentivo = incentivo;
 	}
 	
 	

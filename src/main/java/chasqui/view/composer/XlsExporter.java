@@ -22,12 +22,19 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.joda.time.DateTime;
 import org.zkoss.spring.SpringUtil;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Filedownload;
 
+import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.model.Cliente;
 import chasqui.model.Pedido;
+import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
+import chasqui.model.Vendedor;
+import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.ProductoService;
 
 public class XlsExporter {
@@ -110,7 +117,7 @@ public class XlsExporter {
 	public void exportColectivos(List<Pedido> pedidos) throws Exception{
 		for (Pedido p : pedidos) {
 			if(page<1){
-				doHeader(p,"Resumen Grupal de ");
+				doHeader(p,"Resumen Colectivo de ");
 			}else{
 				doHeader(p,"Pedido de ");
 			}
@@ -535,5 +542,92 @@ public class XlsExporter {
 
 		return styles;
 	}
+ 	
+ 	//metodo que nuclea la funcionalidad de exportarcolectivos:
 
+	public void exportarPedidoColectivo(Integer idPedidoColectivo, Component component, PedidoColectivoService pedidoColectivoService, Vendedor vendedorLogueado) {
+		try {
+				Clients.showBusy(component,"Generando el archivo, por favor espere...");
+				PedidoColectivo pedidoc = pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo);
+				/* eliminar cuando se confirme la funcionalidad completa de nodos.
+				if(pedidoc.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos() && pedidoc.getColectivo().isEsNodo()) {
+					this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+					List<Pedido> pedidomerge = this.pedidoColectivoMergeParaIncentivos(pedidosDentroDeColectivo,pedidoc);
+					this.pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+					alterarPreciosDelPedidoDelAdmin(pedidosDentroDeColectivo,pedidoc.getColectivo().getAdministrador().getEmail());
+					pedidomerge.addAll(pedidosDentroDeColectivo);
+					pedidomerge = obtenerSoloConfirmados(pedidomerge);
+					export.exportColectivos(pedidomerge);
+				}else {
+				*/
+					List<Pedido> pedidosDentroDeColectivo = new ArrayList<Pedido>(pedidoc.getPedidosIndividuales().values());
+					List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc,vendedorLogueado);
+					pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
+					pedidomerge = obtenerSoloConfirmados(pedidomerge);
+					this.exportColectivos(pedidomerge);
+				//}
+				Clients.clearBusy(component);
+				Clients.showNotification("Archivo generado correctamente", "info", component, "middle_center", 3000);
+			} catch (Exception e) {
+				Clients.clearBusy(component);
+				Clients.showNotification("Ocurrio un error al generar el archivo", "error", component, "middle_center", 3000);
+				e.printStackTrace();
+			}
+			Clients.clearBusy(component);
+
+		
+	}
+
+	private List<Pedido> pedidoColectivoMerge(List<Pedido> pedidosgenerados, PedidoColectivo pedidoColectivo, Vendedor vendedorLogueado) throws EstadoPedidoIncorrectoException {
+		List<Pedido>pedidoGrupalCompleto = new ArrayList<Pedido>();
+		Pedido pedidogeneralgrupal = new Pedido(vendedorLogueado,pedidoColectivo.getColectivo().getAdministrador(),false, new DateTime());
+		pedidogeneralgrupal.setDireccionEntrega(pedidoColectivo.getDireccionEntrega());
+		pedidogeneralgrupal.setPuntoDeRetiro(pedidoColectivo.getPuntoDeRetiro());
+		pedidogeneralgrupal.setComentario(pedidoColectivo.getComentario());
+		pedidogeneralgrupal.setZona(pedidoColectivo.getZona());
+		pedidogeneralgrupal.setRespuestasAPreguntas(pedidoColectivo.getRespuestasAPreguntas());
+		for(Pedido p : pedidosgenerados){
+			if(this.pedidoEnEstadoConfirmado(p)){
+				for(ProductoPedido pp : p.getProductosEnPedido()){
+					ProductoPedido ppcopia = copiarProducto(pp);
+					//si falla cambiar a "agregarProductoPedido(ppcopia,null)";
+					pedidogeneralgrupal.agregarProductoPedidoConValidaciones(ppcopia, null);
+				}
+			}
+		}
+		
+		pedidogeneralgrupal.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
+		pedidoGrupalCompleto.add(pedidogeneralgrupal);
+		return pedidoGrupalCompleto;
+		
+	}
+	
+	private List<Pedido> obtenerSoloConfirmados(List<Pedido> pedidosTotales){
+		List<Pedido> pedidos = new ArrayList<Pedido> ();
+		
+		for(Pedido p: pedidosTotales){
+			if(this.pedidoEnEstadoConfirmado(p)){
+				pedidos.add(p);
+			}
+		}
+		return pedidos;
+	}
+	
+	private boolean pedidoEnEstadoConfirmado(Pedido p) {
+		return p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || p.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO)
+				|| p.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO);
+	}
+	
+	private ProductoPedido copiarProducto(ProductoPedido pp) {
+		ProductoPedido ppc = new ProductoPedido();
+		ppc.setCantidad(pp.getCantidad());
+		ppc.setIdVariante(pp.getIdVariante());
+		ppc.setNombreProductor(pp.getNombreProductor());
+		ppc.setImagen(pp.getImagen());
+		ppc.setNombreProducto(pp.getNombreProducto());
+		ppc.setNombreVariante(pp.getNombreVariante());
+		ppc.setPrecio(pp.getPrecio());
+		ppc.setIncentivo(pp.getIncentivo());
+		return ppc;
+	}
 }

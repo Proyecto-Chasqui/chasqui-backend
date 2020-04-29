@@ -1,9 +1,13 @@
 package chasqui.service.rest.response;
 
 import java.io.Serializable;
+import java.util.List;
 
 import chasqui.model.EstrategiaDeComercializacionGenerica;
 import chasqui.model.EstrategiasDeComercializacion;
+import chasqui.model.TagTipoOrganizacion;
+import chasqui.model.TagTipoProducto;
+import chasqui.model.TagZonaDeCobertura;
 import chasqui.model.Vendedor;
 
 public class VendedorResponse implements Serializable{
@@ -21,7 +25,13 @@ public class VendedorResponse implements Serializable{
 	private Integer montoMinimo;
 	private EstrategiaDeComercializacionGenerica few;
 	private EstrategiaDeComercializacionGenerica app;
-	
+	private List<TagTipoOrganizacion> tagsTipoOrganizacion;
+	private List<TagTipoProducto> tagsTipoProductos;
+	private List<TagZonaDeCobertura> tagsZonaDeCobertura;
+	private boolean visibleEnMulticatalogo;
+	private boolean ventasHabilitadas;
+	private String mensajeVentasDeshabilitadas;
+	private boolean portadaVisible;
 	
 	public VendedorResponse(){}
 	
@@ -29,17 +39,32 @@ public class VendedorResponse implements Serializable{
 		id = v.getId();
 		nombre = v.getNombre();
 		nombreCorto = v.getNombreCorto();
-		imagen = v.getImagenPerfil();
+		if(v.getImagenPerfil() == null || v.getImagenPerfil().equals("/imagenes/usuarios/ROOT/perfil.jpg")) {
+			imagen = "/imagenes/imagennodisponible.jpg";
+		}else {
+			imagen = v.getImagenPerfil();
+		}
 		tiempoDeVencimiento = v.getTiempoVencimientoPedidos();
 		montoMinimo = v.getMontoMinimoPedido();
 		EstrategiasDeComercializacion estrategias = v.getEstrategiasUtilizadas();
 		this.setFew(new EstrategiaDeComercializacionGenerica());
 		this.setApp(new EstrategiaDeComercializacionGenerica());
 		this.inicializarEstrategias(estrategias);
+		this.setTagsTipoOrganizacion(v.getTagsTipoOrganizacion());
+		this.setTagsTipoProductos(v.getTagsTipoProducto());
+		this.setTagsZonaDeCobertura(v.getTagsZonaCobertura());
+		this.setVisibleEnMulticatalogo(v.isVisibleEnMulticatalogo());
+		this.setVentasHabilitadas(v.isVentasHabilitadas());
+		this.setMensajeVentasDeshabilitadas(v.getMensajeVentasDeshabilitadas());
 		if(v.getMapaZonas() != null ) {
 			this.setUrlMapa(v.getMapaZonas());
 		}else {
 			this.setUrlMapa("");
+		}
+		if(v.getDataMultimedia() == null) {
+			this.setPortadaVisible(false);
+		}else {
+			this.setPortadaVisible(v.getDataMultimedia().getDataPortada().isPortadaVisible());
 		}
 	}
 	
@@ -49,12 +74,14 @@ public class VendedorResponse implements Serializable{
 		this.getFew().setNodos(estrategia.isNodos());
 		this.getFew().setPuntoDeEntrega(estrategia.isPuntoDeEntrega());
 		this.getFew().setSeleccionDeDireccionDelUsuario(estrategia.isSeleccionDeDireccionDelUsuario());
+		this.getFew().setUsaIncentivos(estrategia.isUtilizaIncentivos());
 		
 		this.getApp().setCompraIndividual(estrategia.isCompraIndividualEnApp());
 		this.getApp().setGcc(estrategia.isGccEnApp());
 		this.getApp().setNodos(estrategia.isNodosEnApp());
 		this.getApp().setPuntoDeEntrega(estrategia.isPuntoDeEntregaEnApp());
 		this.getApp().setSeleccionDeDireccionDelUsuario(estrategia.isSeleccionDeDireccionDelUsuario());
+		this.getApp().setUsaIncentivos(estrategia.isUtilizaIncentivos());
 		
 	}
 
@@ -127,6 +154,63 @@ public class VendedorResponse implements Serializable{
 
 	public void setMontoMinimo(Integer montoMinimo) {
 		this.montoMinimo = montoMinimo;
+	}
+
+
+	public List<TagTipoProducto> getTagsTipoProductos() {
+		return tagsTipoProductos;
+	}
+
+	public void setTagsTipoProductos(List<TagTipoProducto> tagsTipoProductos) {
+		this.tagsTipoProductos = tagsTipoProductos;
+	}
+
+	public List<TagZonaDeCobertura> getTagsZonaDeCobertura() {
+		return tagsZonaDeCobertura;
+	}
+
+	public void setTagsZonaDeCobertura(List<TagZonaDeCobertura> tagsZonaDeCobertura) {
+		this.tagsZonaDeCobertura = tagsZonaDeCobertura;
+	}
+
+	public List<TagTipoOrganizacion> getTagsTipoOrganizacion() {
+		return tagsTipoOrganizacion;
+	}
+
+	public void setTagsTipoOrganizacion(List<TagTipoOrganizacion> tagsTipoOrganizacion) {
+		this.tagsTipoOrganizacion = tagsTipoOrganizacion;
+	}
+
+	public boolean isVisibleEnMulticatalogo() {
+		return visibleEnMulticatalogo;
+	}
+
+	public void setVisibleEnMulticatalogo(boolean visibleEnMulticatalogo) {
+		this.visibleEnMulticatalogo = visibleEnMulticatalogo;
+	}
+
+	public boolean isVentasHabilitadas() {
+		return ventasHabilitadas;
+	}
+
+	public void setVentasHabilitadas(boolean ventasHabilitadas) {
+		this.ventasHabilitadas = ventasHabilitadas;
+	}
+
+	public String getMensajeVentasDeshabilitadas() {
+		return mensajeVentasDeshabilitadas;
+	}
+
+	public void setMensajeVentasDeshabilitadas(String mensajeVentasDeshabilitadas) {
+		this.mensajeVentasDeshabilitadas = mensajeVentasDeshabilitadas;
+	}
+
+	public boolean isPortadaVisible() {
+		return portadaVisible;
+	}
+
+	public void setPortadaVisible(boolean portadaVisible) {
+		this.portadaVisible = portadaVisible;
 	}
 
 	

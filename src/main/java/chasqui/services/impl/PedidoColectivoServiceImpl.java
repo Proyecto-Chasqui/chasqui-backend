@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.dao.PedidoColectivoDAO;
+import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.services.interfaces.PedidoColectivoService;
 
@@ -53,5 +54,18 @@ public class PedidoColectivoServiceImpl implements PedidoColectivoService{
 	public List<PedidoColectivo> obtenerPedidosColectivosDeGrupoConEstado(Integer idUsuario, Integer idGrupo, List<String> estados){
 		return this.pedidoColectivoDao.obtenerPedidosColectivosDeConEstado(idUsuario,idGrupo, estados);
 	}
+	@Override
+	public List<PedidoColectivo>  obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(Integer idVendedor,
+			Date d, Date h, String estadoSeleccionado, Integer zonaId, String prSeleccionado, String email) {
+		return this.pedidoColectivoDao.obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(idVendedor, d, h, estadoSeleccionado, zonaId, prSeleccionado, email);
+	}
+	@Override
+	public void eliminarPedidosColectivos(Collection<? extends PedidoColectivo> pedidosColectivosDeVendedor) {
+		for(PedidoColectivo p : pedidosColectivosDeVendedor) {
+			this.pedidoColectivoDao.eliminar(p);
+		}
+		
+	}
+
 
 }

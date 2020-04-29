@@ -1,0 +1,67 @@
+<zk>
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./configuracionDeVentasWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<window id="configuracionDeVentasWindow" border="normal" title="Configuración de ventas" 
+apply="chasqui.view.composer.ConfiguracionDeVentasComposer" height="75%" width="50%" closable="true">
+<timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
+
+<tabbox  mold="accordion">
+			<tabs>
+				<tab label="Habilitar/Deshabilitar ventas" image="/imagenes/abierto.png"/>
+			</tabs>
+			<tabpanels>
+				<tabpanel>
+					<image align="right" style="cursor:pointer; position:relative; margin-top:-2.1em; margin-right:1em;" popup="ayudaventas" src="/imagenes/question.png" />
+				<listbox>
+					<listhead>
+						<listheader/>
+						<listheader/>
+					</listhead>
+					<listitem>
+						<listcell label="Permitir Ventas"/>
+						<listcell>
+							<div align="center">
+								<button  id="permitirVentasButton" label="Si" image="/imagenes/if_toggle-right.png"></button>
+							</div>
+						</listcell>
+					</listitem>
+				</listbox>
+				<div align="center" class="title" >
+					<auxhead>
+			           	<auxheader label="Texto de aviso" style="color: white;" />
+			        </auxhead>
+			       </div>
+				<textbox id="textboxMensaje" placeholder="Escriba acá..." type="password" maxlength="1200" width="100%" rows="19"/>
+				<separator spacing="5px"/>
+				<div align="center">
+					<button id="guardarButtonVentas" image="/imagenes/checked_16.png" label="Guardar"></button>
+					<button visible="false" id="cancelarButtonVentas" image="/imagenes/cancel_16.png" label="Cancelar"></button>
+				</div>
+				</tabpanel>
+			</tabpanels>
+</tabbox>
+        		
+        		 <popup id="ayudaventas" width="600px">
+        			<html><![CDATA[ En esta sección se pueden configurar para que habilitar o deshabilitar las ventas <br /><br />
+        					<strong>Cuando el campo <font color="blue">permitir ventas</font> esta en <font color="red">no</font>, los usuarios en el catálogo </strong> <br /><br />
+        					<strong><font color="red"> no pueden:</font></strong></br> </br>
+        					<strong>1.</strong> Agregar productos al pedido.</br>
+        					<strong>2.</strong> Abrir nuevos pedidos.</br> </br>
+        					<strong><font color="blue">pero pueden:</font></strong></br> </br>
+        					<strong>1.</strong> Confirmar el pedido que tienen en curso.</br> 
+        					<strong>2.</strong> Cancelar el pedido que tienen en curso.</br> 
+        					<strong>3.</strong> Gestionar compras colectivas que tienen en curso.</br> 
+        					<strong>4.</strong> Confirmar el pedido colectivo que tienen en curso.</br> 
+        					<strong>5.</strong> Ver los detalles de los productos y navegar el catálogo.</br> </br>
+        					Además se mostrará el texto que ingresen en <font color="blue">texto de aviso</font>, si el mismo esta vacío, se mostrará un texto por defecto. Tiene un límite de <font color="red">1200 caracteres</font>, si pega contenido superior a esta cantidad, va a ser recortado.</br></br>
+        					<strong>Nota:</strong> El campo solo soporta texto plano.
+        					]]>
+        					
+        			</html>
+    				</popup> 
+
+</window>
+</zk>

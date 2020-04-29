@@ -25,11 +25,16 @@ public class Vendedor extends Usuario{
 	private List<PreguntaDeConsumo> preguntasDePedidosColectivos;
 	private Integer tiempoVencimientoPedidos;
 	private DataMultimedia dataMultimedia;
+	private List<TagZonaDeCobertura> tagsZonaCobertura;
+	private List<TagTipoProducto> tagsTipoProducto;
+	private List<TagTipoOrganizacion> tagsTipoOrganizacion;
+	private List<TagEvento> tagsEvento;
+	private boolean visibleEnMulticatalogo;
+	private boolean ventasHabilitadas;
+	private String mensajeVentasDeshabilitadas;
 	
 	//GETs & SETs	
-	
-	//Por el momento las estrategias utilizadas estan siendo creadas con un modo default
-	//hasta que sea configurable desde el panel de administracion.
+
 	public Vendedor(String nombre,String nombreCorto, String username, String email, String pwd, String urlBase) {
 		this.setEstrategiasUtilizadas(new EstrategiasDeComercializacion());
 		this.setUsername(username);
@@ -41,6 +46,7 @@ public class Vendedor extends Usuario{
 		this.setUrl(urlBase);
 		this.setMontoMinimoPedido(0);
 		this.setTiempoVencimientoPedidos(0);
+		this.setVisibleEnMulticatalogo(false);
 	}
 
 	public String getNombre() {
@@ -352,6 +358,15 @@ public class Vendedor extends Usuario{
 		}
 		return ret;
 	}
+	
+	public PuntoDeRetiro obtenerPuntoDeRetiro(Integer id){
+		for(PuntoDeRetiro pr: puntosDeRetiro){
+			if( pr.getId() == id) {
+				return pr;
+			} 
+		}
+		return null;
+	}
 
 	public void eliminarPuntoDeRetiro(PuntoDeRetiro puntoDeRetiroSeleccionado) {
 		ArrayList<PuntoDeRetiro> refill = new ArrayList<PuntoDeRetiro>();
@@ -496,6 +511,62 @@ public class Vendedor extends Usuario{
 			} 
 		}
 		return fabricanteRes;
+	}
+
+	public List<TagZonaDeCobertura> getTagsZonaCobertura() {
+		return tagsZonaCobertura;
+	}
+
+	public List<TagTipoProducto> getTagsTipoProducto() {
+		return tagsTipoProducto;
+	}
+
+	public List<TagTipoOrganizacion> getTagsTipoOrganizacion() {
+		return tagsTipoOrganizacion;
+	}
+
+	public List<TagEvento> getTagsEvento() {
+		return tagsEvento;
+	}
+
+	public void setTagsZonaCobertura(List<TagZonaDeCobertura> tagsZonaCobertura) {
+		this.tagsZonaCobertura = tagsZonaCobertura;
+	}
+
+	public void setTagsTipoProducto(List<TagTipoProducto> tagsTipoProducto) {
+		this.tagsTipoProducto = tagsTipoProducto;
+	}
+
+	public void setTagsTipoOrganizacion(List<TagTipoOrganizacion> tagsTipoOrganizacion) {
+		this.tagsTipoOrganizacion = tagsTipoOrganizacion;
+	}
+
+	public void setTagsEvento(List<TagEvento> tagsEvento) {
+		this.tagsEvento = tagsEvento;
+	}
+
+	public boolean isVisibleEnMulticatalogo() {
+		return visibleEnMulticatalogo;
+	}
+
+	public void setVisibleEnMulticatalogo(boolean visibleEnMulticatalogo) {
+		this.visibleEnMulticatalogo = visibleEnMulticatalogo;
+	}
+
+	public boolean isVentasHabilitadas() {
+		return ventasHabilitadas;
+	}
+
+	public void setVentasHabilitadas(boolean ventasHabilitadas) {
+		this.ventasHabilitadas = ventasHabilitadas;
+	}
+
+	public String getMensajeVentasDeshabilitadas() {
+		return mensajeVentasDeshabilitadas;
+	}
+
+	public void setMensajeVentasDeshabilitadas(String mensajeVentasDeshabilitadas) {
+		this.mensajeVentasDeshabilitadas = mensajeVentasDeshabilitadas;
 	}
 
 }

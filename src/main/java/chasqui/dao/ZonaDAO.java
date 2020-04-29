@@ -2,6 +2,8 @@ package chasqui.dao;
 
 import java.util.List;
 
+import com.vividsolutions.jts.geom.Point;
+
 import chasqui.model.Zona;
 
 public interface ZonaDAO {
@@ -13,4 +15,6 @@ public interface ZonaDAO {
 	public List<Zona> obtenerZonas(Integer idVendedor);
 	public Zona buscarZonaProxima(Integer idVendedor);
 	public Zona obtenerZonaPorId(Integer zonaID);
+	public Zona obtenerZonaDePertenenciaDeDireccion(Point punto, Integer idVendedor);
+	public Zona obtenerZonaPorNombre(String nombre, Integer idVendedor);
 }

@@ -2,6 +2,7 @@ package chasqui.services.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,14 +28,18 @@ import chasqui.model.Cliente;
 import chasqui.model.Direccion;
 import chasqui.model.GrupoCC;
 import chasqui.model.IPedido;
+import chasqui.model.Nodo;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
+import chasqui.model.SolicitudPertenenciaNodo;
+import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
 import chasqui.security.PasswordGenerator;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
+import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
@@ -58,14 +63,21 @@ public class MailService {
 	private InvitacionService invitacionService;
 	@Autowired
 	private GrupoService grupoService;
+	@Autowired
+	private NodoService nodoService;
 	
 	public static final Logger logger = Logger.getLogger(MailService.class);
-	
+	DecimalFormat df = new DecimalFormat("#.##");
 /*
  * ***********************************************
  * METODOS PUBLICOS 
  * ***********************************************
  */
+	private Double trim2decimals(Double d) {
+		String trim = df.format(d); 
+		Double value = Double.parseDouble(trim.replace(",","."));
+		return value;
+	}
 	
 	public void enviarEmailBienvenidaVendedor(String destino,String usuario,String password) throws IOException, MessagingException, TemplateException{
 		Map<String,Object> params = new HashMap<String,Object>();
@@ -98,10 +110,14 @@ public class MailService {
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NOTIFICACION_PEDIDO, destino, Constantes.SUBJECT_ALERT_VENCIMIENTO, params);
 	}
 		
-	public void enviarmailInvitadoSinRegistrar(Cliente clienteOrigen, String destino, String urlVendedor, String nombreCorto, String nombreVendedor, Integer idGrupo) throws Exception  {
+	public void enviarmailInvitadoSinRegistrar(Cliente clienteOrigen, String destino, String urlVendedor, String nombreCorto, String nombreVendedor, Integer idGrupo, boolean esNodo) throws Exception  {
 		Map<String,Object> params = new HashMap<String,Object>();
-		
-		GrupoCC grupo = grupoService.obtenerGrupo(idGrupo);
+		GrupoCC grupo = null;
+		if(esNodo) {
+			grupo = nodoService.obtenerNodoPorId(idGrupo);
+		}else {
+			grupo = grupoService.obtenerGrupo(idGrupo);
+		}
 		String idInvitacion = invitacionService.obtenerInvitacionAGCCporIDGrupo(destino, idGrupo).getId().toString();
 		
 		params.put("nombreEmisor",clienteOrigen.getNombre());
@@ -109,14 +125,24 @@ public class MailService {
 		params.put("aliasGrupo",grupo.getAlias());
 		params.put("nombreVendedor", nombreVendedor);
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
-		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
+		String template = "";
+		String subject = "";
+		if(esNodo) {
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/nodos/" + encrypter.encryptURL(idInvitacion));
+			template = Constantes.TEMPLATE_INVITAR_NODO_NO_REGISTRADO;
+			subject = Constantes.SUBJECT_INVITACION_NODO_NO_REGISTRADO;
+		}else {
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/registro/gcc/" + encrypter.encryptURL(idInvitacion));
+			template = Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO;
+			subject = Constantes.SUBJECT_INVITACION_NO_REGISTRADO;
+		}		
 		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
 		params.put("catalogoVendedor", catalogo);
 		
-		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_NO_REGISTRADO, destino, Constantes.SUBJECT_INVITACION_NO_REGISTRADO, params);
+		this.enviarMailEnThreadAparte(template, destino, subject, params);
 	}
 			
-	public void enviarEmailInvitadoRegistrado(Cliente clienteOrigen, String destino, String aliasGrupo, String urlVendedor, String nombreCorto, String nombreVendedor) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException  {		
+	public void enviarEmailInvitadoRegistrado(Cliente clienteOrigen, String destino, String aliasGrupo, String urlVendedor, String nombreCorto, String nombreVendedor, boolean esNodo) throws IOException, MessagingException, TemplateException, UsuarioInexistenteException  {		
 		Map<String,Object> params = new HashMap<String,Object>();
 		Cliente clienteInvitado = usuarioService.obtenerClientePorEmail(destino);
 		params.put("nombreInvitado", clienteInvitado.getNombre());
@@ -128,12 +154,22 @@ public class MailService {
 		params.put("mailOrigen",clienteOrigen.getEmail());
 		
 		String slash = (urlVendedor.endsWith("/"))?"":"/";
-		params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misGrupos/invitaciones" );
+		String template = "";
+		String subject = "";
+		if(esNodo) {
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misNodos/invitaciones" );
+			template = Constantes.TEMPLATE_INVITAR_NODO_REGISTRADO;
+			subject = Constantes.SUBJECT_INVITACION_NODO_REGISTRADO;
+		}else {
+			params.put("urlRegistracion", urlVendedor +slash + "#/" + nombreCorto + "/misGrupos/invitaciones" );
+			template = Constantes.TEMPLATE_INVITAR_GCC_REGISTRADO;
+			subject = Constantes.SUBJECT_INVITACION_REGISTRADO;
+		}
 		String catalogo = this.generarUrlCatalogo(urlVendedor, nombreCorto);
 		params.put("catalogoVendedor", catalogo);
 		
 		
-		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITAR_GCC_REGISTRADO, destino,Constantes.SUBJECT_INVITACION_REGISTRADO, params);
+		this.enviarMailEnThreadAparte(template, destino, subject, params);
 		
 	}
 	
@@ -155,7 +191,7 @@ public class MailService {
 
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_INVITACION_CHASQUI, destino, Constantes.SUBJECT_CONOCES_CHASQUI, params);
 	}
-	
+	//subdividir en nodo y grupo.
 	public void enviarEmailDeInvitacionAGCCAceptada(GrupoCC grupo, Cliente invitado) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("aliasGrupo", grupo.getAlias());
@@ -168,9 +204,12 @@ public class MailService {
 		params.put("catalogoVendedor", catalogo);
 		
 		String subject = Constantes.SUBJECT_INVITACION_GCC_ACEPTADA.replaceAll("<usuario>", invitado.getUsername());
-
+		String template = Constantes.TEMPLATE_ACEPTAR_INVITACION_GCC;
+		if(grupo.isEsNodo()) {
+			template = Constantes.TEMPLATE_ACEPTAR_INVITACION_NODO;
+		}
 		
-		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_ACEPTAR_INVITACION_GCC, grupo.getAdministrador().getEmail(), subject, params);
+		this.enviarMailEnThreadAparte(template, grupo.getAdministrador().getEmail(), subject, params);
 	}
 	
 	@Transactional
@@ -211,6 +250,8 @@ public class MailService {
 		final Map<String,Object> params = new HashMap<String,Object>();
 		params.put("nombreUsuario", nombreUsuario);
 		params.put("cuerpo", mensaje);
+		params.put("catalogoVendedor","");
+		
 		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NOTIFICACION, emailClienteDestino, subject, params);
 		
@@ -240,13 +281,14 @@ public class MailService {
 		String catalogo = this.generarUrlCatalogo(vendedor.getUrl(), vendedor.getNombreCorto());
 		String cuerpoCliente;
 		String tablaDireccionDeEntrega;
-		String tablaContenidoPedido = armarTablaContenidoDePedido(p);
+		String tablaContenidoPedido = armarTablaContenidoDePedido(p,vendedor.getEstrategiasUtilizadas().isUtilizaIncentivos());
+		String tablaContenidoPedidoSinIncentivo = armarTablaContenidoDePedido(p,false);
 		String cuerpoVendedor;
 		
 		if(p.getPerteneceAPedidoGrupal()) {
-			cuerpoCliente = armarCuerpoClienteParaPedidoGrupal(cliente.getNombre(), vendedor.getNombre());
+			cuerpoCliente = armarCuerpoClienteParaPedidoGrupal(cliente.getNombre(), vendedor.getNombre(), p.getPedidoColectivo().getColectivo().isEsNodo());
 			tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p, direccion, textoDeDireccionDeEntrega);
-			cuerpoVendedor = armarCuerpoVendedorPedidoColectivo(emailCliente);
+			cuerpoVendedor = armarCuerpoVendedorPedidoColectivo(emailCliente, p.getPedidoColectivo());
 		}else {
 			cuerpoCliente= armarCuerpoCliente(cliente.getNombre(), vendedor.getNombre());
 			tablaDireccionDeEntrega = armarTablaDireccionDeEntrega(p, direccion, textoDeDireccionDeEntrega);	
@@ -258,7 +300,7 @@ public class MailService {
 		params.put("cuerpo", cuerpoCliente);
 		params.put("tablaContenidoPedido",tablaContenidoPedido);
 		params.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
-		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(),vendedor.getNombreCorto()) + "> bienvenida</a>"));
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>",  "<strong>entregas</strong>")); //"<a href="+ generarUrlEntregas(vendedor.getUrl(), vendedor.getNombreCorto())  + "> entregas </a>"));
 		params.put("textoDetalle", textoEnEmail);
 		params.put("catalogoVendedor", catalogo);
 
@@ -266,7 +308,7 @@ public class MailService {
 		
 		Map<String,Object> paramsVendedor = new HashMap<String,Object>();
 		paramsVendedor.put("cuerpo", cuerpoVendedor);
-		paramsVendedor.put("tablaContenidoPedido",tablaContenidoPedido);
+		paramsVendedor.put("tablaContenidoPedido",tablaContenidoPedidoSinIncentivo);
 		paramsVendedor.put("tablaDireccionDeEntrega", tablaDireccionDeEntrega);
 		paramsVendedor.put("sugerencia","");
 		paramsVendedor.put("catalogoVendedor", catalogo);
@@ -320,16 +362,16 @@ public class MailService {
 			textoEnEmail = "Tu pedido de " + pedido.getNombreVendedor() +" esta preparado para que lo puedas pasar a retirar. El detalle de tu pedido es el siguiente:";
 			textoDeDireccionDeEntrega ="Dirección donde puede pasar a retirar tu pedido";
 		}
-		
-		String tablaContenidoPedido = armarTablaContenidoDePedido(pedido);
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(pedido.getIdVendedor());
+		boolean usaIncentivo = vendedor.getEstrategiasUtilizadas().isUtilizaIncentivos();
+		String tablaContenidoPedido = armarTablaContenidoDePedido(pedido,usaIncentivo);
 		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedido, direccion,textoDeDireccionDeEntrega);
 		
 		params.put("tablaContenidoPedido", tablaContenidoPedido);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
 		params.put("textoDetalle", textoEnEmail);
 		params.put("textoDeDireccionDeEntrega", textoDeDireccionDeEntrega);
-		Vendedor vendedor = vendedorService.obtenerVendedorPorId(pedido.getIdVendedor());
-		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(), vendedor.getNombreCorto()) + "> bienvenida </a>"));
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>","<strong>entregas</strong>")); //"<a href="+ generarUrlEntregas(vendedor.getUrl(), vendedor.getNombreCorto())  + "> entregas </a>"));
 		
 		this.enviarMailEnThreadAparte(Constantes.PEDIDO_PREPARADO_TEMPLATE, pedido.getCliente().getEmail(), formarTag(pedido) +Constantes.PEDIDO_PREPARADO_SUBJECT, params);
 		
@@ -349,24 +391,30 @@ public class MailService {
 	
 	public void enviarEmailCierreDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params2 = new HashMap<String,Object>();
 		Direccion direccion;
 		
 		String catalogo = this.generarUrlCatalogo(pedidoColectivo.getColectivo().getVendedor().getUrl(), pedidoColectivo.getColectivo().getVendedor().getNombreCorto());
 		params.put("catalogoVendedor", catalogo);
+		params2.put("catalogoVendedor", catalogo);
 		
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
+		String textoEnEmailParaVendedor = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
-			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b>ha sido confirmado. El detalle de tu pedido es el siguiente:";
+			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() +" </b> del "+definirTexto(pedidoColectivo)+" ha sido confirmado. El detalle de tu pedido es el siguiente:";
+			textoEnEmailParaVendedor = "Se confirmó el pedido colectivo del "+definirTexto(pedidoColectivo)+". El detalle del mismo es el siguiente:";
 			textoDeDireccionDeEntrega = "La dirección elegida es la siguiente:";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
-			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() + " </b>ha sido confirmado. El detalle de tu pedido es el siguiente:";
+			textoEnEmail = "Tu pedido colectivo hecho en <b>"+ pedidoColectivo.getColectivo().getVendedor().getNombre() + " </b> del "+definirTexto(pedidoColectivo)+" ha sido confirmado. El detalle de tu pedido es el siguiente:";
+			textoEnEmailParaVendedor = "Se confirmó el pedido colectivo del "+definirTexto(pedidoColectivo)+". El detalle del mismo es el siguiente:";
 			textoDeDireccionDeEntrega ="El punto de retiro elegido es el siguiente:";
 		}
 		//Genero tabla de contenido de pedido de cada persona
 		String tablaContenidoDePedidoColectivo = this.armarTablaContenidoDePedidoColectivo(pedidoColectivo);
+		String tablaContenidoDePedidoColectivoSinIncentivo = this.armarTablaContenidoDePedidoColectivoIgnorandoIncentivo(pedidoColectivo);
 		//La direccion del grupo
 		String tablaDireccionEntrega = armarTablaDireccionDeEntrega(pedidoColectivo, direccion,textoDeDireccionDeEntrega);
 		
@@ -377,21 +425,32 @@ public class MailService {
 		params.put("agradecimiento", Constantes.AGRADECIMIENTO);
 		params.put("textoDetalle", textoEnEmail);
 		
-		//se envia todo a todos los integrantes del grupo
+		//Solo se envia al adminstrador
 		this.enviarMailEnThreadAparte(Constantes.PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE, pedidoColectivo.getColectivo().getAdministrador().getEmail(), formarTag(pedidoColectivo) + Constantes.PEDIDO_COLECTIVO_CONFIRMADO, params);
 		
+		params2.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivoSinIncentivo);
+		params2.put("tablaDireccionEntrega", tablaDireccionEntrega);
+		params2.put("agradecimiento", "");
+		params2.put("textoDetalle", textoEnEmailParaVendedor);
+		
+		this.enviarMailEnThreadAparte(Constantes.PEDIDOS_COLECTIVOS_CONFIRMADOS_TEMPLATE, pedidoColectivo.getColectivo().getVendedor().getEmail(), formarTag(pedidoColectivo) + "Pedido colectivo confirmado", params2);
+	}
+	
+	private String definirTexto(PedidoColectivo p) {
+		return (p.getColectivo().isEsNodo())?"nodo "+p.getColectivo().getAlias():"grupo "+p.getColectivo().getAlias();
 	}
 	
 	public void enviarEmailPreparacionDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		Direccion direccion;
+		boolean esNodo = pedidoColectivo.getColectivo().isEsNodo();
 		String catalogo = this.generarUrlCatalogo(pedidoColectivo.getColectivo().getVendedor().getUrl(), pedidoColectivo.getColectivo().getVendedor().getNombreCorto());
 		params.put("catalogoVendedor", catalogo);
 		String textoEnEmail = "";
 		String textoDeDireccionDeEntrega = "";
 		if(pedidoColectivo.getDireccionEntrega() != null) {
 			direccion = pedidoColectivo.getDireccionEntrega();
-			textoEnEmail = "Hola, "+ this.generateSpan(pedidoColectivo.getColectivo().getAdministrador().getNombre(), "00adee") +". El pedido colectivo del grupo "+ this.generateSpan(pedidoColectivo.getColectivo().getAlias(), "00adee") +" está preparado para ser entregado. El detalle del pedido es el siguiente:";
+			textoEnEmail = "Hola, "+ this.generateSpan(pedidoColectivo.getColectivo().getAdministrador().getNombre(), "00adee") +". El pedido colectivo del "+ ((esNodo)? " nodo ":" grupo ") + this.generateSpan(pedidoColectivo.getColectivo().getAlias(), "00adee") +" está preparado para ser entregado. El detalle del pedido es el siguiente:";
 			textoDeDireccionDeEntrega = "Será enviado a la siguiente dirección";
 		}else {
 			direccion = pedidoColectivo.getPuntoDeRetiro().getDireccion();
@@ -408,7 +467,7 @@ public class MailService {
 		params.put("tablaContenidoDePedidoColectivo", tablaContenidoDePedidoColectivo);
 		params.put("tablaDireccionEntrega", tablaDireccionEntrega);
 		Vendedor vendedor= pedidoColectivo.getColectivo().getVendedor();
-		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<a href="+ generarUrlBienvenida(vendedor.getUrl(), vendedor.getNombreCorto())  + "> bienvenida </a>"));
+		params.put("sugerencia",Constantes.SUGERENCIA.replace("<bienvenida>", "<strong>entregas</strong>")); //"<a href="+ generarUrlEntregas(vendedor.getUrl(), vendedor.getNombreCorto())  + "> entregas </a>"));
 		params.put("textoDetalle", textoEnEmail);
 		
 		
@@ -431,19 +490,41 @@ public class MailService {
 	private String armarTablaContenidoDePedidoColectivo(PedidoColectivo pedidoColectivo) {
 		
 		String tablaContenidoDePedidoColectivo ="";
-		
+		Boolean usaIncentivo = pedidoColectivo.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
 		Iterator<Entry<String, Pedido>> it = pedidoColectivo.getPedidosIndividuales().entrySet().iterator();
 		while (it.hasNext()) {
 		    Entry<String, Pedido> pair = it.next();
 		    Pedido pedido = pair.getValue();
-		    if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+		    if(pedidosuperioraconfirmado(pedido)) {
 		    	tablaContenidoDePedidoColectivo += armarInformacionDelCliente(pedido.getCliente());
-		    	tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido);
+		    	tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido,usaIncentivo);
 		    }
 		}
-		
+		tablaContenidoDePedidoColectivo += armarTablaConTotales(pedidoColectivo,usaIncentivo);
 		return tablaContenidoDePedidoColectivo;
 		
+	}
+	
+	private String armarTablaContenidoDePedidoColectivoIgnorandoIncentivo(PedidoColectivo pedidoColectivo) {
+		
+		String tablaContenidoDePedidoColectivo ="";
+		Boolean usaIncentivo = false;
+		Iterator<Entry<String, Pedido>> it = pedidoColectivo.getPedidosIndividuales().entrySet().iterator();
+		while (it.hasNext()) {
+		    Entry<String, Pedido> pair = it.next();
+		    Pedido pedido = pair.getValue();
+		    if(pedidosuperioraconfirmado(pedido)) {
+		    	tablaContenidoDePedidoColectivo += armarInformacionDelCliente(pedido.getCliente());
+		    	tablaContenidoDePedidoColectivo += this.armarTablaContenidoDePedido(pedido,usaIncentivo);
+		    }
+		}
+		tablaContenidoDePedidoColectivo += armarTablaConTotalesACobrar(pedidoColectivo);
+		return tablaContenidoDePedidoColectivo;
+		
+	}
+
+	private boolean pedidosuperioraconfirmado(Pedido pedido) {
+		return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
 	}
 
 	private String armarInformacionDelCliente(Cliente cliente) {
@@ -513,6 +594,11 @@ public class MailService {
 				if(Constantes.CONFIRMACION_COMPRA_TEMPLATE_URL.equals(template)) {
 					ClassPathResource resource = new ClassPathResource("templates/imagenes/confirmacion.png");
 					helper.addInline("confirmacion", resource);
+				}
+				
+				if(Constantes.TEMPLATE_NOTIFICACION.equals(template)) {
+					ClassPathResource resource = new ClassPathResource("templates/imagenes/notificacion.jpg");
+					helper.addInline("notificacion", resource);
 				}
 				
 				if(Constantes.TEMPLATE_INVITACION_CHASQUI.equals(template)) {
@@ -602,8 +688,8 @@ public class MailService {
 		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
 	}
 	
-	private String armarCuerpoVendedorPedidoColectivo(String usuario){
-		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra que pertenece a un pedido colectivo (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
+	private String armarCuerpoVendedorPedidoColectivo(String usuario, PedidoColectivo pedidoColectivo){
+		return "El usuario "+ this.generateSpan(usuario, "00adee") +" confirmó su compra individual que pertenece al pedido colectivo N°"+ pedidoColectivo.getId() +" (Los detalles de la misma se encuentran debajo y también pueden visualizarse en el panel de administración).";
 	}
 	
 	
@@ -613,9 +699,10 @@ public class MailService {
 		return null;
 	}
 
-	private String armarCuerpoClienteParaPedidoGrupal(String nombre, String nombreVendedor) {
-		return "¡"+ this.generateSpan(nombre, "00adee") +" tu pedido individual en el grupo de "+ this.generateSpan(nombreVendedor, "00adee") +" está confirmado! " +
-				"Recordá que quién administra el grupo debe confirmar el pedido grupal para que se hagan efectivos los pedidos individuales." +
+	private String armarCuerpoClienteParaPedidoGrupal(String nombre, String nombreVendedor, boolean esNodo) {
+		String tipoDeColectivo = (esNodo)?"nodo":"grupo";
+		return "¡"+ this.generateSpan(nombre, "00adee") +" tu pedido individual en el " +tipoDeColectivo+ " de "+ this.generateSpan(nombreVendedor, "00adee") +" está confirmado! " +
+				"Recordá que quién administra el "+tipoDeColectivo+" debe confirmar el pedido colectivo para que se hagan efectivos los pedidos individuales." +
 				" <br>" + "<br>" +
 				"Detalles de tu compra:";
 	}
@@ -679,12 +766,86 @@ public class MailService {
 			return "";
 	}
 	
+	private String armarTablaConTotales(PedidoColectivo p, boolean usaIncentivos) {
+		String tabla = (usaIncentivos)?armarHeaderTotalesIncentivos():armarHeaderTotales();
+		if(usaIncentivos) {
+			tabla += armarFilaTotalConIncentivos(p);
+		}else {
+			tabla += armarFilaPrecioTotal(p);
+		}
+		return tabla;
+	}
+	
+	private String armarTablaConTotalesACobrar(PedidoColectivo p) {
+		String tabla = armarHeaderTotalesACobrar();
+		tabla += armarFilaPrecioTotal(p);
+		return tabla;
+	}
+	
+	private String armarFilaTotalConIncentivos(PedidoColectivo p){
+		Double precioTotal =  p.getMontoTotal() + p.getMontoTotalDeIncentivos();
+		return  "<tr>"
+				+	"<td> $"+p.getMontoTotalDeIncentivos()+"</td>"
+				+	"<td> $"+p.getMontoTotal()+"</td>"
+				+	"<td> $"+trim2decimals(precioTotal)+"</td>"
+				+ "</tr>"
+				+"</tbody>"
+				+"</table>"
+				+"<br>"
+				+"<strong>Aclaración:</strong> En el <strong>ingreso nodo</strong> esta incluido el de tu <strong>pedido como administrador</strong>.";
+				
+				
+		//"<tr><td>"+ pp.getNombreProducto() + pp.getNombreVariante() + "</td><td>" +pp.getPrecio()+ "</td><td> "+ pp.getCantidad() +"</td></tr>";
+	}
+	private String armarFilaPrecioTotal(PedidoColectivo p){
+		return  "<tr>"
+				+ "<td> $"+p.getMontoTotal()+"</td>"
+				+ "</tr>"
+				+"</tbody>"
+				+"</table>";
+				
+				
+		//"<tr><td>"+ pp.getNombreProducto() + pp.getNombreVariante() + "</td><td>" +pp.getPrecio()+ "</td><td> "+ pp.getCantidad() +"</td></tr>";
+	}	
+	
+	private String armarHeaderTotalesIncentivos() {
+		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
+			   + "<thead bgcolor=\"#313231\">" 
+			   +  "<tr height=\"32\">"
+			   +     "<th><font color=\"white\">INGRESO NODO</font></th>"
+			   +     "<th><font color=\"white\">COSTO AL NODO</font></th>"
+			   +     "<th><font color=\"white\">PRECIO FINAL</font></th>"
+			   +  "</tr>"
+			   + "</thead>"
+			   + "<tbody>";
+	}
+	
+	private String armarHeaderTotales() {
+		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
+			   + "<thead bgcolor=\"#313231\">" 
+			   +  "<tr height=\"32\">"
+			   +     "<th><font color=\"white\">TOTAL A PAGAR</font></th>"
+			   +  "</tr>"
+			   + "</thead>"
+			   + "<tbody>";
+	}
+	
+	private String armarHeaderTotalesACobrar() {
+		return "<table width=\"600\" cellpadding=\"0\" border=\"0\" bgcolor=\"#b8dee8\" align=\"center\">"
+			   + "<thead bgcolor=\"#313231\">" 
+			   +  "<tr height=\"32\">"
+			   +     "<th><font color=\"white\">TOTAL A COBRAR</font></th>"
+			   +  "</tr>"
+			   + "</thead>"
+			   + "<tbody>";
+	}
+	
 
-	private String armarTablaContenidoDePedido(Pedido p) {
+	private String armarTablaContenidoDePedido(Pedido p, boolean usaIncentivos) {
 		String tabla = armarHeader();
-		String footer = armarFooter(p.getMontoActual());
+		String footer = armarFooter((usaIncentivos)?p.getMontoActual()+p.getMontoTotalIncentivo():p.getMontoActual());
 		for(ProductoPedido pp : p.getProductosEnPedido()){
-			tabla += armarFilaDetalleProducto(pp);
+			tabla += armarFilaDetalleProducto(pp,usaIncentivos);
 		}		
 		tabla += footer + "<br>";
 		return tabla;
@@ -703,10 +864,11 @@ public class MailService {
 		       + "<tbody>";
 	}
 	
-	private String armarFilaDetalleProducto(ProductoPedido pp){
+	private String armarFilaDetalleProducto(ProductoPedido pp, boolean usaIncentivos){
+		Double precio = (usaIncentivos)? pp.getPrecio() + pp.getIncentivo() : pp.getPrecio();
 		return  "<tr>"
 				+	"<td>"+pp.getNombreProducto()+"</td>"
-				+	"<td>"+pp.getPrecio()+"</td>"
+				+	"<td>$"+precio+"</td>"
 				+	"<td>"+pp.getCantidad()+"</td>"
 				+"</tr>";
 				
@@ -745,9 +907,90 @@ public class MailService {
 		return (url + slash + "#/" + nombreCorto + "/productos");
 	}
 	
-	private String generarUrlBienvenida(String url, String nombreCorto){
+	private String generarUrlEntregas(String url, String nombreCorto){
 		String slash = (url.endsWith("/"))?"":"/";
-		return (url + slash + "#/" + nombreCorto + "/bienvenida");
+		return (url + slash + "#/" + nombreCorto + "/puntosDeEntrega");
 	}
+	
+	//Seccion de emails genericos de notificacion
+	public void enviarEmailDeGestionDeSolicitudCreacionNodoFinalizada(Nodo nodo, Vendedor vendedor, String emailAdministradorNodo,
+			String estadoSolicitudNodo) {
+		String nombreUsuario = nodo.getAdministrador().getNombre() + " " +nodo.getAdministrador().getApellido();
+		String inicio = "</br> Su solicitud del nodo <strong>"+ nodo.getAlias() + "</strong> a <strong>" + vendedor.getNombre() + "</strong> ha sido ";
+		String estado = (estadoSolicitudNodo.equals(Constantes.SOLICITUD_NODO_APROBADO))? "aprobado":"rechazado";
+		String fin = ".";
+		String mensaje = inicio + estado + fin;
+		String subject = "Su solicitud de nodo a "+ vendedor.getNombre() +" a sido " + estado + ".";
+		enviarEmailNotificacionChasqui("", nombreUsuario, emailAdministradorNodo,mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombrenodo, Cliente usuario) throws VendedorInexistenteException {
+		String nombreUsuario = usuario.getNombre() + " " + usuario.getApellido();
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> a enviado una solicitud de creación de nodo con nombre <strong>"+ nombrenodo + "</strong>, para obtener mas información y gestionar la solicitud, puede hacerlo desde el panel de administración en la sección <strong>nodos->solicitudes</strong>";
+		String subject = "Tiene una nueva solicitud de nodo.";
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(idVendedor);
+		enviarEmailNotificacionChasqui("", nombreUsuario, vendedor.getEmail() ,mensaje , subject);
+		
+	}
+	
+	public void enviarEmailDeCancelacionDeSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombrenodo, Cliente usuario) throws VendedorInexistenteException {
+		String nombreUsuario = usuario.getNombre() + " " + usuario.getApellido();
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> a cancelado su solicitud de creación de nodo con nombre <strong>"+ nombrenodo + "</strong>.";
+		String subject = "Se cancelo una solicitud de nodo.";
+		Vendedor vendedor = vendedorService.obtenerVendedorPorId(idVendedor);
+		enviarEmailNotificacionChasqui("", nombreUsuario, vendedor.getEmail() ,mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario) {
+		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
+		String nombrenodo = nodo.getAlias();
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> le acaba de enviar una solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "</strong>. <br><br> Para mas detalles acceda a desde el catalogo a 'mis nodos -> " + nombrenodo +" -> Integrantes -> Solicitudes'";
+		String subject = "Tiene una nueva solicitud para el nodo " + nodo.getAlias() + ".";
+		enviarEmailNotificacionChasqui("", nombreUsuario, nodo.getAdministrador().getEmail(),mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeCancelacionDePertenenciaANodo(SolicitudPertenenciaNodo solicitudpertenencia) {
+		Cliente usuario = (Cliente) solicitudpertenencia.getUsuarioSolicitante();
+		Nodo nodo = solicitudpertenencia.getNodo();
+		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
+		String nombrenodo = nodo.getAlias();
+		String mensaje = "</br> El usuario <strong>"+ nombreUsuario +"</strong> cancelo su solicitud para ingresar a su nodo con nombre <strong>"+ nombrenodo + "";
+		String subject = "Han cancelado una solicitud para su nodo " + nodo.getAlias() + ".";
+		enviarEmailNotificacionChasqui("", nombreUsuario, nodo.getAdministrador().getEmail(),mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeGestionDePertenenciaANodo(SolicitudPertenenciaNodo solicitudpertenencia) {
+		Cliente usuario = (Cliente) solicitudpertenencia.getUsuarioSolicitante();
+		Nodo nodo = solicitudpertenencia.getNodo();
+		String estado = (solicitudpertenencia.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO))? "aceptada": "rechazada";
+		String nombreUsuario = usuario.getNombre() + " " +usuario.getApellido();
+		String nombrenodo = nodo.getAlias();
+		String mensaje = "</br> Tu solicitud para ingresar al nodo <strong>"+nombrenodo+ "</strong> a sido <strong>" + estado + "</strong>";
+		if(solicitudpertenencia.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)) {
+			mensaje = mensaje +", para comprar o ver mas detalles, ingresa al catalogo de Chasqui y ve a la sección <strong> mis nodos </strong>.";
+		}else {
+			mensaje = mensaje + ".";
+		}
+		String subject = "Tu solicitud de ingreso a " + nombrenodo + " a sido "+estado+".";
+		enviarEmailNotificacionChasqui("", nombreUsuario, usuario.getEmail(),mensaje , subject);
+		
+	}
+
+	public void enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(Nodo nodo) {
+		String nombreUsuario = nodo.getAdministrador().getNombre() + " " + nodo.getAdministrador().getApellido();
+		String tipoNodoAnterior = nodo.getTipo().equals(Constantes.NODO_ABIERTO)?"<font color='blue'>Cerrado</font>":"<font color='green'>Abierto</font>";
+		String tipoNodo = nodo.getTipo().equals(Constantes.NODO_ABIERTO)?"<font color='green'>Abierto</font>":"<font color='blue'>Cerrado</font>";
+		String nombreNodo = nodo.getAlias();
+		String mensaje = "</br> El Administrador <strong>"+ nombreUsuario +"</strong> del nodo <strong>"+ nombreNodo +"</strong> cambio la visibilidad de <strong>"+ tipoNodoAnterior + "</strong> a <strong>" + tipoNodo + "</strong>.";
+		String subject = "Aviso de cambio de visiblidad en nodo "+nodo.getAlias()+".";
+		enviarEmailNotificacionChasqui("", nodo.getVendedor().getNombre(), nodo.getVendedor().getEmail() ,mensaje , subject);
+		
+	}
+	
+	
 
 }

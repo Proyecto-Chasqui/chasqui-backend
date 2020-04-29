@@ -14,6 +14,8 @@ public class EstrategiasDeComercializacion {
 	
 	private boolean seleccionDeDireccionDelUsuario;
 	
+	private boolean utilizaIncentivos;
+	
 	private boolean nodosEnApp;
 	
 	private boolean gccEnApp;
@@ -35,6 +37,7 @@ public class EstrategiasDeComercializacion {
 		this.gccEnApp = false;
 		this.nodosEnApp = false;
 		this.puntoDeEntregaEnApp = false;
+		this.utilizaIncentivos = false;
 	}
 
 	public boolean isNodos() {
@@ -115,6 +118,14 @@ public class EstrategiasDeComercializacion {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public boolean isUtilizaIncentivos() {
+		return utilizaIncentivos;
+	}
+
+	public void setUtilizaIncentivos(boolean utilizaIncentivos) {
+		this.utilizaIncentivos = utilizaIncentivos;
 	}
 
 }

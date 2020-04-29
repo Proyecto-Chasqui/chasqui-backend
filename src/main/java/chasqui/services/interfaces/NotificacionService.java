@@ -9,12 +9,16 @@ import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
 import chasqui.exceptions.UsuarioInexistenteException;
+import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.exceptions.EncrypterException;
 import chasqui.model.Cliente;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
+import chasqui.model.Nodo;
 import chasqui.model.Notificacion;
 import chasqui.model.Pedido;
+import chasqui.model.SolicitudPertenenciaNodo;
+import chasqui.model.Usuario;
 import freemarker.template.TemplateException;
 
 public interface NotificacionService {
@@ -136,5 +140,23 @@ public interface NotificacionService {
 	public List<InvitacionAGCC> obtenerInvitacionPendientePorIDdeGrupo(String emailCliente,	Integer idGrupo);
 
 	public void notificarNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo);
+
+	public void notificarSolicitudCreacionNodo(Nodo nodo, String solicitudNodoAprobado);
+
+	public void notificarSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombre, Cliente usuario) throws VendedorInexistenteException;
+
+	public void notificarCancelacionDeSolicitudCreacionNodoAVendedor(Integer idVendedor, String nombreNodo,
+			Usuario usuarioSolicitante) throws VendedorInexistenteException;
+
+	public void enviarEmailDeSolicitudDePertenenciaANodo(Nodo nodo, Cliente usuario);
+
+	public void notificarCancelacionDeSolicitudDePertenenciaANodo(SolicitudPertenenciaNodo solicitudpertenencia);
+
+	public void notificarGestionDeSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia);
+
+	void notificarConfirmacionNodoCompraOtroMiembro(String emailVendedor, String emailCliente, String nombreCliente,
+			String alias);
+
+	public void enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(Nodo nodo);
 
 }

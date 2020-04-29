@@ -1,6 +1,8 @@
 package chasqui.services.impl;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.dao.PuntoDeRetiroDAO;
@@ -21,5 +23,12 @@ public class PuntoDeRetiroServiceImpl implements PuntoDeRetiroService {
 	@Override
 	public void guardarPuntoDeRetiro(PuntoDeRetiro pr){
 		puntoDeRetiroDAO.guardar(pr);
+	}
+	@Override
+	public void eliminarPuntosDeRetiro(List<PuntoDeRetiro> puntosDeRetiro) {
+		for(PuntoDeRetiro pr: puntosDeRetiro) {
+			puntoDeRetiroDAO.eliminar(pr);
+		}
+		
 	}
 }

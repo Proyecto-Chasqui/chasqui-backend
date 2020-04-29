@@ -556,7 +556,7 @@ public class GrupoListener {
 		return new PedidoResponse(nuevoPedido);
 	}
 	
-	private String obtenerEmailDeContextoDeSeguridad() {
+	protected String obtenerEmailDeContextoDeSeguridad() {
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 
 	}

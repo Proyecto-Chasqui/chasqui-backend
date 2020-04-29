@@ -18,6 +18,7 @@ import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.model.Cliente;
 import chasqui.model.Direccion;
+import chasqui.model.Fabricante;
 import chasqui.model.Imagen;
 import chasqui.model.Pedido;
 import chasqui.model.Producto;
@@ -124,6 +125,7 @@ public class ClienteTest {
 		variante.setStock(10);
 		Producto p = new Producto();
 		p.setNombre("mermelada");
+		p.setFabricante(new Fabricante("test"));
 		variante.setProducto(p);
 		List<Imagen>img = new ArrayList<Imagen>();
 		Imagen i = new Imagen();

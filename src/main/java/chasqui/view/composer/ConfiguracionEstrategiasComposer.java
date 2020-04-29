@@ -1,5 +1,6 @@
 package chasqui.view.composer;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
@@ -42,6 +45,8 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	private Checkbox nodos; 
 	private Checkbox puntoDeEntrega; 
 	private Checkbox entregaADomicilio;
+	private Checkbox utilizaIncentivos;
+	private Checkbox visibleEnMulticatalogo;
 	private UsuariosActualesComposer usuariosActualesComposer;
 	private AdministracionComposer admComposer;
 	private Component usuariosActualesComponent;
@@ -51,6 +56,8 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	private Vendedor usuarioSeleccionado;
 	private Textbox textboxTiempoVencimiento;
 	private Textbox urlMapa;
+	private Label labelVenededor;
+	
 	@Override
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -66,12 +73,13 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		usuariosActualesComposer = (UsuariosActualesComposer) Executions.getCurrent().getSession().getAttribute("usuariosActualesComposer");
 		usuarios = vendedorService.obtenerVendedores(); //TODO obtener todos los vendedores aunque no tengan configurado el monto minimom y la fecha! hacer servicio ad-hoc en vendedor service
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
+		administracionWindow = (Window) findAdministracionWindow(comp);
 		usuarios.add(usuarioLogueado);
 		binder.loadAll();
 	}
 	
 	private Component findAdministracionWindow(Component comp) {
-		if(comp.getParent() instanceof Window && comp.getParent().getId().equals("configuracionEstrategiasComercializacionWindow")){
+		if(comp.getParent() instanceof Window && comp.getParent().getId().equals("administracionWindow")){
 			return comp.getParent();
 		}
 		return findAdministracionWindow(comp.getParent());
@@ -82,8 +90,16 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		usuariosActualesComposer = c;
 	}
 	
+	public void mostrarVentanaEstrategias() {
+		Map<String,Object>params2 = new HashMap<String,Object>();
+		params2.put("accion", "editarEstrategias");
+		Events.sendEvent(Events.ON_RENDER, administracionWindow, params2);
+	}
+	
 	public void editar(Vendedor vendedor) {
+		 mostrarVentanaEstrategias();
 		 usuarioSeleccionado = vendedor;
+		 labelVenededor.setValue("Configuración de "+ vendedor.getNombre());
 		 EstrategiasDeComercializacion estrategias = usuarioSeleccionado.getEstrategiasUtilizadas();
 		 this.setTiempoVencimiento(vendedor);
 		 this.fillUrlMap(vendedor.getMapaZonas());
@@ -125,6 +141,8 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	 	colectiva.setChecked(estrategias.isGcc());
 	 	puntoDeEntrega.setChecked(estrategias.isPuntoDeEntrega());
 	 	entregaADomicilio.setChecked(estrategias.isSeleccionDeDireccionDelUsuario());
+	 	utilizaIncentivos.setChecked(estrategias.isUtilizaIncentivos());
+	 	visibleEnMulticatalogo.setChecked(usuarioSeleccionado.isVisibleEnMulticatalogo());
 	}
 	
 	private void liberarChecks(){
@@ -133,6 +151,8 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		colectiva.setChecked(false);
 		puntoDeEntrega.setChecked(false);
 		entregaADomicilio.setChecked(false);
+		utilizaIncentivos.setChecked(false);
+		visibleEnMulticatalogo.setChecked(false);
 		textboxTiempoVencimiento.setValue("");
 		urlMapa.setValue("");
 		usuarioSeleccionado = null;
@@ -145,6 +165,44 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	public void setConfwindow(Window confwindow) {
 		this.confwindow = confwindow;
 	}
+	
+	public void mostrarListaUsuarios() {
+		Map<String,Object>params2 = new HashMap<String,Object>();
+		params2.put("accion", "mostrarListaUsuarios");
+		Events.sendEvent(Events.ON_RENDER, administracionWindow, params2);
+	}
+	
+	public void onClick$buttonCancelar() {
+		mostrarListaUsuarios();
+		this.liberarChecks();
+	}
+	
+	public void onCheck$individual() {
+		nodos.setChecked(false);
+		utilizaIncentivos.setChecked(false);
+	}
+	
+	public void onCheck$colectiva() {
+		nodos.setChecked(false);
+		utilizaIncentivos.setChecked(false);
+	}
+	
+	public void onCheck$nodos() {
+		if(nodos.isChecked()) {
+			colectiva.setChecked(false);
+			individual.setChecked(false);
+		}else {
+			utilizaIncentivos.setChecked(false);
+		}		
+	}
+	
+	public void onCheck$utilizaIncentivos() {
+		if(utilizaIncentivos.isChecked()) {
+			colectiva.setChecked(false);
+			nodos.setChecked(true);
+			individual.setChecked(false);
+		}
+	}
 
 	public void onClick$buttonGuardar(){
 		if(usuarioSeleccionado != null){
@@ -154,11 +212,14 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 		 	estrategias.setGcc(colectiva.isChecked());
 		 	estrategias.setPuntoDeEntrega(puntoDeEntrega.isChecked());
 		 	estrategias.setSeleccionDeDireccionDelUsuario(entregaADomicilio.isChecked());
+		 	estrategias.setUtilizaIncentivos(utilizaIncentivos.isChecked());
 		 	Integer tiempo = Integer.parseInt(textboxTiempoVencimiento.getValue());
 		 	usuarioSeleccionado.setTiempoVencimientoPedidos(tiempo);
 		 	usuarioSeleccionado.setMapaZonas(urlMapa.getValue());
+		 	usuarioSeleccionado.setVisibleEnMulticatalogo(visibleEnMulticatalogo.isChecked());
 		 	usuarioService.guardarUsuario(usuarioSeleccionado);
 		 	liberarChecks();
+		 	mostrarListaUsuarios();
 			EventListener evt = new EventListener() {
 				public void onEvent(Event evt) throws EstadoPedidoIncorrectoException{
 					if(evt.getName().equals("onOK")){
@@ -271,6 +332,31 @@ public class ConfiguracionEstrategiasComposer extends GenericForwardComposer<Com
 	public void setUrlMapa(Textbox urlMapa) {
 		this.urlMapa = urlMapa;
 	}
+
+	public Checkbox getUtilizaIncentivos() {
+		return utilizaIncentivos;
+	}
+
+	public void setUtilizaIncentivos(Checkbox utilizaIncentivos) {
+		this.utilizaIncentivos = utilizaIncentivos;
+	}
+
+	public Label getLabelVenededor() {
+		return labelVenededor;
+	}
+
+	public void setLabelVenededor(Label labelVenededor) {
+		this.labelVenededor = labelVenededor;
+	}
+
+	public Checkbox getVisibleEnMulticatalogo() {
+		return visibleEnMulticatalogo;
+	}
+
+	public void setVisibleEnMulticatalogo(Checkbox visibleEnMulticatalogo) {
+		this.visibleEnMulticatalogo = visibleEnMulticatalogo;
+	}
+
 }
 
 class ConfAccionEventListener implements EventListener<Event>{
