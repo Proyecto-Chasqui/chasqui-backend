@@ -730,9 +730,10 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		if(previews > 1){
 			throw new WrongValueException(tabdetalles,"No se puede elegir mas de una imagen de previsualización");
 		}
-		
-		if(stock < modelv.getCantidadReservada()) {
-			throw new WrongValueException(tabdetalles,"Hay pedidos abiertos que tienen reservado este producto, no puede ser menor a "+model.getVariantes().get(0).getCantidadReservada());
+		if(modelv.getCantidadReservada() != null) {
+			if(stock < modelv.getCantidadReservada()) {
+				throw new WrongValueException(tabdetalles,"Hay pedidos abiertos que tienen reservado este producto, no puede ser menor a "+model.getVariantes().get(0).getCantidadReservada());
+			}
 		}
 		
 		
