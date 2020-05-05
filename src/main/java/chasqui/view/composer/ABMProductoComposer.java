@@ -185,7 +185,11 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			doubleboxPrecio.setValue(modelv.getPrecio());
 			incentivo.setValue(modelv.getIncentivo());			
 			totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
-			intboxStock.setValue(modelv.getStock());
+			if(modelv.getStock() < 0) {
+				intboxStock.setValue(0);
+			}else {
+				intboxStock.setValue(modelv.getStock());
+			}			
 			textboxCodigo.setValue(modelv.getCodigo());
 			ckEditor.setValue(Jsoup.parse(modelv.getDescripcion()).wholeText());
 			imagenes.addAll(modelv.getImagenes());
@@ -516,7 +520,11 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		textboxCodigo.setValue(modelv.getCodigo());
 		imagenes.addAll(modelv.getImagenes());
 		doubleboxPrecio.setValue(modelv.getPrecio());
-		intboxStock.setValue(modelv.getStock());
+		if(modelv.getStock() < 0) {
+			intboxStock.setValue(0);
+		}else {
+			intboxStock.setValue(modelv.getStock());
+		}	
 		categoriaSeleccionada = model.getCategoria();
 		productorSeleccionado = model.getFabricante();
 		comboFabricantes.setValue(productorSeleccionado.toString());
