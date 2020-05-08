@@ -117,13 +117,11 @@ public class ZonaListener {
 		try {
 			request = this.toZonaRequest(zonaRequest);
 			validarEstrategiaActiva("ZN",request.getIdVendedor());
-			DateTime d = request.getFechaCierre().plusDays(1);
+			DateTime d = request.getFechaCierre();
 			request.setFechaCierre(d);
 			geoService.crearGuardarZona(request);
 			ZonaGeoJsonResponse returnZona = toEchoZona(zonaService.obtenerZonaPorId(request.getId()));
-			//enviar a un aspecto
 			nodoService.recalcularZonasParaNodos(request.getIdVendedor());
-			// fin de codigo en aspecto
 			return Response.ok(returnZona).build();
 		} catch (IOException e) {
 			statusResponse.setStatus("ERROR");
@@ -159,9 +157,7 @@ public class ZonaListener {
 				geoService.eliminarZona(request);
 				statusResponse.setStatus("OK");
 				statusResponse.setCode("");
-				//enviar a un aspecto
 				nodoService.recalcularZonasParaNodos(request.getIdVendedor());
-				// fin de codigo en aspecto
 				return Response.ok(statusResponse).build();
 			}else {				
 				statusResponse.setStatus("ERROR");

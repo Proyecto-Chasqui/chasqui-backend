@@ -213,7 +213,11 @@ public class Vendedor extends Usuario{
 		for(ProductoPedido pp : p.getProductosEnPedido()){
 			Variante v = this.obtenerVarianteConId(pp.getIdVariante());
 			v.setStock(v.getStock() - pp.getCantidad());
-			v.setCantidadReservada(v.getCantidadReservada() - pp.getCantidad());
+			if((v.getCantidadReservada() - pp.getCantidad()) < 0) {
+				v.setCantidadReservada(0);
+			}else {
+				v.setCantidadReservada(v.getCantidadReservada() - pp.getCantidad());
+			}
 		}
 	}
 

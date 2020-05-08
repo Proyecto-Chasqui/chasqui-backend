@@ -135,15 +135,25 @@ public class Variante {
 	}
 	
 	public boolean tieneStockParaReservar(Integer cantidad) {
-		return this.getStock() - (this.getCantidadReservada() + cantidad)>= 0;
+		if(this.getStock() > 0) {
+			return (this.getStock() - (this.getCantidadReservada() + cantidad))>= 0;
+		}else {
+			return false;
+		}
 	}
 	
 	public void reservarCantidad(Integer cantidad) {
-		cantidadReservada += cantidad;
+		if(this.getCantidadReservada()<0) {
+			cantidadReservada = 0;
+		}
+		cantidadReservada = cantidadReservada + cantidad;
 	}
 
 	public void eliminarReserva(Integer cantidad) {
-		cantidadReservada -= cantidad;
+		cantidadReservada = cantidadReservada - cantidad;
+		if(this.getCantidadReservada()<0) {
+			cantidadReservada = 0;
+		}
 		
 	}
 
