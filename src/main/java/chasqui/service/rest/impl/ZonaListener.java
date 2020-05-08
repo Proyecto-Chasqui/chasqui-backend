@@ -117,7 +117,7 @@ public class ZonaListener {
 		try {
 			request = this.toZonaRequest(zonaRequest);
 			validarEstrategiaActiva("ZN",request.getIdVendedor());
-			DateTime d = request.getFechaCierre();
+			DateTime d = request.getFechaCierre().plusHours(12);
 			request.setFechaCierre(d);
 			geoService.crearGuardarZona(request);
 			ZonaGeoJsonResponse returnZona = toEchoZona(zonaService.obtenerZonaPorId(request.getId()));
