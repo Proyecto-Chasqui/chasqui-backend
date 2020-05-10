@@ -179,6 +179,8 @@ public class PedidoServiceImpl implements PedidoService {
 		}
 		return d;
 	}
+	
+	
 
 	@Override
 	public void refrescarVencimiento(Integer idPedido, String email) throws UsuarioInexistenteException, PedidoInexistenteException, EstadoPedidoIncorrectoException, VendedorInexistenteException {
@@ -191,6 +193,12 @@ public class PedidoServiceImpl implements PedidoService {
 			throw new EstadoPedidoIncorrectoException("El pedido debe estar abierto");
 		}
 		pedido.setFechaDeVencimiento(this.nuevaFechaVencimiento(tiempoVencimiento));
+		pedidoDAO.guardar(pedido);
+	}
+	
+	public void reabrirPedido(Pedido pedido) throws VendedorInexistenteException, EstadoPedidoIncorrectoException{
+		Vendedor vendedor = usuarioService.obtenerVendedorPorID(pedido.getIdVendedor());
+		pedido.reabrirPedido(nuevaFechaVencimiento(vendedor.getTiempoVencimientoPedidos()));
 		pedidoDAO.guardar(pedido);
 	}
 
@@ -208,8 +216,6 @@ public class PedidoServiceImpl implements PedidoService {
 		usuarioService.guardarUsuario(cliente);
 		return p;
 	}
-	
-
 
 	@Override
 	@Dateable

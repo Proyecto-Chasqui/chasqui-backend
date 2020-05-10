@@ -172,7 +172,7 @@ public class GccServiceTest extends GenericSetUp {
 	@Test
 	public void crearPedidoIndividual()
 			throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, ConfiguracionDeVendedorException,
-			PedidoVigenteException, PedidoInexistenteException, VendedorInexistenteException, GrupoCCInexistenteException {
+			PedidoVigenteException, PedidoInexistenteException, VendedorInexistenteException, GrupoCCInexistenteException, EstadoPedidoIncorrectoException {
 		Cliente juan = (Cliente) usuarioService.obtenerUsuarioPorEmail(clienteJuanPerez.getEmail());
 		usuarioService.inicializarDirecciones(juan);
 

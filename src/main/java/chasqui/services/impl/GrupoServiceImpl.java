@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
 
 import org.apache.cxf.common.util.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.aspect.Dateable;
@@ -37,6 +39,7 @@ import chasqui.model.InvitacionAGCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
+import chasqui.model.ProductoPedido;
 import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
@@ -319,7 +322,7 @@ public class GrupoServiceImpl implements GrupoService {
 	}
 
 	@Override
-	public void nuevoPedidoIndividualPara(Integer idGrupo, String email, Integer idVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, ConfiguracionDeVendedorException, PedidoVigenteException, PedidoInexistenteException, VendedorInexistenteException, GrupoCCInexistenteException {
+	public void nuevoPedidoIndividualPara(Integer idGrupo, String email, Integer idVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, ConfiguracionDeVendedorException, PedidoVigenteException, PedidoInexistenteException, VendedorInexistenteException, GrupoCCInexistenteException, EstadoPedidoIncorrectoException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
 		Pedido pedidoVigente = grupo.obtenerPedidoIndividual(email);
 		if (pedidoVigente == null ) {
@@ -336,7 +339,11 @@ public class GrupoServiceImpl implements GrupoService {
 			
 		}
 		else{
-			throw new PedidoVigenteException(email);
+			if(pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)|| pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)){
+				pedidoService.reabrirPedido(pedidoVigente);
+			}else {
+				throw new PedidoVigenteException(email);
+			}
 		}
 	}
 	

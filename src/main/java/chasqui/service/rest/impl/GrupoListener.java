@@ -307,7 +307,7 @@ public class GrupoListener {
 		}
 	}
 
-
+	
 
 	@POST
 	@Path("/individual")
@@ -346,6 +346,10 @@ public class GrupoListener {
 			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (GrupoCCInexistenteException e) {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (EstadoPedidoIncorrectoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Response.status(RestConstants.PEDIDO_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		}
 
 			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
