@@ -365,7 +365,7 @@ public class Vendedor extends Usuario{
 	
 	public PuntoDeRetiro obtenerPuntoDeRetiro(Integer id){
 		for(PuntoDeRetiro pr: puntosDeRetiro){
-			if( pr.getId() == id) {
+			if( pr.getId().equals(id)) {
 				return pr;
 			} 
 		}
@@ -377,7 +377,7 @@ public class Vendedor extends Usuario{
 		for(int i=0; i<puntosDeRetiro.size() ;i++){
 			PuntoDeRetiro pr = puntosDeRetiro.get(i);
 			if(pr!=null) {
-			if (pr.getId() == puntoDeRetiroSeleccionado.getId()){
+			if (pr.getId().equals(puntoDeRetiroSeleccionado.getId())){
 				puntosDeRetiro.remove(i);
 				i=puntosDeRetiro.size();
 			}
