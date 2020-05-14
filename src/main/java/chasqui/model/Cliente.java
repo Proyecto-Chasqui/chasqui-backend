@@ -251,8 +251,10 @@ public class Cliente extends Usuario {
 	 */
 	public Pedido obtenerPedidoActualDe(Integer idVendedor) throws PedidoInexistenteException {
 		for (Pedido p : pedidos) {
-			if (p.getIdVendedor().equals(idVendedor) && p.estaVigente() && !p.getPerteneceAPedidoGrupal()) {
-				return p;
+			if(p != null) {
+				if (p.getIdVendedor().equals(idVendedor) && p.estaVigente() && !p.getPerteneceAPedidoGrupal()) {
+					return p;
+				}
 			}
 		}
 		throw new PedidoInexistenteException(
@@ -262,8 +264,10 @@ public class Cliente extends Usuario {
 	public boolean contienePedidoVigenteParaVendedor(Integer idVendedor) {
 
 		for (Pedido p : pedidos) {
+			if(p != null) {
 			if (p.getIdVendedor().equals(idVendedor) && p.estaVigente()&& !p.getPerteneceAPedidoGrupal()) {
 				return true;
+			}
 			}
 		}
 
@@ -273,8 +277,10 @@ public class Cliente extends Usuario {
 	public boolean contienePedidoAbiertoOCanceladoParaVendedor(Integer idVendedor) {
 		//Tiene al menos un pedido para el vendedor, vigente o cancelado
 		for (Pedido p : pedidos) {
+			if(p!=null) {
 			if (p.getIdVendedor().equals(idVendedor) && (p.estaVigente() || p.estaCancelado()||p.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO))) {
 				return true;
+			}
 			}
 		}
 
@@ -304,8 +310,10 @@ public class Cliente extends Usuario {
 
 	public Pedido encontrarPedidoConId(Integer idPedido) {
 		for (Pedido pe : pedidos) {
+			if(pe != null) {
 			if (pe.getId().equals(idPedido)) {
 				return pe;
+			}
 			}
 		}
 		return null;
@@ -421,8 +429,10 @@ public class Cliente extends Usuario {
 	public List<Pedido> obtenerPedidosVigentes() {
 		List<Pedido> resultado = new ArrayList<Pedido>();
 		for (Pedido p : pedidos) {
-			if (p.estaVigente()) {
-				resultado.add(p);
+			if(p!=null) {
+				if (p.estaVigente()) {
+					resultado.add(p);
+				}
 			}
 		}
 		return resultado;
