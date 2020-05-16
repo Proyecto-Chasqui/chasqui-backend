@@ -239,14 +239,18 @@ public class GrupoServiceImpl implements GrupoService {
 	 * 2. Se elimina la notificación correspondiente 
 	 */
 	@Override
-	public void quitarMiembroDelGrupo(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException  {
+	public void quitarMiembroDelGrupo(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException, PedidoVigenteException  {
 
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
 		
 		Cliente cliente;
 		try {
 			cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
-			grupo.quitarMiembro(cliente);
+			if(grupo.sePuedeEliminarUsuario(cliente)) {
+				grupo.quitarMiembro(cliente);
+			}else {
+				throw new PedidoVigenteException("El integrante posee un pedido abierto o confirmado, no puede quitarlo hasta que finalice la compra grupal en curso.");
+			}
 			
 		} catch (UsuarioInexistenteException e) {
 			// Si el usuario no existe es porque fue invitado pero no está registrado en chasqui
@@ -325,28 +329,36 @@ public class GrupoServiceImpl implements GrupoService {
 	public void nuevoPedidoIndividualPara(Integer idGrupo, String email, Integer idVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, ConfiguracionDeVendedorException, PedidoVigenteException, PedidoInexistenteException, VendedorInexistenteException, GrupoCCInexistenteException, EstadoPedidoIncorrectoException {
 		GrupoCC grupo = grupoDao.obtenerGrupoPorId(idGrupo);
 		Pedido pedidoVigente = grupo.obtenerPedidoIndividual(email);
-		if (pedidoVigente == null ) {
-			Pedido pedidoNuevo = pedidoService.crearPedidoIndividualEnGrupo(grupo, email, idVendedor);
-			grupo.nuevoPedidoIndividualPara(email, pedidoNuevo);
-			grupoDao.guardarGrupo(grupo);
-
-			Vendedor vendedor = usuarioService.obtenerVendedorPorID(idVendedor);
-			String nombreVendedor =vendedor.getNombre(); 
-			
-			Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
-			String nombreCliente= cliente.getUsername(); 
-			this.notificarNuevoPedidoIndividualAOtrosMiembros(grupo,email, nombreCliente, nombreVendedor);
-			
+		if( grupo.pertenece(email)) {
+				if (pedidoVigente == null ) {
+					Pedido pedidoNuevo = pedidoService.crearPedidoIndividualEnGrupo(grupo, email, idVendedor);
+					grupo.nuevoPedidoIndividualPara(email, pedidoNuevo);
+					grupoDao.guardarGrupo(grupo);
+		
+					Vendedor vendedor = usuarioService.obtenerVendedorPorID(idVendedor);
+					String nombreVendedor =vendedor.getNombre(); 
+					
+					Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(email);
+					String nombreCliente= cliente.getUsername(); 
+					this.notificarNuevoPedidoIndividualAOtrosMiembros(grupo,email, nombreCliente, nombreVendedor);
+					
+				}
+				else{
+					if(pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)|| pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)){
+						pedidoService.reabrirPedido(pedidoVigente);
+					}else {
+						throw new PedidoVigenteException(email);
+					}
+				}
 		}
 		else{
-			if(pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)|| pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)){
-				pedidoService.reabrirPedido(pedidoVigente);
-			}else {
-				throw new PedidoVigenteException(email);
-			}
+			throw new ClienteNoPerteneceAGCCException(email);
 		}
 	}
 	
+	public boolean validarSiElIntegrantePerteneceAlGrupo(GrupoCC grupo,String email) {
+		return grupo.pertenece(email);
+	}
 	
 	/*
 	 * Chequear que el cliente sea el administrador, que el pedido esté abierto

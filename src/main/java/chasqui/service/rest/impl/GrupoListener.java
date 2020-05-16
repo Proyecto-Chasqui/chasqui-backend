@@ -179,6 +179,9 @@ public class GrupoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioInexistenteException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (PedidoVigenteException e) {
+			e.printStackTrace();
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	
