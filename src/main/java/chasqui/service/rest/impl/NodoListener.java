@@ -491,7 +491,6 @@ public class NodoListener {
 
 	}
 
-	//testeado, falta flujo de notificacion cuando cambia de ABIERTO <-> CERRADO
 	@PUT
 	@Path("/editarNodo")
 	@Produces("application/json")
@@ -663,6 +662,8 @@ public class NodoListener {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioNoPerteneceAlGrupoDeCompras e) {
 			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError("el usuario no pertenece al nodo")).build();
+		} catch (EstadoPedidoIncorrectoException e) {
+			return Response.status(RestConstants.PEDIDO_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		}
 
 			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();

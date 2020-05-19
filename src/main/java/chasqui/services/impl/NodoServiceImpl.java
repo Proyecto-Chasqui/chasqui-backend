@@ -608,7 +608,7 @@ public class NodoServiceImpl implements NodoService {
 	}
 	
 	@Override
-	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras {
+	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras, EstadoPedidoIncorrectoException {
 		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
 		Pedido pedidoVigente = nodo.obtenerPedidoIndividual(email);
 		if(nodo.pertenece(email)) {
@@ -626,7 +626,11 @@ public class NodoServiceImpl implements NodoService {
 				
 			}
 			else{
-				throw new PedidoVigenteException(email);
+				if(pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)|| pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)){
+					pedidoService.reabrirPedido(pedidoVigente);
+				}else {
+					throw new PedidoVigenteException(email);
+				}
 			}
 		}else {
 			throw new UsuarioNoPerteneceAlGrupoDeCompras();
