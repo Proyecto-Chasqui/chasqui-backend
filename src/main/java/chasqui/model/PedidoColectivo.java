@@ -320,24 +320,14 @@ public class PedidoColectivo implements IPedido{
 	
 	public void setearCreacionALaPrimerFechaDeConfirmacionDeLosPedidos() {
 		DateTime fechaCreacionMasAntigua = new DateTime();
-		DateTime fechaModificacionMasActual = new DateTime();
 		for(Pedido p: this.pedidosIndividuales.values()) {
 			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
-				if(p.getFechaModificacion().isBefore(fechaCreacionMasAntigua)) {
+				if(p.getFechaCreacion().isBefore(fechaCreacionMasAntigua)) {
 					fechaCreacionMasAntigua = p.getFechaCreacion();
-					fechaModificacionMasActual = p.getFechaCreacion();
-				}
-			}
-		}
-		for(Pedido p: this.pedidosIndividuales.values()) {
-			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
-				if(p.getFechaModificacion().isAfter(fechaModificacionMasActual)) {
-					fechaModificacionMasActual = p.getFechaModificacion();
 				}
 			}
 		}
 		this.setFechaCreacion(fechaCreacionMasAntigua);
-		this.setFechaModificacion(fechaModificacionMasActual);
 	}
 
 }
