@@ -170,8 +170,8 @@
            <constructor-arg type="java.lang.String" value="${usuario.administrador.imagen}" />
     </bean>
     
-    <bean id="operationsOnStartUp" name="operationsOnStartUp" class="chasqui.services.impl.OperationsOnStartup" init-method="corregirReservas"/>
     <!-- COMENTAR "operationsOnStartUp" LUEGO DE PASAR 1 VEZ A PRODUCCION
+    <bean id="operationsOnStartUp" name="operationsOnStartUp" class="chasqui.services.impl.OperationsOnStartup" init-method="corregirReservas"/>
     -->
 
     
