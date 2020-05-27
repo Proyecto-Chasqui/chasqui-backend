@@ -587,10 +587,13 @@ public class NodoServiceImpl implements NodoService {
 		}
 	}
 	
-	//modoficar a futuro para que notifique en contexto Nodo, por ahora es una copia de grupos
+	
 	private void notificarNuevoPedidoIndividualAOtrosMiembros(GrupoCC grupo, String emailCliente, String nombreCliente, String nombreVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException, VendedorInexistenteException, PedidoInexistenteException {
 		
 		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelNodo(emailCliente,grupo.getId());
+		//Solo se notifica al administrador de la actividad de su grupo
+		notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, grupo.getAdministrador().getEmail(), nombreCliente, nombreVendedor);
+		/* Se comenta esta sección debido a que es muy agresiva la notificación en situaciones de muchos integrantes.
 		for (MiembroDeGCC compa : compas) {
 			PedidoColectivo p = grupo.getPedidoActual();
 			if(!p.tienePedidoParaCliente(compa.getEmail())) {
@@ -604,7 +607,7 @@ public class NodoServiceImpl implements NodoService {
 					notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
 				}
 			}
-		}
+		}*/
 	}
 	
 	@Override
@@ -658,16 +661,20 @@ public class NodoServiceImpl implements NodoService {
 	 * Este método notifica a los miembros del nodo que un cliente ha confirmado el pedido individual
 	 * 
 	 */
-	//TODO: crear la notificación para nodo, actualmente usa la de grupos. 
 	private void notificarConfirmacionAOtrosMiembros(String emailCliente, String nombreCliente, Pedido pedido, Integer idVendedor, String emailVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException, VendedorInexistenteException, PedidoInexistenteException {
 		
 		Nodo nodo = this.obtenerNodoPorId(pedido.getPedidoColectivo().getColectivo().getId());
 		
 		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelNodo(emailCliente,nodo.getId());
+		//Solo se notifica al coordinador del nodo, eliminar o comentar si la funcionalidad a todos se habilita, ya que le llegaran 2 notificaciones.
+		notificacionService.notificarConfirmacionNodoCompraOtroMiembro(emailVendedor, nodo.getAdministrador().getEmail(),nombreCliente , nodo.getAlias());
+		/* rehabilitar si esta funcionalidad es requerida,
+		 * por el momento los nodos poseen tanta cantidad de usuarios que es muy molesto
 		for (MiembroDeGCC compa : compas) {
-		     notificacionService.notificarConfirmacionCompraOtroMiembro(emailVendedor, compa.getEmail(),nombreCliente , nodo.getAlias());
-			
-		}
+			if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+		     notificacionService.notificarConfirmacionNodoCompraOtroMiembro(emailVendedor, compa.getEmail(),nombreCliente , nodo.getAlias());
+			}
+		}*/
 	}
 	private void validarConfirmacionDePedidoSinDireccionPara(Pedido p, ConfirmarPedidoSinDireccionRequest request)
 			throws PedidoInexistenteException {

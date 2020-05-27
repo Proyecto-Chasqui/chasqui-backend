@@ -573,6 +573,9 @@ public class GrupoServiceImpl implements GrupoService {
 	private void notificarNuevoPedidoIndividualAOtrosMiembros(GrupoCC grupo, String emailCliente, String nombreCliente, String nombreVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException, VendedorInexistenteException, PedidoInexistenteException {
 		
 		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelGCC(emailCliente,grupo.getId());
+		//Solo se notifica al administrador de la actividad de su grupo
+		notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, grupo.getAdministrador().getEmail(), nombreCliente, nombreVendedor);
+		/* Se comenta esta sección debido a que es muy agresiva la notificación en situaciones de muchos integrantes.
 		for (MiembroDeGCC compa : compas) {
 			PedidoColectivo p = grupo.getPedidoActual();
 			if(!p.tienePedidoParaCliente(compa.getEmail())) {
@@ -586,7 +589,7 @@ public class GrupoServiceImpl implements GrupoService {
 					notificacionService.notificarNuevoPedidoEnGCC(grupo.getId(),grupo.getAlias(), emailCliente, compa.getEmail(), nombreCliente, nombreVendedor);
 				}
 			}
-		}
+		}*/
 	}
 	
 
@@ -605,12 +608,16 @@ public class GrupoServiceImpl implements GrupoService {
 	private void notificarConfirmacionAOtrosMiembros(String emailCliente, String nombreCliente, Pedido pedido, Integer idVendedor, String emailVendedor) throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, GrupoCCInexistenteException, VendedorInexistenteException, PedidoInexistenteException {
 		
 		GrupoCC grupo = this.obtenerGrupoPorIdPedidoColectivo(pedido.getPedidoColectivo().getId(),idVendedor);
-		
+		//Solo se notifica al coordinador del nodo, eliminar o comentar si la funcionalidad a todos se habilita, ya que le llegaran 2 notificaciones.
+		notificacionService.notificarConfirmacionCompraOtroMiembro(emailVendedor, grupo.getAdministrador().getEmail(),nombreCliente , grupo.getAlias());
+		/* rehabilitar si esta funcionalidad es requerida,
+		 * por el momento los nodos poseen tanta cantidad de usuarios que es muy molesto
 		List<MiembroDeGCC> compas = this.obtenerOtrosMiembrosDelGCC(emailCliente,grupo.getId());
 		for (MiembroDeGCC compa : compas) {
-		     notificacionService.notificarConfirmacionCompraOtroMiembro(emailVendedor, compa.getEmail(),nombreCliente , grupo.getAlias());
-			
-		}
+			if(compa.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)) {
+				notificacionService.notificarConfirmacionCompraOtroMiembro(emailVendedor, compa.getEmail(),nombreCliente , grupo.getAlias());
+			}			
+		}*/
 	}
 
 	private void validarRequest(Integer idPedido) throws RequestIncorrectoException {
