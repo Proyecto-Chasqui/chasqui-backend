@@ -211,9 +211,18 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 		Clients.showNotification("Lista de nodos actualizada", "info", component, "middle_center", 2000, true);
 	}
 	
+	public void onSendBuscarNodos() {
+		onBuscarNodos();
+		menuItemReiniciarFiltrosNodos.setVisible(true);
+	}
+	
 	public void onSelect$estadosNodosCombobox(SelectEvent evt) {
 		onBuscarNodos();
 		menuItemReiniciarFiltrosNodos.setVisible(true);
+	}
+	public void onSendBuscarSolicitudes() {
+		onBuscarSolicitudes();
+		menuItemReiniciarFiltrosSolicitudes.setVisible(true);
 	}
 	
 	public void onSelect$estadosSolicitud(SelectEvent evt) {
@@ -390,12 +399,11 @@ public class NodosComposer  extends GenericForwardComposer<Component>{
 	}
 	
 	public void onSelect$estadosListbox(SelectEvent evt) {
-			onClick$buscar();
-	
+			this.onBuscar();
 	}
 	
 	public void onSelect$zonasListbox(SelectEvent evt) {
-			onClick$buscar();
+			this.onBuscar();
 	}
 	
 	public void onClick$limpiarCamposbtn(){

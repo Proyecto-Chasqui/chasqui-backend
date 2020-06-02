@@ -137,6 +137,7 @@ public class DateableAspect {
 			p.setFechaCreacion(new DateTime());
 		}
 		p.setFechaModificacion(new DateTime());	
+		p.setearCreacionALaPrimerFechaDeConfirmacionDeLosPedidos();
 	}
 	
 	private void setearTimeStampPedidoColectivoEnBD(Integer id) {

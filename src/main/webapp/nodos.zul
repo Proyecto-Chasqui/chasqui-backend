@@ -176,12 +176,12 @@ style="overflow:auto">
 						</hbox>
 					</vbox>
 				    <vbox>
-						<textbox id="buscadorPorUsuarioCoordinador" placeholder="Buscar por email admin" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
+						<textbox id="buscadorPorUsuarioCoordinador" placeholder="Buscar por email admin" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
 						<combobox id="tipoNodosCombobox" placeholder="Buscar por tipo" readonly="true" model="@{nodosWindow$composer.tiposNodosList}" selectedItem="@{nodosWindow$composer.tipoNodoSeleccionado}"/>
 				    </vbox>
 				    <vbox>
-						<textbox id="buscadorBarrio" placeholder="Buscar por barrio" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
-						<textbox id="buscadorPorNombreNodo" placeholder="Nombre nodo" width="100%"  forward="onOK=nodosWindow$composer.onBuscarNodos" />
+						<textbox id="buscadorBarrio" placeholder="Buscar por barrio" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
+						<textbox id="buscadorPorNombreNodo" placeholder="Nombre nodo" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
 					</vbox>
 					 <vbox>
 						<combobox id="zonasNodosCombobox" placeholder="Buscar por zona" readonly="true" model="@{nodosWindow$composer.zonas}" selectedItem="@{nodosWindow$composer.zonaSeleccionadaNodo}"/>
@@ -265,12 +265,12 @@ style="overflow:auto">
 						</hbox>
 					</vbox>
 				    <vbox>
-						<textbox id="buscadorSolicitudEmailCoordinador" placeholder="Buscar por email" width="100%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
+						<textbox id="buscadorSolicitudEmailCoordinador" placeholder="Buscar por email" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
 						<combobox id="estadosSolicitud" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosDeSolicitudesList}" selectedItem="@{nodosWindow$composer.estadoSolicitudSeleccionada}"/>
 				    </vbox>
 				    <vbox>
-						<textbox id="buscadorPorCoordinador" placeholder="Buscar por coordinador" width="110%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
-						<textbox id="buscadorSolicitudPorBarrio" placeholder="Buscar por barrio" width="110%"  forward="onOK=nodosWindow$composer.onBuscarSolicitudes" />
+						<textbox id="buscadorPorCoordinador" placeholder="Buscar por coordinador" width="110%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
+						<textbox id="buscadorSolicitudPorBarrio" placeholder="Buscar por barrio" width="110%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
 					</vbox>
 				</hbox>
 				</div>

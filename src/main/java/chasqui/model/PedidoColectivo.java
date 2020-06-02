@@ -74,33 +74,21 @@ public class PedidoColectivo implements IPedido{
 		Double value = Double.parseDouble(trim.replace(",","."));
 		return value;
 	}
+	
+	private boolean pedidoSeConfirmo(Pedido pedido){
+		return pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_PREPARADO) || pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ENTREGADO);
+	}
 
 	@Override
 	public Double getMontoTotal() {
-		//boolean usaIncentivo = this.getColectivo().getVendedor().getEstrategiasUtilizadas().isUtilizaIncentivos();
 		Double total=0.0;
 		for(Pedido pedido: pedidosIndividuales.values()){
-			total = total + pedido.getMontoActual();
+			if(this.pedidoSeConfirmo(pedido)) {
+				total = total + pedido.getMontoActual();
+			}
 		}			
 		return trim2decimals(total);
 	}
-	//eliminar cuando se confirme la funcionalidad de nodos
-	/*
-	private Double calcularSegunIncentivo(Pedido pedido, boolean usaIncentivo) {
-		if(estaConfirmado(pedido.getEstado())){
-			if(usaIncentivo) {
-				if(pedido.getCliente().getEmail().equals(this.getColectivo().getAdministrador().getEmail())) {
-					return pedido.getMontoActual()+pedido.getMontoTotalIncentivo();
-				}else{
-					return pedido.getMontoActual();
-				}
-			}else {
-				return pedido.getMontoActual();
-			}
-		}
-		return 0.0;
-		
-	}*/
 
 	public Double getMontoTotalDeIncentivos() {
 		Double total=0.0;
@@ -328,6 +316,18 @@ public class PedidoColectivo implements IPedido{
 	@Override
 	public boolean esParaDomicilio() {
 		return (this.domicilioEntrega != null);
+	}
+	
+	public void setearCreacionALaPrimerFechaDeConfirmacionDeLosPedidos() {
+		DateTime fechaCreacionMasAntigua = new DateTime();
+		for(Pedido p: this.pedidosIndividuales.values()) {
+			if(p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+				if(p.getFechaCreacion().isBefore(fechaCreacionMasAntigua)) {
+					fechaCreacionMasAntigua = p.getFechaCreacion();
+				}
+			}
+		}
+		this.setFechaCreacion(fechaCreacionMasAntigua);
 	}
 
 }
