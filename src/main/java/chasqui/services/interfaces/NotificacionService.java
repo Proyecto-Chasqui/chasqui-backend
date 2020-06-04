@@ -159,4 +159,12 @@ public interface NotificacionService {
 
 	public void enviarEmailDeAvisoDeCambioDeTipoDeNodoAVendedor(Nodo nodo);
 
+	void notificarSolicitudDePertenenciaANodo(String emailCliente, String emailAdministrador, String nombreCliente,
+			String aliasNodo);
+
+	void notificarGestionDeSolicitudDePertenenciaANodo(String accion, String emailCliente, String emailAdministrador,
+			String aliasNodo);
+
+	void notificarCancelacionDeSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia);
+
 }

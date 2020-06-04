@@ -1,9 +1,15 @@
 package chasqui.services.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import javax.mail.MessagingException;
+import javax.management.Notification;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +34,12 @@ import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.NotificacionService;
+import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.composer.Constantes;
 import freemarker.template.TemplateException;
+import io.github.jav.exposerversdk.ExpoPushMessage;
+import io.github.jav.exposerversdk.ExpoPushTicket;
+import io.github.jav.exposerversdk.PushClient;
 
 
 @Auditada
@@ -45,23 +55,77 @@ public class NotificacionServiceImpl implements NotificacionService{
 	Integer cantidadDeMinutosParaExpiracion;
 	@Autowired
 	GrupoDAO grupodao;
+	@Autowired
+	UsuarioService usuarioService;
 	
 	@Override
 	public void guardar(Notificacion notificacion,String idDispositivo) {
-		if(idDispositivo != null){
-			enviarNotificacion(notificacion,idDispositivo);
-		}
 		notificacionDAO.guardar(notificacion);
+		if(idDispositivo != null){
+			try {
+				enviarNotificacion(notificacion,idDispositivo);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
-	private void enviarNotificacion(Notificacion n,String idDispositivo){
-		Sender sender = new Sender(GCM_API_KEY);
-		Message m = new Message.Builder().addData("message",n.getMensaje()).build();
-		try{
-			Result r = sender.send(m, idDispositivo, 2);
-		}catch(Exception e){
-			   
+	private String defineType(Notificacion n) {
+		if(n.getMensaje().contains("invitado al")) {
+			return "Invitación";
+		}else {
+			return "Notificación";
 		}
+	}
+	
+	private String defineAction(Notificacion n) {
+		if(n.getMensaje().contains("ha expirado por falta de actividad")) {
+			return "Vencimiento";
+		}else {
+			return "Información";
+		}
+	}
+	
+	
+	private void enviarNotificacion(Notificacion n,String idDispositivo){
+		String recipient = idDispositivo;
+
+        if (!PushClient.isExponentPushToken(recipient))
+                throw new Error("Token:" + recipient + " is not a valid token.");
+        
+        HashMap<String,String> data = new HashMap<String,String>();
+        data.put("Type", this.defineType(n));
+        data.put("Action", this.defineAction(n));
+        data.put("id", n.getId().toString());
+        PushClient client = new PushClient();
+        List<ExpoPushMessage> messages = new ArrayList<>();
+        ExpoPushMessage epm = new ExpoPushMessage(recipient);
+        epm.title = this.defineType(n);
+        if (n.getMensaje() != null)
+            epm.body = n.getMensaje();
+        epm.data = data;
+        messages.add(epm);
+
+        List<List<ExpoPushMessage>> chunks = client.chunkPushNotifications(messages);
+
+        List<CompletableFuture<List<ExpoPushTicket>>> messageRepliesFutures = new ArrayList<>();
+        for (List<ExpoPushMessage> chunk : chunks) {
+            messageRepliesFutures.add(client.sendPushNotificationsAsync(chunk));
+        }
+
+        // Wait for each completable future to finish
+        List<ExpoPushTicket> allTickets = new ArrayList<>();
+        for (CompletableFuture<List<ExpoPushTicket>> messageReplyFuture : messageRepliesFutures) {
+            try {
+                for (ExpoPushTicket ticket : messageReplyFuture.get()) {
+                    allTickets.add(ticket);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
 	}
 	
 	/**
@@ -105,15 +169,38 @@ public class NotificacionServiceImpl implements NotificacionService{
 
 	@Override
 	public void notificar(String emailOrigen, String emailDestino, String mensaje, String idDispositivo) {
-		
-		Notificacion notificacion = new Notificacion(emailOrigen, emailDestino, mensaje,Constantes.ESTADO_NOTIFICACION_NO_LEIDA );
-		this.guardar(notificacion, idDispositivo);
+		try {
+			Cliente c = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailDestino);
+			Notificacion notificacion = new Notificacion(emailOrigen, emailDestino, mensaje,Constantes.ESTADO_NOTIFICACION_NO_LEIDA );
+			this.guardar(notificacion, c.getIdDispositivo());
+		} catch (UsuarioInexistenteException e) {
+			e.printStackTrace();
+		}
+
 		
 	}
 
 	@Override
 	public void eliminarNotificacion(Notificacion notificacion) {
 		notificacionDAO.eliminar(notificacion);
+	}
+	
+	@Override
+	public void notificarSolicitudDePertenenciaANodo(String emailCliente, String emailAdministrador, String nombreCliente,
+			String aliasNodo) {
+		String mensaje = Constantes.SOLICITUD_INGRESO_NODO;
+		mensaje = mensaje.replaceAll("<usuario>", nombreCliente);
+		mensaje = mensaje.replaceAll("<nodo>", aliasNodo);
+		this.notificar(emailCliente, emailAdministrador, mensaje, null);
+	}
+	
+	@Override
+	public void notificarGestionDeSolicitudDePertenenciaANodo(String accion, String emailCliente, String emailAdministrador,
+			String aliasNodo) {
+		String mensaje = Constantes.ACCION_GESTION_SOLICITUD_INGRESO_NODO;
+		mensaje = mensaje.replaceAll("<nodo>", aliasNodo);
+		mensaje = mensaje.replaceAll("<accion>", accion);
+		this.notificar(emailAdministrador, emailCliente, mensaje, null);
 	}
 	
 
@@ -170,7 +257,7 @@ public class NotificacionServiceImpl implements NotificacionService{
 	@Override
 	public void notificarNuevoPedidoEnGCC(Integer idGrupo, String alias, String emailOriginante, String emailDestinatario, String nicknameDestinatario,
 			String nombreVendedor) {
-		String mensaje =Constantes.NUEVO_PEDIDO_NOTIFICACION_OTROMIEMBRO;
+		String mensaje = Constantes.NUEVO_PEDIDO_NOTIFICACION_OTROMIEMBRO;
 		GrupoCC grupo = grupodao.obtenerGrupoAbsolutoPorId(idGrupo);
 		mensaje = mensaje.replaceAll("<grupo>",alias);
 		mensaje = mensaje.replaceAll("<usuario>",emailOriginante);
@@ -242,7 +329,6 @@ public class NotificacionServiceImpl implements NotificacionService{
 	 * Por eso se decidion enviar un email.
 	 * Si es posible arreglarlos.
 	 */
-	/**
 		String mensajeNuevoAdministrador = Constantes.TXT_NUEVO_ADMINISTRADOR;
 		mensajeNuevoAdministrador = mensajeNuevoAdministrador.replaceAll("<administradorAnterior>", administradorAnterior.getUsername());
 		mensajeNuevoAdministrador = mensajeNuevoAdministrador.replaceAll("<alias>", grupo.getAlias());
@@ -254,7 +340,6 @@ public class NotificacionServiceImpl implements NotificacionService{
 		mensajeAnteriorAdministrador = mensajeAnteriorAdministrador.replaceAll("<nuevoAdministrador>", nuevoAdministrador.getUsername());
 		
 		this.notificar(nuevoAdministrador.getEmail(), administradorAnterior.getEmail(), mensajeAnteriorAdministrador, null);
-	**/
 		mailService.enviarEmailNuevoAdministrador(administradorAnterior, nuevoAdministrador, grupo);
 	}
 
@@ -302,7 +387,19 @@ public class NotificacionServiceImpl implements NotificacionService{
 	@Override
 	public void notificarSolicitudCreacionNodo(Nodo nodo, String estadoSolicitudNodo) {
 		mailService.enviarEmailDeGestionDeSolicitudCreacionNodoFinalizada(nodo,nodo.getVendedor(),nodo.getEmailAdministradorNodo(),estadoSolicitudNodo);
-		
+		String mensaje = Constantes.ACCION_GESTION_SOLICITUD_CREACION_NODO;
+		String accion = (estadoSolicitudNodo.equals(Constantes.SOLICITUD_NODO_APROBADO))? "aprobado":"rechazado";
+		mensaje = mensaje.replaceAll("<accion>", accion);
+		mensaje = mensaje.replaceAll("<vendedor>", nodo.getVendedor().getNombre());
+		this.notificar(nodo.getVendedor().getEmail(), nodo.getEmailAdministradorNodo(), mensaje, null);
+	}
+	
+	@Override
+	public void notificarCancelacionDeSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia) {
+		String mensaje = Constantes.ACCION_CANCELACION_POR_USUARIO_SOLICITUD_INGRESO_NODO;
+		mensaje = mensaje.replaceAll("<usuario>", solicitudpertenencia.getUsuarioSolicitante().getUsername());
+		mensaje = mensaje.replaceAll("<nodo>", solicitudpertenencia.getNodo().getAlias());
+		this.notificar(solicitudpertenencia.getUsuarioSolicitante().getEmail(),solicitudpertenencia.getNodo().getAdministrador().getEmail(),mensaje, null);
 	}
 
 	@Override

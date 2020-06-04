@@ -223,7 +223,7 @@ public class GrupoServiceImpl implements GrupoService {
 		try {
 			Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailInvitado);	
 			
-			notificacionService.notificarInvitacionAGCCClienteRegistrado(administrador, emailInvitado, grupo, IDDISP);
+			notificacionService.notificarInvitacionAGCCClienteRegistrado(administrador, emailInvitado, grupo, cliente.getIdDispositivo());
 			grupo.invitarAlGrupo(cliente);			
 			
 		} catch (UsuarioInexistenteException e) {
