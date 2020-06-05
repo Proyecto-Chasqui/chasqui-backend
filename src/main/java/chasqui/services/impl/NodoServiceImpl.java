@@ -451,7 +451,7 @@ public class NodoServiceImpl implements NodoService {
 		try {
 			Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailInvitado);	
 			
-			notificacionService.notificarInvitacionAGCCClienteRegistrado(administrador, emailInvitado, nodo, IDDISP);
+			notificacionService.notificarInvitacionAGCCClienteRegistrado(administrador, emailInvitado, nodo, cliente.getIdDispositivo());
 			nodo.invitarAlGrupo(cliente);			
 			
 		} catch (UsuarioInexistenteException e) {
