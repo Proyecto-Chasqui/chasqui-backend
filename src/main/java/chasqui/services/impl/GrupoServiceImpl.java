@@ -416,7 +416,7 @@ public class GrupoServiceImpl implements GrupoService {
 	private PuntoDeRetiro buscarpuntoderetiro(Vendedor vendedor, Integer idPr) {
 		PuntoDeRetiro ret = null;
 		for(PuntoDeRetiro pr: vendedor.getPuntosDeRetiro()) {
-			if(pr.getId()==idPr) {
+			if(pr.getId().equals(idPr)) {
 				ret = pr;
 			}
 		}
@@ -426,7 +426,7 @@ public class GrupoServiceImpl implements GrupoService {
 	private Zona buscarZona(Vendedor vendedor, Integer idZona) {
 		Zona ret = null;
 		for(Zona pr: vendedor.getZonas()) {
-			if(pr.getId()==idZona) {
+			if(pr.getId().equals(idZona)) {
 				ret = pr;
 			}
 		}
