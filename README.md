@@ -8,7 +8,7 @@
 
 ## ¿Qué es Chasqui?
 
-Este proyecto (*Plataforma Chasqui Multicatálogo*) es el resultado de un proceso participativo dirigido por la [Cooperativa Código Libre](http://codigolibrecoop.com/)
+Este proyecto (*Plataforma Chasqui Multicatálogo*) es el resultado de un proceso participativo.
 
 El desarrollo de software se basó en la versión alpha de la herramienta Chasqui disponible en:
 - [Backend](https://github.com/dgonzalia/chasqui-backend)
@@ -21,7 +21,7 @@ Consta de una _aplicación móvil_ y una _aplicación web_, que permiten realiza
 
 La herramienta busca visibilizar y poner en valor las características del comercio justo y la Economía Social y Solidaria, promoviendo el consumo responsable y teniendo en cuenta la accesibilidad. Además, se asegurará que la herramienta tenga una **licencia libre**, que permita la potencial extensión de este desarrollo o su adaptación a nuevos contextos, nacionales o internacionales.
 
-Para más información ir al [sitio del proyecto](http://proyectochasqui.org/)
+Para más información ir al [sitio del proyecto](http://observatorioess.org.ar/chasqui/)
 
 ## Información técnica
 Para detalles de la instalación y arquitectura ir a [CONFIGURATIONS](../master/CONFIGURATIONS.md)

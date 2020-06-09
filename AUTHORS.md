@@ -1,8 +1,6 @@
 
 ## Autores/as / Authors
 
-La **Cooperativa Código Libre** asume el compromiso del mantenimiento e implementación del software.
-
 ### Desarrolladores/as / Developers
 - Huenu
 - Damián Gonzalia
