@@ -274,7 +274,7 @@ public class GrupoServiceImpl implements GrupoService {
 		
 		if(grupo.pertenece(nuevoAdministrador.getEmail())){
 			grupo.cederAdministracion(nuevoAdministrador);
-			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, grupo);
+			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, grupo, "grupo");
 			
 			grupoDao.guardarGrupo(grupo);
 		}else{

@@ -382,7 +382,7 @@ public class NodoServiceImpl implements NodoService {
 		Cliente administradorAnterior = nodo.getAdministrador(); //Es necesario guardar la referencia para notificarlo luego que cedio la administracion.
 		Cliente nuevoAdministrador = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
 		
-		MiembroDeGCC miembro = obtenerMiembroGCC(nodo, administradorAnterior.getEmail());
+		MiembroDeGCC miembro = obtenerMiembroGCC(nodo, nuevoAdministrador.getEmail());
 		if(!miembro.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)){
 			throw new UsuarioNoPerteneceAlGrupoDeCompras(Constantes.ERROR_INVITACION_NO_ACEPTADA);
 		}
@@ -390,7 +390,7 @@ public class NodoServiceImpl implements NodoService {
 		if(nodo.pertenece(nuevoAdministrador.getEmail())){
 			nodo.cederAdministracion(nuevoAdministrador);
 			nodo.setEmailAdministradorNodo(nuevoAdministrador.getEmail());
-			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, nodo);
+			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, nodo, "nodo");
 			
 			nodoDAO.guardarNodo(nodo);
 		}else{

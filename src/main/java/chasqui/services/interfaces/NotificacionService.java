@@ -139,7 +139,7 @@ public interface NotificacionService {
 
 	public List<InvitacionAGCC> obtenerInvitacionPendientePorIDdeGrupo(String emailCliente,	Integer idGrupo);
 
-	public void notificarNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo);
+	public void notificarNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo, String colectivo);
 
 	public void notificarSolicitudCreacionNodo(Nodo nodo, String solicitudNodoAprobado);
 

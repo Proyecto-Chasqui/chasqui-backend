@@ -334,27 +334,15 @@ public class NotificacionServiceImpl implements NotificacionService {
 	}
 
 	@Override
-	public void notificarNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo) {
+	public void notificarNuevoAdministrador(Cliente administradorAnterior, Cliente nuevoAdministrador, GrupoCC grupo, String colectivo) {
 
-		// TODO:
-		/**
-		 * Los notificar de este metodo no envian notificaciones. Por eso se decidion
-		 * enviar un email. Si es posible arreglarlos.
-		 */
 		String mensajeNuevoAdministrador = Constantes.TXT_NUEVO_ADMINISTRADOR;
 		mensajeNuevoAdministrador = mensajeNuevoAdministrador.replaceAll("<administradorAnterior>",
 				administradorAnterior.getUsername());
 		mensajeNuevoAdministrador = mensajeNuevoAdministrador.replaceAll("<alias>", grupo.getAlias());
+		mensajeNuevoAdministrador = mensajeNuevoAdministrador.replaceAll("<colectivo>", colectivo);
 
 		this.notificar(administradorAnterior.getEmail(), nuevoAdministrador.getEmail(), mensajeNuevoAdministrador,
-				null);
-
-		String mensajeAnteriorAdministrador = Constantes.TXT_ANTERIOR_ADMINISTRADOR;
-		mensajeAnteriorAdministrador = mensajeAnteriorAdministrador.replaceAll("<alias>", grupo.getAlias());
-		mensajeAnteriorAdministrador = mensajeAnteriorAdministrador.replaceAll("<nuevoAdministrador>",
-				nuevoAdministrador.getUsername());
-
-		this.notificar(nuevoAdministrador.getEmail(), administradorAnterior.getEmail(), mensajeAnteriorAdministrador,
 				null);
 		mailService.enviarEmailNuevoAdministrador(administradorAnterior, nuevoAdministrador, grupo);
 	}
