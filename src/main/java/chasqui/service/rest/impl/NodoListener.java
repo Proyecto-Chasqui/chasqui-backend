@@ -52,6 +52,7 @@ import chasqui.model.Pedido;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
+import chasqui.model.Vendedor;
 import chasqui.service.rest.request.AceptarRequest;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
 import chasqui.service.rest.request.CancelarSolicitudCreacionNodoRequest;
@@ -98,15 +99,27 @@ public class NodoListener {
 	GrupoService grupoService;
 	@Autowired
 	InvitacionService invitacionService;
+	
+	private void validarSiUsaEstrategiaNodo (Integer idVendedor) throws ConfiguracionDeVendedorException, VendedorInexistenteException {
+		Vendedor vendedor = this.vendedorService.obtenerVendedorPorId(idVendedor);
+		if(!vendedor.getEstrategiasUtilizadas().isNodos()) {
+			throw new ConfiguracionDeVendedorException("El catálogo no soporta el modo de venta por nodos");
+		}
+	}
+	
+	
 	@GET
 	@Path("/all/{idVendedor : \\d+ }")
 	@Produces("application/json")
 	public Response obtenerNodosDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
 		try{
+			this.validarSiUsaEstrategiaNodo(idVendedor);
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			return Response.ok(toResponse(nodoService.obtenerNodosDelCliente(idVendedor,emailAdministrador),emailAdministrador),MediaType.APPLICATION_JSON).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();	
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
@@ -121,6 +134,7 @@ public class NodoListener {
 			//validar estrategia
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toNodoCreacionRequest(solicitudCreacionNodoRequest);
+			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
 			this.crearSolicitudDeCreacionDeNodo(request,emailAdministrador);
 			return Response.ok().build();
 		} catch (IOException e) {
@@ -192,6 +206,7 @@ public class NodoListener {
 		try {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toEliminarGrupoRequest(eliminarGrupoRequest);
+			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
 			Nodo nodo = nodoService.obtenerNodoPorId(request.getIdGrupo());
 			validarNodoParaEliminar(nodo, emailAdministrador);
 			nodoService.vaciarNodo(request.getIdGrupo());
@@ -205,6 +220,10 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioNoPerteneceAlGrupoDeCompras e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	
@@ -214,11 +233,11 @@ public class NodoListener {
 	public Response obtenerPedidosEnNodo(@PathParam("idVendedor") final Integer idVendedor) {
 
 		String email = obtenerEmailDeContextoDeSeguridad();
-
+		
 		Map<Integer, Pedido> pedidos;
 
 		try {
-
+			this.validarSiUsaEstrategiaNodo(idVendedor);
 			List<Nodo> nodos = nodoService.obtenerNodosDelCliente(idVendedor, email);
 
 			pedidos = nodoService.obtenerPedidosEnNodos(nodos, email);
@@ -233,6 +252,8 @@ public class NodoListener {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (VendedorInexistenteException e1) {
 			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e1.getMessage())).build();
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 		
 
@@ -256,11 +277,16 @@ public class NodoListener {
 		String email = obtenerEmailDeContextoDeSeguridad();
 		
 			try {
+				this.validarSiUsaEstrategiaNodo(idVendedor);
 				return Response.ok(toResponseSolicitudes(nodoService.obtenerSolicitudesDeCreacionDe(email,idVendedor)),
 						MediaType.APPLICATION_JSON).build();
 			} catch (UsuarioInexistenteException e) {
 				e.printStackTrace();
 				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			} catch (ConfiguracionDeVendedorException e) {
+				return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+			} catch (VendedorInexistenteException e) {
+				return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 			}
 
 	}
@@ -273,6 +299,7 @@ public class NodoListener {
 		try {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toEditNodoCreacionRequest(editarSolicitudDeCreacion);
+			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
 			this.editarSolicitudDeCreacionDeNodo(request,emailAdministrador);
 			return Response.ok().build();
 		} catch (IOException e) {
@@ -285,7 +312,9 @@ public class NodoListener {
 			return Response.status(406).entity(new ChasquiError("La dirección seleccionada no pertenece al usuario")).build();
 		} catch (NodoYaExistenteException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-		} catch (Exception e) {
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
 		}
 	}
@@ -320,6 +349,7 @@ public class NodoListener {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			Usuario usuario = usuarioService.obtenerClientePorEmail(emailAdministrador);
 			request = this.toSolicitarPertenencia(crearSolicitudDePertenencia);
+			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
 			SolicitudPertenenciaNodo solicitud = nodoService.obtenerSolicitudDe(request.getIdNodo(), usuario.getId());
 			if(solicitud != null) {
 				validarSolicitudDeEnvio(solicitud);
@@ -336,6 +366,8 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (NodoInexistenteException e) {
 			return Response.status(500).entity(new ChasquiError("Nodo inexistente")).build();
+		}catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
@@ -408,6 +440,7 @@ public class NodoListener {
 	@Produces("application/json")
 	public Response obtenerSolicitudesDePertenenciaDeUsuario(@PathParam("idVendedor") final Integer idVendedor) {
 		try {
+			this.validarSiUsaEstrategiaNodo(idVendedor);
 			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
 			Usuario usuario = usuarioService.obtenerUsuarioPorEmail(emailSolicitante);
 			List<SolicitudPertenenciaNodo> solicitudesDepertenencia = nodoService.obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(usuario.getId(), idVendedor);
@@ -415,7 +448,9 @@ public class NodoListener {
 		} catch (UsuarioInexistenteException e) {
 			e.printStackTrace();
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
-		} catch (VendedorInexistenteException e) {
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch (VendedorInexistenteException e) {
 			e.printStackTrace();
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} 
@@ -428,11 +463,16 @@ public class NodoListener {
 		try {
 			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
 			Nodo nodo = nodoService.obtenerNodoPorId(idNodo);
+			this.validarSiUsaEstrategiaNodo(nodo.getVendedor().getId());
 			this.validarAdministrador(emailSolicitante,nodo.getAdministrador().getEmail());
 			List<SolicitudPertenenciaNodo> solicitudesDepertenencia = nodoService.obtenerSolicitudesDePertenencia(idNodo);
 			return Response.ok(toListSolicitudPertenenciaResponse(solicitudesDepertenencia),MediaType.APPLICATION_JSON).build();
+		}catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (RequestIncorrectoException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} 
 	}
 	
@@ -470,11 +510,16 @@ public class NodoListener {
 		try {
 			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
 			SolicitudPertenenciaNodo solicitudpertenencia = nodoService.obtenerSolicitudDePertenenciaById(idSolicitud);
+			this.validarSiUsaEstrategiaNodo(solicitudpertenencia.getNodo().getVendedor().getId());
 			this.validarCancelarSolicitud(emailSolicitante,solicitudpertenencia);
 			nodoService.cancelarSolicitudDePertenencia(solicitudpertenencia);
 			return Response.ok().build();
+		}catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (SolicitudPernenciaNodoException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} 
 	}
 
@@ -501,6 +546,7 @@ public class NodoListener {
 		EditarNodoRequest request;
 		try {
 			request = this.toEditarNodo(editarNodoRequest);
+			this.validarSiUsaEstrategiaNodo(request.getIdNodo());
 			nodoService.editarNodo(request.getIdNodo(), email, request.getNombreNodo(), request.getDescripcion(), request.getIdDireccion(),
 					request.getTipoNodo(), request.getBarrio());
 			
@@ -508,11 +554,15 @@ public class NodoListener {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (JsonMappingException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
-		} catch (IOException e) {
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}catch (IOException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (RequestIncorrectoException e) {
 			e.printStackTrace();
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 
 		return Response.ok().build();
@@ -537,7 +587,6 @@ public class NodoListener {
 		try {
 			request = this.toInvitacionRequest(invitacionRequest);
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
-
 			nodoService.invitarANodo(request.getIdGrupo(), request.getEmailInvitado(), emailAdministrador);
 			return Response.ok().build();
 		}catch (IOException e) {
@@ -635,6 +684,7 @@ public class NodoListener {
 		Pedido nuevoPedido = null;
 		try {
 			request = this.tonuevoPedidoIndividualRequest(nuevoPedidoIndividualRequest);
+			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
 			nodoService.nuevoPedidoIndividualPara(request.getIdGrupo(), email, request.getIdVendedor());
 			nuevoPedido = nodoService.obtenerPedidoIndividualEnNodo(request.getIdGrupo(), email);
 		} catch (JsonParseException e) {
@@ -649,7 +699,7 @@ public class NodoListener {
 			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage()))
 					.build();
 		} catch (ConfiguracionDeVendedorException e) {
-			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (PedidoVigenteException e) {
 
 			//Si esto no se informa como un error entonces este método es idempotente
