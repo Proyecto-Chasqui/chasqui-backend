@@ -131,7 +131,21 @@ public class UsuarioListener {
 		}
 		return Response.ok().build();
 	}
-
+	
+	@PUT
+	@Path("/desvincularDispositivo")
+	@Produces("application/json")
+	public Response desvincularDispositivo() {
+		String mail = obtenerEmailDeContextoDeSeguridad();
+		try {
+			usuarioService.agregarIDDeDispositivo(mail,"");
+		} catch (UsuarioInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError("El email es invalido o el usuario no existe")).build();
+		} catch(Exception e) {
+			return Response.status(500).entity(new ChasquiError("Ocurrio un error inesperado")).build();
+		}
+		return Response.ok().build();
+	}
 
 	private ExpoTokenRequest toExpoTokenRequest(String movilTokenRequest) throws JsonParseException, JsonMappingException, IOException {
 		ExpoTokenRequest request = new ExpoTokenRequest();
