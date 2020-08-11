@@ -515,6 +515,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		Variante varianteDelProducto = new Variante();
 		varianteDelProducto.setNombre(rowStr(row, producto_nombre));
 		varianteDelProducto.setPrecio(rowDouble(row, producto_precio));
+		varianteDelProducto.setIncentivo(0.0);
 		varianteDelProducto.setStock(rowInt(row, producto_stock));
 		varianteDelProducto.setCodigo(rowStr(row, producto_codigo));
 		varianteDelProducto.setDescripcion(rowStr(row, producto_descripcion));
@@ -523,7 +524,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		
 		varianteDelProducto.setProducto(nuevoProducto);
 		List<Imagen> imagenes = new ArrayList<Imagen>();
-		imagenes.add(getImagenNoDisponible(varianteDelProducto.getNombre()));
+		imagenes.add(getImagenNoDisponible(varianteDelProducto.getNombre().replaceAll("\\P{L}+", "")));
 		varianteDelProducto.setImagenes(imagenes);
 		List<Variante> variantes = new ArrayList<Variante>();
 		variantes.add(varianteDelProducto);
@@ -535,7 +536,7 @@ public class CargaStartUpComposer extends GenericForwardComposer<Component> impl
 		nuevoProducto.setFabricante(productorDelProducto);
 		
 		Image imagenProductor = new Image();
-		imagenProductor.setSrc(getImagenNoDisponible(productorDelProducto.getNombre()).getPath());
+		imagenProductor.setSrc(getImagenNoDisponible(productorDelProducto.getNombre().replaceAll("\\P{L}+", "")).getPath());
 		productorDelProducto.setPathImagen(imagenProductor.getSrc());
 		
 		return nuevoProducto;
