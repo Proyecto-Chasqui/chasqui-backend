@@ -163,6 +163,11 @@ public class Variante {
 
 	public void setIncentivo(Double incentivo) {
 		this.incentivo = incentivo;
+	}
+
+	public void retornarStock(Integer cantidad) {
+		this.stock = this.getStock() + cantidad;
+		
 	}	
 	
 }

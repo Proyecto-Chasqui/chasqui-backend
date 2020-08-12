@@ -246,15 +246,21 @@ public class GrupoServiceImpl implements GrupoService {
 		Cliente cliente;
 		try {
 			cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
-			if(grupo.sePuedeEliminarUsuario(cliente)) {
-				grupo.quitarMiembro(cliente);
-			}else {
-				throw new PedidoVigenteException("El integrante posee un pedido abierto o confirmado, no puede quitarlo hasta que finalice la compra grupal en curso.");
-			}
-			
+			grupo.quitarMiembro(cliente);
+			Pedido pedido = grupo.obtenerPedidoIndividual(emailCliente);
+			if(pedido != null) {
+				if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+					pedidoService.cancelarPedido(pedido);
+				} 
+				if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+					pedidoService.cancelarPedidoConfirmado(pedido);
+				} 
+			}			
 		} catch (UsuarioInexistenteException e) {
 			// Si el usuario no existe es porque fue invitado pero no está registrado en chasqui
 			grupo.eliminarInvitacion(emailCliente);
+		} catch (ClienteNoPerteneceAGCCException e) {
+		} catch (EstadoPedidoIncorrectoException e) {
 		}
 		grupoDao.guardarGrupo(grupo);
 		invitacionService.eliminarInvitacion(idGrupo,emailCliente); //TODO 2017.07.14 ver porqué falla este paso

@@ -407,6 +407,15 @@ public class NodoServiceImpl implements NodoService {
 		try {
 			cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
 			nodo.quitarMiembro(cliente);
+			Pedido pedido = nodo.obtenerPedidoIndividual(emailCliente);
+			if(pedido != null) {
+				if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+					pedidoService.cancelarPedido(pedido);
+				} 
+				if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+					pedidoService.cancelarPedidoConfirmado(pedido);
+				} 
+			}
 			SolicitudPertenenciaNodo solicitud = solicitudPertenenciaNodoDAO.obtenerSolicitudDe(nodo.getId(), cliente.getId());
 			if(solicitud != null) {
 				solicitud.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO);
@@ -418,6 +427,8 @@ public class NodoServiceImpl implements NodoService {
 		} catch (UsuarioInexistenteException e) {
 			// Si el usuario no existe es porque fue invitado pero no está registrado en chasqui
 			nodo.eliminarInvitacion(emailCliente);
+		} catch (EstadoPedidoIncorrectoException e) {
+		} catch (ClienteNoPerteneceAGCCException e) {
 		}
 		nodoDAO.guardarNodo(nodo);
 		invitacionService.eliminarInvitacion(idNodo,emailCliente);

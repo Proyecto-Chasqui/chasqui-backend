@@ -131,4 +131,6 @@ public interface PedidoService {
 
 	public void reabrirPedido(Pedido pedidoVigente) throws VendedorInexistenteException, EstadoPedidoIncorrectoException;
 
+	void cancelarPedidoConfirmado(Pedido pedido);
+
 }

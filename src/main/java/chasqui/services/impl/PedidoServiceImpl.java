@@ -268,6 +268,18 @@ public class PedidoServiceImpl implements PedidoService {
 	
 	@Override
 	@Dateable
+	public synchronized void cancelarPedidoConfirmado(Pedido pedido) {
+		try {
+			pedido.cancelar();
+			productoService.devolverStockDeProductos(pedido);
+			usuarioService.guardarUsuario(pedido.getCliente());
+		} catch (EstadoPedidoIncorrectoException e) {
+		}
+
+	}
+	
+	@Override
+	@Dateable
 	public synchronized void cancelarPedidoPara(String email, Integer idPedido)
 			throws PedidoVigenteException, RequestIncorrectoException, UsuarioInexistenteException, EstadoPedidoIncorrectoException {
 		validarRequest(idPedido);

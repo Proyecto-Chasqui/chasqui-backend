@@ -219,4 +219,16 @@ public class ProductoServiceImpl implements ProductoService {
 		}
 		
 	}
+	
+	/**
+	 * Utilizar solo para cuando se quiere cancelar un pedido confirmado.
+	 */
+	@Override
+	public void devolverStockDeProductos(Pedido p) {
+		for(ProductoPedido pp : p.getProductosEnPedido()){
+			Variante v = productoDAO.obtenervariantePor(pp.getIdVariante());
+			v.retornarStock(pp.getCantidad());
+			productoDAO.modificarVariante(v);
+		}
+	}
 }
