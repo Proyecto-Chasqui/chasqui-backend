@@ -45,6 +45,11 @@
 		Por favor asegúrese de que no haya nadie mas utilizando la cuenta antes de ingresar.
 	</div>
 	</vbox>
+	<vbox style="position:absolute; margin-top: 12%">
+		<div align="center">
+			v 1.0.0
+		</div>
+	</vbox>
 
 <!-- 	</html:form> -->
 	
