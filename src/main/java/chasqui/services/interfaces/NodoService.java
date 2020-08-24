@@ -241,9 +241,10 @@ public interface NodoService {
 	 * @throws GrupoCCInexistenteException
 	 * @throws PedidoInexistenteException
 	 * @throws UsuarioNoPerteneceAlGrupoDeCompras 
+	 * @throws EstadoPedidoIncorrectoException 
 	 */
 	@Transactional
-	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras;
+	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras, EstadoPedidoIncorrectoException;
 	/**
 	 * Retorna el pedido actual del usuario de ese nodo.
 	 * @param idNodo

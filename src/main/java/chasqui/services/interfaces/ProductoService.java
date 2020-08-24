@@ -65,6 +65,7 @@ public interface ProductoService {
 	public void eliminarVariantes(List<Variante> obtenerVariantesPorMultiplesFiltros);
 	List<Variante> obtenerTodasLasVariantes(Integer idVendedor);
 	void eliminarProducto(List<Producto> productos);
+	public void devolverStockDeProductos(Pedido pedido);
 	
 	
 }

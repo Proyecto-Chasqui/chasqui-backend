@@ -98,6 +98,11 @@ public class Constantes {
 	public static final String TXT_ANTERIOR_ADMINISTRADOR = "Se ha realizado el traspaso de la administracion del <colectivo> de compras colectivas <alias> al usuario <nuevoAdministrador>.";
 	public static final String PEDIDO_VENCIDO_NOTIFICACION = "Tu pedido abierto el dia <timestamp> del catálogo del vendedor <vendedor> ha expirado por falta de actividad.";
 	
+	public static final String SOLICITUD_INGRESO_NODO = "El usuario <usuario> envio una solicitud para ingresar a tu nodo <nodo>";
+	public static final String ACCION_GESTION_SOLICITUD_INGRESO_NODO = "El coordinador del nodo <nodo> <accion> tu solicitud de ingreso.";
+	public static final String ACCION_GESTION_SOLICITUD_CREACION_NODO = "El vendedor <vendedor> <accion> tu solicitud de creación de nodo";
+	public static final String ACCION_CANCELACION_POR_USUARIO_SOLICITUD_INGRESO_NODO = "El usuario <usuario> cancelo su solicitud de ingreso a su nodo <nodo>";
+	
 	//Mensajes de error
 	public static final String ERROR_USUARIO_MAIL_SIN_CONFIRMAR = "Para acceder debe validar la cuenta via e-mail";
 	public static final String ERROR_CREDENCIALES_INVALIDAS = "Usuario o Password incorrectos!";

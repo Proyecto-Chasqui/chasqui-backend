@@ -97,6 +97,7 @@ public class NodoServiceImpl implements NodoService {
 		validarNodo(nodo);
 		solicitudPertenenciaNodoDAO.guardar(new SolicitudPertenenciaNodo(nodo, usuario));
 		notificacionService.enviarEmailDeSolicitudDePertenenciaANodo(nodo,usuario);
+		notificacionService.notificarSolicitudDePertenenciaANodo(usuario.getEmail(), nodo.getAdministrador().getEmail(), usuario.getNombre(), nodo.getAlias());
 	}
 
 
@@ -329,7 +330,7 @@ public class NodoServiceImpl implements NodoService {
 			solicitudCreacionNodoDAO.guardar(solicitud);
 			nodoDAO.guardarNodo(nodo);
 			notificacionService.notificarSolicitudCreacionNodo(nodo,Constantes.SOLICITUD_NODO_APROBADO);
-		} catch (Exception e){
+			} catch (Exception e){
 			e.printStackTrace();
 			throw new VendedorInexistenteException("Error al tratar de gestionar la solicitud");
 		}
@@ -381,7 +382,7 @@ public class NodoServiceImpl implements NodoService {
 		Cliente administradorAnterior = nodo.getAdministrador(); //Es necesario guardar la referencia para notificarlo luego que cedio la administracion.
 		Cliente nuevoAdministrador = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
 		
-		MiembroDeGCC miembro = obtenerMiembroGCC(nodo, administradorAnterior.getEmail());
+		MiembroDeGCC miembro = obtenerMiembroGCC(nodo, nuevoAdministrador.getEmail());
 		if(!miembro.getEstadoInvitacion().equals(Constantes.ESTADO_NOTIFICACION_LEIDA_ACEPTADA)){
 			throw new UsuarioNoPerteneceAlGrupoDeCompras(Constantes.ERROR_INVITACION_NO_ACEPTADA);
 		}
@@ -389,8 +390,7 @@ public class NodoServiceImpl implements NodoService {
 		if(nodo.pertenece(nuevoAdministrador.getEmail())){
 			nodo.cederAdministracion(nuevoAdministrador);
 			nodo.setEmailAdministradorNodo(nuevoAdministrador.getEmail());
-			//redefinir esta notificacion para nodos.
-			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, nodo);
+			notificacionService.notificarNuevoAdministrador(administradorAnterior, nuevoAdministrador, nodo, "nodo");
 			
 			nodoDAO.guardarNodo(nodo);
 		}else{
@@ -407,6 +407,15 @@ public class NodoServiceImpl implements NodoService {
 		try {
 			cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailCliente);
 			nodo.quitarMiembro(cliente);
+			Pedido pedido = nodo.obtenerPedidoIndividual(emailCliente);
+			if(pedido != null) {
+				if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+					pedidoService.cancelarPedido(pedido);
+				} 
+				if(pedido.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO)) {
+					pedidoService.cancelarPedidoConfirmado(pedido);
+				} 
+			}
 			SolicitudPertenenciaNodo solicitud = solicitudPertenenciaNodoDAO.obtenerSolicitudDe(nodo.getId(), cliente.getId());
 			if(solicitud != null) {
 				solicitud.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO);
@@ -418,6 +427,8 @@ public class NodoServiceImpl implements NodoService {
 		} catch (UsuarioInexistenteException e) {
 			// Si el usuario no existe es porque fue invitado pero no está registrado en chasqui
 			nodo.eliminarInvitacion(emailCliente);
+		} catch (EstadoPedidoIncorrectoException e) {
+		} catch (ClienteNoPerteneceAGCCException e) {
 		}
 		nodoDAO.guardarNodo(nodo);
 		invitacionService.eliminarInvitacion(idNodo,emailCliente);
@@ -451,7 +462,7 @@ public class NodoServiceImpl implements NodoService {
 		try {
 			Cliente cliente = (Cliente) usuarioService.obtenerUsuarioPorEmail(emailInvitado);	
 			
-			notificacionService.notificarInvitacionAGCCClienteRegistrado(administrador, emailInvitado, nodo, IDDISP);
+			notificacionService.notificarInvitacionAGCCClienteRegistrado(administrador, emailInvitado, nodo, cliente.getIdDispositivo());
 			nodo.invitarAlGrupo(cliente);			
 			
 		} catch (UsuarioInexistenteException e) {
@@ -530,6 +541,7 @@ public class NodoServiceImpl implements NodoService {
 		nodoDAO.guardarNodo(nodo);
 		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);
 		notificacionService.notificarGestionDeSolicitudDePertenencia(solicitudpertenencia);
+		notificacionService.notificarGestionDeSolicitudDePertenenciaANodo("acepto", solicitudpertenencia.getUsuarioSolicitante().getEmail(), nodo.getAdministrador().getEmail(), nodo.getAlias());
 	}
 
 	@Override
@@ -542,13 +554,17 @@ public class NodoServiceImpl implements NodoService {
 		solicitudpertenencia.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_CANCELADO);
 		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);	
 		notificacionService.notificarCancelacionDeSolicitudDePertenenciaANodo(solicitudpertenencia);
+		notificacionService.notificarCancelacionDeSolicitudDePertenencia(solicitudpertenencia);
+		
 	}
 
 	@Override
 	public void rechazarSolicitudDePertenencia(SolicitudPertenenciaNodo solicitudpertenencia) {
+		Nodo nodo = solicitudpertenencia.getNodo();
 		solicitudpertenencia.setEstado(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO);
 		solicitudPertenenciaNodoDAO.guardar(solicitudpertenencia);	
 		notificacionService.notificarGestionDeSolicitudDePertenencia(solicitudpertenencia);
+		notificacionService.notificarGestionDeSolicitudDePertenenciaANodo("rechazo", solicitudpertenencia.getUsuarioSolicitante().getEmail(), nodo.getAdministrador().getEmail(), nodo.getAlias());
 	}
 
 	@Override
@@ -563,7 +579,7 @@ public class NodoServiceImpl implements NodoService {
 		solicitud.setReintentos(solicitud.getReintentos() + 1);
 		solicitudPertenenciaNodoDAO.guardar(solicitud);
 		notificacionService.enviarEmailDeSolicitudDePertenenciaANodo(solicitud.getNodo(),(Cliente) solicitud.getUsuarioSolicitante());
-		
+		notificacionService.notificarSolicitudDePertenenciaANodo(solicitud.getUsuarioSolicitante().getEmail(), solicitud.getNodo().getAdministrador().getEmail(), solicitud.getUsuarioSolicitante().getUsername(), solicitud.getNodo().getAlias());
 	}
 	
 
@@ -611,7 +627,7 @@ public class NodoServiceImpl implements NodoService {
 	}
 	
 	@Override
-	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras {
+	public void nuevoPedidoIndividualPara(Integer idNodo, String email, Integer idVendedor) throws ClienteNoPerteneceAGCCException, VendedorInexistenteException, ConfiguracionDeVendedorException, PedidoVigenteException, UsuarioInexistenteException, GrupoCCInexistenteException, PedidoInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras, EstadoPedidoIncorrectoException {
 		Nodo nodo = nodoDAO.obtenerNodoPorId(idNodo);
 		Pedido pedidoVigente = nodo.obtenerPedidoIndividual(email);
 		if(nodo.pertenece(email)) {
@@ -629,7 +645,11 @@ public class NodoServiceImpl implements NodoService {
 				
 			}
 			else{
-				throw new PedidoVigenteException(email);
+				if(pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)|| pedidoVigente.getEstado().equals(Constantes.ESTADO_PEDIDO_VENCIDO)){
+					pedidoService.reabrirPedido(pedidoVigente);
+				}else {
+					throw new PedidoVigenteException(email);
+				}
 			}
 		}else {
 			throw new UsuarioNoPerteneceAlGrupoDeCompras();

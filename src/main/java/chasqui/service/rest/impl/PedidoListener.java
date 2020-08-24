@@ -76,6 +76,12 @@ public class PedidoListener {
 	@Autowired
 	private VendedorService vendedorService;
 	
+	private void validarSiUsaEstrategiaIndividual (Integer idVendedor) throws ConfiguracionDeVendedorException, VendedorInexistenteException {
+		Vendedor vendedor = this.vendedorService.obtenerVendedorPorId(idVendedor);
+		if(!vendedor.getEstrategiasUtilizadas().isCompraIndividual()) {
+			throw new ConfiguracionDeVendedorException("El catálogo no soporta el modo de venta individual");
+		}
+	}
 
 	@POST
 	@Produces("application/json")
@@ -154,6 +160,8 @@ public class PedidoListener {
 		try{
 			CrearPedidoRequest request = toCrearPedidoRequest(crearRequest);
 			idVendedor = request.getIdVendedor();
+			this.validarEstrategiasVendedor(idVendedor);
+			this.validarSiUsaEstrategiaIndividual(idVendedor);
 			return Response.ok(toResponse(pedidoService.obtenerPedidoActualDe(mail,idVendedor)),MediaType.APPLICATION_JSON).build();
 		}catch(PedidoInexistenteException e){
 			try {
@@ -162,7 +170,7 @@ public class PedidoListener {
 			} catch (PedidoInexistenteException e1) {
 				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 			} catch (ConfiguracionDeVendedorException e1) {
-				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+				return Response.status(406).entity(new ChasquiError(e1.getMessage())).build();
 			} catch (PedidoVigenteException e1) {
 				return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 			} catch (UsuarioInexistenteException e1) {
@@ -191,12 +199,13 @@ public class PedidoListener {
 		try{
 			Integer idVendedor = toCrearPedidoRequest(crearRequest).getIdVendedor();
 			validarEstrategiasVendedor(idVendedor);
+			validarSiUsaEstrategiaIndividual(idVendedor);
 			pedidoService.crearPedidoIndividualPara(mail,idVendedor);
 			return Response.status(201).build();
 		}catch(PedidoVigenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(ConfiguracionDeVendedorException e) {
-			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
@@ -216,9 +225,13 @@ public class PedidoListener {
 	public Response obtenerPedidoActual(@PathParam("idVendedor")Integer idVendedor){
 		String mail =  obtenerEmailDeContextoDeSeguridad();
 		try{
+			validarEstrategiasVendedor(idVendedor);
+			validarSiUsaEstrategiaIndividual(idVendedor);
 			return Response.ok(toResponse(pedidoService.obtenerPedidoActualDe(mail,idVendedor)),MediaType.APPLICATION_JSON).build();
 		}catch(PedidoInexistenteException e){
 			return Response.status(404).entity(new ChasquiError(e.getMessage())).build();
+		}catch(ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 		catch(Exception e){
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();

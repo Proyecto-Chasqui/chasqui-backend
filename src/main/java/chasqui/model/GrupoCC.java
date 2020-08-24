@@ -396,4 +396,17 @@ public class GrupoCC {
 		this.esNodo = esNodo;
 	}
 
+	public boolean sePuedeEliminarUsuario(Cliente cliente) {
+		boolean sePuedeEliminar = true;
+		for(Pedido p : pedidoActual.getPedidosIndividuales().values()) {
+			if(sePuedeEliminar) {
+				if(p.getCliente().getId().equals(cliente.getId())) {
+					sePuedeEliminar = !(p.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO) || p.getEstado().equals(Constantes.ESTADO_PEDIDO_CONFIRMADO));
+				}
+			}
+		}
+		return sePuedeEliminar;
+		
+	}
+
 }

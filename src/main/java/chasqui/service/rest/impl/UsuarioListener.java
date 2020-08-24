@@ -18,7 +18,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,6 +37,7 @@ import chasqui.service.rest.request.DireccionEditRequest;
 import chasqui.service.rest.request.DireccionRequest;
 import chasqui.service.rest.request.EditarPasswordRequest;
 import chasqui.service.rest.request.EditarPerfilRequest;
+import chasqui.service.rest.request.ExpoTokenRequest;
 import chasqui.service.rest.request.ImagenRequest;
 import chasqui.service.rest.response.ChasquiError;
 import chasqui.service.rest.response.DireccionResponse;
@@ -113,16 +116,43 @@ public class UsuarioListener {
 	}
 
 	@PUT
-	@Path("/registrar/{dispositivo}")
+	@Path("/registrarDispositivo")
 	@Produces("application/json")
-	public Response registrarDispositivo(@PathParam("dispositivo") String dispositivo) {
+	public Response registrarDispositivo(
+			@Multipart(value = "direccionRequest", type = "application/json") final String movilTokenRequest) {
 		String mail = obtenerEmailDeContextoDeSeguridad();
 		try {
-			usuarioService.agregarIDDeDispositivo(mail, dispositivo);
+			ExpoTokenRequest request = toExpoTokenRequest(movilTokenRequest);
+			usuarioService.agregarIDDeDispositivo(mail, request.getExpoToken());
 		} catch (UsuarioInexistenteException e) {
 			return Response.status(406).entity(new ChasquiError("El email es invalido o el usuario no existe")).build();
+		} catch(Exception e) {
+			return Response.status(500).entity(new ChasquiError("Ocurrio un error inesperado")).build();
 		}
 		return Response.ok().build();
+	}
+	
+	@PUT
+	@Path("/desvincularDispositivo")
+	@Produces("application/json")
+	public Response desvincularDispositivo() {
+		String mail = obtenerEmailDeContextoDeSeguridad();
+		try {
+			usuarioService.agregarIDDeDispositivo(mail,"");
+		} catch (UsuarioInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError("El email es invalido o el usuario no existe")).build();
+		} catch(Exception e) {
+			return Response.status(500).entity(new ChasquiError("Ocurrio un error inesperado")).build();
+		}
+		return Response.ok().build();
+	}
+
+	private ExpoTokenRequest toExpoTokenRequest(String movilTokenRequest) throws JsonParseException, JsonMappingException, IOException {
+		ExpoTokenRequest request = new ExpoTokenRequest();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		request = mapper.readValue(movilTokenRequest, ExpoTokenRequest.class);
+		return request;
 	}
 
 

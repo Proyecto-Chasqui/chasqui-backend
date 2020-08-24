@@ -41,6 +41,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
 import chasqui.model.Pedido;
+import chasqui.model.Vendedor;
 import chasqui.service.rest.request.AceptarRequest;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
 import chasqui.service.rest.request.CederAdministracionRequest;
@@ -57,6 +58,7 @@ import chasqui.service.rest.response.PedidoResponse;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.PedidoService;
+import chasqui.services.interfaces.VendedorService;
 import freemarker.template.TemplateException;
 
 @Service
@@ -69,6 +71,15 @@ public class GrupoListener {
 	PedidoService pedidoService;
 	@Autowired
 	private InvitacionService invitacionService;
+	@Autowired
+	VendedorService vendedorService;
+	
+	private void validarSiUsaEstrategiaGrupo (Integer idVendedor) throws ConfiguracionDeVendedorException, VendedorInexistenteException {
+		Vendedor vendedor = this.vendedorService.obtenerVendedorPorId(idVendedor);
+		if(!vendedor.getEstrategiasUtilizadas().isGcc()) {
+			throw new ConfiguracionDeVendedorException("El catálogo no soporta el modo de venta por grupos");
+		}
+	}
 
 	@POST
 	@Path("/alta")
@@ -78,6 +89,7 @@ public class GrupoListener {
 		GrupoRequest request;
 		try {
 			request = this.toGrupoRequest(grupoRequest);
+			this.validarSiUsaEstrategiaGrupo(request.getIdVendedor());
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			grupoService.altaGrupo(request.getIdVendedor(), request.getAlias(), request.getDescripcion(),
 					emailAdministrador);
@@ -90,6 +102,8 @@ public class GrupoListener {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (RequestIncorrectoException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 
@@ -142,7 +156,6 @@ public class GrupoListener {
 		try {
 			request = this.toInvitacionRequest(invitacionRequest);
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
-
 			grupoService.invitarAGrupo(request.getIdGrupo(), request.getEmailInvitado(), emailAdministrador);
 			return Response.ok().build();
 		} catch (IOException e) {
@@ -179,6 +192,9 @@ public class GrupoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioInexistenteException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (PedidoVigenteException e) {
+			e.printStackTrace();
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 	
@@ -192,6 +208,7 @@ public class GrupoListener {
 		try {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toEliminarGrupoRequest(eliminarGrupoRequest);
+			this.validarSiUsaEstrategiaGrupo(request.getIdVendedor());
 			grupoService.vaciarGrupoCC(request.getIdGrupo());
 			
 			return Response.ok().build();
@@ -199,6 +216,10 @@ public class GrupoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (EstadoPedidoIncorrectoException e) {
 			return Response.status(500).entity(new ChasquiError("No se puede eliminar el grupo debido a que algunos pedidos estan confirmados o abiertos")).build();
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 
@@ -278,6 +299,7 @@ public class GrupoListener {
 		String email = obtenerEmailDeContextoDeSeguridad();
 
 		try {
+			this.validarSiUsaEstrategiaGrupo(idVendedor);
 			return Response.ok(toResponse(grupoService.obtenerGruposDeCliente(email, idVendedor), email),
 					MediaType.APPLICATION_JSON).build();
 		} catch (UsuarioInexistenteException e) {
@@ -286,6 +308,10 @@ public class GrupoListener {
 		} catch (ClienteNoPerteneceAGCCException e) {
 			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage()))
 					.build();
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 
 	}
@@ -307,7 +333,7 @@ public class GrupoListener {
 		}
 	}
 
-
+	
 
 	@POST
 	@Path("/individual")
@@ -321,6 +347,7 @@ public class GrupoListener {
 		Pedido nuevoPedido = null;
 		try {
 			request = this.tonuevoPedidoIndividualRequest(nuevoPedidoIndividualRequest);
+			this.validarSiUsaEstrategiaGrupo(request.getIdVendedor());
 			grupoService.nuevoPedidoIndividualPara(request.getIdGrupo(), email, request.getIdVendedor());
 			nuevoPedido = grupoService.obtenerPedidoIndividualEnGrupo(request.getIdGrupo(), email);
 		} catch (JsonParseException e) {
@@ -335,7 +362,7 @@ public class GrupoListener {
 			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage()))
 					.build();
 		} catch (ConfiguracionDeVendedorException e) {
-			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (PedidoVigenteException e) {
 
 			//Si esto no se informa como un error entonces este método es idempotente
@@ -346,6 +373,8 @@ public class GrupoListener {
 			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (GrupoCCInexistenteException e) {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (EstadoPedidoIncorrectoException e) {
+			return Response.status(RestConstants.PEDIDO_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		}
 
 			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
@@ -361,7 +390,7 @@ public class GrupoListener {
 		ConfirmarPedidoColectivoRequest request;
 		try {
 			request = this.toConfirmarPedidoColectivoRequest(confirmarPedidoColectivoRequest);
-
+			
 			grupoService.confirmarPedidoColectivo(request.getIdGrupo(), email,request.getIdDireccion(), request.getIdPuntoDeRetiro(), request.getComentario(), request.getOpcionesSeleccionadas(), request.getIdZona());
 
 		} catch (JsonParseException e) {
@@ -407,6 +436,7 @@ public class GrupoListener {
 		//TODO TERMINAR
 		try {
 			request = this.toEditarGCCRequest(editarGCCRequest);
+			
 			grupoService.editarGrupo(idGrupo, email, request.getAlias(), request.getDescripcion());
 			
 		} catch (JsonParseException e) {
@@ -443,7 +473,7 @@ public class GrupoListener {
 		Map<Integer, Pedido> pedidos;
 
 		try {
-
+			this.validarSiUsaEstrategiaGrupo(idVendedor);
 			List<GrupoCC> grupos = grupoService.obtenerGruposDeCliente(email, idVendedor);
 
 			pedidos = grupoService.obtenerPedidosEnGruposCC(grupos, email);
@@ -466,6 +496,10 @@ public class GrupoListener {
 					.build();
 		} catch (GrupoCCInexistenteException e) {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 
 	}

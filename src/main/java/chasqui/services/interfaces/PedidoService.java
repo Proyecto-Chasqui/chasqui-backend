@@ -129,4 +129,8 @@ public interface PedidoService {
 	@Transactional
 	public void eliminarProductosPedidos(List<ProductoPedido> productosPedidos);
 
+	public void reabrirPedido(Pedido pedidoVigente) throws VendedorInexistenteException, EstadoPedidoIncorrectoException;
+
+	void cancelarPedidoConfirmado(Pedido pedido);
+
 }

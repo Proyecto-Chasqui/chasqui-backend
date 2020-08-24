@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.vividsolutions.jts.geom.Point;
 
+import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstrategiaInvalidaException;
 import chasqui.exceptions.PuntoDeRetiroInexistenteException;
@@ -80,6 +81,13 @@ public class VendedorListener {
 	@Autowired
 	TokenGenerator tokenGenerator;
 	
+	private void validarSiUsaEstrategiaNodo (Integer idVendedor) throws ConfiguracionDeVendedorException, VendedorInexistenteException {
+		Vendedor vendedor = this.vendedorService.obtenerVendedorPorId(idVendedor);
+		if(!vendedor.getEstrategiasUtilizadas().isNodos()) {
+			throw new ConfiguracionDeVendedorException("El catálogo no soporta sistema de venta por nodos");
+		}
+	}
+	
 	@GET
 	@Path("/all")
 	@Produces("application/json")
@@ -96,7 +104,10 @@ public class VendedorListener {
 	@Produces("application/json")
 	public Response obtenerNodosAbiertosDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
 		try{
+			this.validarSiUsaEstrategiaNodo(idVendedor);
 			return Response.ok(toResponseNodoAbierto(nodoService.obtenerNodosAbiertosDelVendedor(idVendedor)),MediaType.APPLICATION_JSON).build();
+		}catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();	
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
 		}catch(Exception e){

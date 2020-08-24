@@ -57,7 +57,7 @@ public interface GrupoService {
 
 	public List<GrupoCC> obtenerGruposDeCliente(String email, Integer idVendedor) throws UsuarioInexistenteException;
 
-	public void quitarMiembroDelGrupo(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException;
+	public void quitarMiembroDelGrupo(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException, PedidoVigenteException;
 
 	Map<Integer, Pedido> obtenerPedidosEnGruposCC(List<GrupoCC> grupos, String email)
 			throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException;
@@ -67,7 +67,7 @@ public interface GrupoService {
 	public void nuevoPedidoIndividualPara(Integer idGrupo, String email, Integer idVendedor)
 			throws UsuarioInexistenteException, ClienteNoPerteneceAGCCException, ConfiguracionDeVendedorException,
 			PedidoVigenteException, PedidoInexistenteException, VendedorInexistenteException,
-			GrupoCCInexistenteException;
+			GrupoCCInexistenteException, EstadoPedidoIncorrectoException;
 
 	public void cederAdministracion(Integer idGrupo, String emailCliente) throws UsuarioInexistenteException, UsuarioNoPerteneceAlGrupoDeCompras;
 
