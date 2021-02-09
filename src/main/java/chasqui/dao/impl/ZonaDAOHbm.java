@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernatespatial.criterion.SpatialRestrictions;
 import org.joda.time.DateTime;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -129,10 +129,12 @@ public class ZonaDAOHbm extends HibernateDaoSupport implements ZonaDAO{
 		Zona zona = this.getHibernateTemplate().execute(new HibernateCallback<Zona>() {
 
 			public Zona doInHibernate(Session session) throws HibernateException, SQLException {
-				Criteria c = session.createCriteria(Zona.class);
-				c.add(Restrictions.eq("idVendedor", idVendedor))
-				.add(SpatialRestrictions.contains("geoArea", punto));
-				return (Zona) c.uniqueResult();
+				Query q = session.createQuery("FROM Zona WHERE ID_VENDEDOR = :idVendedor and true = ST_CONTAINS(GEO_AREA, Point(:pointX, :pointY))");
+				q.setInteger("idVendedor", idVendedor);
+				q.setDouble("pointX", punto.getX());
+				q.setDouble("pointY", punto.getY());
+
+				return (Zona) q.uniqueResult();
 			}
 		});
 		return zona;
