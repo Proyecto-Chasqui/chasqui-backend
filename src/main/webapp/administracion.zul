@@ -97,8 +97,6 @@
 	<menuseparator/>
 	<menuitem id="menuItemMostrarFiltrosProductor" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProductores"/>
 	<menuitem id="menuItemMostrarFiltrosProducto" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProducto"/>
-	<menuitem id="menuItemMostrarFiltrosPedidosColectivos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosColectivos"/>
-	<menuitem id="menuItemMostrarFiltrosPedidosIndividuales" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosIndividuales"/>
 	<menuitem id="menuItemReiniciarFiltrosPedidosColectivos" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosColectivos"/>
 	<menuitem id="menuItemReiniciarFiltrosPedidosIndividuales" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosIndividuales"/>
 	<menuitem id="menuItemReiniciarFiltrosProductos" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosProductos"/>
@@ -251,11 +249,11 @@
 		
 		<div id="divPedidosColectivos" visible="false">
 			<separator spacing="5px"/>
-			<include id="pedidosColectivosInclude" visible="false" src="/verHistorialPedidosColectivos.zul"/>
+			<include id="pedidosColectivosInclude"  visible="false" src="/verHistorialPedidosColectivos.zul"/>
 		</div>
 		<div id="divSolicitudesNodos" visible="false">
 			<separator spacing="5px"/>
-			<include id="solicitudesNodosInclude" visible="false" src="/nodos.zul"/>
+			<include id="solicitudesNodosInclude" mode="defer" visible="false" src="/nodos.zul"/>
 		</div>
 		<div id="divProductores" visible="false">
 			<vbox>

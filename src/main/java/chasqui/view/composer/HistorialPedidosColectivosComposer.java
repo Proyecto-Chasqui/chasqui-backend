@@ -55,18 +55,17 @@ import chasqui.services.interfaces.ZonaService;
 import chasqui.view.renders.PedidoColectivoRenderer;
 import chasqui.view.renders.PedidoRenderer;
 
-
-@SuppressWarnings({"serial","deprecation","unused"})
+@SuppressWarnings({ "serial", "deprecation", "unused" })
 public class HistorialPedidosColectivosComposer extends GenericForwardComposer<Component> {
-	
+
 	public static final String ACCION_VER = "VER";
 	public static final String ACCION_EDITAR = "editar";
 	public static final String ACCION_KEY = "accion";
 	public static final String PEDIDO_KEY = "pedido";
 	public static final Object ACCION_ENTREGAR = "entregar";
-	public static final String ACCION_PREPARAR= "preparado";
+	public static final String ACCION_PREPARAR = "preparado";
 	public static final String ACCION_NOTIFICAR = "notificar";
-	
+
 	private Datebox desde;
 	private Datebox hasta;
 	private Listbox listboxPedidos;
@@ -77,12 +76,12 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private Combobox estadosListbox;
 	private Combobox zonasListbox;
 	private Zona zonaSeleccionada;
-	private String estadoSeleccionado;
+	private String estadoSeleccionado = Constantes.ESTADO_PEDIDO_CONFIRMADO;
 	private String grupalSeleccionado;
 	private List<Zona> zonas;
-	private List<String>estados;
-	private List<Pedido>pedidos;
-	private List<PedidoColectivo>pedidosColectivos;
+	private List<String> estados;
+	private List<Pedido> pedidos;
+	private List<PedidoColectivo> pedidosColectivos;
 	Vendedor usuarioLogueado;
 	private Paging paginal;
 	private Button buscar;
@@ -100,143 +99,138 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	private String prSeleccionado;
 	private VendedorService vendedorService;
 	private Div filtros;
-	private XlsExporter export  = new XlsExporter();
-	
-	public void doAfterCompose(Component component) throws Exception{
+	private XlsExporter export = new XlsExporter();
+
+	public void doAfterCompose(Component component) throws Exception {
 		idsSeleccionados = new ArrayList<Integer>();
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
-		Executions.getCurrent().getSession().setAttribute("historialPedidosColectivosComposer",this);
-		if(usuarioLogueado != null){
+		Executions.getCurrent().getSession().setAttribute("historialPedidosColectivosComposer", this);
+		
+		if (usuarioLogueado != null) {
 			super.doAfterCompose(component);
 			windowComponent = component;
 			grupo = (GrupoCC) Executions.getCurrent().getArg().get("Grupo");
-			component.addEventListener(Events.ON_USER, new HitorialPedidosColectivosEventListener(this,grupo));
+			component.addEventListener(Events.ON_USER, new HitorialPedidosColectivosEventListener(this, grupo));
 			component.addEventListener(Events.ON_RENDER, new RenderEventListener(this));
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
 			pedidoColectivoService = (PedidoColectivoService) SpringUtil.getBean("pedidoColectivoService");
 			vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
 			grupoService = (GrupoService) SpringUtil.getBean("grupoService");
-			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
 			zonaService = (ZonaService) SpringUtil.getBean("zonaService");
 			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
-			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO,Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_PREPARADO);
-			pedidosColectivos = filtrarColectivosInactivos((List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo"));
-			if(!usuarioLogueado.getIsRoot()) {
-				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(usuarioLogueado.getId()));
+			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_CONFIRMADO, Constantes.ESTADO_PEDIDO_ENTREGADO,
+					Constantes.ESTADO_PEDIDO_ABIERTO, Constantes.ESTADO_PEDIDO_PREPARADO);
+			
+					pedidosColectivos = filtrarColectivosInactivos(
+					(List<PedidoColectivo>) Executions.getCurrent().getArg().get("HistorialDePedidoColectivo"));
+			
+					if (!usuarioLogueado.getIsRoot()) {
+				puntosDeRetiro = crearListaDeNombresDePR(
+						vendedorService.obtenerPuntosDeRetiroDeVendedor(usuarioLogueado.getId()));
 			}
 			binder = new AnnotateDataBinder(component);
 			listboxPedidos.setItemRenderer(new PedidoColectivoRenderer((Window) component));
-			this.onClick$limpiarCamposbtn();
-			
+			this.onClick$buscar();
+
 		}
 	}
-	
+
 	private List<String> crearListaDeNombresDePR(List<PuntoDeRetiro> obtenerPuntosDeRetiroDeVendedor) {
 		List<String> list = new ArrayList<String>();
-		for(PuntoDeRetiro pr: obtenerPuntosDeRetiroDeVendedor) {
+		for (PuntoDeRetiro pr : obtenerPuntosDeRetiroDeVendedor) {
 			list.add(pr.getNombre());
 		}
-	    return list;
-    }
-	
-	public void onBuscar(){
-			onClick$buscar();
+		return list;
 	}
-	
+
+	public void onBuscar() {
+		onClick$buscar();
+	}
+
 	public void buscadorPorUsuario$onOK(SelectEvent evt) {
 		onClick$buscar();
 	}
-	
+
 	public void onSelect$estadosListbox(SelectEvent evt) {
-			onClick$buscar();
+		onClick$buscar();
 
 	}
-	
+
 	public void onSelect$zonasListbox(SelectEvent evt) {
-			onClick$buscar();
+		onClick$buscar();
 	}
-	
-	public void onClick$buscar(){
+
+	public void onClick$buscar() {
 		Date d = desde.getValue();
 		Date h = hasta.getValue();
 		String email = buscadorPorUsuario.getValue();
-		if(d != null && h != null){
-			if(h.before(d)){
-				Messagebox.show("La fecha hasta debe ser posterior a la fecha desde", "Error", Messagebox.OK,Messagebox.EXCLAMATION);
+		if (d != null && h != null) {
+			if (h.before(d)) {
+				Messagebox.show("La fecha hasta debe ser posterior a la fecha desde", "Error", Messagebox.OK,
+						Messagebox.EXCLAMATION);
 			}
-		}		
+		}
 		pedidosColectivos.clear();
-		Integer zonaId= null;
-		if(zonaSeleccionada !=null){
+		Integer zonaId = null;
+		if (zonaSeleccionada != null) {
 			zonaId = zonaSeleccionada.getId();
 		}
-		pedidosColectivos.addAll(filtrarColectivosInactivos(pedidoColectivoService.obtenerPedidosColectivosDeVendedorConPRConNombre(usuarioLogueado.getId(),d,h,estadoSeleccionado,zonaId, prSeleccionado, email)));
+		pedidosColectivos
+				.addAll(filtrarColectivosInactivos(pedidoColectivoService.obtenerPedidosColectivosDeVendedorConPRConNombre(
+						usuarioLogueado.getId(), d, h, this.estadoSeleccionado, zonaId, prSeleccionado, email)));
 		this.binder.loadAll();
 	}
-	
-	
+
 	public List<PedidoColectivo> filtrarColectivosInactivos(Collection<? extends PedidoColectivo> collection) {
 		List<PedidoColectivo> pedidosActivos = new ArrayList<PedidoColectivo>();
-		if(collection != null) {
-			for(PedidoColectivo pedido: collection) {
-				if(!pedido.getColectivo().isEsNodo()) {
+		if (collection != null) {
+			for (PedidoColectivo pedido : collection) {
+				if (!pedido.getColectivo().isEsNodo()) {
 					pedidosActivos.add(pedido);
 				}
 			}
 		}
 		return eliminarPedidosConNDEnFechaModificacion(pedidosActivos);
 	}
-	
+
 	private List<PedidoColectivo> eliminarPedidosConNDEnFechaModificacion(List<PedidoColectivo> pedidosNodos) {
-		if(desde.getValue() != null || hasta.getValue() != null) {
+		if (desde.getValue() != null || hasta.getValue() != null) {
 			ArrayList<PedidoColectivo> pedidos = new ArrayList<PedidoColectivo>();
-			for(PedidoColectivo p : pedidosNodos) {
-				if(p.getFechaModificacion() != null && !p.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO) && !p.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
+			for (PedidoColectivo p : pedidosNodos) {
+				if (p.getFechaModificacion() != null && !p.getEstado().equals(Constantes.ESTADO_PEDIDO_CANCELADO)
+						&& !p.getEstado().equals(Constantes.ESTADO_PEDIDO_ABIERTO)) {
 					pedidos.add(p);
 				}
 			}
 			return pedidos;
-		}else {
+		} else {
 			return pedidosNodos;
 		}
-		
+
 	}
 
-	public List<Pedido> getPedidos() {
-		return pedidos;
-	}
-
-	public void setPedidos(List<Pedido> pedidos) {
-		this.pedidos = pedidos;
-	}
-
-
-	
-	public void onVerPedido(PedidoColectivo p){
-		HashMap<String,Object>params = new HashMap<String,Object>();
-		params.put("pedidoColectivo", new ArrayList<Pedido>(p.getPedidosIndividuales().values()) );
-		params.put("id",p.getId());
-		params.put("grupo",grupo);
-		params.put("exportar",true);
+	public void onVerPedido(PedidoColectivo p) {
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("pedidoColectivo", new ArrayList<Pedido>(p.getPedidosIndividuales().values()));
+		params.put("id", p.getId());
+		params.put("grupo", grupo);
+		params.put("exportar", true);
 		Window w = (Window) Executions.createComponents("/verPedidosColectivos.zul", this.self, params);
 		w.doModal();
-		
+
 	}
 
-	
-	public void onEditarZona(PedidoColectivo p, GrupoCC grupo){
-		HashMap<String,Object>params = new HashMap<String,Object>();
+	public void onEditarZona(PedidoColectivo p, GrupoCC grupo) {
+		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("pedidoColectivo", p);
 		params.put("grupo", p.getColectivo());
 		params.put("zonas", usuarioLogueado.getZonas());
 		Window w = (Window) Executions.createComponents("/editarPedidoColectivo.zul", this.self, params);
 		w.doModal();
 	}
-	
-	
-	
+
 	public String getEstadoSeleccionado() {
 		return estadoSeleccionado;
 	}
@@ -244,9 +238,9 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	public void setEstadoSeleccionado(String estadoSeleccionado) {
 		this.estadoSeleccionado = estadoSeleccionado;
 	}
-	
-	public void onClick$limpiarCamposbtn(){
-		estadoSeleccionado = "";
+
+	public void onClick$limpiarCamposbtn() {
+		estadoSeleccionado = Constantes.ESTADO_PEDIDO_CONFIRMADO;
 		zonaSeleccionada = null;
 		desde.setValue(null);
 		hasta.setValue(null);
@@ -255,127 +249,129 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		buscadorPorUsuario.setValue("");
 		prSeleccionado = null;
 		prCombobox.setValue("");
-		pedidosColectivos = filtrarColectivosInactivos((List<PedidoColectivo>) pedidoColectivoService.obtenerPedidosColectivosDeVendedor(usuarioLogueado.getId(),null,null,null,null,null,null));
-		this.binder.loadAll();
+
+		this.onClick$buscar();
 	}
-	
-	public void entregarPedidoColectivo(PedidoColectivo p) throws EstadoPedidoIncorrectoException{
+
+	public void entregarPedidoColectivo(PedidoColectivo p) throws EstadoPedidoIncorrectoException {
 		p.entregarte();
 		pedidoColectivoService.guardarPedidoColectivo(p);
 		this.binder.loadAll();
 	}
-	
+
 	public void onNotificar(final PedidoColectivo p) {
 		Messagebox.show(
-				"¿Desea enviar un email de notificación de pedido preparado al email "+p.getColectivo().getAdministrador().getEmail()+" del administrador?",
-				"Pregunta",
-	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
-	    		new String[] {"Aceptar","Cancelar"},
-	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+				"¿Desea enviar un email de notificación de pedido preparado al email "
+						+ p.getColectivo().getAdministrador().getEmail() + " del administrador?",
+				"Pregunta", new Messagebox.Button[] { Messagebox.Button.YES, Messagebox.Button.ABORT },
+				new String[] { "Aceptar", "Cancelar" }, Messagebox.INFORMATION, null, new EventListener<ClickEvent>() {
 
-			public void onEvent(ClickEvent event) throws Exception {
-				Object eventclick = event.getData();
-				if(eventclick != null) {
-					String edata= event.getData().toString();
-					switch (edata){
-					case "YES":
-						try {
-							notificar(p);
-							Clients.showNotification("El email se envió correctamente", "info", windowComponent, "middle_center", 2000);
-						} catch (Exception e) {
-							Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
-							e.printStackTrace();						
+					public void onEvent(ClickEvent event) throws Exception {
+						Object eventclick = event.getData();
+						if (eventclick != null) {
+							String edata = event.getData().toString();
+							switch (edata) {
+								case "YES":
+									try {
+										notificar(p);
+										Clients.showNotification("El email se envió correctamente", "info", windowComponent,
+												"middle_center", 2000);
+									} catch (Exception e) {
+										Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center",
+												3000);
+										e.printStackTrace();
+									}
+									break;
+								case "ABORT":
+							}
 						}
-						break;
-					case "ABORT":
 					}
-				}
-			}
-			});
+				});
 	}
-	
+
 	private void notificar(PedidoColectivo p) {
-		//Notificar por mail que el pedido ha sido preparado
+		// Notificar por mail que el pedido ha sido preparado
 		mailService.enviarEmailPreparacionDePedidoColectivo(p);
 	}
-	
-	public void prepararPedidoColectivo(PedidoColectivo pedidoColectivo) throws EstadoPedidoIncorrectoException{
+
+	public void prepararPedidoColectivo(PedidoColectivo pedidoColectivo) throws EstadoPedidoIncorrectoException {
 		pedidoColectivo.preparado();
 		pedidoColectivoService.guardarPedidoColectivo(pedidoColectivo);
 		this.binder.loadAll();
 	}
-	
-	public void onPreguntarConfirmacionEntrega(final PedidoColectivo p){
+
+	public void onPreguntarConfirmacionEntrega(final PedidoColectivo p) {
 		Messagebox.show(
-				"¿Esta seguro que desea confirmar la entrega para pedido colectivo del grupo " + p.getColectivo().getAlias() + " ?",
-				"Pregunta",
-	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
-	    		new String[] {"Aceptar","Cancelar"},
-	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+				"¿Esta seguro que desea confirmar la entrega para pedido colectivo del grupo " + p.getColectivo().getAlias()
+						+ " ?",
+				"Pregunta", new Messagebox.Button[] { Messagebox.Button.YES, Messagebox.Button.ABORT },
+				new String[] { "Aceptar", "Cancelar" }, Messagebox.INFORMATION, null, new EventListener<ClickEvent>() {
 
-			public void onEvent(ClickEvent event) throws Exception {
-				String edata= event.getData().toString();
-				switch (edata){
-				case "YES":
-					try {
-						entregarPedidoColectivo(p);
-						Clients.showNotification("La entrega del pedido se confirmó exitosamente", "info", windowComponent, "middle_center", 2000);
-					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
-						e.printStackTrace();						
+					public void onEvent(ClickEvent event) throws Exception {
+						String edata = event.getData().toString();
+						switch (edata) {
+							case "YES":
+								try {
+									entregarPedidoColectivo(p);
+									Clients.showNotification("La entrega del pedido se confirmó exitosamente", "info", windowComponent,
+											"middle_center", 2000);
+								} catch (Exception e) {
+									Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center",
+											3000);
+									e.printStackTrace();
+								}
+								break;
+							case "ABORT":
+						}
 					}
-					break;
-				case "ABORT":
-				}
-			}
-			});
+				});
 	}
-	
-	
-	public void onPreguntarPerpararEntrega(final PedidoColectivo p){
+
+	public void onPreguntarPerpararEntrega(final PedidoColectivo p) {
 		Messagebox.show(
-				"¿Esta seguro que desea preparar la entrega para el pedido colectivo del grupo "+p.getColectivo().getAlias()+" ?",
-				"Pregunta",
-	    		new Messagebox.Button[] {Messagebox.Button.YES, Messagebox.Button.ABORT},
-	    		new String[] {"Aceptar","Cancelar"},
-	    		Messagebox.INFORMATION, null, new EventListener<ClickEvent>(){
+				"¿Esta seguro que desea preparar la entrega para el pedido colectivo del grupo " + p.getColectivo().getAlias()
+						+ " ?",
+				"Pregunta", new Messagebox.Button[] { Messagebox.Button.YES, Messagebox.Button.ABORT },
+				new String[] { "Aceptar", "Cancelar" }, Messagebox.INFORMATION, null, new EventListener<ClickEvent>() {
 
-			public void onEvent(ClickEvent event) throws Exception {
-				String edata= event.getData().toString();
-				switch (edata){
-				case "YES":
-					try {
-						prepararPedidoColectivo(p);
-						Clients.showNotification("El pedido colectivo se preparó exitosamente", "info", windowComponent, "middle_center", 2000);
-					} catch (Exception e) {
-						Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center", 3000);
-						e.printStackTrace();						
+					public void onEvent(ClickEvent event) throws Exception {
+						String edata = event.getData().toString();
+						switch (edata) {
+							case "YES":
+								try {
+									prepararPedidoColectivo(p);
+									Clients.showNotification("El pedido colectivo se preparó exitosamente", "info", windowComponent,
+											"middle_center", 2000);
+								} catch (Exception e) {
+									Clients.showNotification("Ocurrio un error desconocido", "error", windowComponent, "middle_center",
+											3000);
+									e.printStackTrace();
+								}
+								break;
+							case "ABORT":
+						}
 					}
-					break;
-				case "ABORT":
-				}
-			}
-			});
+				});
 
 	}
-	
+
 	public void onConfirmarEntrega(PedidoColectivo p) throws EstadoPedidoIncorrectoException {
 	}
-	
-	public void mostrarAdvertenciaDeEntrega(PedidoColectivo p){
+
+	public void mostrarAdvertenciaDeEntrega(PedidoColectivo p) {
 	}
-	
+
 	public void onSelect$listboxPedidos(SelectEvent evt) {
-	}	
-	
+	}
+
 	public void onSelect$prCombobox(SelectEvent evt) {
 		onClick$buscar();
 	}
-	
-	public void onClick$exportarSeleccionados() throws Exception{
+
+	public void onClick$exportarSeleccionados() throws Exception {
 	}
-	
-	public void onClick$exportarTodosbtn() throws EstadoPedidoIncorrectoException{
+
+	public void onClick$exportarTodosbtn() throws EstadoPedidoIncorrectoException {
 	}
 
 	public List<String> getEstados() {
@@ -385,7 +381,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 	public void setEstados(List<String> estados) {
 		this.estados = estados;
 	}
-	
+
 	public List<PedidoColectivo> getPedidosColectivos() {
 		return pedidosColectivos;
 	}
@@ -456,7 +452,7 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 
 	public void onMostrarFiltros() {
 		this.filtros.setVisible(!filtros.isVisible());
-		
+
 	}
 
 	public void exportarPedidoColectivo(Integer idPedidoColectivo) {
@@ -464,70 +460,68 @@ public class HistorialPedidosColectivosComposer extends GenericForwardComposer<C
 		this.binder.loadAll();
 	}
 
-
-
 }
 
-class RenderEventListener implements EventListener<Event>{
+class RenderEventListener implements EventListener<Event> {
 
 	HistorialPedidosColectivosComposer composer;
+
 	public RenderEventListener(HistorialPedidosColectivosComposer historialPedidosColectivosComposer) {
 		this.composer = historialPedidosColectivosComposer;
 	}
 
 	public void onEvent(Event event) throws Exception {
-		
+
 		composer.onMostrarFiltros();
-		
+
 	}
-	
+
 }
 
-class HitorialPedidosColectivosEventListener implements EventListener<Event>{
+class HitorialPedidosColectivosEventListener implements EventListener<Event> {
 
 	HistorialPedidosColectivosComposer composer;
 	GrupoCC grupo;
-	
-	public HitorialPedidosColectivosEventListener(
-			HistorialPedidosColectivosComposer historialPedidosColectivosComposer, GrupoCC grupo) {
+
+	public HitorialPedidosColectivosEventListener(HistorialPedidosColectivosComposer historialPedidosColectivosComposer,
+			GrupoCC grupo) {
 		this.composer = historialPedidosColectivosComposer;
 		this.grupo = grupo;
 	}
 
 	public void onEvent(Event event) throws Exception {
-		
-		Map<String,Object> params = (Map<String,Object>) event.getData();
-		
+
+		Map<String, Object> params = (Map<String, Object>) event.getData();
+
 		String accion = (String) params.get(PedidosComposer.ACCION_KEY);
-		
+
 		PedidoColectivo p = (PedidoColectivo) params.get(PedidosComposer.PEDIDO_KEY);
-		
+
 		if (accion.equals(PedidosComposer.ACCION_VER)) {
 			composer.onVerPedido(p);
-			
+
 		}
-		
-		if(accion.equals("exportar")) {
+
+		if (accion.equals("exportar")) {
 			composer.exportarPedidoColectivo(p.getId());
 		}
-		
-		if(accion.equals(PedidosComposer.ACCION_PREPARAR)){
-			composer.onPreguntarPerpararEntrega(p);				
+
+		if (accion.equals(PedidosComposer.ACCION_PREPARAR)) {
+			composer.onPreguntarPerpararEntrega(p);
 		}
 
-		if(accion.equals(PedidosComposer.ACCION_EDITAR)){
+		if (accion.equals(PedidosComposer.ACCION_EDITAR)) {
 			composer.onEditarZona(p, grupo);
-				
-		}
-		
-		if(accion.equals(PedidosComposer.ACCION_ENTREGAR)){
-			composer.onPreguntarConfirmacionEntrega(p);				
-		}
-		
-		if(accion.equals(PedidosComposer.ACCION_NOTIFICAR)){
-			composer.onNotificar(p);				
+
 		}
 
-			
+		if (accion.equals(PedidosComposer.ACCION_ENTREGAR)) {
+			composer.onPreguntarConfirmacionEntrega(p);
+		}
+
+		if (accion.equals(PedidosComposer.ACCION_NOTIFICAR)) {
+			composer.onNotificar(p);
+		}
+
 	}
 }
