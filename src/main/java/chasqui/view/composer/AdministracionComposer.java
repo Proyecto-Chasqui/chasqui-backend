@@ -77,7 +77,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Menuitem menuItemPedidosColecitvos;
 	private Menuitem menuItemNodos;
 	private Menuitem menuItemConfiguracion;
-	private Menuitem menuItemMostrarFiltrosProductor;
 	//seccion correspondiente a root
 	private Menuitem menuItemUsuarios;
 	private Menuitem menuItemCaracteristicas;
@@ -88,7 +87,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Menuitem menuItemNuevaCategoria;
 	private Menuitem menuItemNuevoProducto;
 	private Menuitem menuItemNuevoProductor;
-	private Menuitem menuItemMostrarFiltrosProducto;
 	private Menuitem menuItemReiniciarFiltrosPedidosColectivos;
 	private Menuitem menuItemReiniciarFiltrosPedidosIndividuales;
 	private Menuitem menuItemReiniciarFiltrosProductos;
@@ -134,8 +132,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Div divPedidosColectivos;
 	private Div divSolicitudesNodos;
 	private Div divCaracteristicas;
-	private Div filtros_producto;
-	private Div filtrosproductores;
 	private UsuarioService usuarioService;
 	private ProductoService  productoService;
 	private ProductorService productorService;
@@ -302,7 +298,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ayudaproductores.setVisible(false);
 		ayudacategorias.setVisible(true);
 		ayudaproductos.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		menuItemReiniciarFiltrosPedidosColectivos.setVisible(false);
 		menuItemReiniciarFiltrosPedidosIndividuales.setVisible(false);
 		ayudapedidoscolectivos.setVisible(false);
@@ -311,11 +307,11 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		menuItemReiniciarFiltrosProductos.setVisible(false);
 		
 		
-		filtros_producto.setVisible(false);
+		
 		
 		submenubar.setVisible(true);
 		
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
 		menuItemNuevaCategoria.setVisible(true);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -348,7 +344,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ayudaproductores.setVisible(false);
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		menuItemReiniciarFiltrosPedidosColectivos.setVisible(false);
 		menuItemReiniciarFiltrosPedidosIndividuales.setVisible(false);
 		menuItemUsuarios.setVisible(true);
@@ -359,11 +355,11 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		menuItemReiniciarFiltrosProductos.setVisible(false);
 		
 		
-		filtros_producto.setVisible(false);
+		
 		
 		submenubar.setVisible(false);
 		
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -401,7 +397,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ayudaproductores.setVisible(false);
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		menuItemReiniciarFiltrosPedidosColectivos.setVisible(false);
 		menuItemReiniciarFiltrosPedidosIndividuales.setVisible(false);
 		menuItemUsuarios.setVisible(true);
@@ -412,11 +408,11 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		menuItemReiniciarFiltrosProductos.setVisible(false);
 		
 		
-		filtros_producto.setVisible(false);
+		
 		
 		submenubar.setVisible(false);
 		
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -479,7 +475,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ayudaproductores.setVisible(false);
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		menuItemExportarPedidos.setVisible(false);
 		menuItemExportarSeleccionados.setVisible(false);
 		menuItemReiniciarFiltrosPedidosColectivos.setVisible(false);
@@ -520,20 +516,14 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ayudaproductores.setVisible(false);
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(true);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		menuItemReiniciarFiltrosPedidosColectivos.setVisible(false);
 		menuItemReiniciarFiltrosPedidosIndividuales.setVisible(false);
 		menuExportar.setVisible(false);
 		menuItemExportarPedidos.setVisible(false);
 		menuItemExportarSeleccionados.setVisible(false);
-		menuItemReiniciarFiltrosProductos.setVisible(true);
-		
-		
-		
+		menuItemReiniciarFiltrosProductos.setVisible(true);		
 		submenubar.setVisible(true);
-		filtros_producto.setVisible(false);
-		
-		menuItemMostrarFiltrosProducto.setVisible(true);
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(true);
 		menuItemNuevoProductor.setVisible(false);
@@ -584,7 +574,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	
 	public void onClick$menuItemConfiguracion(){
 		ocultarMenuitemsRoot();
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
 		submenubar.setVisible(false);
 		menuExportar.setVisible(false);
 		separadorExport.setVisible(false);
@@ -593,7 +583,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ayudaproductores.setVisible(false);
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		menuItemExportarPedidos.setVisible(false);
 		menuItemExportarSeleccionados.setVisible(false);
 		menuItemReiniciarFiltrosProductos.setVisible(false);
@@ -602,7 +592,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		
 		
 		
-		filtros_producto.setVisible(false);
+		
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -661,7 +651,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(false);
 		menuExportar.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		separadorExport.setVisible(false);
 		menuItemExportarPedidos.setVisible(false);
 		menuItemExportarSeleccionados.setVisible(false);
@@ -669,7 +659,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
-		filtros_producto.setVisible(false);
+		
 		divProducto.setVisible(false);
 		divCategoria.setVisible(false);
 		agregarButton.setVisible(false);
@@ -703,7 +693,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ayudaproductores.setVisible(true);
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(true);
 		menuExportar.setVisible(false);
 		menuItemExportarPedidos.setVisible(false);
 		menuItemExportarSeleccionados.setVisible(false);
@@ -712,9 +701,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		submenubar.setVisible(true);
 		
 		
-		filtros_producto.setVisible(false);
 		
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
+		
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(true);
@@ -764,14 +753,14 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void onClick$menuItemPedidos(){
 		ocultarMenuitemsRoot();
 		submenubar.setVisible(true);
-		filtros_producto.setVisible(false);
+		
 		ayudapedidoscolectivos.setVisible(false);
 		ayudapedidos.setVisible(true);
 		ayudaproductores.setVisible(false);
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(false);
 		menuItemExportarPedidos.setVisible(true);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		separadorExport.setVisible(true);
 		menuExportar.setVisible(true);
 		menuItemExportarSeleccionados.setVisible(true);
@@ -781,12 +770,12 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		
 		
 		
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
 		menuItemNuevaCategoria.setVisible(false);
-		filtros_producto.setVisible(false);
+		
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
 		divProducto.setVisible(false);
@@ -834,21 +823,21 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		ocultarMenuitemsRoot();
 		submenubar.setVisible(true);
 		menuExportar.setVisible(false);
-		filtros_producto.setVisible(false);
+		
 		separadorExport.setVisible(false);
 		ayudapedidoscolectivos.setVisible(true);
 		ayudapedidos.setVisible(false);
 		ayudaproductores.setVisible(false);
 		ayudacategorias.setVisible(false);
 		ayudaproductos.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		menuItemExportarPedidos.setVisible(false);
 		menuItemExportarSeleccionados.setVisible(false);
 		menuItemReiniciarFiltrosPedidosColectivos.setVisible(true);
 		menuItemReiniciarFiltrosProductos.setVisible(false);
 		menuItemReiniciarFiltrosPedidosIndividuales.setVisible(false);
 
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -897,9 +886,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void onClick$menuItemNodos(){	
 		ocultarMenuitemsRoot();
 		submenubar.setVisible(false);
-		filtros_producto.setVisible(false);
+		
 		menuExportar.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		separadorExport.setVisible(false);
 		ayudapedidoscolectivos.setVisible(false);
 		ayudapedidos.setVisible(false);
@@ -915,7 +904,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		
 		
 		
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -955,9 +944,9 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	public void ocultarMenuUsuarioAdministrdor() {
 		menubar.setVisible(true);
 		submenubar.setVisible(false);
-		filtros_producto.setVisible(false);
+		
 		menuExportar.setVisible(false);
-		menuItemMostrarFiltrosProductor.setVisible(false);
+		
 		separadorExport.setVisible(false);
 		ayudapedidoscolectivos.setVisible(false);
 		ayudapedidos.setVisible(false);
@@ -980,7 +969,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		
 		
 		
-		menuItemMostrarFiltrosProducto.setVisible(false);
+		
 		menuItemNuevaCategoria.setVisible(false);
 		menuItemNuevoProducto.setVisible(false);
 		menuItemNuevoProductor.setVisible(false);
@@ -1061,14 +1050,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		}catch (Exception e) {
 			Clients.showNotification("Ocurrio un error al tratar de deslogearse, intente nuevamente.", "error", admcomponent, "middle_center", 3000,true);
 		}
-	}
-	
-	public void onMostrarFiltrosProducto() {
-		filtros_producto.setVisible(!filtros_producto.isVisible());
-	}
-	
-	public void onMostrarFiltrosProductores() {
-		filtrosproductores.setVisible(!filtrosproductores.isVisible());
 	}
 	
 	public void onExportarPedidosIndividuales() {
@@ -1622,22 +1603,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		this.menuItemLogOut = menuItemLogOut;
 	}
 
-	public Menuitem getMenuItemMostrarFiltrosProducto() {
-		return menuItemMostrarFiltrosProducto;
-	}
-
-	public void setMenuItemMostrarFiltrosProducto(Menuitem menuItemMostrarFiltrosProducto) {
-		this.menuItemMostrarFiltrosProducto = menuItemMostrarFiltrosProducto;
-	}
-
-	public Div getFiltros_producto() {
-		return filtros_producto;
-	}
-
-	public void setFiltros_producto(Div filtros_producto) {
-		this.filtros_producto = filtros_producto;
-	}
-
 	public Menuitem getMenuItemReiniciarFiltrosPedidosIndividuales() {
 		return menuItemReiniciarFiltrosPedidosIndividuales;
 	}
@@ -1692,22 +1657,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 
 	public void setSeparadorExport(Menuseparator separadorExport) {
 		this.separadorExport = separadorExport;
-	}
-
-	public Menuitem getMenuItemMostrarFiltrosProductor() {
-		return menuItemMostrarFiltrosProductor;
-	}
-
-	public void setMenuItemMostrarFiltrosProductor(Menuitem menuItemMostrarFiltrosProductor) {
-		this.menuItemMostrarFiltrosProductor = menuItemMostrarFiltrosProductor;
-	}
-
-	public Div getFiltrosproductores() {
-		return filtrosproductores;
-	}
-
-	public void setFiltrosproductores(Div filtrosproductores) {
-		this.filtrosproductores = filtrosproductores;
 	}
 
 	public Image getAyudapedidoscolectivos() {
