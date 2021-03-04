@@ -1,5 +1,5 @@
 package chasqui.view.composer;
-
+import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Path;
@@ -56,7 +57,8 @@ import chasqui.view.renders.ProductorRenderer;
 
 @SuppressWarnings({ "serial", "deprecation" })
 public class AdministracionComposer extends GenericForwardComposer<Component> implements Refresher{
-	
+	public static final Logger logger = Logger.getLogger(AdministracionComposer.class);
+
 	private Window administracionWindow;
 	private AnnotateDataBinder binder;
 	private Radio radioCategorias;
@@ -165,10 +167,10 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 
 	
 	public void doAfterCompose(Component comp) throws Exception{
-		
+		logger.info("AdminCompoer.doAfterCopose");
 		
 		usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
-		if(usuarioLogueado == null){
+		if(usuarioLogueado == null) {
 			Executions.sendRedirect("/");
 			return;
 		}
@@ -178,13 +180,24 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		productoService = (ProductoService) SpringUtil.getBean("productoService");
 		productorService = (ProductorService) SpringUtil.getBean("productorService");
 		sessionListenerService = (SessionListenerService) SpringUtil.getBean("sessionListenerService");
+
+		logger.info("numeroDestacados...");
 		numeroDestacados = productoService.obtenerVariantesDestacadas(usuarioLogueado.getId()).size();
+		logger.info("numeroDestacados.");
+
+		logger.info("productos...");
 		productosFiltrados = usuarioLogueado.getProductos();
+		logger.info("productos.");
+
+		logger.info("productores...");
 		fabricantes = (List<Fabricante>) productorService.obtenerProductores(usuarioLogueado.getId());
+		logger.info("productores.");
+		
 		visibilidad = Arrays.asList(TODAS,HABILITADO,DESHABILITADO);
 		destacado = Arrays.asList(TODAS,DESTACADO,NO_DESTACADO);
 		listfabricantes = new ArrayList<Fabricante>();
 		listfabricantes.addAll(fabricantes);
+		
 		super.doAfterCompose(comp);
 		Executions.getCurrent().getSession().setAttribute("administracionComposer",this);
 		admcomponent = comp;
@@ -287,6 +300,12 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		//cellRadioSolicitudesNodos.setVisible(b);
 
 	}
+
+	private void _setVisible(AbstractComponent comp,Boolean b) {
+		if(comp != null) {
+			comp.setVisible(b);
+		}
+	}
 	
 	public void onClick$menuItemCategorias(){
 		ocultarMenuitemsRoot();
@@ -322,15 +341,15 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divPedidos.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divCaracteristicas.setVisible(false);
 		caracInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
 		agregarButton.setVisible(true);
 		divCategoria.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
 		divPedidosColectivos.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		binder.loadAll();
 	}
 	
@@ -370,14 +389,14 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divPedidos.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divCaracteristicas.setVisible(false);
 		caracInclude.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		agregarButton.setVisible(false);
 		divCategoria.setVisible(false);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(true);
@@ -423,14 +442,14 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divPedidos.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divCaracteristicas.setVisible(true);
 		caracInclude.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		agregarButton.setVisible(false);
 		divCategoria.setVisible(false);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
@@ -453,14 +472,14 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divPedidos.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divCaracteristicas.setVisible(false);
 		caracInclude.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		agregarButton.setVisible(true);
 		divCategoria.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		binder.loadAll();
 	}
@@ -492,15 +511,15 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divPedidos.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		agregarButton.setVisible(false);
 		divCategoria.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		divCaracteristicas.setVisible(true);
 		caracInclude.setSrc("/caracteristica.zul");
 		caracInclude.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		estrategiasInclude.setVisible(false);
 		binder.loadAll();
@@ -534,15 +553,15 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divProductores.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		agregarProductoButton.setVisible(true);
 		divProducto.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		binder.loadAll();
 
@@ -558,15 +577,15 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divProductores.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		agregarProductoButton.setVisible(true);
 		divProducto.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		binder.loadAll();
 
@@ -605,13 +624,13 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divProductores.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		configuracionInclude.setVisible(true);
 		
@@ -628,13 +647,13 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
 		divProductores.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		configuracionInclude.setVisible(true);
 		
@@ -668,12 +687,12 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		configuracionInclude.setVisible(false);
 		divProductores.setVisible(false);
 		divPedidos.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		altaUsuarioInclude.setVisible(true);
 		usuariosActualesInclude.setVisible(true);
@@ -714,15 +733,15 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		configuracionInclude.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		divProductores.setVisible(true);
 		agregarProductorButton.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		binder.loadAll();
 	}
@@ -737,15 +756,15 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		configuracionInclude.setVisible(false);
 		altaUsuarioInclude.setVisible(false);
 		usuariosActualesInclude.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
 		divProductores.setVisible(true);
 		agregarProductorButton.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		binder.loadAll();
 	}
@@ -790,10 +809,10 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divCaracteristicas.setVisible(false);
 		agregarProductorButton.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
-		pedidosInclude.setVisible(true);
+		_setVisible(solicitudesNodosInclude, false);
 		divPedidos.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosInclude, true);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		binder.loadAll();
 	}
@@ -811,10 +830,10 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divCaracteristicas.setVisible(false);
 		agregarProductorButton.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
-		pedidosInclude.setVisible(true);
+		_setVisible(solicitudesNodosInclude, false);
+		_setVisible(pedidosInclude, true);
 		divPedidos.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 		binder.loadAll();
 	}
@@ -854,10 +873,10 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divCaracteristicas.setVisible(false);
 		agregarProductorButton.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
-		pedidosColectivosInclude.setVisible(true);
+		_setVisible(pedidosColectivosInclude, true);
 		divPedidosColectivos.setVisible(true);
 		binder.loadAll();
 	}
@@ -875,10 +894,10 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		divCaracteristicas.setVisible(false);
 		agregarProductorButton.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
-		pedidosColectivosInclude.setVisible(true);
+		_setVisible(pedidosColectivosInclude, true);
 		divPedidosColectivos.setVisible(true);
 		binder.loadAll();
 	}
@@ -920,11 +939,11 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		agregarProductorButton.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		divSolicitudesNodos.setVisible(true);
-		solicitudesNodosInclude.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, true);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 
 		binder.loadAll();
@@ -986,11 +1005,11 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		agregarProductorButton.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		divSolicitudesNodos.setVisible(false);
-		solicitudesNodosInclude.setVisible(false);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, false);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 	}
 	
@@ -1007,11 +1026,11 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		caracInclude.setVisible(false);
 		divCaracteristicas.setVisible(false);
 		agregarProductorButton.setVisible(false);
-		pedidosInclude.setVisible(false);
+		_setVisible(pedidosInclude, false);
 		divPedidos.setVisible(false);
 		divSolicitudesNodos.setVisible(true);
-		solicitudesNodosInclude.setVisible(true);
-		pedidosColectivosInclude.setVisible(false);
+		_setVisible(solicitudesNodosInclude, true);
+		_setVisible(pedidosColectivosInclude, false);
 		divPedidosColectivos.setVisible(false);
 
 		binder.loadAll();

@@ -247,17 +247,17 @@
 		<div visible="false" id="divCaracteristicas">
 			<include visible="false" id="caracInclude"/>
 		</div>
-		<div id="divPedidos" class="sectionContainer" visible="false">
-			<include id="pedidosInclude" visible="false" src="/pedidos.zul"/>
+		<div id="divPedidos" class="sectionContainer" fulfill="menuItemPedidos.onClick" visible="false">
+			<include id="pedidosInclude"  src="/pedidos.zul"/>
 		</div>
 		
-		<div id="divPedidosColectivos" class="sectionContainer" visible="false">
+		<div id="divPedidosColectivos" class="sectionContainer" fulfill="menuItemPedidosColecitvos.onClick"  visible="false">
 			<separator spacing="5px"/>
-			<include id="pedidosColectivosInclude"  visible="false" src="/verHistorialPedidosColectivos.zul"/>
+			<include id="pedidosColectivosInclude" src="/verHistorialPedidosColectivos.zul"/>
 		</div>
-		<div id="divSolicitudesNodos" visible="false">
+		<div id="divSolicitudesNodos" fulfill="menuItemNodos.onClick" visible="false">
 			<separator spacing="5px"/>
-			<include id="solicitudesNodosInclude" mode="defer" visible="false" src="/nodos.zul"/>
+			<include id="solicitudesNodosInclude" src="/nodos.zul"/>
 		</div>
 		<div id="divProductores" class="sectionContainer" visible="false">
 			<vbox>
