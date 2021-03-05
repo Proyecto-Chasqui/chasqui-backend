@@ -20,7 +20,7 @@
 <window width="100%"  id="historialPedidosColectivosWindow" apply="chasqui.view.composer.HistorialPedidosColectivosComposer" sizable="true" closable ="false"
 style="overflow:auto">
 
-<div style="position: relative;  left: 1vw" id="filtros" visible="false">
+<div class="filterContainer" id="filtros" visible="true">
 	<hbox>
 		<vbox>
 			<hbox>
@@ -45,7 +45,6 @@ style="overflow:auto">
 			<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
 	    </vbox>
 	</hbox>
-	<separator spacing="15px"/>
 </div>
 
 	<listbox multiple="false" checkmark="false" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{historialPedidosColectivosWindow$composer.pedidosColectivos}" mold="paging" pageSize="10" rows="10">

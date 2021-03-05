@@ -6,24 +6,12 @@
 <zk>
 <window id="nodosWindow" apply="chasqui.view.composer.NodosComposer" sizable="false" width="100%"
 style="overflow:auto">
-<!--
-<div align="center">
-	<hbox>
-		<label value="${c:l('zk.nodo.label.filtro')}"/>
-		<datebox id="desde"/>
-		<space spacing="10px"/>
-		<label value="${c:l('zk.nodo.label.filtro')}"/>
-		<datebox id="hasta"/>	
-		<space spacing="10px"/>
-		<button label="Buscar"/>
-	</hbox>
-</div>
--->
-<tabbox width="100%" mold="accordion">
+
+<tabbox width="100%" mold="default">
 	<tabs >
 		<tab label="Pedidos"  image="/imagenes/pedidosNodo.png"/>
-		<tab label="Nodos"  image="/imagenes/nodos.png"/>
 		<tab label="Solicitudes" image="/imagenes/solicitud.png"/>
+		<tab id="nodosTab" label="Nodos"  image="/imagenes/nodos.png"/>
 	</tabs>
 	<tabpanels>
 		<tabpanel>
@@ -47,12 +35,10 @@ style="overflow:auto">
         			</html>
     				</popup> 
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarpedidosnodos" visible="true">
-				<menuitem id="menuItemMostrarFiltrosPedidosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosPedidosNodos"/>
 				<menuitem id="menuItemReiniciarFiltrosPedidosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onReiniciarFiltrosPedidosNodos"/>
 				<menuitem id="menuItemActualizarPedidos"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarPedidos"/>
 			</menubar>
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltros" src="/imagenes/question.png" />
-        		
         		 <popup id="ayudatextofiltros" width="600px">
         			<html><![CDATA[ En esta sección se encuentran los filtros para los pedidos.<br /><br />
         			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
@@ -69,7 +55,7 @@ style="overflow:auto">
         					
         			</html>
     				</popup> 
-			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtros" visible="false">
+			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtros" visible="true">
 
 			<separator spacing="15px"/>
 				<div style="position:relative; left:10px;">
@@ -100,7 +86,7 @@ style="overflow:auto">
 				</div>
 				<separator spacing="15px"/>
 			</div>
-				<listbox  id="listboxPedidosNodo" model="@{nodosWindow$composer.pedidosNodos}" mold="paging" rows="5" pageSize="5" >
+				<listbox  id="listboxPedidosNodo" model="@{nodosWindow$composer.pedidosNodos}" mold="paging" rows="10" pageSize="10">
 					<listhead>
 							<listheader label="ID" align="center" visible="true" sort="auto(id)"/>
 							<listheader label="Nombre Nodo" align="center" visible="true" sort="auto(colectivo.alias)"></listheader>
@@ -117,6 +103,90 @@ style="overflow:auto">
 				</listbox>
 		</tabpanel>
 		<tabpanel>
+			<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudatextosolicitudes" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudatextosolicitudes" width="600px">
+        			<html><![CDATA[ En esta sección se listan todas las solicitudes de creación de nodos que los usuarios envian.<br /><br /></br>
+        					<strong>Las solicitudes de creación estan mostradas en 4 tipos de estado que son las siguientes</strong><br /><br />
+        					<font color="green"><strong>EN GESTIÓN:</font></strong> Son las solicitudes enviadas por los usuarios y que <font color="blue">deben gestionarse</font>.</br> </br>
+        					<font color="blue"><strong>APROBADA:</font></strong> Son las solicitudes <strong>gestionadas y aprobadas</strong> por el administrador del panel. </br> </br>
+							<font color="red"><strong>RECHAZADA:</font></strong> Son las solicitudes <strong>gestionadas y rechazadas</strong> por el administrador del panel. </br> </br>
+        					<font color="orange"><strong>CANCELADA:</font></strong> Son las solicitudes canceladas por el usuario que envió la solicitud de creación, <font color="red">no requiere gestión</font>. </br> </br></br>
+							<strong>El botón <image style="width:16px;height:16px;" src="./imagenes/gestion_16.png"/> Gestionar muestra en detalle la siguiente información de la solicitud</strong> </br></br>
+        					<strong>Datos del cliente:</strong> Muestra en más detalle la información del usuario solicitante del nodo.</br></br>
+        					<strong>Detalles del nodo:</strong> Muestra en mas detalle la información correspondiente al nodo.</br></br>
+        					<strong>Aceptar/Rechazar:</strong> Permite aceptar o rechazar la solicitud, solo visible en solicitudes con estado <font color="green"><strong>EN GESTIÓN</font></strong>.</br>
+        					<strong>Nota:</strong> Esta acción envia un email al cliente informando de la acción correspondiente.
+        					]]>
+        					
+        			</html>
+    				</popup> 
+			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarsolicitudes" visible="true">
+				<menuitem id="menuItemReiniciarFiltrosSolicitudes" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposSolicitudes"/>
+				<menuitem id="menuItemActualizarSolicitudes"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarSolicitudes"/>
+			</menubar>
+				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltrossolicitud" src="/imagenes/question.png" />
+        		
+        		 <popup id="ayudatextofiltrossolicitud" width="600px">
+        			<html><![CDATA[ En esta sección se encuentran los filtros para las solicitudes.<br /><br />
+        			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
+							<strong><image style="width:16px;height:16px;" src="./imagenes/reset32.png"/>Restablecer filtros</image></strong>: Permite volver a el estado inicial de la busqueda, <font color="blue">solo sera visible cuando se aplique la misma</font>.</br> </br>
+        					<strong>Los filtros estan divididos en 5 busquedas principales y 1 de orden</strong><br /><br />
+							<strong>Fecha Desde/Hasta:</strong> Permite filtrar las solicitudes entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de creación</strong> de la solicitud.</br> </br>
+							<strong>Buscar por email:</strong> Permite filtrar las solicitudes que tengan el email con el definido en la busqueda. <strong>(*)</strong> </br></br>
+							<strong>Por estado:</strong> Permite filtrar las solicitudes por alguno de los siguientes estados <strong><font color="green">EN GESTIÓN</font>, <font color="blue">APROBADA</font>,<font color="orange">CANCELADA</font>,<font color="red">RECHAZADA</font>,<font>TODOS</font></strong>. </br> </br>
+							<strong>Por barrio:</strong> Permite filtrar los nodos por el barrio. <strong>(*)</strong></br></br>
+							<strong>Por coordinador:</strong> Permite filtrar las solicitudes que tengan el nombre o apellido del coordinador con el definido en la busqueda. <strong>(*)</strong> </br></br>
+							<strong>Columnas:</strong> En determinadas columnas podes hacer click para ordenar los pedidos <font color="blue">ascendente/descendentemente</font> según criterios normales, es decir si es texto ordena alfabéticamente, si es número por cantidad o si es fecha por precedencia.  </br> </br>
+							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
+							<strong>(*)</strong> Para ejecutar la busqueda tenés que <font color="blue">apretar Enter</font>, además el campo soporta escribir de manera parcial por ejemplo 'maria a' o 'alb', el sistema buscara los que contengan el texto.</br> </br>
+        					]]>
+        					
+        			</html>
+    				</popup> 
+			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtros_solicitudes" visible="true">
+			<separator spacing="15px"/>
+				<div style="position:relative; left:10px;">
+				<hbox>
+					<vbox>
+						<hbox>
+							<label value="Fecha Desde:" /> 
+							<datebox readonly="true" id="desde_solicitud" forward="onChange=nodosWindow.composer.onBuscarSolicitudes"/>
+						</hbox>
+						<hbox>
+							<label value="Fecha Hasta:"/>
+							<datebox readonly="true" id="hasta_solicitud" forward="onChange=nodosWindow.composer.onBuscarSolicitudes"/>
+						</hbox>
+					</vbox>
+				    <vbox>
+						<textbox id="buscadorSolicitudEmailCoordinador" placeholder="Buscar por email" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
+						<combobox id="estadosSolicitud" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosDeSolicitudesList}" selectedItem="@{nodosWindow$composer.estadoSolicitudSeleccionada}"/>
+				    </vbox>
+				    <vbox>
+						<textbox id="buscadorPorCoordinador" placeholder="Buscar por coordinador" width="110%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
+						<textbox id="buscadorSolicitudPorBarrio" placeholder="Buscar por barrio" width="110%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
+					</vbox>
+				</hbox>
+				</div>
+				
+					<separator spacing="15px"/>
+			</div>
+						<listbox  id="listboxSolicitudesCreacionNodos" model="@{nodosWindow$composer.solicitudesCreacionNodos}" mold="paging" rows="10" pageSize="10">
+							<listhead>
+								<listheader align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>
+								<listheader align="center" label="Estado" sort="auto(estado)"/>
+								<listheader align="center" label="Coordinador" sort="auto(usuarioSolicitante.nombre, usuarioSolicitante.apellido)"/>
+								<listheader align="center" label="e-mail" sort="auto(usuarioSolicitante.email)"/>
+								<listheader align="center" label="Tel.Fijo"/>
+								<listheader align="center" label="Celular" />
+								<listheader align="center" label="Barrio" sort="auto(barrio)"/>
+								<listheader align="center" label="Acciones"/>
+							</listhead>		
+						</listbox>
+		</tabpanel>
+		
+		<tabpanel>
+				
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudatextonodos" src="/imagenes/question.png" />
         		
         		 <popup id="ayudatextonodos" width="600px">
@@ -137,12 +207,10 @@ style="overflow:auto">
         			</html>
     				</popup> 
 			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarnodos" visible="true">
-				<menuitem id="menuItemMostrarFiltrosNodos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosNodos"/>
 				<menuitem id="menuItemReiniciarFiltrosNodos" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposNodos"/>
 				<menuitem id="menuItemActualizarNodos"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarNodos"/>
 			</menubar>
 				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltrosnodos" src="/imagenes/question.png" />
-        		
         		 <popup id="ayudatextofiltrosnodos" width="600px">
         			<html><![CDATA[ En esta sección se encuentran los filtros para los nodos.<br /><br />
         			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
@@ -161,7 +229,7 @@ style="overflow:auto">
         					
         			</html>
     				</popup> 
-			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtrosNodos" visible="false">
+			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtrosNodos" visible="true">
 			<separator spacing="15px"/>
 				<div style="position:relative; left:10px;">
 				<hbox>
@@ -207,89 +275,7 @@ style="overflow:auto">
 					</listhead>		
 				</listbox>
 		</tabpanel>
-		<tabpanel>
-			<image align="right" style="cursor:pointer; position:relative; margin-top:-1.8em; margin-right:1em;" popup="ayudatextosolicitudes" src="/imagenes/question.png" />
-        		
-        		 <popup id="ayudatextosolicitudes" width="600px">
-        			<html><![CDATA[ En esta sección se listan todas las solicitudes de creación de nodos que los usuarios envian.<br /><br /></br>
-        					<strong>Las solicitudes de creación estan mostradas en 4 tipos de estado que son las siguientes</strong><br /><br />
-        					<font color="green"><strong>EN GESTIÓN:</font></strong> Son las solicitudes enviadas por los usuarios y que <font color="blue">deben gestionarse</font>.</br> </br>
-        					<font color="blue"><strong>APROBADA:</font></strong> Son las solicitudes <strong>gestionadas y aprobadas</strong> por el administrador del panel. </br> </br>
-							<font color="red"><strong>RECHAZADA:</font></strong> Son las solicitudes <strong>gestionadas y rechazadas</strong> por el administrador del panel. </br> </br>
-        					<font color="orange"><strong>CANCELADA:</font></strong> Son las solicitudes canceladas por el usuario que envió la solicitud de creación, <font color="red">no requiere gestión</font>. </br> </br></br>
-							<strong>El botón <image style="width:16px;height:16px;" src="./imagenes/gestion_16.png"/> Gestionar muestra en detalle la siguiente información de la solicitud</strong> </br></br>
-        					<strong>Datos del cliente:</strong> Muestra en más detalle la información del usuario solicitante del nodo.</br></br>
-        					<strong>Detalles del nodo:</strong> Muestra en mas detalle la información correspondiente al nodo.</br></br>
-        					<strong>Aceptar/Rechazar:</strong> Permite aceptar o rechazar la solicitud, solo visible en solicitudes con estado <font color="green"><strong>EN GESTIÓN</font></strong>.</br>
-        					<strong>Nota:</strong> Esta acción envia un email al cliente informando de la acción correspondiente.
-        					]]>
-        					
-        			</html>
-    				</popup> 
-			<menubar style="border-style: solid; border-width: 1px; border-color:LightGray;" id="menubarsolicitudes" visible="true">
-				<menuitem id="menuItemMostrarFiltrosSolicitudes" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=nodosWindow$composer.onMostrarFiltrosSolicitudes"/>
-				<menuitem id="menuItemReiniciarFiltrosSolicitudes" visible="false" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onLimpiarCamposSolicitudes"/>
-				<menuitem id="menuItemActualizarSolicitudes"  label="Actualizar" image="/imagenes/reset32.png" forward="onClick=nodosWindow$composer.onActualizarSolicitudes"/>
-			</menubar>
-				<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudatextofiltrossolicitud" src="/imagenes/question.png" />
-        		
-        		 <popup id="ayudatextofiltrossolicitud" width="600px">
-        			<html><![CDATA[ En esta sección se encuentran los filtros para las solicitudes.<br /><br />
-        			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
-							<strong><image style="width:16px;height:16px;" src="./imagenes/reset32.png"/>Restablecer filtros</image></strong>: Permite volver a el estado inicial de la busqueda, <font color="blue">solo sera visible cuando se aplique la misma</font>.</br> </br>
-        					<strong>Los filtros estan divididos en 5 busquedas principales y 1 de orden</strong><br /><br />
-							<strong>Fecha Desde/Hasta:</strong> Permite filtrar las solicitudes entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de creación</strong> de la solicitud.</br> </br>
-							<strong>Buscar por email:</strong> Permite filtrar las solicitudes que tengan el email con el definido en la busqueda. <strong>(*)</strong> </br></br>
-							<strong>Por estado:</strong> Permite filtrar las solicitudes por alguno de los siguientes estados <strong><font color="green">EN GESTIÓN</font>, <font color="blue">APROBADA</font>,<font color="orange">CANCELADA</font>,<font color="red">RECHAZADA</font>,<font>TODOS</font></strong>. </br> </br>
-							<strong>Por barrio:</strong> Permite filtrar los nodos por el barrio. <strong>(*)</strong></br></br>
-							<strong>Por coordinador:</strong> Permite filtrar las solicitudes que tengan el nombre o apellido del coordinador con el definido en la busqueda. <strong>(*)</strong> </br></br>
-							<strong>Columnas:</strong> En determinadas columnas podes hacer click para ordenar los pedidos <font color="blue">ascendente/descendentemente</font> según criterios normales, es decir si es texto ordena alfabéticamente, si es número por cantidad o si es fecha por precedencia.  </br> </br>
-							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
-							<strong>(*)</strong> Para ejecutar la busqueda tenés que <font color="blue">apretar Enter</font>, además el campo soporta escribir de manera parcial por ejemplo 'maria a' o 'alb', el sistema buscara los que contengan el texto.</br> </br>
-        					]]>
-        					
-        			</html>
-    				</popup> 
-			<div style="border-style: solid; border-width: 1px; border-color:LightGray;" id="filtros_solicitudes" visible="false">
-			<separator spacing="15px"/>
-				<div style="position:relative; left:10px;">
-				<hbox>
-					<vbox>
-						<hbox>
-							<label value="Fecha Desde:" /> 
-							<datebox readonly="true" id="desde_solicitud" forward="onChange=nodosWindow.composer.onBuscarSolicitudes"/>
-						</hbox>
-						<hbox>
-							<label value="Fecha Hasta:"/>
-							<datebox readonly="true" id="hasta_solicitud" forward="onChange=nodosWindow.composer.onBuscarSolicitudes"/>
-						</hbox>
-					</vbox>
-				    <vbox>
-						<textbox id="buscadorSolicitudEmailCoordinador" placeholder="Buscar por email" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
-						<combobox id="estadosSolicitud" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estadosDeSolicitudesList}" selectedItem="@{nodosWindow$composer.estadoSolicitudSeleccionada}"/>
-				    </vbox>
-				    <vbox>
-						<textbox id="buscadorPorCoordinador" placeholder="Buscar por coordinador" width="110%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
-						<textbox id="buscadorSolicitudPorBarrio" placeholder="Buscar por barrio" width="110%"  forward="onOK=nodosWindow$composer.onSendBuscarSolicitudes" />
-					</vbox>
-				</hbox>
-				</div>
-				
-					<separator spacing="15px"/>
-			</div>
-						<listbox  id="listboxSolicitudesCreacionNodos" model="@{nodosWindow$composer.solicitudesCreacionNodos}" mold="paging" rows="5" pageSize="5" >
-							<listhead>
-								<listheader align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>
-								<listheader align="center" label="Estado" sort="auto(estado)"/>
-								<listheader align="center" label="Coordinador" sort="auto(usuarioSolicitante.nombre, usuarioSolicitante.apellido)"/>
-								<listheader align="center" label="e-mail" sort="auto(usuarioSolicitante.email)"/>
-								<listheader align="center" label="Tel.Fijo"/>
-								<listheader align="center" label="Celular" />
-								<listheader align="center" label="Barrio" sort="auto(barrio)"/>
-								<listheader align="center" label="Acciones"/>
-							</listhead>		
-						</listbox>
-		</tabpanel>
+		
 	</tabpanels>
 </tabbox>
 </window>

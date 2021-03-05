@@ -13,6 +13,14 @@
 
 <!-- </zscript> -->
 <style>
+	.sectionContainer {
+		padding: 1rem;
+	}
+
+	.filterContainer {
+		margin-bottom: 1rem;
+	}
+
 	.selectorproductos{
 		width: 100px;
 	    border-radius: 10px;
@@ -95,10 +103,6 @@
 	<menuitem id="menuItemNuevoProductor" label="Nuevo Productor" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		forward="onClick=administracionWindow$composer.onCrearProductor"/>
 	<menuseparator/>
-	<menuitem id="menuItemMostrarFiltrosProductor" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProductores"/>
-	<menuitem id="menuItemMostrarFiltrosProducto" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProducto"/>
-	<menuitem id="menuItemMostrarFiltrosPedidosColectivos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosColectivos"/>
-	<menuitem id="menuItemMostrarFiltrosPedidosIndividuales" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosIndividuales"/>
 	<menuitem id="menuItemReiniciarFiltrosPedidosColectivos" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosColectivos"/>
 	<menuitem id="menuItemReiniciarFiltrosPedidosIndividuales" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosIndividuales"/>
 	<menuitem id="menuItemReiniciarFiltrosProductos" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosProductos"/>
@@ -193,11 +197,11 @@
 <!-- reemplazado por menubar  (borrar despues de testear bien)-->
 
 
-		<div id="divCategoria" visible="false" >
+		<div id="divCategoria" class="sectionContainer" visible="false" >
 				<separator spacing="5px"/>
 			<vbox width="100%">
 				<listbox id="listboxCategorias" model="@{administracionWindow$composer.usuarioLogueado.categorias}"
-				selectedItem="${administracionWindow$composer.categoriaSeleccionada}" mold="paging" pageSize="10" rows="10">
+				selectedItem="${administracionWindow$composer.categoriaSeleccionada}" mold="paging" pageSize="10" rows="10" width="500px">
 					<listhead>
 						<listheader label="${c:l('zk.listheader.label.administracion.nombre')}" sort="auto"/>
 						<listheader label="${c:l('zk.listheader.label.administracion.acciones')}" sort="auto"/>
@@ -205,11 +209,10 @@
 				</listbox>
 			</vbox>
 		</div>
-		<div visible="false" id="divProducto">
+		<div id="divProducto" class="sectionContainer" visible="false">
 			<separator spacing="5px"/>
 			<vbox>
-			<hbox style="position: relative;  left: 1vw">
-				<div  id="filtros_producto">
+				<div  id="filtros_producto" class="filterContainer">
 					<hbox >
 						<vbox>
 							<combobox id="productorComboBox" placeholder="Por productor" readonly="false" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
@@ -224,10 +227,9 @@
 							<textbox id="busquedaPorNombreProducto" width="100%" placeholder="Por nombre de producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
 							<intbox id="busquedaPorStock" placeholder="Por stock menor a" width="158px" constraint="no negative" forward="onOK=administracionWindow$composer.onBuscar"/>
 						</vbox>
-					<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
+						<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
 					</hbox>
 				</div>
-			</hbox>
 				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10"
 				selectedItem="${administracionWindow$composer.productoSeleccionado}" rows="10">
 					<listhead>
@@ -245,22 +247,22 @@
 		<div visible="false" id="divCaracteristicas">
 			<include visible="false" id="caracInclude"/>
 		</div>
-		<div id="divPedidos" visible="false">
-			<include id="pedidosInclude" visible="false" src="/pedidos.zul"/>
+		<div id="divPedidos" class="sectionContainer" fulfill="menuItemPedidos.onClick" visible="false">
+			<include id="pedidosInclude"  src="/pedidos.zul"/>
 		</div>
 		
-		<div id="divPedidosColectivos" visible="false">
+		<div id="divPedidosColectivos" class="sectionContainer" fulfill="menuItemPedidosColecitvos.onClick"  visible="false">
 			<separator spacing="5px"/>
-			<include id="pedidosColectivosInclude" visible="false" src="/verHistorialPedidosColectivos.zul"/>
+			<include id="pedidosColectivosInclude" src="/verHistorialPedidosColectivos.zul"/>
 		</div>
-		<div id="divSolicitudesNodos" visible="false">
+		<div id="divSolicitudesNodos" fulfill="menuItemNodos.onClick" visible="false">
 			<separator spacing="5px"/>
-			<include id="solicitudesNodosInclude" visible="false" src="/nodos.zul"/>
+			<include id="solicitudesNodosInclude" src="/nodos.zul"/>
 		</div>
-		<div id="divProductores" visible="false">
+		<div id="divProductores" class="sectionContainer" visible="false">
 			<vbox>
 			<separator spacing="1px"/>
-			<div  id="filtrosproductores" visible="false">
+			<div  id="filtrosproductores" class="filterContainer" visible="true">
 				<hbox>
 					<textbox id="busquedaPorNombreProductor" placeholder="Buscar por nombre"  forward="onOK=administracionWindow$composer.onBuscarProductor"/>
 				</hbox>

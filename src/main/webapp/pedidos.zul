@@ -4,7 +4,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="pedidosWindow"  apply="chasqui.view.composer.PedidosComposer" sizable="true"
+<window id="pedidosWindow"  apply="chasqui.view.composer.PedidosComposer" sizable="false"
 style="overflow:auto">
 <style>
 	.selectorpedidos{
@@ -88,7 +88,7 @@ style="overflow:auto">
 </script>
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <separator spacing="5px"/>
-<div style="position: relative;  left: 1vw" id="filtros" visible="false">
+<div id="filtros" class="filterContainer" visible="true">
 	<hbox>
 		<vbox>
 			<hbox>
@@ -113,23 +113,21 @@ style="overflow:auto">
 			<button label="Buscar" id="buscar" visible="false"/>
 		</vbox>
 	</hbox>
-	<separator spacing="15px"/>
 </div>
-
-	<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{pedidosWindow$composer.pedidos}" mold="paging" pageSize="10" rows="10">
-		<listhead>
-			<listheader label="ID Pedido" align="center" visible="true"/>
-			<listheader label="Cliente Creador" align="center" />
-			<listheader label="Fecha Creación" align="center" />
-			<listheader label="Fecha de Cierre" align="center" />
-			<listheader label="Zona" align="center"/>
-			<listheader label="Monto Minimo" align="center" visible="false"/>
-			<listheader label="Monto Actual" align="center"/>
-			<listheader label="Estado" align="center"/>
-			<listheader label="Direccion de Entrega" align="center"/>
-			<listheader label="Acciones" align="center" hflex="4"/>
-		</listhead>		
-	</listbox>
+<listbox multiple="true" checkmark="true" sizedByContent="true"  span="true" id="listboxPedidos"  model="@{pedidosWindow$composer.pedidos}" mold="paging" pageSize="10" rows="10">
+	<listhead>
+		<listheader label="ID Pedido" align="center" visible="true"/>
+		<listheader label="Cliente Creador" align="center" />
+		<listheader label="Fecha Creación" align="center" />
+		<listheader label="Fecha de Cierre" align="center" />
+		<listheader label="Zona" align="center"/>
+		<listheader label="Monto Minimo" align="center" visible="false"/>
+		<listheader label="Monto Actual" align="center"/>
+		<listheader label="Estado" align="center"/>
+		<listheader label="Direccion de Entrega" align="center"/>
+		<listheader label="Acciones" align="center" hflex="4"/>
+	</listhead>		
+</listbox>
 <separator spacing="10px"/>
 <div align="center">
 	<button label="Confirmar Entrega" id="confirmarEntregabtn" visible="false"/>
