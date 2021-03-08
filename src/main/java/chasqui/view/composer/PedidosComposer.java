@@ -406,7 +406,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		onClick$buscar();
 	}
 	
-	public void onClick$exportarSeleccionados() throws Exception{
+	public void onClick$menuItemExportarSeleccionados() throws Exception{
 		pedidosSeleccionados = new ArrayList<Pedido>();
 		for(Pedido p: pedidos){
 			for(Integer id : idsSeleccionados){
@@ -458,7 +458,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		return lista;
 	}
 
-	public void onClick$exportarTodosbtn() throws EstadoPedidoIncorrectoException{
+	public void onClick$menuItemExportarPedidos() throws EstadoPedidoIncorrectoException{
 		Messagebox.show(
 				"¿Desea que se genere un resumen de todos los productos de los pedidos?",
 				"Pregunta",
