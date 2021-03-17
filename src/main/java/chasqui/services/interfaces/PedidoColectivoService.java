@@ -31,7 +31,7 @@ public interface PedidoColectivoService {
 			Date h, String estadoSeleccionado, Integer zonaId, String puntoRetiro, String emailadmn);
 
 	public List<PedidoColectivo>  obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(Integer id,
-			Date d, Date h, String estadoSeleccionado, Integer zonaId, String prSeleccionado, String email);
+			Date d, Date h, String estadoSeleccionado, Integer zonaId, String prSeleccionado, String queryNodo);
 	@Transactional
 	public void eliminarPedidosColectivos(Collection<? extends PedidoColectivo> obtenerPedidosColectivosDeVendedor);
 
