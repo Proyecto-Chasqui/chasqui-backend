@@ -28,7 +28,7 @@ public interface PedidoColectivoDAO {
 
 	public List<PedidoColectivo> obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(
 			Integer idVendedor, Date d, Date h, String estadoSeleccionado, Integer zonaId, String prSeleccionado,
-			String email);
+			String queryNodo);
 
 	public void eliminar(PedidoColectivo p);
 

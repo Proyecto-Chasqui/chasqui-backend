@@ -71,7 +71,7 @@ style="overflow:auto">
 						</hbox>
 					</vbox>
 				    <vbox>
-						<textbox id="buscadorPorUsuario" placeholder="Buscar por email" width="100%"  forward="onOK=nodosWindow$composer.onBuscar" />
+						<textbox id="buscadorPorUsuario" placeholder="Nodo, email o administrador" width="100%"  forward="onOK=nodosWindow$composer.onBuscar" />
 						<combobox id="estadosListbox" placeholder="Buscar por estado" readonly="true" model="@{nodosWindow$composer.estados}" selectedItem="@{nodosWindow$composer.estadoSeleccionado}"/>
 				    </vbox>
 				    <vbox>
