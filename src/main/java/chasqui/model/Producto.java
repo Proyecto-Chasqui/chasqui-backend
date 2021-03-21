@@ -105,6 +105,38 @@ public class Producto {
 		return false;
 	}
 
+	public String getCodigo() {
+		if(variantes.size() > 0) {
+			return this.variantes.get(0).getCodigo();
+		}else {
+			return "";
+		}
+	}
+
+	public Integer getStock() {
+		if(variantes.size() > 0) {
+			return this.variantes.get(0).getStock();
+		}else {
+			return 0;
+		}
+	}
+
+	public Integer getCantidadReservada() {
+		if(variantes.size() > 0) {
+			return this.variantes.get(0).getCantidadReservada();
+		}else {
+			return 0;
+		}
+	}
+
+	public boolean isDestacado() {
+		if(variantes.size() > 0) {
+			return this.variantes.get(0).getDestacado();
+		}else {
+			return false;
+		}
+	}
+
 
 	
 }

@@ -222,16 +222,18 @@
 						<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
 					</hbox>
 				</div>
-				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10"
-				selectedItem="${administracionWindow$composer.productoSeleccionado}" rows="10">
+				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10" rows="10"
+				selectedItem="${administracionWindow$composer.productoSeleccionado}" >
 					<listhead>
-						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto')}"/>
-						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto.fabricante')}"/>
-						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto.categoria')}"/>
-						<listheader align="center" label="Stock"/>
-						<listheader align="center" label="${c:l('zk.listheader.label.administracion.acciones')}"/>
-						<listheader align="center" label="Destacado"/>
-						<listheader align="center" label="Visibilidad"/>
+						<listheader width="60px" align="left" label="Código"  sort="auto(codigo)" />
+						<listheader align="left" label="${c:l('zk.listheader.label.administracion.producto')}" sort="auto(nombre)" />
+						<listheader width="250px" align="left" label="${c:l('zk.listheader.label.administracion.producto.fabricante')}" sort="auto(fabricante.nombre)"/>
+						<listheader width="120px" align="left" label="${c:l('zk.listheader.label.administracion.producto.categoria')}" sort="auto(categoria.nombre)"/>
+						<listheader width="50px" align="right" label="Stock"  sort="auto(stock)"  />
+						<listheader width="60px" align="right" label="Reserva" sort="auto(CantidadReservada)" />
+						<listheader width="150px" align="center" label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+						<listheader width="100px" align="center" label="Destacado"  sort="auto(destacado)" />
+						<listheader width="90px" align="center" label="Visibilidad" sort="auto(ocultado)" />
 					</listhead>
 				</listbox>
 			</vbox>
