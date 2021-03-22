@@ -11,6 +11,7 @@ public class Variante {
 	private String descripcion;
 	private Integer stock;
 	private Integer cantidadReservada;
+	private Integer pesoGramos;
 	private Double precio;
 	private Double incentivo;
 	private String nombre;
@@ -55,6 +56,14 @@ public class Variante {
 	
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public Integer getPesoGramos() {
+		return pesoGramos;
+	}
+
+	public void setPesoGramos(Integer pesoGramos) {
+		this.pesoGramos = pesoGramos;
 	}
 	
 	public Double getPrecio() {

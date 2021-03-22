@@ -129,6 +129,24 @@ public class Producto {
 		}
 	}
 
+	public Integer getPesoGramos() {
+		if(variantes.size() > 0) {
+			return this.variantes.get(0).getPesoGramos();
+		}else {
+			return 0;
+		}
+	}
+
+	public String getPesoConUnidad() {
+		Integer peso = this.getPesoGramos();
+		if(peso >= 1000) {
+			Float pesoKg = peso/1000f;
+			return String.format(pesoKg==Math.round(pesoKg) ? "%.0f" : "%s", pesoKg) + "kg";
+		} else {
+			return peso.toString() + "g";
+		}
+	}
+
 	public boolean isDestacado() {
 		if(variantes.size() > 0) {
 			return this.variantes.get(0).getDestacado();

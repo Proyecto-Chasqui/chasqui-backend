@@ -38,6 +38,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		Listcell c9 = new Listcell(p.getStock().toString());
 		Listcell cReserva = new Listcell(p.getCantidadReservada().toString());
 		Listcell cCodigoProducto = new Listcell(p.getCodigo());
+		Listcell cPesoGramos = new Listcell(p.getPesoConUnidad());
 		Hbox hboxImagenes = new Hbox();
 		hboxImagenes.setAlign("center");
 		
@@ -138,6 +139,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		c5.setParent(item); // Categoria
 		c9.setParent(item);	// Stock
 		cReserva.setParent(item); // cantidad reservada)
+		cPesoGramos.setParent(item); // cantidad reservada)
 		menuitemdetalle.setParent(menupop);
 		menuitemedit.setParent(menupop);
 		menuitemedestacar.setParent(menupop);
