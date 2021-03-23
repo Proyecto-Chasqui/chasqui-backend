@@ -10,7 +10,8 @@ public class ProductoPedido {
 	private Double incentivo;
 	private String nombreProducto;
 	private String nombreVariante;
-	private Integer cantidad;
+	private Integer pesoGramosUnidad = 0; // peso por unidad en gramos
+	private Integer cantidad = 0;
 	private String imagen;//TODO analizar
 	private String nombreProductor;
 	DecimalFormat df = new DecimalFormat("#.##");
@@ -22,6 +23,7 @@ public class ProductoPedido {
 		cantidad = cant;
 		nombreProducto = v.getProducto().getNombre();
 		nombreVariante = " "; //v.getNombre();
+		pesoGramosUnidad = v.getPesoGramos();
 		precio = v.getPrecio();
 		imagen = (v.getImagenes().size()>0)?v.getImagenes().get(0).getPath():null;
 		setNombreProductor(vnombreProductor);
@@ -49,6 +51,14 @@ public class ProductoPedido {
 		String trim = df.format(d); 
 		Double value = Double.parseDouble(trim.replace(",","."));
 		return value;
+	}
+
+	public Integer getPesoGramosUnidad() {
+		return pesoGramosUnidad;
+	}
+
+	public Integer getPesoGramosTotal() {
+		return cantidad * pesoGramosUnidad;
 	}
 
 	public Integer getCantidad() {
