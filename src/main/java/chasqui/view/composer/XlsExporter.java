@@ -279,6 +279,7 @@ public class XlsExporter {
 			titulo = pedido.getCliente().getNombre() + " " + pedido.getCliente().getApellido();
 			titulo = msj + titulo;
 		}
+		titulo = titulo.replaceAll("[^a-zA-Z0-9 ]", "");
 		sheet = wb.createSheet(page.toString() + "_" + titulo);
 		PrintSetup printSetup = sheet.getPrintSetup();
 		printSetup.setLandscape(true);
