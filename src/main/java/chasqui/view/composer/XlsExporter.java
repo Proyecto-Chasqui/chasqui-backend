@@ -36,6 +36,7 @@ import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.ProductoService;
+import chasqui.utils.PesoRender;
 
 public class XlsExporter {
 
@@ -46,7 +47,7 @@ public class XlsExporter {
 
 	private Sheet sheet;
 
-	private static final String[] titles = { "PRODUCTOS","Productor", "Precio", "Cantidad", "SubTotal", "Código" };
+	private static final String[] titles = { "PRODUCTOS","Productor", "Precio", "Cantidad", "SubTotal", "Peso (g)", "Código" };
 	private static final String[] checkers = { "Baja", "Armado", "Revisado", "Carga", "Entrega" };
 	private static final String[] contactinfo = { "Nombre", "Apellido","E-mail", "Telefono", "2do Telefono" };
 	private static final String[] contactaddress = { "Calle","Altura","Localidad","Codigo Postal", "Departamento", "Zona", "Comentario" };
@@ -236,12 +237,12 @@ public class XlsExporter {
 		// del ancho de un caracter
 		sheet.setColumnWidth(0, 30 * 256); // 30 caracteres de ancho
 		sheet.setColumnWidth(1, 30 * 256);
-		for (int i = 3; i < 5; i++) {
+		for (int i = 3; i < 6; i++) {
 			sheet.setColumnWidth(i, 11 * 256); // 11 caracteres de ancho
 		}
-		sheet.setColumnWidth(6, 12 * 256); // 12 caracteres de ancho
-		sheet.setColumnWidth(7, 24*256);
-		sheet.setColumnWidth(8, 30*256);
+		sheet.setColumnWidth(7, 12 * 256); // 12 caracteres de ancho
+		sheet.setColumnWidth(8, 24*256);
+		sheet.setColumnWidth(9, 30*256);
 
 	}
 
@@ -267,7 +268,8 @@ public class XlsExporter {
 				row.getCell(2).setCellValue(p.getPrecio());
 				row.getCell(3).setCellValue(p.getCantidad());
 				row.getCell(4).setCellValue(p.getCantidad() * p.getPrecio());
-				row.getCell(5).setCellValue(productoservice.obtenerVariantePor(p.getIdVariante()).getCodigo().toString());
+				row.getCell(5).setCellValue(p.getPesoGramosTotal()); // PesoRender.pesoConUnidad(p.getPesoGramosTotal()));
+				row.getCell(6).setCellValue(productoservice.obtenerVariantePor(p.getIdVariante()).getCodigo().toString());
 			}
 		}
 	}
@@ -324,7 +326,7 @@ public class XlsExporter {
 		cell.setCellStyle(styles.get("formula"));
 		// Marca el campo para el sum.
 		Integer endsum = size + 2;
-		for (int j = 3; j < 5; j++) {
+		for (int j = 3; j < 6; j++) {
 			cell = sumRow.createCell(j);
 			String ref = (char) ('A' + j) + "3:" + (char) ('A' + j) + endsum.toString();
 			cell.setCellFormula("SUM(" + ref + ")");
@@ -348,18 +350,19 @@ public class XlsExporter {
 	
 	private void doContactArea(Pedido p){
 		Cell datacell;
+		Integer startColumn = titles.length;
 		Integer totalNrows = sheet.getLastRowNum();
 		Integer startRow = 2;
 		Row aRow = sheet.getRow(startRow -1);
 		//titulo
-		buildTitle(aRow,"Información de Contacto",6,7,"$G$2:$H$2");	
+		buildTitle(aRow,"Información de Contacto",startColumn,startColumn+1,"$H$2:$I$2");	
 		//primera seccion
 		for(int i= 0; i<contactinfo.length;i++){
 			aRow = sheet.getRow(startRow);
-			datacell = aRow.createCell(6);
+			datacell = aRow.createCell(startColumn);
 			datacell.setCellValue(contactinfo[i]);
 			datacell.setCellStyle(styles.get("cell"));
-			datacell = aRow.createCell(7);
+			datacell = aRow.createCell(startColumn+1);
 			datacell.setCellStyle(styles.get("cell"));
 			startRow++;
 		}
@@ -374,17 +377,17 @@ public class XlsExporter {
 			startRow = 8;
 			aRow = sheet.getRow(startRow -1);
 			//titulo
-			buildTitle(aRow,"Detalles de la Dirección",6,7,"$G$8:$H$8");
+			buildTitle(aRow,"Detalles de la Dirección",startColumn,startColumn+1,"$H$8:$I$8");
 			for(int i=0; i<contactaddress.length;i++){
 				aRow = sheet.getRow(startRow);
 				if(aRow == null){
 					sheet.createRow(startRow);
 					aRow = sheet.getRow(startRow);
 				}
-				datacell = aRow.createCell(6);
+				datacell = aRow.createCell(startColumn);
 				datacell.setCellValue(contactaddress[i]);
 				datacell.setCellStyle(styles.get("cell"));
-				datacell = aRow.createCell(7);
+				datacell = aRow.createCell(startColumn+1);
 				datacell.setCellStyle(styles.get("cell"));
 				startRow++;
 			}
@@ -392,17 +395,17 @@ public class XlsExporter {
 		if(p.getPuntoDeRetiro() != null){
 			startRow = 8;
 			aRow = sheet.getRow(startRow -1);
-			buildTitle(aRow,"Punto de Retiro",6,7,"$G$8:$H$8");
+			buildTitle(aRow,"Punto de Retiro",startColumn,startColumn+1,"$H$8:$I$8");
 			for(int i=0; i<campospuntoderetiro.length;i++){
 				aRow = sheet.getRow(startRow);
 				if(aRow == null){
 					sheet.createRow(startRow);
 					aRow = sheet.getRow(startRow);
 				}
-				datacell = aRow.createCell(6);
+				datacell = aRow.createCell(startColumn);
 				datacell.setCellValue(campospuntoderetiro[i]);
 				datacell.setCellStyle(styles.get("cell"));
-				datacell = aRow.createCell(7);
+				datacell = aRow.createCell(startColumn+1);
 				datacell.setCellStyle(styles.get("cell"));
 				startRow++;
 			}
@@ -414,6 +417,7 @@ public class XlsExporter {
 		Integer size = respuestas.size();
 		claves.addAll(respuestas.keySet()); 
 		Cell datacell = null;
+		Integer startColumn = titles.length;
 		//fila de inicio
 		Integer startRow = 16;
 		if(p.getDireccionEntrega() == null && p.getPuntoDeRetiro() == null){
@@ -425,7 +429,7 @@ public class XlsExporter {
 			aRow = sheet.getRow(startRow - 1);
 		}
 		//titulo
-		buildTitle(aRow,"Respuestas del cuestionario",6,7,"$G$"+startRow+":$H$"+startRow);
+		buildTitle(aRow,"Respuestas del cuestionario",startColumn,startColumn+1,"$H$"+startRow+":$I$"+startRow);
 		//primera seccion
 		for(int i= 0; i<size;i++){
 			if(sheet.getRow(startRow) == null){
@@ -437,11 +441,12 @@ public class XlsExporter {
 	}
 	
 	private void createCellInRow(Row aRow, Integer startRow, Cell datacell, String value){
+		Integer startColumn = titles.length;
 		aRow = sheet.getRow(startRow);
-		datacell = aRow.createCell(6);
+		datacell = aRow.createCell(startColumn);
 		datacell.setCellValue(value);
 		datacell.setCellStyle(styles.get("cell"));
-		datacell = aRow.createCell(7);
+		datacell = aRow.createCell(startColumn+1);
 		datacell.setCellStyle(styles.get("cell"));
 	}
 
