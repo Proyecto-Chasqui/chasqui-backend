@@ -35,7 +35,9 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		Listcell c6 = new Listcell();
 		Listcell c7 = new Listcell();
 		Listcell c8 = new Listcell();
-		Listcell c9 = new Listcell(p.getVariantes().get(0).getStock().toString());
+		Listcell c9 = new Listcell(p.getStock().toString());
+		Listcell cReserva = new Listcell(p.getCantidadReservada().toString());
+		Listcell cCodigoProducto = new Listcell(p.getCodigo());
 		Hbox hboxImagenes = new Hbox();
 		hboxImagenes.setAlign("center");
 		
@@ -130,10 +132,12 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		
 		menubar.setSclass("selectorproductos");
 		
+		cCodigoProducto.setParent(item);
 		c1.setParent(item); // Producto
 		c2.setParent(item); // Productor
 		c5.setParent(item); // Categoria
 		c9.setParent(item);	// Stock
+		cReserva.setParent(item); // cantidad reservada)
 		menuitemdetalle.setParent(menupop);
 		menuitemedit.setParent(menupop);
 		menuitemedestacar.setParent(menupop);

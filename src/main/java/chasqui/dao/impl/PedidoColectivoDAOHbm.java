@@ -10,6 +10,7 @@ import org.apache.cxf.common.util.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -246,7 +247,7 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PedidoColectivo>  obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(final Integer vendedorid, final Date d, final Date h, final String estadoSeleccionado, final Integer zonaId,
-			final String puntoRetiro, final String emailAdmin) {
+			final String puntoRetiro, final String queryNodo) {
 		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<PedidoColectivo>>() {
 
 			@Override
@@ -283,10 +284,22 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 					c.createAlias("pedidoColectivo.zona", "zona");
 					c.add(Restrictions.eq("zona.id",zonaId));
 				}
-				if(emailAdmin!=null) {
-					if(!emailAdmin.equals("")){
+				if(queryNodo!=null) {
+					if(!queryNodo.equals("")){
 						c.createAlias("grupoCC.administrador", "administrador");
-						c.add(Restrictions.like("administrador.email", "%"+emailAdmin+"%"));
+						Criterion email = Restrictions.like("administrador.email", "%"+queryNodo+"%");
+						Criterion nombre = Restrictions.like("administrador.nombre", "%"+queryNodo+"%");
+						Criterion apellido = Restrictions.like("administrador.apellido", "%"+queryNodo+"%");
+						Criterion aliasNodo = Restrictions.like("grupoCC.alias", "%"+queryNodo+"%");
+						c.add(
+							Restrictions.or(
+								Restrictions.or(
+									Restrictions.or( email, nombre),
+									apellido
+								),
+								aliasNodo
+							)
+						);
 					}
 				}
 				return c.list();

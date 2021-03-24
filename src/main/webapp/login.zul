@@ -5,51 +5,144 @@
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 
 <zk>
+<style>
+	.LoginWindow, .LoginWindow > .z-window-content {
+		background: #f0f0f0;
+	}
 
+	.LoginContainer {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 400px;
+		color: #444;
+	}
 
-<window id="loginWindow" apply="chasqui.view.composer.LoginComposer" width="100%"
+	.LoginContainer-LogoContainer {
+		text-align: center;
+	}
+
+	.LoginBox {
+		border: 1px solid #CCC;
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		width: 100%;
+		border-radius: 3px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+	}
+
+	.LoginBox-Body {
+		padding: 2rem;
+		padding-bottom: 1rem;
+		background-color: #FFF;
+	}
+
+	.LoginBox-Field {
+		display: flex;
+		flex-direction: column;	
+		margin-bottom: 1.5rem;
+	}
+
+	.LoginBox-Field .LoginBoxField-Label {
+		color: #555;
+    display: inline-block;
+    font-size: 0.95rem;
+		padding-bottom: 0.5rem;
+	}
+
+	.LoginBox-Field input {
+		width: 100%;
+		height: 30px;
+		font-size: 1rem;
+		box-shadow: inset 0 1.5px 3px rgba(190, 190, 190, .4), 0 0 0 5px #f5f7f8;
+	}
+
+	.LoginBox-LabelError {
+		color: rgb(223, 56, 56);
+		margin-bottom: 0.5rem;
+    display: inline-block;
+	}
+
+	.LoginBox-Toolbar {
+		background: #ecf2f5;
+		width: 100%;
+		padding: 1.5rem;
+		padding-right: 2rem;
+		border-top: 1px solid #ccc;
+		display: flex;
+	}
+
+	.LoginBox-Toolbar > * {
+		flex: 1 1 auto;
+	}
+
+	.LoginBoxToolbar-Left {
+		text-align: left;
+	}
+
+	.LoginBoxToolbar-Right {
+		text-align: right;
+	}
+
+	.LoginBox-ForgotPassword, .LoginBox-ForgotPassword  > * {
+		color: #444;
+	}
+
+	.LoginNotice {
+		width: 100%;
+	}
+
+	.Version, .Version > * {
+		color: #444;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+	}
+</style>
+<window id="loginWindow" apply="chasqui.view.composer.LoginComposer" class="LoginWindow" width="100%"
  visible="true" height="100%">
 <!-- 	<html:form action="j_spring_security_check" method="POST"  xmlns:html="native"> -->
-<separator height="30%"/>
-	<vbox style="padding-left:40%;">
-	<div align="center">
-		<image src="/imagenes/logo_ch_login_1.png"/>
-	</div>
-	<div id="enter" align="center">
-		<vbox>
-			<label id="labelError" style="font-weight:bold;color:red" value="${c:l('zk.label.error.loggin')}"
-			visible="false"/>
-			<hbox>
-				<label value="${c:l('zk.loggin.username')}" style="font-size:15px;font-weight:bold;"/>
-				<textbox maxlength="64" id="usernameLoggin" name="j_username" />		
-			</hbox>
-			<hbox>
-				<label value="${c:l('zk.loggin.password')}" style="font-size:15px;font-weight:bold;"/>
-				<textbox id="passwordLoggin" maxlength="24" type="password" name="j_password"/>
-			</hbox>
-			<div align="center">
-				<vbox >
-					<button id="logginButton" label="${c:l('zk.button.loggin')}" type="submit"/>
-					<toolbarbutton id="olvidoSuPassword" label="${c:l('zk.label.loggin.reset.password')}" 
-	         	   style="color:blue; text-decoration: font-size:30px" forward="onClick=loginWindow$composer.onOlvidoPassword"/>				
-				</vbox>
-			</div>
-		</vbox>
-	</div>
-	</vbox>
-	<vbox style="padding-left:37%;">
-	<div align="justify" width="40%">
-		 <label style="color: red" value="Advertencia:"/> El panel de administración soporta  <label style="color: red" value="solo un usuario logueado por cuenta"/>, si hay un usuario utilizando el panel y decide loguear con su cuenta, el mismo será <label style="color: red" value="expulsado"/> para permitirle el ingreso.
-	</div>
-	<div align="justify" width="40%">
-		Por favor asegúrese de que no haya nadie mas utilizando la cuenta antes de ingresar.
-	</div>
-	</vbox>
-	<vbox style="position:absolute; margin-top: 12%">
-		<div align="center">
-			v 1.0.0
+
+ <div class="LoginContainer">
+		<div class="LoginContainer-LogoContainer">
+			<image src="/imagenes/logo_ch_login_1.png"/>
 		</div>
-	</vbox>
+		<div id="enter" class="LoginBox">
+			<div class="LoginBox-Body">
+				<div class="LoginBox-Field">
+					<label class="LoginBoxField-Label">Usuario:</label>
+					<textbox maxlength="64" id="usernameLoggin" name="j_username" />		
+				</div>
+				<div class="LoginBox-Field">
+					<label class="LoginBoxField-Label">Contraseña:</label>
+					<textbox id="passwordLoggin" maxlength="24" type="password" name="j_password"/>
+				</div>
+				<label id="labelError" class="LoginBox-LabelError" value="${c:l('zk.label.error.loggin')}" visible="false"/>
+			</div>				
+			<div class="LoginBox-Toolbar">
+					<div class="LoginBoxToolbar-Left">
+						<toolbarbutton id="olvidoSuPassword" class="LoginBox-ForgotPassword" label="${c:l('zk.label.loggin.reset.password')}" 
+								forward="onClick=loginWindow$composer.onOlvidoPassword"/>				
+					</div>	
+					<div class="LoginBoxToolbar-Right">
+						<button id="logginButton"  label="${c:l('zk.button.loggin')}" type="submit"/>
+					</div>
+			</div>
+		</div>
+
+		<div class="LoginNotice">
+			<div>
+				 <label style="color: red" value="Advertencia:"/> El panel de administración soporta  <label style="color: red" value="solo un usuario logueado por cuenta"/>, si hay un usuario utilizando el panel y decide loguear con su cuenta, el mismo será <label style="color: red" value="expulsado"/> para permitirle el ingreso.
+			</div>
+			<div>
+				Por favor asegúrese de que no haya nadie mas utilizando la cuenta antes de ingresar.
+			</div>
+		</div>
+	</div>
+
+	
+	<div class="Version">v1.2.0</div>
 
 <!-- 	</html:form> -->
 	

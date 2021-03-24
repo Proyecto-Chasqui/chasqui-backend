@@ -13,6 +13,14 @@
 
 <!-- </zscript> -->
 <style>
+	.sectionContainer {
+		padding: 1rem;
+	}
+
+	.filterContainer {
+		margin-bottom: 1rem;
+	}
+
 	.selectorproductos{
 		width: 100px;
 	    border-radius: 10px;
@@ -38,7 +46,7 @@
     }
 </style>
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
-<window id="administracionWindow" style=" position:absolute; left:-3px; width:100.5%;" zclass="none" apply="chasqui.view.composer.AdministracionComposer" visible="false" >
+<window id="administracionWindow" style=" position:absolute; left:0; width:100%" zclass="none" apply="chasqui.view.composer.AdministracionComposer" visible="false" >
 <div style="background: #00b8fc">
 	<grid  style="background: #00b8fc">
 		<columns zclass="none">
@@ -95,24 +103,12 @@
 	<menuitem id="menuItemNuevoProductor" label="Nuevo Productor" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
 		forward="onClick=administracionWindow$composer.onCrearProductor"/>
 	<menuseparator/>
-	<menuitem id="menuItemMostrarFiltrosProductor" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProductores"/>
-	<menuitem id="menuItemMostrarFiltrosProducto" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosProducto"/>
-	<menuitem id="menuItemMostrarFiltrosPedidosColectivos" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosColectivos"/>
-	<menuitem id="menuItemMostrarFiltrosPedidosIndividuales" label="Mostrar filtros" image="/imagenes/filtrar.png" forward="onClick=administracionWindow$composer.onMostrarFiltrosPedidosIndividuales"/>
 	<menuitem id="menuItemReiniciarFiltrosPedidosColectivos" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosColectivos"/>
-	<menuitem id="menuItemReiniciarFiltrosPedidosIndividuales" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosPedidosIndividuales"/>
 	<menuitem id="menuItemReiniciarFiltrosProductos" label="${c:l('zk.menuitem.filtros.reset')}" image="/imagenes/reset32.png" forward="onClick=administracionWindow$composer.onReiniciarFiltrosProductos"/>
 	<menuseparator id="separadorExport"/>
-	<menu label="Exportar pedidos" id="menuExportar" image="/imagenes/export.png">
-		<menupopup>
-			<menuitem id="menuItemExportarPedidos" image="/imagenes/all.png" label="Filtrados" forward="onClick=administracionWindow$composer.onExportarPedidosIndividuales"/>
-			<menuitem id="menuItemExportarSeleccionados" image="/imagenes/multiple_selection.png"  label="Seleccionados" forward="onClick=administracionWindow$composer.onExportarPedidosIndividualesSeleccionados"/>
-		</menupopup>
-	</menu>
 </menubar>
 <!-- imagenes de ayuda -->
 <image id="ayudapedidoscolectivos" visible="true" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="tooltippedidoscolectivos" src="/imagenes/question.png" />
-<image id="ayudapedidos" popup="tooltippedidos" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;"  src="/imagenes/question.png" />
 <image id="ayudaproductores" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="tooltipproductores" src="/imagenes/question.png" />
 <image id="ayudacategorias" visible="false" align="right" style="cursor:pointer; position:relative; margin-top:-1.6em; margin-right:1em;" popup="ayudatextocategorias" src="/imagenes/question.png" />
 <image id="ayudaproductos" visible="false" align="right" style="cursor:pointer; position:relative;margin-top:-1.6em; margin-right:1em;" popup="tooltipproductos" src="/imagenes/question.png" />
@@ -193,11 +189,11 @@
 <!-- reemplazado por menubar  (borrar despues de testear bien)-->
 
 
-		<div id="divCategoria" visible="false" >
+		<div id="divCategoria" class="sectionContainer" visible="false" >
 				<separator spacing="5px"/>
 			<vbox width="100%">
 				<listbox id="listboxCategorias" model="@{administracionWindow$composer.usuarioLogueado.categorias}"
-				selectedItem="${administracionWindow$composer.categoriaSeleccionada}" mold="paging" pageSize="10" rows="10">
+				selectedItem="${administracionWindow$composer.categoriaSeleccionada}" mold="paging" pageSize="10" rows="10" width="500px">
 					<listhead>
 						<listheader label="${c:l('zk.listheader.label.administracion.nombre')}" sort="auto"/>
 						<listheader label="${c:l('zk.listheader.label.administracion.acciones')}" sort="auto"/>
@@ -205,11 +201,10 @@
 				</listbox>
 			</vbox>
 		</div>
-		<div visible="false" id="divProducto">
+		<div id="divProducto" class="sectionContainer" visible="false">
 			<separator spacing="5px"/>
 			<vbox>
-			<hbox style="position: relative;  left: 1vw">
-				<div  id="filtros_producto">
+				<div  id="filtros_producto" class="filterContainer">
 					<hbox >
 						<vbox>
 							<combobox id="productorComboBox" placeholder="Por productor" readonly="false" model="@{administracionWindow$composer.fabricantes}" selectedItem="@{administracionWindow$composer.fabricanteSeleccionado}" forward="onOK=administracionWindow$composer.onBuscar" />
@@ -224,20 +219,21 @@
 							<textbox id="busquedaPorNombreProducto" width="100%" placeholder="Por nombre de producto"  forward="onOK=administracionWindow$composer.onBuscar"/>
 							<intbox id="busquedaPorStock" placeholder="Por stock menor a" width="158px" constraint="no negative" forward="onOK=administracionWindow$composer.onBuscar"/>
 						</vbox>
-					<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
+						<button label="Limpiar Campos" id="limpiarCamposbtn" visible="false"/>
 					</hbox>
 				</div>
-			</hbox>
-				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10"
-				selectedItem="${administracionWindow$composer.productoSeleccionado}" rows="10">
+				<listbox id="listboxProductos" model="@{administracionWindow$composer.productosFiltrados}" mold="paging" pageSize="10" rows="10"
+				selectedItem="${administracionWindow$composer.productoSeleccionado}" >
 					<listhead>
-						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto')}"/>
-						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto.fabricante')}"/>
-						<listheader align="center" label="${c:l('zk.listheader.label.administracion.producto.categoria')}"/>
-						<listheader align="center" label="Stock"/>
-						<listheader align="center" label="${c:l('zk.listheader.label.administracion.acciones')}"/>
-						<listheader align="center" label="Destacado"/>
-						<listheader align="center" label="Visibilidad"/>
+						<listheader width="60px" align="left" label="Código"  sort="auto(codigo)" />
+						<listheader align="left" label="${c:l('zk.listheader.label.administracion.producto')}" sort="auto(nombre)" />
+						<listheader width="250px" align="left" label="${c:l('zk.listheader.label.administracion.producto.fabricante')}" sort="auto(fabricante.nombre)"/>
+						<listheader width="120px" align="left" label="${c:l('zk.listheader.label.administracion.producto.categoria')}" sort="auto(categoria.nombre)"/>
+						<listheader width="50px" align="right" label="Stock"  sort="auto(stock)"  />
+						<listheader width="60px" align="right" label="Reserva" sort="auto(CantidadReservada)" />
+						<listheader width="150px" align="center" label="${c:l('zk.listheader.label.administracion.acciones')}"/>
+						<listheader width="100px" align="center" label="Destacado"  sort="auto(destacado)" />
+						<listheader width="90px" align="center" label="Visibilidad" sort="auto(ocultado)" />
 					</listhead>
 				</listbox>
 			</vbox>
@@ -245,22 +241,22 @@
 		<div visible="false" id="divCaracteristicas">
 			<include visible="false" id="caracInclude"/>
 		</div>
-		<div id="divPedidos" visible="false">
-			<include id="pedidosInclude" visible="false" src="/pedidos.zul"/>
+		<div id="divPedidos" fulfill="menuItemPedidos.onClick" visible="false">
+			<include id="pedidosInclude" src="/pedidos.zul"/>
 		</div>
 		
-		<div id="divPedidosColectivos" visible="false">
+		<div id="divPedidosColectivos" class="sectionContainer" fulfill="menuItemPedidosColecitvos.onClick"  visible="false">
 			<separator spacing="5px"/>
-			<include id="pedidosColectivosInclude" visible="false" src="/verHistorialPedidosColectivos.zul"/>
+			<include id="pedidosColectivosInclude" src="/verHistorialPedidosColectivos.zul"/>
 		</div>
-		<div id="divSolicitudesNodos" visible="false">
+		<div id="divSolicitudesNodos" fulfill="menuItemNodos.onClick" visible="false">
 			<separator spacing="5px"/>
-			<include id="solicitudesNodosInclude" visible="false" src="/nodos.zul"/>
+			<include id="solicitudesNodosInclude" src="/nodos.zul"/>
 		</div>
-		<div id="divProductores" visible="false">
+		<div id="divProductores" class="sectionContainer" visible="false">
 			<vbox>
 			<separator spacing="1px"/>
-			<div  id="filtrosproductores" visible="false">
+			<div  id="filtrosproductores" class="filterContainer" visible="true">
 				<hbox>
 					<textbox id="busquedaPorNombreProductor" placeholder="Buscar por nombre"  forward="onOK=administracionWindow$composer.onBuscarProductor"/>
 				</hbox>
@@ -332,53 +328,6 @@
 							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
 							<strong>(*)</strong> Para ejecutar la busqueda tenés que <font color="blue">apretar Enter</font>, además el campo soporta escribir de manera parcial por ejemplo 'maria a' o 'alb', el sistema buscara los que contengan el texto.</br> </br>
         					]]>
-        					
-        			</html>
-    		 </popup>
-    	<!-- Pedidos -->
-    	<popup id="ayudatextopedidos" width="600px">
-        	<html><![CDATA[ En esta sección se listan todos los pedidos individuales <br /><br />
-        			<strong>Los pedidos estan divididos en 4 estados principales, que son, ABIERTOS, <font color="blue">CONFIRMADOS</font></strong>, <font color="red">CANCELADOS</font></strong> y <font color="orange">VENCIDOS</font></strong><br /><br />
-        			<font><strong>ABIERTO:</font></strong> Son los pedidos que estan en proceso de compra, si no definió un vencimiento permanecerán de esta manera hasta que el usuario CANCELE o CONFIRME la compra.  </br> </br>
-        			<font color="blue"><strong>CONFIRMADO:</font></strong> Son los pedidos que fueron cerrados por el comprador y que deben ser gestionados para su preparación y entrega. </br> </br>
-        			<font color="orange"><strong>VENCIDO:</font></strong> Son los pedidos que pasaron el tiempo limite de compra, solo ocurre si se definio un tiempo de vencimiento para los pedidos. </br> </br>
-        			<font color="red"><strong>CANCELADO:</font></strong> Son los pedidos que fueron cancelados por el comprador, no requieren acciones adicionales. </br> </br>
-        			<strong>El botón desplegable <font color="blue">Ver Acciones</font> posee las siguientes 6 acciones disponibles</strong> </br>
-        			<strong>Nota:</strong> Algunas estan disponibles o visibles bajo determinadas circunstancias. </br> </br>
-        			<strong><image style="width:16px;height:16px;" src="./imagenes/eye.png"/>Ver detalle:</strong> Permite ver en detalle los datos y los productos del pedido. </br> </br>
-        			<strong><image style="width:16px;height:16px;" src="./imagenes/mapIcon.png"/>Cambiar Zona:</strong> Permite cambiar la zona del pedido a otra que definas, <strong> solo se puede cambiar con estado <font color="blue">CONFIRMADO</font></strong> y deberá ser asignada <font color="red">obligatoriamente</font> si la misma tiene una zona <font color="red"> No definida </font> para poder preparar y entregar el pedido.</br>
-        			<strong><font color="blue">Aclaración:</font></strong> Esta acción no es visible si el pedido fue seleccionado para retirar en un <strong>punto de retiro</strong>.</br></br>
-        			<strong><image style="width:16px;height:16px;" src="./imagenes/pedidoPreparado.png"/>Preparar:</strong> Cambia el estado del pedido a <strong><font color="magenta">PREPARADO</font></strong>, <font color="red">esta acción no es reversible</font>.</br></br>
-        			<strong><image style="width:16px;height:16px;" src="./imagenes/pedidoEntregado.png"/>Entregar:</strong> Cambia el estado del pedido a <strong><font color="green">ENTREGADO</font></strong>, <font color="red">esta acción no es reversible</font>.</br></br>
-        			<strong><image style="width:16px;height:16px;" src="./imagenes/envelope.png"/>Notificar:</strong> Permite enviar un email del sistema que envia el resumen del pedido y avisa que el mismo esta preparado, <strong> solo es posible con pedidos en estado<font color="magenta"> PREPARADO</font></strong>.</br></br>
-        		]]>
-        					
-        </html>
-    	</popup>
-    	<!-- Pedidos menu filtros -->
-      		 <popup id="ayudatextomenupedidos_filtros" width="600px">
-        			<html><![CDATA[ 
-        			 		<strong><image style="width:16px;height:16px;" src="./imagenes/filtrar.png"/>Mostrar/Ocultar Filtros</strong>: Permite acceder/ocultar los filtros. <br />
-							<strong><image style="width:16px;height:16px;" src="./imagenes/reset32.png"/>Restablecer filtros</image></strong>: Permite volver a el estado inicial de la busqueda.</font>.</br> </br>
-        					<strong>Los filtros estan divididos en 6 busquedas principales</strong><br /><br />
-							<strong>Fecha Desde/Hasta:</strong> Permite filtrar los pedidos entre las fechas definidas, esta busqueda esta aplicada sobre la <strong>fecha de cierre</strong> del pedido, tenga en cuenta que al <strong>aplicar este filtro</strong> solo se mostraran todos los pedidos que posean fecha de cierre que solo esta disponible en los pedidos con estados <strong><font color="blue">CONFIRMADO</font>,<font color="violet">PREPARADO</font> o <font color="green">ENTREGADO</font></strong>.</br> </br>
-							<strong>Buscar por email:</strong> Permite filtrar los nodos que tengan el email con el definido en la busqueda. <strong>(*)</strong> </br></br>
-							<strong>Por estado:</strong> Permite filtrar los nodos por alguno de los siguientes estados <strong><font color="blue">CONFIRMADO</font>, <font color="red">CANCELADO</font>, <font>ABIERTO</font>, <font color="green">ENTREGADO</font>, <font color="orange">VENCIDO</font>, <font color="violet">PREPARADO</font></strong>. </br> </br>
-							<strong>Por Zona:</strong> Permite filtrar las Zonas definidas.</br></br>
-							<strong>Por punto de retiro:</strong> Permite filtrar los puntos de retiro definidos si se utilizan.</br></br>
-							<strong>Nota:</strong> Los filtros aplicados permanecen activos aun si te moves entre secciones del panel.</br> </br>
-							<strong>(*)</strong> Para ejecutar la busqueda tenés que <font color="blue">apretar Enter</font>, además el campo soporta escribir de manera parcial por ejemplo 'maria a' o 'alb', el sistema buscara los que contengan el texto.</br> </br>
-        					]]>
-        					
-        			</html>
-    		 </popup>
-    	<!-- Pedidos menu filtros -->
-      		 <popup id="ayudatextomenupedidos_exportar" width="600px">
-        			<html><![CDATA[ 
-        			 		<strong><image style="width:16px;height:16px;" src="./imagenes/all.png"/>Filtrados</strong>: Exporta los pedidos afectados por el filtro. <br />
-        			 		<strong>Nota:</strong>Esta acción puede generar un resumen de los pedidos, sin embargo si la cantidad de pedidos es grande puede tardar mas de lo usual.<br /><br />
-							<strong><image style="width:16px;height:16px;" src="./imagenes/multiple_selection.png"/>Restablecer filtros</image></strong>: Exporta solo los pedidos que selecciones</font>.</br>
-							]]>
         					
         			</html>
     		 </popup>
@@ -481,16 +430,7 @@
         					
         </html>
     	</popup>
-   <!-- menutooltip ayuda pedidos -->
-     <menupopup id="tooltippedidos">
-        <menuitem image="/imagenes/answers.png" label="¿Que se muestra en la lista?" popup="ayudatextopedidos"/>
-         <menu image="/imagenes/answers.png" label="¿Que hacen los botones del menú?">
-            <menupopup>
-            	<menuitem image="/imagenes/filtrar.png" label="¿Que hacen los filtros?"  popup="ayudatextomenupedidos_filtros"/>
-            	<menuitem image="/imagenes/export.png" label="¿Que el hace boton exportar pedidos?"  popup="ayudatextomenupedidos_exportar"/> 
-            </menupopup>
-        </menu>
-     </menupopup> 
+   
       <!-- menutooltip ayuda pedidos colectivos -->
      <menupopup id="tooltippedidoscolectivos">
         <menuitem image="/imagenes/answers.png" label="¿Que se muestra en la lista?" popup="ayudatextopedidoscolectivos"/>

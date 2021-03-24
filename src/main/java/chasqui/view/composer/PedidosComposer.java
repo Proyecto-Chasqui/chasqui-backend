@@ -64,6 +64,7 @@ import chasqui.services.interfaces.ProductoService;
 import chasqui.services.interfaces.PuntoDeRetiroService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.services.interfaces.ZonaService;
+import chasqui.view.composer.Constantes;
 import chasqui.view.renders.PedidoRenderer;
 
 @SuppressWarnings({"serial","deprecation","unused"})
@@ -87,7 +88,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	private ProductoService productoService;
 	private Combobox estadosListbox;
 	private Combobox zonasListbox;
-	private String estadoSeleccionado;
+	private String estadoSeleccionado = Constantes.ESTADO_PEDIDO_CONFIRMADO;
 	private Zona zonaSeleccionada;
 	private String grupalSeleccionado;
 	private List<Zona> zonas;
@@ -115,23 +116,27 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		Executions.getCurrent().getSession().setAttribute("pedidosComposer", this);
 		if(usuarioLogueado != null){
 			super.doAfterCompose(component);
+			binder = new AnnotateDataBinder(component);
 			component.addEventListener(Events.ON_USER, new PedidoEventListener(this));
 			pedidoService = (PedidoService) SpringUtil.getBean("pedidoService");
 			productoService = (ProductoService) SpringUtil.getBean("productoService");
 			vendedorService = (VendedorService) SpringUtil.getBean("vendedorService");
 			mailService = (MailService) SpringUtil.getBean("mailService");
 			zonaService = (ZonaService)SpringUtil.getBean("zonaService");
-			pedidos  = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
+
 			estados = Arrays.asList(Constantes.ESTADO_PEDIDO_ABIERTO,Constantes.ESTADO_PEDIDO_CANCELADO,Constantes.ESTADO_PEDIDO_CONFIRMADO,Constantes.ESTADO_PEDIDO_ENTREGADO, Constantes.ESTADO_PEDIDO_PREPARADO, Constantes.ESTADO_PEDIDO_VENCIDO);
 			zonas = zonaService.buscarZonasBy(usuarioLogueado.getId());
+			
+			pedidos = new ArrayList();
+			this.onClick$buscar();
+
 			if(!usuarioLogueado.getIsRoot()) {
 				puntosDeRetiro = crearListaDeNombresDePR(vendedorService.obtenerPuntosDeRetiroDeVendedor(usuarioLogueado.getId()));
 			}
-			binder = new AnnotateDataBinder(component);
 			window = (Window) component;
 			listboxPedidos.setItemRenderer(new PedidoRenderer((Window) component));
+
 			binder.loadAll();
-			
 		}
 	}
 	
@@ -224,7 +229,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 	}
 	
 	public void onClick$limpiarCamposbtn(){
-		estadoSeleccionado = "";
+		estadoSeleccionado = Constantes.ESTADO_PEDIDO_CONFIRMADO;
 		zonaSeleccionada = null;
 		desde.setValue(null);
 		hasta.setValue(null);
@@ -232,10 +237,9 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		estadosListbox.setValue("");
 		zonasListbox.setValue("");
 		buscadorPorCliente.setValue(null);
-		pedidos = pedidoService.obtenerPedidosIndividualesDeVendedor(usuarioLogueado.getId());
 		prCombobox.setValue("");
 		idsSeleccionados = new ArrayList<Integer>();
-		this.binder.loadAll();
+		this.onClick$buscar();
 	}
 
 	public void onClick$confirmarEntregabtn() throws EstadoPedidoIncorrectoException{
@@ -402,7 +406,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		onClick$buscar();
 	}
 	
-	public void onClick$exportarSeleccionados() throws Exception{
+	public void onClick$menuItemExportarSeleccionados() throws Exception{
 		pedidosSeleccionados = new ArrayList<Pedido>();
 		for(Pedido p: pedidos){
 			for(Integer id : idsSeleccionados){
@@ -454,7 +458,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 		return lista;
 	}
 
-	public void onClick$exportarTodosbtn() throws EstadoPedidoIncorrectoException{
+	public void onClick$menuItemExportarPedidos() throws EstadoPedidoIncorrectoException{
 		Messagebox.show(
 				"¿Desea que se genere un resumen de todos los productos de los pedidos?",
 				"Pregunta",
