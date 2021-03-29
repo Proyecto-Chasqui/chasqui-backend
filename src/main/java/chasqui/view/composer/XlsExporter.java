@@ -47,7 +47,7 @@ public class XlsExporter {
 
 	private Sheet sheet;
 
-	private static final String[] titles = { "PRODUCTOS","Productor", "Precio", "Cantidad", "SubTotal", "Peso (g)", "Código" };
+	private static final String[] titles = { "PRODUCTOS","Productor", "Precio", "Cantidad", "SubTotal", "Peso (kg)", "Código" };
 	private static final String[] checkers = { "Baja", "Armado", "Revisado", "Carga", "Entrega" };
 	private static final String[] contactinfo = { "Nombre", "Apellido","E-mail", "Telefono", "2do Telefono" };
 	private static final String[] contactaddress = { "Calle","Altura","Localidad","Codigo Postal", "Departamento", "Zona", "Comentario" };
@@ -268,7 +268,7 @@ public class XlsExporter {
 				row.getCell(2).setCellValue(p.getPrecio());
 				row.getCell(3).setCellValue(p.getCantidad());
 				row.getCell(4).setCellValue(p.getCantidad() * p.getPrecio());
-				row.getCell(5).setCellValue(p.getPesoGramosTotal()); // PesoRender.pesoConUnidad(p.getPesoGramosTotal()));
+				row.getCell(5).setCellValue(p.getPesoGramosTotal()/1000d);
 				row.getCell(6).setCellValue(productoservice.obtenerVariantePor(p.getIdVariante()).getCodigo().toString());
 			}
 		}
@@ -634,6 +634,7 @@ public class XlsExporter {
 		ppc.setNombreVariante(pp.getNombreVariante());
 		ppc.setPrecio(pp.getPrecio());
 		ppc.setIncentivo(pp.getIncentivo());
+		ppc.setVariante((pp.getVariante()));
 		return ppc;
 	}
 }

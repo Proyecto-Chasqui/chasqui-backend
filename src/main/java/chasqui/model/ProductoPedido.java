@@ -3,7 +3,7 @@ package chasqui.model;
 import java.text.DecimalFormat;
 
 public class ProductoPedido {
-
+	
 	private Integer id;
 	private Integer idVariante;
 	private Double precio;
@@ -15,6 +15,7 @@ public class ProductoPedido {
 	private String imagen;//TODO analizar
 	private String nombreProductor;
 	DecimalFormat df = new DecimalFormat("#.##");
+	private Variante variante;
 	
 	public ProductoPedido (){}
 	
@@ -28,6 +29,14 @@ public class ProductoPedido {
 		imagen = (v.getImagenes().size()>0)?v.getImagenes().get(0).getPath():null;
 		setNombreProductor(vnombreProductor);
 		incentivo = 0.0;
+	}
+
+	public Variante getVariante() {
+		return variante;
+	}
+
+	public void setVariante(Variante v) {
+		variante = v;
 	}
 
 	//GETs & SETs
@@ -54,11 +63,14 @@ public class ProductoPedido {
 	}
 
 	public Integer getPesoGramosUnidad() {
+		if(variante != null) {
+			return variante.getPesoGramos();
+		}
 		return pesoGramosUnidad;
 	}
 
 	public Integer getPesoGramosTotal() {
-		return cantidad * pesoGramosUnidad;
+		return cantidad * this.getPesoGramosUnidad();
 	}
 
 	public Integer getCantidad() {
