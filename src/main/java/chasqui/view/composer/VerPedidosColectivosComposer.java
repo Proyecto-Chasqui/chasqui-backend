@@ -384,6 +384,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		ppc.setNombreVariante(pp.getNombreVariante());
 		ppc.setPrecio(pp.getPrecio());
 		ppc.setIncentivo(pp.getIncentivo());
+		ppc.setVariante((pp.getVariante()));
 		return ppc;
 	}
 

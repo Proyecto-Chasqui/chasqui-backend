@@ -21,6 +21,7 @@ import org.zkoss.zul.Window;
 import chasqui.model.GrupoCC;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.Zona;
+import chasqui.utils.PesoRender;
 import chasqui.view.composer.Constantes;
 import chasqui.view.composer.PedidosColectivosComposer;
 import chasqui.view.composer.PedidosComposer;
@@ -28,7 +29,7 @@ import chasqui.view.composer.PedidosComposer;
 public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo>{
 	private Window pedidoWindow;
 	private Map<Integer,GrupoCC> datagrupo;
-	private Listcell celdaId,celdaUsr, celdaAdmn, celdaFechaCreacion, celdaFechaCierre, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaEstado,
+	private Listcell celdaId,celdaUsr, celdaAdmn, celdaFechaCreacion, celdaFechaCierre, celdaZona, celdaMontoMinimo, celdaMontoActual, celdaPeso, celdaEstado,
 			celdaDireccion, celdaBotones;
 	
 	private Menubar menubar;
@@ -94,6 +95,8 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 //			celdaMontoActual.setStyle("color:red;");
 //		}
 
+		celdaPeso = new Listcell(PesoRender.pesoConUnidad(pedidoColectivo.getPesoGramosTotal()));
+
 		celdaEstado = new Listcell(pedidoColectivo.getEstado());
 		String estado = pedidoColectivo.getEstado();
 
@@ -138,6 +141,7 @@ public class PedidoColectivoRenderer implements ListitemRenderer<PedidoColectivo
 		celdaZona.setParent(item);
 		celdaMontoMinimo.setParent(item);
 		celdaMontoActual.setParent(item);
+		celdaPeso.setParent(item);
 		celdaEstado.setParent(item);
 		celdaDireccion.setParent(item);
 		celdaBotones.setParent(item);
