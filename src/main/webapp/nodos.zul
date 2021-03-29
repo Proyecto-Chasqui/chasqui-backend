@@ -96,6 +96,7 @@ style="overflow:auto">
 							<listheader label="Zona" align="center" sort="auto(zona.nombre)"/>
 							<listheader label="Monto Minimo" align="center" visible="false"/>
 							<listheader label="Monto Final" align="center" sort="auto(montoTotal)"/>
+							<listheader label="Peso" align="center" sort="auto(pesoGramosTotal)"/>
 							<listheader label="Estado" align="center" sort="auto(estado)"/>
 							<listheader label="Dir. de Entrega" align="center" />
 							<listheader label="Acciones" align="center" hflex="4"/>
