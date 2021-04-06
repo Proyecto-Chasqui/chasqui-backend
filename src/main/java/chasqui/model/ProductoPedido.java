@@ -16,6 +16,7 @@ public class ProductoPedido {
 	private String nombreProductor;
 	DecimalFormat df = new DecimalFormat("#.##");
 	private Variante variante;
+	private Pedido pedido;
 	
 	public ProductoPedido (){}
 	
@@ -37,6 +38,14 @@ public class ProductoPedido {
 
 	public void setVariante(Variante v) {
 		variante = v;
+	}
+
+	public Pedido getPedido() {
+		return pedido;
+	}
+
+	public void setPedido(Pedido p) {
+		pedido = p;
 	}
 
 	//GETs & SETs
