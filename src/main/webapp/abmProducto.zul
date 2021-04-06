@@ -85,6 +85,10 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 						</listcell>
 					</listitem>
 					<listitem>
+						<listcell label="Reserva" />
+						<listcell>
+							<intbox width="100%" id="intboxReserva" placeholder="I.E: 4" constraint="no negative" />
+						</listcell>
 						<listcell label="${c:l('zk.listcell.label.abmVariedad.pesoGramos')} *" />
 						<listcell>
 							<intbox width="100%" id="intboxPesoGramos" placeholder="I.E: 4" constraint="no negative" />
