@@ -29,7 +29,6 @@ public class ProductoPedidoDAOHbm extends HibernateDaoSupport implements Product
 	public List<ProductoPedido> obtener(ProductoPedidoQueryDTO query) {
 
     final Integer idVariante = query.getIdVariante();
-    final boolean onlyPedidosActivos = query.getOnlyPedidosActivos();
     final String estado = query.getEstado();
 
 
@@ -42,13 +41,7 @@ public class ProductoPedidoDAOHbm extends HibernateDaoSupport implements Product
             .add(Restrictions.eq("idVariante", idVariante))
             .addOrder(Order.desc("pedido.fechaCreacion"));
 
-          if (onlyPedidosActivos) {
-            c.add(
-              Restrictions.or(
-                Restrictions.eq("pedido.estado", "ABIERTO"),
-                Restrictions.isNull("pedido.estado")
-              ));
-          } else if(estado != null)  {
+          if(estado != null)  {
             c.add(Restrictions.eq("pedido.estado", estado));
           }
 

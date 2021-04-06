@@ -100,8 +100,7 @@ public class VerProductoPedidoComposer  extends GenericForwardComposer<Component
       productoPedidoService = (ProductoPedidoService) SpringUtil.getBean("productoPedidoService");
 
       queryDTO = new ProductoPedidoQueryDTO();
-      queryDTO.setOnlyPedidosActivos(true);
-      //queryDTO.setEstado(Constantes.ESTADO_PEDIDO_ABIERTO);
+      queryDTO.setEstado(Constantes.ESTADO_PEDIDO_ABIERTO);
 		  
       listboxPedidos.setItemRenderer(new ProductoPedidoRenderer(window));
 
@@ -171,13 +170,11 @@ public class VerProductoPedidoComposer  extends GenericForwardComposer<Component
 
   public void onClick$tabFiltroAbiertos() {
     queryDTO.setEstado(Constantes.ESTADO_PEDIDO_ABIERTO);
-    queryDTO.setOnlyPedidosActivos(true);
     this.refresh();
   
   }
   public void onClick$tabFiltroConfirmados() {
     queryDTO.setEstado(Constantes.ESTADO_PEDIDO_CONFIRMADO);
-    queryDTO.setOnlyPedidosActivos(false);
     this.refresh();
   }
 
