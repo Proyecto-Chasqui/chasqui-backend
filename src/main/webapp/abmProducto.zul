@@ -18,7 +18,7 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
         vertical-align:middle;
     }
     </style>
-<tabbox width="100%" mold="accordion">
+<tabbox width="100%">
 	<tabs >
 		<tab id="tabdetalles" label="Detalles e imagen"  image="/imagenes/productos.png"/>
 		<tab id="tabdescsellos" label="Descripción y sellos"  image="/imagenes/gestion.png"/>
