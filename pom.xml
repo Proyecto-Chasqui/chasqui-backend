@@ -3,7 +3,7 @@
 	<groupId>org.proyectochasqui</groupId>
 	<artifactId>chasqui</artifactId>
 	<packaging>war</packaging>
-	<version>1.3.0-dev</version>
+	<version>1.3.0</version>
 	<name>chasqui Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<properties>
