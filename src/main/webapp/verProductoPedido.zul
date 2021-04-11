@@ -1,0 +1,116 @@
+<?page title="CHASQUI-WEB" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" arg0="./verProductoPedidoWindow" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
+<zk>
+  <window title="Pedidos del producto" width="800px" id="verProductoPedidoWindow" border="normal"
+    apply="chasqui.view.composer.VerProductoPedidoComposer" sizable="true" closable="true">
+    <style>
+      .detailProductoContainer {
+        display: flex;
+        padding: 1rem;
+      }
+
+      .field {
+        margin-right: 1.5rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .field-label {
+        color: #999;
+      }
+
+      .field-value {
+        font-size: 1.1rem;
+      }
+
+      .messageEmpty {
+        display: inline-block;
+        padding: 3rem;
+        width: 100%;
+        text-align: center;
+        font-size: 1.2rem;
+        color: #999;
+      }
+
+      .messageToolbarContainer {
+        display: flex;
+        padding: 0.25rem;
+        border: 1px solid #cfcfcf;
+        border-top-width: 0;
+        background-color: #F9F9F9;
+      }
+
+      .messageToolbarContainer-left {
+        flex: 1 1 auto;
+        color: #555;
+      }
+
+      .messageToolbarContainer-right {
+        flex: 1 1 auto;
+        text-align: right;
+        color: #999;
+        font-size: 0.9rem;
+      }
+    </style>
+   <div>
+
+    <div class="detailProductoContainer">
+      <div class="field">
+        <label class="field-label" value="Código" />
+        <label class="field-value" value="@{verProductoPedidoWindow$composer.producto.codigo}" />
+      </div>
+      <div class="field">
+        <label class="field-label" value="Nombre del producto" />
+        <label class="field-value" value="@{verProductoPedidoWindow$composer.producto.nombre}" />
+      </div>
+      <div class="field">
+        <label class="field-label" value="Stock" />
+        <label class="field-value" value="@{verProductoPedidoWindow$composer.producto.stock}" />
+      </div>
+      <div class="field">
+        <label class="field-label" value="Reservada" />
+        <label class="field-value" value="@{verProductoPedidoWindow$composer.producto.cantidadReservada}" />
+      </div>
+    </div>
+    
+    
+    <label id="loadingLabel" class="loading" value="Cargando..." />
+    <tabbox width="100%">
+      <tabs>
+        <tab id="tabFiltroAbiertos" label="Abiertos"  />
+        <tab id="tabFiltroConfirmados" label="Confirmados"  />
+      </tabs>
+    </tabbox>
+
+    <div id="listboxPedidosContainer">
+      <listbox multiple="false" checkmark="false" sizedByContent="true" span="true" id="listboxPedidos"
+        model="@{verProductoPedidoWindow$composer.productoPedidos}" mold="paging" pageSize="10" rows="10">
+        <listhead>
+          <listheader label="Id Item"  />
+          <listheader label="Cantidad" align="center" />
+          <listheader label="Nombre del comprador" />
+          <listheader label="Id Pedido"  />
+          <listheader label="Fecha del pedido"  />
+          <listheader label="Vencimiento" id="vencimientoColumn"  />
+          <listheader label="Grupo/Nodo" align="center"  />
+          <listheader label="Estado" />
+        </listhead>
+      </listbox>
+      <div class="messageToolbarContainer">
+        <div class="messageToolbarContainer-left">
+          Suma de cantidad: <label value="@{$composer.cantidadTotal}" />
+        </div>
+        <div class="messageToolbarContainer-right">
+          Para ver el detalle de un pedido, haga doble click sobre una fila
+        </div>
+      </div>
+    </div>
+
+    <label id="messageLabel" class="messageEmpty" value="@bind($composer.message)" />
+
+    </div>
+  </window>
+</zk>

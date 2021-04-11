@@ -21,7 +21,7 @@ import chasqui.model.Producto;
 public class ProductoRenderer implements ListitemRenderer<Producto>{
 
 	Window administracionWindow;
-	
+
 	public ProductoRenderer(Component w){
 		this.administracionWindow = (Window) w;
 	}
@@ -82,6 +82,14 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		menuitemdetalle.setTooltip(Labels.getLabel("zk.toolbarbutton.administracion.tooltip.visualizar"));
 		menuitemdetalle.setImage("/imagenes/eye.png");
 		menuitemdetalle.addForward(Events.ON_CLICK, administracionWindow, Events.ON_NOTIFY, params1);
+
+		Map<String,Object>paramsPedidos = new HashMap<String,Object>();
+		paramsPedidos.put("accion", "verPedidos");
+		paramsPedidos.put("producto", p);
+		Menuitem menuitemPedidos = new Menuitem("Ver pedidos");
+		menuitemPedidos.setTooltip("Ver Pedidos"); //Labels.getLabel("zk.toolbarbutton.administracion.tooltip.visualizar"));
+		menuitemPedidos.setImage("/imagenes/pedidos.png");
+		menuitemPedidos.addForward(Events.ON_CLICK, administracionWindow, Events.ON_NOTIFY, paramsPedidos);
 		
 		//Menuitem ver visualizar
 		
@@ -141,6 +149,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		cReserva.setParent(item); // cantidad reservada)
 		cPesoGramos.setParent(item); // cantidad reservada)
 		menuitemdetalle.setParent(menupop);
+		menuitemPedidos.setParent(menupop);
 		menuitemedit.setParent(menupop);
 		menuitemedestacar.setParent(menupop);
 		menuitemeocultar.setParent(menupop);

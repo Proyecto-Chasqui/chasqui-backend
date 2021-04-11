@@ -1193,6 +1193,14 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		Window windowProducto = (Window) Executions.createComponents("/abmProducto.zul", this.self, params);
 		windowProducto.doModal();
 	}
+
+	public void onVisualizarPedidos(Producto p) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("accion", Constantes.VENTANA_MODO_LECTURA);
+		params.put("producto", p);
+		Window window = (Window) Executions.createComponents("/verProductoPedido.zul", this.self, params);
+		window.doModal();
+	}
 	
 	public void onCrearProducto(){
 		Map<String,Object> params = new HashMap<String,Object>();
@@ -1693,6 +1701,9 @@ class ProductoEventListener implements EventListener<Event>{
 		}
 		if(params.get("accion").equals("visualizar") && p != null){
 			this.composer.onVisualizarProducto(p);
+		}
+		if(params.get("accion").equals("verPedidos") && p != null){
+			this.composer.onVisualizarPedidos(p);
 		}
 		if(params.get("accion").equals("eliminar") && f != null){
 			this.composer.eliminarProductor(f);

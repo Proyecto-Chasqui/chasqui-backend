@@ -16,6 +16,7 @@
         </property>
 
         <many-to-one name="variante" class="chasqui.model.Variante" fetch="join" column="ID_VARIANTE" lazy="false" insert="false" update="false" />
+        <many-to-one name="pedido" class="chasqui.model.Pedido" fetch="join" column="ID_PEDIDO" lazy="false" insert="false" update="false" />
 
         <property name="precio" type="java.lang.Double">
             <column name="PRECIO" />
