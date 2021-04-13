@@ -59,6 +59,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		c.setImage("/imagenes/info.png");
 		c.setLabel("Mas información");
 		c.addForward(Events.ON_CLICK, nodoWindow, Events.ON_NOTIFY, params1);
+		Listcell idCell = new Listcell(nodo.getId().toString()); 
 		Listcell c0 = new Listcell(String.valueOf(estado));
 		this.aplicarEstiloAEstado(estado, c0);
 		Listcell c1 = new Listcell(String.valueOf(nombreNodo));
@@ -71,12 +72,14 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		Listcell c7 = new Listcell(String.valueOf(barrio));
 		Listcell c8 = new Listcell(String.valueOf(nombreZona));
 		aplicarEstiloAZona(nombreZona, c8);
+
+
 		Listcell c100 = new Listcell(); //Se usa como padre de las demas
-	
-		
+
 		Hlayout hbox = new Hlayout();
 		c.setParent(hbox);
 		hbox.setParent(c100);
+		idCell.setParent(item);
 		c0.setParent(item);
 		c1.setParent(item);
 		c2.setParent(item);

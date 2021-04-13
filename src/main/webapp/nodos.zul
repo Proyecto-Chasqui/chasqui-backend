@@ -287,8 +287,9 @@ style="overflow:auto">
 			</div>
 				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}">
 					<listhead>
+						<listheader width="60px" id="nodosHeaderId" label="ID" sort="auto(id)" />
 						<listheader align="center" label="Estado"/>
-						<listheader id="nodosHeaderNombreNodo" align="center" label="Nombre Nodo" sort="auto(alias)" />
+						<listheader id="nodosHeaderNombreNodo" label="Nombre Nodo" sort="auto(alias)" />
 						<listheader id="nodosHeaderFechaCreacion" align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>
 						<listheader id="nodosHeaderTipo" align="center" label="Tipo" sort="auto(tipo)"/>
 						<listheader id="nodosHeaderCoordinador" align="center" label="Coordinador" sort="auto(administrador.nombre, administrador.apellido)"/>
