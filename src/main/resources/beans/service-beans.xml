@@ -1,253 +1,255 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
        http://www.springframework.org/schema/aop 
 	   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 	   http://www.springframework.org/schema/context
     	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-	   
-	 
-	   <context:annotation-config/>
-<!-- 	   <context:property-placeholder location="${ext.properties.dir:classpath:}/chasqui.properties" /> -->
-	   <context:property-placeholder location="classpath:chasqui.properties" /> 
-	   
-	   
-	   <!-- Servicios -->
-	   <bean id="mailService" name="mailService" class="chasqui.services.impl.MailService"/>
-	   
-	   <bean id="fileSaver" name="fileSaver" class="chasqui.services.impl.FileSaver"/>
-	   
-	   <bean id="usuarioService" name="usuarioService" class="chasqui.services.impl.UsuarioServiceImpl" init-method="onStartUp"/>
-	   
-	   <bean id="zonaService" name="zonaService" class="chasqui.services.impl.ZonaServiceImpl"/>
-	   
-	   <bean id="caracteristicaService" name="caracteristicaService" class="chasqui.services.impl.CaracteristicaServiceImpl"/>
-	   
-	   <bean id="productoService" name="productoService" class="chasqui.services.impl.ProductoServiceImpl"/>
-	   
-	   <bean id="vendedorService" name="vendedorService" class="chasqui.services.impl.VendedorServiceImpl"/>
-	   
-	   <bean id="catalogoService" name="catalogoService" class="chasqui.services.impl.CatalogoServiceImpl"/>
-	   
-	   <bean id="categoriaService" name="categoriaService" class="chasqui.services.impl.CategoriaServiceImpl"/>
-	 
-	   <bean id="productorService" name="productorService" class="chasqui.services.impl.FabricanteServiceImpl"/>
-	   
-	   <bean id="pedidoService" name="pedidoService" class="chasqui.services.impl.PedidoServiceImpl"/>
-	   
-	   <bean id="notificacionService" name="notificacionService" class="chasqui.services.impl.NotificacionServiceImpl"/>
 
-	   <bean id="geoService" name="geoService" class="chasqui.services.impl.GeoServiceImpl"></bean>
-	 
-	   <bean id="grupoService" name="grupoService" class="chasqui.services.impl.GrupoServiceImpl"/>
-	   
-	   <bean id="nodoService" name="nodoService" class="chasqui.services.impl.NodoServiceImpl"/>
-	   
-	   <bean id="invitacionService" name="invitacionService" class="chasqui.services.impl.InvitacionServiceImpl"/>
-	   
-	   <bean id="pedidoColectivoService" name="pedidoColectivoService" class="chasqui.services.impl.PedidoColectivoServiceImpl"/>
-	   
-	   <bean id="puntoDeRetiroService" name="puntoDeRetiroService" class="chasqui.services.impl.PuntoDeRetiroServiceImpl"/>
-	    
-	   <bean id="direccionService" name="direccionService" class="chasqui.services.impl.DireccionServiceImpl"/>
-	   
-	   <bean id="tagService" name="tagService" class="chasqui.services.impl.TagServiceImpl"/>
-	   
-	   <bean id="sessionListenerService" name="sessionListenerService" class="chasqui.services.impl.SessionListenerService"/>   
 
-	   <!--  DAOS -->
-	   <bean name="usuarioDAO" id="usuarioDAO" class="chasqui.dao.impl.UsuarioDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean name="productoDAO" id="productoDAO" class="chasqui.dao.impl.ProductoDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="zonaDAO" name="zonaDAO" class="chasqui.dao.impl.ZonaDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="caracteristicaDAO" name="caracteristicaDAO" class="chasqui.dao.impl.CaracteristicaDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="vendedorDAO" name="vendedorDAO" class="chasqui.dao.impl.VendedorDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="categoriaDAO" name="categoriaDAO" class="chasqui.dao.impl.CategoriaDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="fabricanteDAO" name="fabricanteDAO" class="chasqui.dao.impl.FabricanteDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="notificacionDAO" name="notificacionDAO" class="chasqui.dao.impl.NotificacionDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="pedidoDAO" name="pedidoDAO" class="chasqui.dao.impl.PedidoDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="nodoDAO" name="nodoDAO" class="chasqui.dao.impl.NodoDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	
-	   <bean id="grupoDAO" name="grupoDAO" class="chasqui.dao.impl.GrupoDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-		<bean id="miembroDeGCCDAO" name="miembroDeGCCDAO" class="chasqui.dao.impl.MiembroDeGCCDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   	<bean id="pedidoColectivoDAO" name="pedidoColectivoDAO" class="chasqui.dao.impl.PedidoColectivoDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="puntoDeRetiroDAO" name="puntoDeRetiroDAO" class="chasqui.dao.impl.PuntoDeRetiroDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="solicitudCreacionNodoDAO" name="solicitudCreacionNodoDAO" class = "chasqui.dao.impl.SolicitudCreacionNodoDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="solicitudPertenenciaNodoDAO" name="solicitudPertenenciaNodoDAO" class="chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="direccionDAO" name="direccionDAO" class="chasqui.dao.impl.DireccionDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="tagDAO" name="tagDAO" class="chasqui.dao.impl.TagDAOHbm">
-	   		<property name="sessionFactory" ref="sessionFactory"/>
-	   </bean>
-	   
-	   <bean id="applicationContextProvider" name="applicationContextProvider" class="chasqui.model.ApplicationContextProvider"/>
+	<context:annotation-config />
+	<!-- 	   <context:property-placeholder location="${ext.properties.dir:classpath:}/chasqui.properties" /> -->
+	<context:property-placeholder location="classpath:chasqui.properties" />
 
-	   <bean id="tokenGenerator" name="tokenGenerator" class="chasqui.utils.TokenGenerator"></bean>
-	   <!--  <bean id="webSocketManager" name="webSocketManager" class="chasqui.service.websocket.impl.WebSocketManager"></bean> -->
-	   <!-- SERVICIO EMAIL -->
-	   
-	   <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="${email.host}"/>
-        <property name="port" value="${email.port}"/>
-        <property name="username" value="${email.username}"/>
-        <property name="password" value="${email.password}"/>
-        <property name="javaMailProperties">
-            <props>
-                <prop key="mail.transport.protocol">smtp</prop>
-                <prop key="mail.smtp.auth">true</prop>
-                <prop key="mail.smtp.starttls.enable">true</prop>
-                <prop key="mail.debug">true</prop>
-            </props>
-        </property>
-    </bean>
-    
-    <bean id="usuarioAdmin" name="usuarioAdmin" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.administrador}" />
-    </bean>
-    
-     <bean id="passwordAdmin" name="passwordAdmin" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.password}" />
-    </bean>
-    
-     <bean id="mailAdmin" name="mailAdmin" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.administrador.email}" />
-    </bean>
-    
-      <bean id="imagenAdmin" name="imagenAdmin" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.administrador.imagen}" />
-    </bean>
-    
-    <!-- COMENTAR "operationsOnStartUp" LUEGO DE PASAR 1 VEZ A PRODUCCION
+
+	<!-- Servicios -->
+	<bean id="mailService" name="mailService" class="chasqui.services.impl.MailService" />
+
+	<bean id="fileSaver" name="fileSaver" class="chasqui.services.impl.FileSaver" />
+
+	<bean id="usuarioService" name="usuarioService" class="chasqui.services.impl.UsuarioServiceImpl" init-method="onStartUp" />
+
+	<bean id="zonaService" name="zonaService" class="chasqui.services.impl.ZonaServiceImpl" />
+
+	<bean id="caracteristicaService" name="caracteristicaService" class="chasqui.services.impl.CaracteristicaServiceImpl" />
+
+	<bean id="productoService" name="productoService" class="chasqui.services.impl.ProductoServiceImpl" />
+
+	<bean id="productoPedidoService" name="productoPedidoService" class="chasqui.services.impl.ProductoPedidoServiceImpl" />
+
+	<bean id="vendedorService" name="vendedorService" class="chasqui.services.impl.VendedorServiceImpl" />
+
+	<bean id="catalogoService" name="catalogoService" class="chasqui.services.impl.CatalogoServiceImpl" />
+
+	<bean id="categoriaService" name="categoriaService" class="chasqui.services.impl.CategoriaServiceImpl" />
+
+	<bean id="productorService" name="productorService" class="chasqui.services.impl.FabricanteServiceImpl" />
+
+	<bean id="pedidoService" name="pedidoService" class="chasqui.services.impl.PedidoServiceImpl" />
+
+	<bean id="notificacionService" name="notificacionService" class="chasqui.services.impl.NotificacionServiceImpl" />
+
+	<bean id="geoService" name="geoService" class="chasqui.services.impl.GeoServiceImpl"></bean>
+
+	<bean id="grupoService" name="grupoService" class="chasqui.services.impl.GrupoServiceImpl" />
+
+	<bean id="nodoService" name="nodoService" class="chasqui.services.impl.NodoServiceImpl" />
+
+	<bean id="invitacionService" name="invitacionService" class="chasqui.services.impl.InvitacionServiceImpl" />
+
+	<bean id="pedidoColectivoService" name="pedidoColectivoService" class="chasqui.services.impl.PedidoColectivoServiceImpl" />
+
+	<bean id="puntoDeRetiroService" name="puntoDeRetiroService" class="chasqui.services.impl.PuntoDeRetiroServiceImpl" />
+
+	<bean id="direccionService" name="direccionService" class="chasqui.services.impl.DireccionServiceImpl" />
+
+	<bean id="tagService" name="tagService" class="chasqui.services.impl.TagServiceImpl" />
+
+	<bean id="sessionListenerService" name="sessionListenerService" class="chasqui.services.impl.SessionListenerService" />
+
+	<!--  DAOS -->
+	<bean name="usuarioDAO" id="usuarioDAO" class="chasqui.dao.impl.UsuarioDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean name="productoDAO" id="productoDAO" class="chasqui.dao.impl.ProductoDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean name="productoPedidoDAO" id="productoPedidoDAO" class="chasqui.dao.impl.ProductoPedidoDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="zonaDAO" name="zonaDAO" class="chasqui.dao.impl.ZonaDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="caracteristicaDAO" name="caracteristicaDAO" class="chasqui.dao.impl.CaracteristicaDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="vendedorDAO" name="vendedorDAO" class="chasqui.dao.impl.VendedorDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="categoriaDAO" name="categoriaDAO" class="chasqui.dao.impl.CategoriaDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="fabricanteDAO" name="fabricanteDAO" class="chasqui.dao.impl.FabricanteDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="notificacionDAO" name="notificacionDAO" class="chasqui.dao.impl.NotificacionDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="pedidoDAO" name="pedidoDAO" class="chasqui.dao.impl.PedidoDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="nodoDAO" name="nodoDAO" class="chasqui.dao.impl.NodoDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="grupoDAO" name="grupoDAO" class="chasqui.dao.impl.GrupoDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="miembroDeGCCDAO" name="miembroDeGCCDAO" class="chasqui.dao.impl.MiembroDeGCCDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="pedidoColectivoDAO" name="pedidoColectivoDAO" class="chasqui.dao.impl.PedidoColectivoDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="puntoDeRetiroDAO" name="puntoDeRetiroDAO" class="chasqui.dao.impl.PuntoDeRetiroDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="solicitudCreacionNodoDAO" name="solicitudCreacionNodoDAO" class="chasqui.dao.impl.SolicitudCreacionNodoDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="solicitudPertenenciaNodoDAO" name="solicitudPertenenciaNodoDAO" class="chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="direccionDAO" name="direccionDAO" class="chasqui.dao.impl.DireccionDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="tagDAO" name="tagDAO" class="chasqui.dao.impl.TagDAOHbm">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="applicationContextProvider" name="applicationContextProvider" class="chasqui.model.ApplicationContextProvider" />
+
+	<bean id="tokenGenerator" name="tokenGenerator" class="chasqui.utils.TokenGenerator"></bean>
+	<!--  <bean id="webSocketManager" name="webSocketManager" class="chasqui.service.websocket.impl.WebSocketManager"></bean> -->
+	<!-- SERVICIO EMAIL -->
+
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${email.host}" />
+		<property name="port" value="${email.port}" />
+		<property name="username" value="${email.username}" />
+		<property name="password" value="${email.password}" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="usuarioAdmin" name="usuarioAdmin" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.administrador}" />
+	</bean>
+
+	<bean id="passwordAdmin" name="passwordAdmin" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.password}" />
+	</bean>
+
+	<bean id="mailAdmin" name="mailAdmin" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.administrador.email}" />
+	</bean>
+
+	<bean id="imagenAdmin" name="imagenAdmin" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.administrador.imagen}" />
+	</bean>
+
+	<!-- COMENTAR "operationsOnStartUp" LUEGO DE PASAR 1 VEZ A PRODUCCION
     <bean id="operationsOnStartUp" name="operationsOnStartUp" class="chasqui.services.impl.OperationsOnStartup" init-method="corregirReservas"/>
     -->
 
-    
-    <!-- ********************** DEMO ****************************** -->
-    
-	<bean id="startupHelper" name="startupHelper" class="chasqui.services.impl.StartupHelper" init-method="loadDemo"/>
-	   
-    <bean id="usuarioDemo" name="usuarioDemo" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.demo.nombre}" />
-    </bean>
-    
-     <bean id="passwordDemo" name="passwordDemo" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.demo.password}" />
-    </bean>
-    
-     <bean id="mailDemo" name="mailDemo" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.demo.email}" />
-    </bean>
-    
-    <bean id="imagenDemo" name="imagenDemo" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.demo.imagen}" />
-    </bean>
-    
-    <bean id="montoMinimoDemo" name="montoMinimoDemo" class="java.lang.Integer">
-           <constructor-arg type="java.lang.String" value="${usuario.demo.montoMinimo}" />
-    </bean>
-    <bean id="urlDemo" name="urlDemo" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${usuario.demo.url}" />
-    </bean>
-    
-    
-    <!-- ********************** FIN DEMO ****************************** -->
-    <bean name="encrypter" class="chasqui.security.Encrypter">
-    	<property name="ALGORITHM" value="${encrypter.algorithm}"/>
-    	<property name="KEY" value="${encrypter.KEY}"/>
-    </bean>
-    
-    <bean id="nombreServidor" name="nombreServidor" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${quartz.server}" />
-    </bean>
-    
-    <bean id="cantidadDeDiasParaEnviarNotificacion" name="cantidadDeDiasParaEnviarNotificacion" class="java.lang.Integer">
-           <constructor-arg value="${quartz.cantidadDeDias.avisos}" />
-    </bean>
-    
-    <bean id="cuerpoEmail" name="cuerpoEmail" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${quartz.cuerpo.email.notificacion}" />
-    </bean>
-    
-    <bean id="mensajeNotificacionChasqui" name="mensajeNotificacionChasqui" class="java.lang.String">
-           <constructor-arg type="java.lang.String" value="${quartz.mensaje.notificacion.mobile}" />
-    </bean>
-    
-    <bean name="passwordGenerator" class="chasqui.security.PasswordGenerator">
-    	<property name="ALPHA_NUMERIC_STRING" value="${passwordGenerator.generador}"/>
-    </bean>
-    
-    <bean name="GCM_API_KEY" class="java.lang.String">
-    	 <constructor-arg type="java.lang.String" value="${gcm.api.key}" />
-    </bean>
-    
-    <bean id="cantidadDeMinutosParaExpiracion" name="cantidadDeMinutosParaExpiracion" class="java.lang.Integer">
-    	<constructor-arg value="${quartz.cantidadDeMinutos.expiracionPedido}" />
-    </bean>
-    
-    <bean id="serverRelativePath" name="serverRelativePath" class="java.lang.String">
-    	<constructor-arg value="${imagenes.relativepath}" />
-    </bean>
-    
-	<bean id="serverAbsolutPath" name="serverAbsolutPath" class="java.lang.String">
-    	<constructor-arg value="${server.absolutPath}" />
-    </bean>
 
-    <!-- AOP -->
-    <aop:aspectj-autoproxy />
-    <bean name="loggerAspect" class="chasqui.aspect.LoggerAspect"/>
-    <bean name="dateableAspect" class="chasqui.aspect.DateableAspect"/> 
-	   
+	<!-- ********************** DEMO ****************************** -->
+
+	<bean id="startupHelper" name="startupHelper" class="chasqui.services.impl.StartupHelper" init-method="loadDemo" />
+
+	<bean id="usuarioDemo" name="usuarioDemo" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.demo.nombre}" />
+	</bean>
+
+	<bean id="passwordDemo" name="passwordDemo" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.demo.password}" />
+	</bean>
+
+	<bean id="mailDemo" name="mailDemo" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.demo.email}" />
+	</bean>
+
+	<bean id="imagenDemo" name="imagenDemo" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.demo.imagen}" />
+	</bean>
+
+	<bean id="montoMinimoDemo" name="montoMinimoDemo" class="java.lang.Integer">
+		<constructor-arg type="java.lang.String" value="${usuario.demo.montoMinimo}" />
+	</bean>
+	<bean id="urlDemo" name="urlDemo" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${usuario.demo.url}" />
+	</bean>
+
+
+	<!-- ********************** FIN DEMO ****************************** -->
+	<bean name="encrypter" class="chasqui.security.Encrypter">
+		<property name="ALGORITHM" value="${encrypter.algorithm}" />
+		<property name="KEY" value="${encrypter.KEY}" />
+	</bean>
+
+	<bean id="nombreServidor" name="nombreServidor" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${quartz.server}" />
+	</bean>
+
+	<bean id="cantidadDeDiasParaEnviarNotificacion" name="cantidadDeDiasParaEnviarNotificacion" class="java.lang.Integer">
+		<constructor-arg value="${quartz.cantidadDeDias.avisos}" />
+	</bean>
+
+	<bean id="cuerpoEmail" name="cuerpoEmail" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${quartz.cuerpo.email.notificacion}" />
+	</bean>
+
+	<bean id="mensajeNotificacionChasqui" name="mensajeNotificacionChasqui" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${quartz.mensaje.notificacion.mobile}" />
+	</bean>
+
+	<bean name="passwordGenerator" class="chasqui.security.PasswordGenerator">
+		<property name="ALPHA_NUMERIC_STRING" value="${passwordGenerator.generador}" />
+	</bean>
+
+	<bean name="GCM_API_KEY" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="${gcm.api.key}" />
+	</bean>
+
+	<bean id="cantidadDeMinutosParaExpiracion" name="cantidadDeMinutosParaExpiracion" class="java.lang.Integer">
+		<constructor-arg value="${quartz.cantidadDeMinutos.expiracionPedido}" />
+	</bean>
+
+	<bean id="serverRelativePath" name="serverRelativePath" class="java.lang.String">
+		<constructor-arg value="${imagenes.relativepath}" />
+	</bean>
+
+	<bean id="serverAbsolutPath" name="serverAbsolutPath" class="java.lang.String">
+		<constructor-arg value="${server.absolutPath}" />
+	</bean>
+
+	<!-- AOP -->
+	<aop:aspectj-autoproxy />
+	<bean name="loggerAspect" class="chasqui.aspect.LoggerAspect" />
+	<bean name="dateableAspect" class="chasqui.aspect.DateableAspect" />
+
 </beans>

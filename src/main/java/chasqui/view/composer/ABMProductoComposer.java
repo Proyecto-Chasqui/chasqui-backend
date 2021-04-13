@@ -113,6 +113,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private List<Imagen> imagenes;	
 	private Doublebox doubleboxPrecio; 
 	private Intbox intboxStock;
+	private Intbox intboxPesoGramos;
+	private Intbox intboxReserva;
 	private Textbox textboxCodigo; 
 	private Textbox ckEditor; 
 	private Fileupload uploadImagen; 
@@ -182,6 +184,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		}
 		if(!model.getVariantes().isEmpty()){
 			modelv = productodao.obtenervariantePor(model.getVariantes().get(0).getId());
+			intboxPesoGramos.setValue(modelv.getPesoGramos());
+			intboxReserva.setValue(modelv.getCantidadReservada());
 			doubleboxPrecio.setValue(modelv.getPrecio());
 			incentivo.setValue(modelv.getIncentivo());			
 			totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
@@ -244,6 +248,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		modelv.setDescripcion(ckEditor.getValue());
 		modelv.setImagenes(imagenes);
 		modelv.setStock(intboxStock.getValue());
+		modelv.setPesoGramos(intboxPesoGramos.getValue());
+		modelv.setCantidadReservada(intboxReserva.getValue());
 		modelv.setPrecio(doubleboxPrecio.getValue());
 		if(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos()) {
 			modelv.setIncentivo(incentivo.getValue());
@@ -519,12 +525,15 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		nombreProducto.setValue(model.getNombre());
 		textboxCodigo.setValue(modelv.getCodigo());
 		imagenes.addAll(modelv.getImagenes());
+		intboxPesoGramos.setValue(modelv.getPesoGramos());
+		intboxReserva.setValue(modelv.getCantidadReservada());
 		doubleboxPrecio.setValue(modelv.getPrecio());
 		if(modelv.getStock() < 0) {
 			intboxStock.setValue(0);
 		}else {
 			intboxStock.setValue(modelv.getStock());
 		}	
+
 		categoriaSeleccionada = model.getCategoria();
 		productorSeleccionado = model.getFabricante();
 		comboFabricantes.setValue(productorSeleccionado.toString());
@@ -552,6 +561,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		comboCategorias.setDisabled(true);
 		imgRender.setLectura(false);
 		listImagenes.setDisabled(true);
+		intboxPesoGramos.setDisabled(true);
+		intboxReserva.setDisabled(true);
 		doubleboxPrecio.setDisabled(true);
 		intboxStock.setDisabled(true);
 		uploadImagen.setDisabled(true);
@@ -702,6 +713,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 
 	
 	private void ejecutarValidaciones() throws IOException{
+		Integer precioGramos = intboxStock.getValue();
 		Double precio = doubleboxPrecio.getValue();
 		Double vincentivo = incentivo.getValue();
 		Integer stock = intboxStock.getValue();

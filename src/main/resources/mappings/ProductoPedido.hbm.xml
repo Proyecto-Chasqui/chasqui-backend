@@ -1,25 +1,28 @@
 <?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 26/03/2016 18:32:35 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="chasqui.model.ProductoPedido" table="PRODUCTO_PEDIDO">
         <id name="id" type="java.lang.Integer">
             <column name="ID" />
-            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
-	            <param name="sequence_name">PRODUCTO_PEDIDO_SEQUENCE</param>
-	            <param name="optimizer">none</param>
-	            <param name="increment_size">1</param> 
-         	</generator>
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">PRODUCTO_PEDIDO_SEQUENCE</param>
+                <param name="optimizer">none</param>
+                <param name="increment_size">1</param>
+            </generator>
         </id>
         <property name="idVariante" type="java.lang.Integer">
             <column name="ID_VARIANTE" />
         </property>
+
+        <many-to-one name="variante" class="chasqui.model.Variante" fetch="join" column="ID_VARIANTE" lazy="false" insert="false" update="false" />
+        <many-to-one name="pedido" class="chasqui.model.Pedido" fetch="join" column="ID_PEDIDO" lazy="false" insert="false" update="false" />
+
         <property name="precio" type="java.lang.Double">
             <column name="PRECIO" />
         </property>
         <property name="incentivo" type="java.lang.Double">
-            <column name="INCENTIVO" default="0.0"/>
+            <column name="INCENTIVO" default="0.0" />
         </property>
         <property name="nombreProducto" type="java.lang.String">
             <column name="NOMBRE_PRODUCTO" />
@@ -30,7 +33,7 @@
         <property name="cantidad" type="java.lang.Integer">
             <column name="CANTIDAD" />
         </property>
-        <property name="imagen" column="IMAGEN" type="java.lang.String"/>
-        <property name="nombreProductor" column="NOMBRE_PRODUCTOR" type="java.lang.String"/>
+        <property name="imagen" column="IMAGEN" type="java.lang.String" />
+        <property name="nombreProductor" column="NOMBRE_PRODUCTOR" type="java.lang.String" />
     </class>
 </hibernate-mapping>
