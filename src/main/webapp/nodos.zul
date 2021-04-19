@@ -294,7 +294,6 @@ style="overflow:auto">
 						<listheader id="nodosHeaderTipo" align="center" label="Tipo" sort="auto(tipo)"/>
 						<listheader id="nodosHeaderCoordinador" align="center" label="Coordinador" sort="auto(administrador.nombre, administrador.apellido)"/>
 						<listheader id="nodosHeaderEmail" align="center" label="e-mail" sort="auto(administrador.email)"/>
-						<listheader id="nodosHeaderDireccion" align="center" label="Dirección" sort="auto(direccionDelNodo.calle, direccionDelNodo.altura, direccionDelNodo.localidad)"/>
 						<listheader id="nodosHeaderBarrio" align="center" label="Barrio" sort="auto(barrio)"/>
 						<listheader id="nodosHeaderZona" align="center" label="Zona" sort="auto(zona.nombre)"/>
 						<listheader align="center" label="Acciones" />
