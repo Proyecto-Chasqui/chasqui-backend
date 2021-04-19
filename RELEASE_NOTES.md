@@ -2,7 +2,7 @@
 
 ---
 
-### CHASQUI BACKEND - SIGUIENTE - v1.4.0-alpha - XX/XX/2018
+### v1.4.0-dev - XX/XX/2021
 
 ---
 
@@ -14,12 +14,6 @@
   - Agrega columna id
   - Agrega filtrado por id del nodo
   - Elimina la columna Dirección
-
-##### CORRECCIONES // FIXED
-
-##### ERRORES CONOCIDOS // KNOW ISSUES
-
-##### NOTAS // NOTES
 
 ---
 
