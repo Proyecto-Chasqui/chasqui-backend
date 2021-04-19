@@ -275,7 +275,7 @@ style="overflow:auto">
 				    </vbox>
 				    <vbox>
 						<textbox id="buscadorBarrio" placeholder="Buscar por barrio" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
-						<textbox id="buscadorPorNombreNodo" placeholder="Nombre nodo" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
+						<textbox id="buscadorPorNombreNodo" placeholder="Nombre o Id del nodo" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
 					</vbox>
 					 <vbox>
 						<combobox id="zonasNodosCombobox" placeholder="Buscar por zona" readonly="true" model="@{nodosWindow$composer.zonas}" selectedItem="@{nodosWindow$composer.zonaSeleccionadaNodo}"/>

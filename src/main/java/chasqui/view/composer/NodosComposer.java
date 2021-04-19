@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.joda.time.DateTime;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
@@ -331,7 +333,7 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 	public void onBuscarNodos(Boolean goToFirstPage) {
 		Date d = desde_nodo.getValue();
 		Date h = hasta_nodo.getValue();
-		String nombreNodo = buscadorPorNombreNodo.getValue();
+		String nombreOrIdNodo = StringUtils.trim(buscadorPorNombreNodo.getValue());
 		String emailcoordinador = buscadorPorUsuarioCoordinador.getValue();
 		String barrio = buscadorBarrio.getValue();
 		String estado = this.evaluarEstadoNodo();
@@ -352,7 +354,13 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 		query.setIdVendedor(vendedorLogueado.getId());
 		query.setDesde(d);
 		query.setHasta(h);
-		query.setNombre(nombreNodo);
+		if(!StringUtils.isEmpty(nombreOrIdNodo) && StringUtils.isNumeric(nombreOrIdNodo)) {
+			query.setIdNodo(Integer.parseInt(nombreOrIdNodo));
+			query.setNombre(null);
+		} else {
+			query.setIdNodo(null);
+			query.setNombre(nombreOrIdNodo);
+		}
 		query.setEmailCoordinador(emailcoordinador);
 		query.setBarrio(barrio);
 		query.setEstado(estado);

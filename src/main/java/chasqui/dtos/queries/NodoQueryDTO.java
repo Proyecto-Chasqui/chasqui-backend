@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class NodoQueryDTO extends PaginatedQuery {
   private Integer idVendedor;
+  private Integer idNodo;
   private Date desde;
   private Date hasta;
   private String estado;
@@ -19,6 +20,14 @@ public class NodoQueryDTO extends PaginatedQuery {
 
   public void setIdVendedor(Integer idVendedor) {
     this.idVendedor = idVendedor;
+  }
+
+  public Integer getIdNodo() {
+    return this.idNodo;
+  }
+
+  public void setIdNodo(Integer idNodo) {
+    this.idNodo = idNodo;
   }
 
   public Date getDesde() {
