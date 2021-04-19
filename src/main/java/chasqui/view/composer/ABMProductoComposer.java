@@ -68,6 +68,8 @@ import chasqui.view.renders.VarianteItemRenderer;
 @SuppressWarnings({"serial","deprecation"})
 public class ABMProductoComposer extends GenericForwardComposer<Component> implements Refresher{
 
+	private Integer MAX_LENGHT_DESCRIPTION = 8200;
+
 	public AnnotateDataBinder binder;
 	private Textbox nombreProducto;
 	private Combobox comboCategorias;
@@ -672,13 +674,13 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	
 	public void onChanging$ckEditor(InputEvent evt) {
 		Integer total = Jsoup.parse(evt.getValue()).wholeText().length();
-		mensaje.setValue("Cant. carácteres: "+total+"/355");
+		mensaje.setValue("Cant. carácteres: "+total+"/"+MAX_LENGHT_DESCRIPTION);
 		cantidadCaracteres.open(ckEditor,"after_end");
 	}
 	
 	public void onCalcularTotalCaracteres() {
 		Integer total = Jsoup.parse(ckEditor.getValue()).wholeText().length();
-		mensaje.setValue("Cant. carácteres: "+total+"/355");
+		mensaje.setValue("Cant. carácteres: "+total+"/"+MAX_LENGHT_DESCRIPTION);
 		cantidadCaracteres.open(ckEditor,"after_end");
 	}
 	public void onCalcularTotal() {
@@ -751,7 +753,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 			throw new WrongValueException(tabdescsellos,"La descripción no debe ser vacia");
 		}
 		
-		if(descripcion.length() > 355){
+		if(descripcion.length() > MAX_LENGHT_DESCRIPTION){
 			throw new WrongValueException(tabdescsellos,"La descripción es demasiado larga");
 		}
 		int previews = 0;

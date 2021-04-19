@@ -11,7 +11,7 @@ public class Variante {
 	private String descripcion;
 	private Integer stock;
 	private Integer cantidadReservada;
-	private Integer pesoGramos;
+	private Integer pesoGramos = 0;
 	private Double precio;
 	private Double incentivo;
 	private String nombre;

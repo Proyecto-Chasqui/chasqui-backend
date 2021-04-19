@@ -15,6 +15,7 @@
   - Agrega filtrado por id del nodo
   - Elimina la columna Dirección
   - Agrega servicio y dao para obtener nodos paginados
+- Panel > Productos: se amplia el maximo de caracteres de la descripción a 8200.
 
 ---
 
