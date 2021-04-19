@@ -113,15 +113,15 @@ style="overflow:auto">
 			</div>
 				<listbox  id="listboxPedidosNodo" model="@{nodosWindow$composer.pedidosNodos}" mold="paging" rows="10" pageSize="10">
 					<listhead>
-							<listheader label="ID" align="center" visible="true" sort="auto(id)"/>
+							<listheader width="70px" label="ID" sort="auto(id)"/>
 							<listheader label="Nombre Nodo" align="center" visible="true" sort="auto(colectivo.alias)"></listheader>
 							<listheader label="Coordinador" align="center" visible="true" sort="auto(colectivo.administrador.email)"></listheader>
 							<listheader label="Fecha Creación" align="center" sort="auto(fechaCreacion)"/>
 							<listheader label="Fecha Cierre" align="center" sort="auto(fechaModificacion)"/>
 							<listheader label="Zona" align="center" sort="auto(zona.nombre)"/>
-							<listheader label="Monto Minimo" align="center" visible="false"/>
-							<listheader label="Monto Final" align="center" sort="auto(montoTotal)"/>
-							<listheader label="Peso" align="center" sort="auto(pesoGramosTotal)"/>
+							<listheader label="Monto Minimo" align="right" visible="false"/>
+							<listheader label="Monto Final" align="right" sort="auto(montoTotal)"/>
+							<listheader label="Peso" align="right" sort="auto(pesoGramosTotal)"/>
 							<listheader label="Estado" align="center" sort="auto(estado)"/>
 							<listheader label="Dir. de Entrega" align="center" />
 							<listheader label="Acciones" align="center" hflex="4"/>
