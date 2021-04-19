@@ -175,6 +175,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		incentivo.setValue(0.0);
 		doubleboxPrecio.setValue(0.0);
 		totalPrecio.setReadonly(true);
+		intboxReserva.setValue(0);
+		intboxPesoGramos.setValue(0);
 		if(model.getCategoria() != null && model.getFabricante() != null){
 			categoriaSeleccionada = model.getCategoria();
 			productorSeleccionado = model.getFabricante();
@@ -717,6 +719,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		Double precio = doubleboxPrecio.getValue();
 		Double vincentivo = incentivo.getValue();
 		Integer stock = intboxStock.getValue();
+		Integer pesoGramos = intboxPesoGramos.getValue();
+		Integer reserva = intboxReserva.getValue();
 		String descripcion = Jsoup.parse(ckEditor.getValue()).text();
 
 		if(precio == null || precio < 0){
@@ -734,6 +738,15 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		if(stock == null || stock < 0){
 			throw new WrongValueException(tabdetalles,"El Stock debe ser mayor a 0");
 		}
+
+		if(pesoGramos == null || pesoGramos < 0){
+			throw new WrongValueException(tabdetalles,"El Peso debe ser mayor o igual 0");
+		}
+
+		if(reserva == null || reserva < 0){
+			throw new WrongValueException(tabdetalles,"La Reserva debe ser mayor o igual 0");
+		}
+
 		if(StringUtils.isEmpty(descripcion)){
 			throw new WrongValueException(tabdescsellos,"La descripción no debe ser vacia");
 		}
