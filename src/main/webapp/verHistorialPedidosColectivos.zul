@@ -57,6 +57,7 @@ style="overflow:auto">
 			<listheader label="Zona" align="center"/>
 			<listheader label="Monto Minimo" align="center" visible="false"/>
 			<listheader label="Monto Final" align="center"/>
+			<listheader label="Peso" align="center" sort="auto(pesoGramosTotal)" />
 			<listheader label="Estado" align="center"/>
 			<listheader label="Direccion de Entrega" align="center"/>
 			<listheader label="Acciones" align="center" hflex="4"/>
