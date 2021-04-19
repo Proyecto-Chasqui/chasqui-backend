@@ -104,7 +104,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	private Toolbarbutton agregarButton;
 	private Toolbarbutton agregarProductoButton;
 	private Toolbarbutton agregarProductorButton;
-	private Toolbarbutton logout;
 	private List<Producto> productosFiltrados;
 	private Producto productoSeleccionado;
 	private Listbox listboxProductos;
@@ -217,7 +216,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		menubar.setVisible(true);
 		menuItemLogOut.setLabel(usuarioLogueado.getUsername());
 		//radioAltaUsuario.setChecked(true);
-		logout.setVisible(false);
 		radioCategorias.getParent().getParent().setVisible(false);
 		radioCategorias.setDisabled(true);
 		radioProductos.setDisabled(true);
@@ -245,7 +243,6 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		oldmenu.setVisible(false);
 		menubar.setVisible(true);
 		menuItemLogOut.setLabel(usuarioLogueado.getUsername());
-		logout.setVisible(false);
 		listboxProductos.setItemRenderer(new ProductoRenderer(this.self));
 		listboxCategorias.setItemRenderer(new CategoriaRenderer(this.self));
 		listboxProductores.setItemRenderer(new ProductorRenderer(this.self));
@@ -300,8 +297,19 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 			comp.setVisible(b);
 		}
 	}
+
+	private void setMenuItemSelected(Menuitem toSelect) {
+		for(Component c : menubar.getChildren()) {
+			Menuitem menuItem =  (Menuitem) c;
+			if (menuItem != menuItemLogOut) {
+				menuItem.setSclass("");
+			}
+		}
+		toSelect.setSclass("--selected");
+	}
 	
 	public void onClick$menuItemCategorias(){
+		setMenuItemSelected(menuItemCategorias);
 		ocultarMenuitemsRoot();
 		divProducto.setVisible(false);
 		separadorExport.setVisible(false);
@@ -343,6 +351,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemUsuarios(){
+		setMenuItemSelected(menuItemUsuarios);
 		ocultarMenuitemsRoot();
 		divProducto.setVisible(false);
 		separadorExport.setVisible(false);
@@ -391,6 +400,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemCaracteristicas(){
+		setMenuItemSelected(menuItemCaracteristicas);
 		ocultarMenuitemsRoot();
 		divProducto.setVisible(false);
 		separadorExport.setVisible(false);
@@ -499,6 +509,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 
 	public void onClick$menuItemProductos() throws VendedorInexistenteException{
+		setMenuItemSelected(menuItemProductos);
 		ocultarMenuitemsRoot();
 		sincWithBD();
 		onClick$buscarProducto();
@@ -560,6 +571,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemConfiguracion(){
+		setMenuItemSelected(menuItemConfiguracion);
 		ocultarMenuitemsRoot();
 		
 		submenubar.setVisible(false);
@@ -657,6 +669,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemProductores() throws VendedorInexistenteException{
+		setMenuItemSelected(menuItemProductores);
 		ocultarMenuitemsRoot();
 		sincWithBD();
 		onBuscarProductor();
@@ -721,6 +734,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemPedidos(){
+		setMenuItemSelected(menuItemPedidos);
 		ocultarMenuitemsRoot();
 		submenubar.setVisible(false);
 		ayudapedidoscolectivos.setVisible(false);
@@ -784,6 +798,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemPedidosColecitvos(){
+		setMenuItemSelected(menuItemPedidosColecitvos);
 		ocultarMenuitemsRoot();
 		submenubar.setVisible(true);
 		separadorExport.setVisible(false);
@@ -839,6 +854,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemNodos(){	
+		setMenuItemSelected(menuItemNodos);
 		ocultarMenuitemsRoot();
 		submenubar.setVisible(false);
 		separadorExport.setVisible(false);
@@ -879,6 +895,7 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 	}
 	
 	public void onClick$menuItemTags(){
+		setMenuItemSelected(menuItemTags);
 		ocultarMenuUsuarioAdministrdor();
 		tagsInclude.setVisible(true);
 	}

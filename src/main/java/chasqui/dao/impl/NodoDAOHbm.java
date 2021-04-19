@@ -236,6 +236,7 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 
 	private Criteria makeCriteria(Session session, NodoQueryDTO query) {
 		final Integer idVendedor = query.getIdVendedor();
+		final Integer idNodo = query.getIdNodo();
 		final String tipo = query.getTipo();
 		final String nombreNodo = query.getNombre();
 		final Date d = query.getDesde();
@@ -248,6 +249,11 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 		Criteria c = session.createCriteria(Nodo.class, "nodo");
 		c.add(Restrictions.eq("vendedor.id", idVendedor))
 		.add(Restrictions.eq("esNodo", true));
+
+		if(idNodo != null && idNodo > 0){
+			c.add(Restrictions.like("nodo.id", idNodo));
+			return c;
+		}
 		
 		if(!StringUtils.isEmpty(tipo)) {
 			c.add(Restrictions.eq("tipo", tipo));
@@ -255,6 +261,7 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 		if (!StringUtils.isEmpty(nombreNodo)) {
 			c.add(Restrictions.like("alias", "%"+nombreNodo+"%"));
 		}
+
 		if (d != null && h != null) {
 			DateTime desde = new DateTime(d.getTime());
 			DateTime hasta = new DateTime(h.getTime());

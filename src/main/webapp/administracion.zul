@@ -32,68 +32,131 @@
 		left:40%;
 	}
 	.title {
-    	background-color: #00b8fc;
-    	border-style: solid;
-    	border-width: 1px;
-    	border-color:LightGray;
-    }
-    .titleadmin {
-    	background-color: #00b8fc;
-    	border-style: solid;
-    	border-width: 1px;
-    	border-color:LightGray;
-    	height:25px;
-    }
+		background-color: #00b8fc;
+		border-style: solid;
+		border-width: 1px;
+		border-color:LightGray;
+	}
+	.titleadmin {
+		background-color: #00b8fc;
+		border-style: solid;
+		border-width: 1px;
+		border-color:LightGray;
+		height:25px;
+	}
+
+	.header {
+		background: #00b8fc; 
+		display: flex;
+		align-items: center;
+	}
+
+	.header-title {
+		text-align: center;
+		padding-right: 1rem;
+	}
+
+	.header-title .z-label {
+		font-size: 1rem;
+		font-weight:bold;
+		color:white;
+	}
+
+	.header-logo-img {
+		margin: 0.25rem;
+	}
+
+	.header .header-menu {
+		flex: 1 1 auto;
+	}
+
+	.header .z-menubar {
+		width: 100%;
+    background: initial;
+		border-top: 0;
+    border-bottom: 0;
+		position: relative;
+		padding: 0;
+	}
+
+	.header .z-menubar .z-menuitem {
+		height: 40px;
+    display: flex;
+    align-items: center;
+		padding-left: 0.25rem;
+		padding-right: 0.25rem;
+	}
+
+	.header .z-menubar .z-menuitem.--selected {
+		box-shadow: inset 0 2px 4px rgb(0 0 0 / 40%);
+    background-color: rgba(81, 171, 223, 0.6);
+	}
+
+	.header .z-menubar .z-menuitem:hover {
+    background-color: rgba(81, 171, 223, 0.6);
+	}
+
+	.header .z-menubar-body {
+		width: initial !important;
+	}
+
+	.header .menubar-logout {
+		position: absolute;
+		right: 1rem;
+	}
+
+	.header .z-menubar-content, .header .z-menuitem-content {
+		width: initial;
+		border: 0;
+	}
+
+	.header .z-menu-content:hover, .header .z-menuitem-content:hover, 
+	.header .z-menu-content:active, .header .z-menuitem-content:active,
+	.header .z-menu-content:focus, .header .z-menuitem-content:focus {
+		border: 0;
+    background: initial;
+		box-shadow: initial;
+	}
+
+	.header .z-menu-content:hover, .header .z-menuitem-content:hover {
+		border: 0;
+		color: #2d667a;
+	}
+
+	.header .z-menuitem-text {
+		text-shadow: none;
+		color: white;
+		font-size: 1rem;
+	}
 </style>
 <timer id="timerKeepAliveSession" repeats="true" delay="600000" onTimer=""/>
 <window id="administracionWindow" style=" position:absolute; left:0; width:100%" zclass="none" apply="chasqui.view.composer.AdministracionComposer" visible="false" >
-<div style="background: #00b8fc">
-	<grid  style="background: #00b8fc">
-		<columns zclass="none">
-			<column width="25%" align="left" zclass="none" style="background: blue"/>
-			<column width="60%" align="center" zclass="none" style="background: blue"/>
-			<column width="25%" align="right" zclass="none" style="background: blue"/>
-		</columns>
-		<rows zclass="none">
-			<row zclass="none">
-				<hbox>
-					<space spacing="5px"/>
-					<image src="/imagenes/logo_ch_admn_1.png" height="auto" width="auto"/>
-				</hbox>
-				<div>
-					<label value="${c:l('zk.label.administrador')}" style="font-size:30px;font-weight:bold; color:white"/>
-				</div>
-			<vbox>
-			<separator spacing="80px"/>
-			<hbox>
-				<space spacing="180px"/>
-				<vbox>
-					<separator spacing="5px"/>
-					<label visible="false" value="@{administracionWindow$composer.usuarioLogueado.getUsername}" style="font-size:15px;font-weight:bold; color:white"/>
-				</vbox>
-
-					<toolbarbutton visible="false" style="background: #00b8fc, hover:background-color: red" id="logout" tooltiptext="${c:l('zk.toolbar.disconnect')}" image="/imagenes/logout.png"/>
-
-			</hbox>
-			</vbox>
-			</row>				
-		</rows>
-	</grid>
+<div class="header">
+	<div class="header-logo"> 
+		<image class="header-logo-img" src="/imagenes/logo_ch_admn_1.png" height="35px" width="auto"/>
+	</div>
+	<div class="header-title">
+		<label value="${c:l('zk.label.administrador')}" />
+	</div>
+	<div class="header-menu">
+		<menubar id="menubar" scrollable = "true" width="100%" >
+			<menuitem id="menuItemCategorias"  image="/imagenes/categorias.png" label="Categorias" />
+			<menuitem id="menuItemProductores" image="/imagenes/productor.png" label="Productores" />
+			<menuitem id="menuItemProductos" image="/imagenes/productos.png" label="Productos" />
+			<menuitem id="menuItemPedidos" image="/imagenes/pedidos.png" label="Pedidos"/>
+			<menuitem id="menuItemPedidosColecitvos"  image="/imagenes/pedidos_colectivos.png" label="PedidosColectivos"/>
+			<menuitem id="menuItemNodos" image="/imagenes/menu_nodos.png" label="Nodos"/>
+			<menuitem id="menuItemConfiguracion" image="/imagenes/configuraciones.png" label="Configuraciones" />
+			<menuitem id="menuItemLogOut" class="menubar-logout" image="/imagenes/logout.png"   tooltiptext="${c:l('zk.toolbar.disconnect')}" label="N/D" />
+			<!-- sección visible en root -->
+			<menuitem  id="menuItemUsuarios"  image="/imagenes/usuarios.png" label="Usuarios" />
+			<menuitem  id="menuItemCaracteristicas"  image="/imagenes/sello.png" label="Sellos" />
+			<menuitem  id="menuItemTags"  image="/imagenes/config_tag.png" label="Tags" />
+			
+		</menubar>
+	</div>
 </div>
-<menubar id="menubar" scrollable = "true" width="100%" >
-	<menuitem  id="menuItemCategorias"  image="/imagenes/categorias.png" label="Categorias" />
-	<menuitem id="menuItemProductores" image="/imagenes/productor.png" label="Productores" />
-	<menuitem id="menuItemProductos" image="/imagenes/productos.png" label="Productos" />
-	<menuitem id="menuItemPedidos" image="/imagenes/pedidos.png" label="Pedidos"/>
-	<menuitem id="menuItemPedidosColecitvos"  image="/imagenes/pedidos_colectivos.png" label="PedidosColectivos"/>
-	<menuitem id="menuItemNodos" image="/imagenes/menu_nodos.png" label="Nodos"/>
-	<menuitem id="menuItemConfiguracion" image="/imagenes/configuraciones.png" label="Configuraciones" />
-	<menuitem id="menuItemLogOut" style="position: absolute;  left: 92vw" image="/imagenes/logout.png"   tooltiptext="${c:l('zk.toolbar.disconnect')}" label="N/D" />
-	<!-- sección visible en root -->
-	<menuitem  id="menuItemUsuarios"  image="/imagenes/usuarios.png" label="Usuarios" />
-	<menuitem  id="menuItemCaracteristicas"  image="/imagenes/sello.png" label="Sellos" />
-	<menuitem  id="menuItemTags"  image="/imagenes/config_tag.png" label="Tags" />
-</menubar>
+
 
 <menubar id="submenubar" width="100%" visible="false"  scrollable = "true">
 	<menuitem id="menuItemNuevaCategoria" label="Nueva Categoria" image="/imagenes/plus.png" tooltiptext="${c:l('zk.toolbarbutton.administracion.tooltip.agregar')}"
