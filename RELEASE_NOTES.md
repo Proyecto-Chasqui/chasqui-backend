@@ -2,7 +2,7 @@
 
 ---
 
-### v1.4.0-dev - XX/XX/2021
+### v1.4.0 - 20/04/2021
 
 ---
 
@@ -23,6 +23,10 @@
   - Se amplia el máximo de caracteres de la descripción a 8200.
   - Orden alfabético para combo de categorías y productores
   - Autoselección al crear una nueva categoría o un nuevo productor
+##### CORRECCIONES
+- Arreglo de excepción al entrar con vendedor nuevo sin imagen
+- Configuración > Subida de imagen
+  - Mejora la legibilidad de la notificacion de imagen invalida
 
 ---
 
