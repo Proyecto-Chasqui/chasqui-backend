@@ -295,6 +295,7 @@
 						<listheader width="50px" align="right" label="Stock"  sort="auto(stock)"  />
 						<listheader width="60px" align="right" label="Reserva" sort="auto(CantidadReservada)" />
 						<listheader width="60px" align="right" label="Peso" sort="auto(pesoGramos)" />
+						<listheader width="60px" align="right" label="Precio" sort="auto(precio)" />
 						<listheader width="150px" align="center" label="${c:l('zk.listheader.label.administracion.acciones')}"/>
 						<listheader width="100px" align="center" label="Destacado"  sort="auto(destacado)" />
 						<listheader width="90px" align="center" label="Visibilidad" sort="auto(ocultado)" />

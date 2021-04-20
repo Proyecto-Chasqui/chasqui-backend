@@ -69,6 +69,10 @@ public class Variante {
 	public Double getPrecio() {
 		return trim2decimals(precio);
 	}
+
+	public Double getPrecioTotal() {
+		return precio + incentivo; 
+	}
 	
 	private Double trim2decimals(Double d) {
 		String trim = df.format(d); 

@@ -17,6 +17,7 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Window;
 
 import chasqui.model.Producto;
+import chasqui.utils.PrecioRender;
 
 public class ProductoRenderer implements ListitemRenderer<Producto>{
 
@@ -39,6 +40,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		Listcell cReserva = new Listcell(p.getCantidadReservada().toString());
 		Listcell cCodigoProducto = new Listcell(p.getCodigo());
 		Listcell cPesoGramos = new Listcell(p.getPesoConUnidad());
+		Listcell cPrecio = new Listcell(PrecioRender.precioToString(p.getPrecioTotal()));
 		Hbox hboxImagenes = new Hbox();
 		hboxImagenes.setAlign("center");
 		
@@ -148,6 +150,7 @@ public class ProductoRenderer implements ListitemRenderer<Producto>{
 		c9.setParent(item);	// Stock
 		cReserva.setParent(item); // cantidad reservada)
 		cPesoGramos.setParent(item); // cantidad reservada)
+		cPrecio.setParent(item); // cantidad reservada)
 		menuitemdetalle.setParent(menupop);
 		menuitemPedidos.setParent(menupop);
 		menuitemedit.setParent(menupop);
