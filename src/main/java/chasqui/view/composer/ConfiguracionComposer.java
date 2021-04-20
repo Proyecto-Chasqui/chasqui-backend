@@ -87,10 +87,10 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			super.doAfterCompose(comp);
 			imagen = new Imagen();
 			component = comp;
-			if(vendedorLogueado.getImagenPerfil() != null || vendedorLogueado.getImagenPerfil().equals("/imagenes/usuarios/ROOT/perfil.jpg")){
-				imagen.setPath(vendedorLogueado.getImagenPerfil());				
-			}else{
+			if(vendedorLogueado.getImagenPerfil() == null || vendedorLogueado.getImagenPerfil().equals("/imagenes/usuarios/ROOT/perfil.jpg")){
 				imagen.setPath("/imagenes/subirImagen.png");
+			}else{
+				imagen.setPath(vendedorLogueado.getImagenPerfil());				
 			}
 			fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
 			usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
