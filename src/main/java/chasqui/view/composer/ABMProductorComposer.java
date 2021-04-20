@@ -45,6 +45,7 @@ import chasqui.services.impl.FileSaver;
 import chasqui.services.interfaces.CaracteristicaService;
 import chasqui.services.interfaces.ProductorService;
 import chasqui.services.interfaces.UsuarioService;
+import chasqui.view.genericEvents.CreatedListener;
 import chasqui.view.genericEvents.RefreshListener;
 import chasqui.view.genericEvents.Refresher;
 
@@ -208,6 +209,11 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		mensajedesclarga.setValue("Cant. carácteres: "+total+"/8200");
 		cantidadCaracteresLarga.open(descLarga,"after_end");
 	}
+
+	private void notifyCreated (Fabricante productor) {
+		Object data = CreatedListener.createData("productor", productor);
+		Events.sendEvent(CreatedListener.ON_CREATED ,this.self.getParent(), data);
+	}
 	
 	public void onClick$buttonGuardar(){
 		String productor = textboxNombreProductor.getValue();
@@ -249,6 +255,7 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 			productorService.guardar(model);
 			actualizarUsuarioEnMemoria();
 		}
+		notifyCreated(model);
 		Events.sendEvent(Events.ON_RENDER,this.self.getParent(),null);
 		this.self.detach();
 	}

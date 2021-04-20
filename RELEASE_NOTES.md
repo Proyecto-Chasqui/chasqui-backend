@@ -6,16 +6,23 @@
 
 ---
 
-##### NUEVO // NEW
+##### NUEVO
 
 - Nuevo header de una "linea" de alto
 - El menú del header marca la sección seleccionada
-- Panel > Nodos > Nodos:
+- Nodos > Tabla Nodos:
   - Agrega columna id
   - Agrega filtrado por id del nodo
   - Elimina la columna Dirección
   - Agrega servicio y dao para obtener nodos paginados
-- Panel > Productos: se amplia el maximo de caracteres de la descripción a 8200.
+
+- Tabla de Productos:
+  - Se agrega la columna precio total
+
+- Editor de Producto:
+  - Se amplia el máximo de caracteres de la descripción a 8200.
+  - Orden alfabético para combo de categorías y productores
+  - Autoselección al crear una nueva categoría o un nuevo productor
 
 ---
 
