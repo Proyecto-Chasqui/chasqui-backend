@@ -1,6 +1,13 @@
 ## NOTAS DE PUBLICACIÓN // RELEASE NOTES
 
 ---
+### v1.4.1 - 2/05/2021
+---
+##### CORRECCIONES
+- Arreglo del Quartz de expiración y vencimiento de pedidos
+
+
+---
 
 ### v1.4.0 - 20/04/2021
 
