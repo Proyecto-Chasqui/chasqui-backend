@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import chasqui.dtos.queries.NodoQueryDTO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
@@ -120,6 +121,21 @@ public class NodoListener {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();	
+		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+
+	@GET
+	@Path("/lite/all/{idVendedor : \\d+ }")
+	@Produces("application/json")
+	public Response obtenerNodosLiteDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
+		try{
+			this.validarSiUsaEstrategiaNodo(idVendedor);
+			NodoQueryDTO query = new NodoQueryDTO();
+			return Response.ok(nodoService.obtenerNodosLite(query),MediaType.APPLICATION_JSON).build();
+		}catch(VendedorInexistenteException e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
 		}catch(Exception e){
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}

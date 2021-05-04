@@ -46,14 +46,11 @@ import chasqui.model.GrupoCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Nodo;
 import chasqui.model.Pedido;
-import chasqui.model.PedidoColectivo;
-import chasqui.model.PuntoDeRetiro;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
-import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
-import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
+import chasqui.model_lite.NodoLite;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
@@ -767,6 +764,19 @@ public class NodoServiceImpl implements NodoService {
 		PaginatedListDTO result = new PaginatedListDTO();
 		result.setList(list);
 		result.setTotal(count);
+		result.setSkip(query.getSkip());
+		result.setPageSize(query.getLimit());
+		return result;
+	}
+	
+	@Override 
+	public PaginatedListDTO<NodoLite> obtenerNodosLite(NodoQueryDTO query) {
+		List<NodoLite> list = nodoDAO.obtenerNodosLite(query);
+		// Long count = nodoDAO.countNodos(query);
+
+		PaginatedListDTO<NodoLite> result = new PaginatedListDTO<>();
+		result.setList(list);
+		result.setTotal(list.size());
 		result.setSkip(query.getSkip());
 		result.setPageSize(query.getLimit());
 		return result;

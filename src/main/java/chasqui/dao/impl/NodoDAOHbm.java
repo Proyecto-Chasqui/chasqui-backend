@@ -18,6 +18,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import chasqui.dao.NodoDAO;
 import chasqui.dtos.queries.NodoQueryDTO;
 import chasqui.model.Nodo;
+import chasqui.model_lite.NodoLite;
 import chasqui.view.composer.Constantes;
 
 public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
@@ -218,6 +219,19 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 				c.setMaxResults(limit);
 				
 				return (List<Nodo>) c.list();
+			}
+		});
+	}
+
+	public List<NodoLite> obtenerNodosLite(final NodoQueryDTO query) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<NodoLite>>() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public List<NodoLite> doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria c = session.createCriteria(NodoLite.class, "nodo");
+				
+				return c.list();
 			}
 		});
 	}

@@ -36,8 +36,7 @@ import chasqui.model.Nodo;
 import chasqui.model.Pedido;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
-import chasqui.model.Usuario;
-import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
+import chasqui.model_lite.NodoLite;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import freemarker.template.TemplateException;
 
@@ -299,6 +298,8 @@ public interface NodoService {
 			String emailcoordinador, String barrio, String tipo, Integer idZona);
 
 	PaginatedListDTO<Nodo> obtenerNodos(NodoQueryDTO query);
+
+	PaginatedListDTO<NodoLite> obtenerNodosLite(NodoQueryDTO query);
 
 	public Collection<? extends SolicitudCreacionNodo> obtenerSolicitudesDeCreacionNodosDelVendedorCon(Integer id,
 			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio);

@@ -2,9 +2,9 @@ package chasqui.dao;
 
 import java.util.List;
 
-import chasqui.dtos.PaginatedListDTO;
 import chasqui.dtos.queries.NodoQueryDTO;
 import chasqui.model.Nodo;
+import chasqui.model_lite.NodoLite;
 
 public interface NodoDAO {
 	
@@ -14,6 +14,8 @@ public interface NodoDAO {
 
     public List<Nodo> obtenerNodos(NodoQueryDTO query);
     public Long countNodos(NodoQueryDTO query);
+
+    public List<NodoLite> obtenerNodosLite(NodoQueryDTO query);
     
     public List<Nodo> obtenerNodosDelCliente(Integer idVendedor, String email);
     
