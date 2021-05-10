@@ -1,6 +1,12 @@
 ## NOTAS DE PUBLICACIÓN // RELEASE NOTES
 
 ---
+### v1.4.2 - 10/05/2021
+---
+##### CORRECCIONES
+- Arreglo del edición de Productores con descripciones que exceden los caracteres máximos.
+
+---
 ### v1.4.1 - 2/05/2021
 ---
 ##### CORRECCIONES

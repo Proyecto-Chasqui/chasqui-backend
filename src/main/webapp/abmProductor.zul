@@ -106,7 +106,7 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 				<listbox>
 					<listitem>
 							<listcell>
-								<textbox id="descCorta" maxlength="300" rows="3" width="100%" forward="onChange=productorWindow$composer.onCalcularTotalCaracteresCorta"/>
+								<textbox id="descCorta" rows="3" width="100%" forward="onChange=productorWindow$composer.onCalcularTotalCaracteresCorta"/>
 								<popup id="cantidadCaracteresCorta" width="14%">
 									<label id="mensajedesccorta" />
 				   				</popup>							
@@ -132,7 +132,7 @@ apply="chasqui.view.composer.ABMProductorComposer" border="normal" width="50%"  
 				<listbox>
 						<listitem height="30%">
 							<listcell>
-								<textbox id="descLarga" maxlength="8200" height="200px" rows="7" width="100%"   forward="onChange=productorWindow$composer.onCalcularTotalCaracteres"/>
+								<textbox id="descLarga" height="200px" rows="7" width="100%"   forward="onChange=productorWindow$composer.onCalcularTotalCaracteres"/>
 								<popup id="cantidadCaracteresLarga" width="14%">
 									<label id="mensajedesclarga" />
 				   				</popup>
