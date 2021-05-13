@@ -6,7 +6,32 @@
 <zk>
 <window id="nodosWindow" apply="chasqui.view.composer.NodosComposer" sizable="false" width="100%"
 style="overflow:auto">
+<style>
+	.listToolbarContainer {
+		display: flex;
+		align-items: center;
+		padding: 0.25rem 0.5rem 0.25rem 0;
+		border: 1px solid #cfcfcf;
+		border-top-width: 0;
+		background-color: #F9F9F9;
+	}
 
+	.listToolbarContainer .z-paging {
+		border-bottom: initial;
+	}
+
+	.listToolbarContainer-left {
+		flex: 1 1 auto;
+		color: #555;
+	}
+
+	.listToolbarContainer-right {
+		flex: 1 1 auto;
+		text-align: right;
+		color: #555;
+		font-size: 0.9rem;
+	}
+</style>
 <tabbox width="100%" mold="default">
 	<tabs >
 		<tab label="Pedidos"  image="/imagenes/pedidosNodo.png"/>
@@ -88,15 +113,15 @@ style="overflow:auto">
 			</div>
 				<listbox  id="listboxPedidosNodo" model="@{nodosWindow$composer.pedidosNodos}" mold="paging" rows="10" pageSize="10">
 					<listhead>
-							<listheader label="ID" align="center" visible="true" sort="auto(id)"/>
+							<listheader width="70px" label="ID" sort="auto(id)"/>
 							<listheader label="Nombre Nodo" align="center" visible="true" sort="auto(colectivo.alias)"></listheader>
 							<listheader label="Coordinador" align="center" visible="true" sort="auto(colectivo.administrador.email)"></listheader>
 							<listheader label="Fecha Creación" align="center" sort="auto(fechaCreacion)"/>
 							<listheader label="Fecha Cierre" align="center" sort="auto(fechaModificacion)"/>
 							<listheader label="Zona" align="center" sort="auto(zona.nombre)"/>
-							<listheader label="Monto Minimo" align="center" visible="false"/>
-							<listheader label="Monto Final" align="center" sort="auto(montoTotal)"/>
-							<listheader label="Peso" align="center" sort="auto(pesoGramosTotal)"/>
+							<listheader label="Monto Minimo" align="right" visible="false"/>
+							<listheader label="Monto Final" align="right" sort="auto(montoTotal)"/>
+							<listheader label="Peso" align="right" sort="auto(pesoGramosTotal)"/>
 							<listheader label="Estado" align="center" sort="auto(estado)"/>
 							<listheader label="Dir. de Entrega" align="center" />
 							<listheader label="Acciones" align="center" hflex="4"/>
@@ -250,7 +275,7 @@ style="overflow:auto">
 				    </vbox>
 				    <vbox>
 						<textbox id="buscadorBarrio" placeholder="Buscar por barrio" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
-						<textbox id="buscadorPorNombreNodo" placeholder="Nombre nodo" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
+						<textbox id="buscadorPorNombreNodo" placeholder="Nombre o Id del nodo" width="100%"  forward="onOK=nodosWindow$composer.onSendBuscarNodos" />
 					</vbox>
 					 <vbox>
 						<combobox id="zonasNodosCombobox" placeholder="Buscar por zona" readonly="true" model="@{nodosWindow$composer.zonas}" selectedItem="@{nodosWindow$composer.zonaSeleccionadaNodo}"/>
@@ -260,21 +285,28 @@ style="overflow:auto">
 				</div>
 				<separator spacing="15px"/>
 			</div>
-				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}" mold="paging" rows="5" pageSize="5" >
+				<listbox  id="listboxNodos" model="@{nodosWindow$composer.nodos}">
 					<listhead>
+						<listheader width="60px" id="nodosHeaderId" label="ID" sort="auto(id)" />
 						<listheader align="center" label="Estado"/>
-						<listheader align="center" label="Nombre Nodo" sort="auto(alias)"/>
-						<listheader align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>
-						<listheader align="center" label="Tipo" sort="auto(tipo)"/>
-						<listheader align="center" label="Coordinador" sort="auto(administrador.nombre, administrador.apellido)"/>
-						<listheader align="center" label="e-mail" sort="auto(administrador.email)"/>
-						<listheader align="center" label="Dirección" sort="auto(direccionDelNodo.calle, direccionDelNodo.altura, direccionDelNodo.localidad)"/>
-						<listheader align="center" label="Barrio" sort="auto(barrio)"/>
-						<listheader align="center" label="Zona" sort="auto(zona.nombre)"/>
+						<listheader id="nodosHeaderNombreNodo" label="Nombre Nodo" sort="auto(alias)" />
+						<listheader id="nodosHeaderFechaCreacion" align="center" label="Fecha de creación" sort="auto(fechaCreacion)"/>
+						<listheader id="nodosHeaderTipo" align="center" label="Tipo" sort="auto(tipo)"/>
+						<listheader id="nodosHeaderCoordinador" align="center" label="Coordinador" sort="auto(administrador.nombre, administrador.apellido)"/>
+						<listheader id="nodosHeaderEmail" align="center" label="e-mail" sort="auto(administrador.email)"/>
+						<listheader id="nodosHeaderBarrio" align="center" label="Barrio" sort="auto(barrio)"/>
+						<listheader id="nodosHeaderZona" align="center" label="Zona" sort="auto(zona.nombre)"/>
 						<listheader align="center" label="Acciones" />
-						
 					</listhead>		
 				</listbox>
+				<div class="listToolbarContainer">
+					<div class="listToolbarContainer-left">
+						<paging id="pagListboxNodos" pageSize="5" />
+					</div>
+					<div class="listToolbarContainer-right">
+						<label value="@{$composer.totalResultNodos}" />
+					</div>
+				</div>
 		</tabpanel>
 		
 	</tabpanels>

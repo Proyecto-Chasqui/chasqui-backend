@@ -147,6 +147,14 @@ public class Producto {
 		}
 	}
 
+	public Double getPrecioTotal() {
+		if(variantes.size() > 0) {
+			return this.variantes.get(0).getPrecioTotal();
+		}else {
+			return 0d;
+		}
+	}
+
 	public boolean isDestacado() {
 		if(variantes.size() > 0) {
 			return this.variantes.get(0).getDestacado();

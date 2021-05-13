@@ -10,6 +10,8 @@ import javax.mail.MessagingException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.dtos.PaginatedListDTO;
+import chasqui.dtos.queries.NodoQueryDTO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
@@ -295,6 +297,8 @@ public interface NodoService {
 
 	List<Nodo> obtenerNodosDelVendedorCon(Integer idvendedor, Date d, Date h, String estadoNodoBool, String nombreNodo,
 			String emailcoordinador, String barrio, String tipo, Integer idZona);
+
+	PaginatedListDTO<Nodo> obtenerNodos(NodoQueryDTO query);
 
 	public Collection<? extends SolicitudCreacionNodo> obtenerSolicitudesDeCreacionNodosDelVendedorCon(Integer id,
 			Date d, Date h, String estado, String nombreCoordinador, String email, String barrio);

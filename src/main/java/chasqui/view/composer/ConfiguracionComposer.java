@@ -87,10 +87,10 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 			super.doAfterCompose(comp);
 			imagen = new Imagen();
 			component = comp;
-			if(vendedorLogueado.getImagenPerfil() != null || vendedorLogueado.getImagenPerfil().equals("/imagenes/usuarios/ROOT/perfil.jpg")){
-				imagen.setPath(vendedorLogueado.getImagenPerfil());				
-			}else{
+			if(vendedorLogueado.getImagenPerfil() == null || vendedorLogueado.getImagenPerfil().equals("/imagenes/usuarios/ROOT/perfil.jpg")){
 				imagen.setPath("/imagenes/subirImagen.png");
+			}else{
+				imagen.setPath(vendedorLogueado.getImagenPerfil());				
 			}
 			fileSaver = (FileSaver) SpringUtil.getBean("fileSaver");
 			usuarioService = (UsuarioService) SpringUtil.getBean("usuarioService");
@@ -190,8 +190,8 @@ public class ConfiguracionComposer extends GenericForwardComposer<Component>{
 				if(this.validateSizeOfImageAt(alto,ancho,margenalto,ALTO,evt) && this.validateSizeOfImageAt(alto,ancho,margenancho,ANCHO,evt) && validateFormatAndWeigthOfImage(evt,formats,kb)) {
 					image.setContent((org.zkoss.image.Image) media);
 				}else {
-					String mensaje = "La imagen debe tener una dimensión de " +ancho.intValue()+"px x " +alto.intValue()+" px, hasta "+ (ancho.intValue()+margenancho.intValue()) +" px x "+(alto.intValue()+margenalto.intValue())+" px, debe tener propocion 14:9 y ser de formato jpg, jpeg o png y no debe pesar mas de "+ kb +"KB";
-					Clients.showNotification(mensaje, "warning", component, "middle_center", 10000, true);
+					String mensaje = "<h2 style='margin-bottom:0'>La imagen debe:</h2><div style='font-size:0.9rem'>- Tener dimensión entre " +ancho.intValue()+"px x " +alto.intValue()+" px, hasta "+ (ancho.intValue()+margenancho.intValue()) +" px x "+(alto.intValue()+margenalto.intValue())+" px, <br/>- Debe tener propocion 14:9 <br />-Ser de formato jpg, jpeg o png <br/>-Con un peso máximo de "+ kb +"KB</div>";
+					Clients.showNotification(mensaje, "warning", null, "middle_center", 0, true);
 					return;
 				}
 			} else {

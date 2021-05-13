@@ -141,18 +141,18 @@ apply="chasqui.view.composer.ABMProductoComposer" width="60%" closable="true" po
 				<!-- Descripcion -->
 				<div align="center" class="title">
 				<auxhead>
-            		<auxheader id="auxheaderproducto" label="Descripción * (max 355 carácteres)" style="color: white;"> </auxheader>
+            		<auxheader id="auxheaderproducto" label="Descripción * (max 8200 carácteres)" style="color: white;"> </auxheader>
         		</auxhead>
         		<image align="right" style="cursor:pointer; position:relative; margin-top:-1.5em; margin-right:1em;" popup="ayudadesc" src="/imagenes/question.png" />
         		
         		 <popup id="ayudadesc" width="400px">
         			<html><![CDATA[ Campo de descripción del producto. <br /><br />
-        					<strong>Nota:</strong> Tenga en cuenta que si pega un texto mayor a 355 carácteres
+        					<strong>Nota:</strong> Tenga en cuenta que si pega un texto mayor a 8200 carácteres
            					<font color="red">será recortado</font>.<br /></u>
         					]]></html>
     				</popup>
         		</div>
-				<textbox width="100%" id="ckEditor" maxlength="355" rows="5" forward="onClick=productosWindow$composer.onCalcularTotalCaracteres"/>
+				<textbox width="100%" id="ckEditor" maxlength="8200" rows="5" forward="onClick=productosWindow$composer.onCalcularTotalCaracteres"/>
 				<popup id="cantidadCaracteres" width="12%">
 					<label id="mensaje" />
    				</popup>

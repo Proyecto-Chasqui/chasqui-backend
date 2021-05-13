@@ -19,6 +19,8 @@ import chasqui.dao.SolicitudPertenenciaNodoDAO;
 import chasqui.dao.impl.NodoDAOHbm;
 import chasqui.dao.impl.SolicitudCreacionNodoDAOHbm;
 import chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm;
+import chasqui.dtos.PaginatedListDTO;
+import chasqui.dtos.queries.NodoQueryDTO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
@@ -755,6 +757,19 @@ public class NodoServiceImpl implements NodoService {
 	public List<Nodo> obtenerNodosDelVendedorCon(Integer idvendedor, Date d, Date h, String estadoNodoBool,
 			String nombreNodo, String emailcoordinador, String barrio, String tipo, Integer idZona) {
 		return nodoDAO.obtenerNodosDelVendedorCon(idvendedor,d, h, estadoNodoBool,nombreNodo,emailcoordinador,barrio, tipo,idZona);
+	}
+
+	@Override 
+	public PaginatedListDTO<Nodo> obtenerNodos(NodoQueryDTO query) {
+		List<Nodo> list = nodoDAO.obtenerNodos(query);
+		Long count = nodoDAO.countNodos(query);
+
+		PaginatedListDTO result = new PaginatedListDTO();
+		result.setList(list);
+		result.setTotal(count);
+		result.setSkip(query.getSkip());
+		result.setPageSize(query.getLimit());
+		return result;
 	}
 
 	@Override
