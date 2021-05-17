@@ -84,6 +84,7 @@
 				
 				<value>classpath*:mappings_lite/ClienteLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/GrupoCCLite.hbm.xml</value>
+				<value>classpath*:mappings_lite/MiembroGCCLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/NodoLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/PedidoLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/ProductoPedidoLite.hbm.xml</value>

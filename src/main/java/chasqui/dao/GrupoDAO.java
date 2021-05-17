@@ -6,6 +6,7 @@ import java.util.List;
 import com.vividsolutions.jts.geom.Geometry;
 
 import chasqui.model.GrupoCC;
+import chasqui.model_lite.MiembroGCCLite;
 
 public interface GrupoDAO {
 	public void altaGrupo(GrupoCC grupo);
@@ -31,4 +32,6 @@ public interface GrupoDAO {
 	 * @return
 	 */
 	public GrupoCC obtenerGrupoAbsolutoPorId(Integer idGrupo);
+
+	List<MiembroGCCLite> obtenerMiembrosDeGrupo(Integer idGrupo);
 }

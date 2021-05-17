@@ -42,6 +42,7 @@ import chasqui.model.GrupoCC;
 import chasqui.model.InvitacionAGCC;
 import chasqui.model.Pedido;
 import chasqui.model.Vendedor;
+import chasqui.model_lite.MiembroGCCLite;
 import chasqui.service.rest.request.AceptarRequest;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
 import chasqui.service.rest.request.CederAdministracionRequest;
@@ -502,6 +503,20 @@ public class GrupoListener {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 
+	}
+
+	@GET
+	@Path("/{idGrupo : \\d+ }/miembros")
+	@Produces("application/json")
+	public Response obtenerMiembrosEnGruposCC(@PathParam("idGrupo") final Integer idGrupo) {
+		String email = obtenerEmailDeContextoDeSeguridad();
+		try {
+			List<MiembroGCCLite> miembros = grupoService.obtenerMiembrosDelGCC(idGrupo);
+
+			return Response.ok(miembros, MediaType.APPLICATION_JSON).build();
+		} catch (GrupoCCInexistenteException e) {
+			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
+		}
 	}
 
 	@POST
