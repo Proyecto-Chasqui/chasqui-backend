@@ -85,8 +85,10 @@
 				<value>classpath*:mappings/TagTipoProducto.hbm.xml</value>
 				<value>classpath*:mappings/TagZonaDeCobertura.hbm.xml</value>
 				
+				<value>classpath*:mappings_lite/ClienteLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/GrupoCCLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/NodoLite.hbm.xml</value>
+				<value>classpath*:mappings_lite/PedidoLite.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

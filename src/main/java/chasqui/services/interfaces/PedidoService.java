@@ -7,6 +7,8 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.dtos.PaginatedListDTO;
+import chasqui.dtos.queries.PedidoQueryDTO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -19,6 +21,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
+import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 
@@ -41,6 +44,8 @@ public interface PedidoService {
 	 * Pedidos en estado VENCIDO (ya han sido procesados por quartz)
 	 */
 	public List<Pedido> obtenerPedidosVencidos();
+
+	PaginatedListDTO<PedidoLite> obtenerPedidosLite(PedidoQueryDTO query);
 
 	/*
 	 * Pedidos en estado ABIERTO que han expirado (Es para quartz)

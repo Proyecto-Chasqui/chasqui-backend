@@ -15,6 +15,8 @@ import chasqui.aspect.Auditada;
 import chasqui.aspect.Dateable;
 import chasqui.dao.PedidoDAO;
 import chasqui.dao.ZonaDAO;
+import chasqui.dtos.PaginatedListDTO;
+import chasqui.dtos.queries.PedidoQueryDTO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -32,6 +34,7 @@ import chasqui.model.ProductoPedido;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
@@ -81,9 +84,19 @@ public class PedidoServiceImpl implements PedidoService {
 	}
 
 	@Override
+	public PaginatedListDTO<PedidoLite> obtenerPedidosLite(PedidoQueryDTO query) {
+		PaginatedListDTO<PedidoLite> result = new PaginatedListDTO<>();
+		List<PedidoLite> list = pedidoDAO.obtenerPedidosLite(query);
+		result.setList(list);
+		result.setTotal(list.size());
+		return result;
+	}
+
+	@Override
 	public List<Pedido> obtenerPedidosDeVendedor(Integer idVendedor) {
 		return pedidoDAO.obtenerPedidos(idVendedor);
 	}
+
 	@Override
 	public List<Pedido> obtenerPedidosIndividuales(Integer idVendedor){
 		return pedidoDAO.obtenerPedidosIndividuales(idVendedor);

@@ -25,7 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import chasqui.dtos.PaginatedListDTO;
 import chasqui.dtos.queries.NodoQueryDTO;
+import chasqui.dtos.queries.PedidoQueryDTO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
@@ -54,6 +56,7 @@ import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
+import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.AceptarRequest;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
 import chasqui.service.rest.request.CancelarSolicitudCreacionNodoRequest;
@@ -81,6 +84,7 @@ import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.NotificacionService;
+import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
@@ -92,6 +96,8 @@ public class NodoListener {
 
 	@Autowired
 	NodoService nodoService;
+	@Autowired
+	PedidoService pedidoService;
 	@Autowired
 	VendedorService vendedorService;
 	@Autowired
@@ -133,10 +139,27 @@ public class NodoListener {
 		try{
 			this.validarSiUsaEstrategiaNodo(idVendedor);
 			NodoQueryDTO query = new NodoQueryDTO();
-			return Response.ok(nodoService.obtenerNodosLite(query),MediaType.APPLICATION_JSON).build();
+			return Response.ok(nodoService.obtenerNodosLite(query), MediaType.APPLICATION_JSON).build();
 		}catch(VendedorInexistenteException e){
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
 		}catch(Exception e){
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+
+
+	@GET
+	@Path("/lite/{idNodo : \\d+ }/pedidos")
+	@Produces("application/json")
+	
+	public Response obtenerPedidosLitesDeNodo(@PathParam("idNodo") final Integer idNodo) {
+		PaginatedListDTO<PedidoLite> out = null;
+		try {
+			PedidoQueryDTO query = new PedidoQueryDTO();
+			query.setIdColectivo(idNodo);
+			out = pedidoService.obtenerPedidosLite(query);
+			return Response.ok(out, MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
