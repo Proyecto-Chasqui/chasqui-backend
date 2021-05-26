@@ -1,31 +1,34 @@
 <?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-  <class name="chasqui.model_lite.GrupoCCLite" table="GRUPOCC" lazy="false">
-         <id name="id" type="java.lang.Integer">
-            <column name="ID" />
-            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
-	            <param name="sequence_name">GRUPOCC_SEQUENCE</param>
-	            <param name="optimizer">none</param>
-	            <param name="increment_size">1</param> 
-         	</generator>
-        </id>
-        
-        <property name="alias" type="java.lang.String" column="ALIAS"/>
-        
-        <property name="descripcion" type="java.lang.String" column="DESCRIPCION"/>
-        
-        <property name="pedidosHabilitados" type="java.lang.Boolean">
-        	<column name="PEDIDOS_HABILITADOS" not-null="true" default="true"></column>
-        </property>        
-        
-        <property name="fechaCreacion" type="org.joda.time.contrib.hibernate.PersistentDateTime" column= "FECHA_DE_CREACION"/>
-        
-        <property name="esNodo" type="java.lang.Boolean" >
-        		<column name="ES_NODO" not-null="true" default="false" />
-    	</property>
-        
-    </class>
+  <class name="chasqui.model_lite.GrupoCCLite" table="GRUPOCC" lazy="false" mutable="false">
+    <id name="id" type="java.lang.Integer">
+      <column name="ID" />
+      <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+        <param name="sequence_name">GRUPOCC_SEQUENCE</param>
+        <param name="optimizer">none</param>
+        <param name="increment_size">1</param>
+      </generator>
+    </id>
+
+    <property name="alias" type="java.lang.String" column="ALIAS" />
+
+    <property name="descripcion" type="java.lang.String" column="DESCRIPCION" />
+
+    <property name="pedidosHabilitados" type="java.lang.Boolean">
+      <column name="PEDIDOS_HABILITADOS" not-null="true" default="true"></column>
+    </property>
+
+    <property name="fechaCreacion" type="org.joda.time.contrib.hibernate.PersistentDateTime" column="FECHA_DE_CREACION" />
+
+    <property name="esNodo" type="java.lang.Boolean">
+      <column name="ES_NODO" />
+    </property>
+
+    <property name="idVendedor" type="java.lang.Integer">
+      <column name="ID_VENDEDOR" />
+    </property>
+
+  </class>
 </hibernate-mapping>

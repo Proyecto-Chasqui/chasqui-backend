@@ -8,9 +8,9 @@ public class GrupoCCLite {
 	private String alias;
 	private String descripcion;
 	private DateTime fechaCreacion;
-	private boolean esNodo = false;
+	private Boolean esNodo = false;
 	private Boolean pedidosHabilitados;
-
+	private Integer idVendedor;
 
 	public Integer getId() {
 		return this.id;
@@ -44,7 +44,7 @@ public class GrupoCCLite {
 		this.fechaCreacion = fechaCreacion;
 	}
 
-	public boolean getEsNodo() {
+	public Boolean getEsNodo() {
 		return this.esNodo;
 	}
 
@@ -60,5 +60,12 @@ public class GrupoCCLite {
 		this.pedidosHabilitados = pedidosHabilitados;
 	}
 
+	public Integer getIdVendedor() {
+		return this.idVendedor;
+	}
+
+	public void setIdVendedor(Integer idVendedor) {
+		this.idVendedor = idVendedor;
+	}
 
 }

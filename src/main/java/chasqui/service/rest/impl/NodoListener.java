@@ -56,6 +56,7 @@ import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
+import chasqui.model_lite.NodoLite;
 import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.AceptarRequest;
 import chasqui.service.rest.request.ActualizarDomicilioRequest;
@@ -106,28 +107,31 @@ public class NodoListener {
 	GrupoService grupoService;
 	@Autowired
 	InvitacionService invitacionService;
-	
-	private void validarSiUsaEstrategiaNodo (Integer idVendedor) throws ConfiguracionDeVendedorException, VendedorInexistenteException {
+
+	private void validarSiUsaEstrategiaNodo(Integer idVendedor)
+			throws ConfiguracionDeVendedorException, VendedorInexistenteException {
 		Vendedor vendedor = this.vendedorService.obtenerVendedorPorId(idVendedor);
-		if(!vendedor.getEstrategiasUtilizadas().isNodos()) {
+		if (!vendedor.getEstrategiasUtilizadas().isNodos()) {
 			throw new ConfiguracionDeVendedorException("El catálogo no soporta el modo de venta por nodos");
 		}
 	}
-	
-	
+
 	@GET
 	@Path("/all/{idVendedor : \\d+ }")
 	@Produces("application/json")
-	public Response obtenerNodosDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
-		try{
+	public Response obtenerNodosDelVendedor(@PathParam("idVendedor") final Integer idVendedor) {
+		try {
 			this.validarSiUsaEstrategiaNodo(idVendedor);
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
-			return Response.ok(toResponse(nodoService.obtenerNodosDelCliente(idVendedor,emailAdministrador),emailAdministrador),MediaType.APPLICATION_JSON).build();
-		}catch(VendedorInexistenteException e){
-			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
+			return Response
+					.ok(toResponse(nodoService.obtenerNodosDelCliente(idVendedor, emailAdministrador), emailAdministrador),
+							MediaType.APPLICATION_JSON)
+					.build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (ConfiguracionDeVendedorException e) {
-			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();	
-		}catch(Exception e){
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
@@ -135,23 +139,25 @@ public class NodoListener {
 	@GET
 	@Path("/lite/all/{idVendedor : \\d+ }")
 	@Produces("application/json")
-	public Response obtenerNodosLiteDelVendedor(@PathParam("idVendedor")final Integer idVendedor){
-		try{
+	public Response obtenerNodosLiteDelVendedor(@PathParam("idVendedor") final Integer idVendedor) {
+		try {
 			this.validarSiUsaEstrategiaNodo(idVendedor);
-			NodoQueryDTO query = new NodoQueryDTO();
-			return Response.ok(nodoService.obtenerNodosLite(query), MediaType.APPLICATION_JSON).build();
-		}catch(VendedorInexistenteException e){
-			return Response.status(406).entity(new ChasquiError(e.getMessage())).build(); 
-		}catch(Exception e){
+			String emailUserlogged = obtenerEmailDeContextoDeSeguridad();
+			List<NodoLite> out = nodoService.obtenerNodosLiteDelCliente(idVendedor, emailUserlogged);
+			// Object out = nodoService.obtenerNodosLite(new NodoQueryDTO());
+
+			return Response.ok(out, MediaType.APPLICATION_JSON).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
 
-
 	@GET
 	@Path("/lite/{idNodo : \\d+ }/pedidos")
 	@Produces("application/json")
-	
+
 	public Response obtenerPedidosLitesDeNodo(@PathParam("idNodo") final Integer idNodo) {
 		PaginatedListDTO<PedidoLite> out = null;
 		try {
@@ -163,18 +169,19 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+
 	@POST
 	@Path("/alta")
 	@Produces("application/json")
-	public Response solicitudDeCreacionNodo(@Multipart(value = "solicitudCreacionNodoRequest", type = "application/json") final String solicitudCreacionNodoRequest) {
+	public Response solicitudDeCreacionNodo(
+			@Multipart(value = "solicitudCreacionNodoRequest", type = "application/json") final String solicitudCreacionNodoRequest) {
 		NodoSolicitudCreacionRequest request;
 		try {
-			//validar estrategia
+			// validar estrategia
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toNodoCreacionRequest(solicitudCreacionNodoRequest);
 			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
-			this.crearSolicitudDeCreacionDeNodo(request,emailAdministrador);
+			this.crearSolicitudDeCreacionDeNodo(request, emailAdministrador);
 			return Response.ok().build();
 		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
@@ -183,11 +190,13 @@ public class NodoListener {
 		} catch (VendedorInexistenteException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (DireccionesInexistentes e) {
-			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();			
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (ConfiguracionDeVendedorException e) {
-			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();	
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (SolicitudCreacionNodoEnGestionExistenteException e) {
-			return Response.status(406).entity(new ChasquiError("Ya posee una solicitud de creación de nodo, solo se permite gestionar una por vez")).build();
+			return Response.status(406)
+					.entity(new ChasquiError("Ya posee una solicitud de creación de nodo, solo se permite gestionar una por vez"))
+					.build();
 		} catch (NodoYaExistenteException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (Exception e) {
@@ -195,26 +204,25 @@ public class NodoListener {
 		}
 	}
 
-	private void crearSolicitudDeCreacionDeNodo(NodoSolicitudCreacionRequest request, String emailAdministrador) throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException, UsuarioInexistenteException, SolicitudCreacionNodoEnGestionExistenteException, NodoYaExistenteException {
+	private void crearSolicitudDeCreacionDeNodo(NodoSolicitudCreacionRequest request, String emailAdministrador)
+			throws DireccionesInexistentes, VendedorInexistenteException, ConfiguracionDeVendedorException,
+			UsuarioInexistenteException, SolicitudCreacionNodoEnGestionExistenteException, NodoYaExistenteException {
 		Cliente cliente = usuarioService.obtenerClientePorEmail(emailAdministrador);
-		nodoService.crearSolicitudDeCreacionNodo(request.getIdVendedor(),
-				cliente,
-				request.getNombreNodo(),
-				cliente.obtenerDireccionConId(request.getIdDomicilio()),
-				request.getTipoNodo(),
-				request.getBarrio(),
+		nodoService.crearSolicitudDeCreacionNodo(request.getIdVendedor(), cliente, request.getNombreNodo(),
+				cliente.obtenerDireccionConId(request.getIdDomicilio()), request.getTipoNodo(), request.getBarrio(),
 				request.getDescripcion());
-		
+
 	}
 
-	private NodoSolicitudCreacionRequest toNodoCreacionRequest(String solicitudCreacionNodoRequest) throws JsonParseException, JsonMappingException, IOException {
+	private NodoSolicitudCreacionRequest toNodoCreacionRequest(String solicitudCreacionNodoRequest)
+			throws JsonParseException, JsonMappingException, IOException {
 		NodoSolicitudCreacionRequest request = new NodoSolicitudCreacionRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		request = mapper.readValue(solicitudCreacionNodoRequest, NodoSolicitudCreacionRequest.class);
 		return request;
 	}
-	
+
 	@POST
 	@Path("/cederAdministracion")
 	@Produces("application/json")
@@ -234,14 +242,14 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+
 	@POST
 	@Path("/eliminarNodo")
 	@Produces("application/json")
 	public Response eliminarGrupo(
 			@Multipart(value = "eliminarGrupoRequest", type = "application/json") final String eliminarGrupoRequest) {
 		EliminarGrupoRequest request;
-		
+
 		try {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toEliminarGrupoRequest(eliminarGrupoRequest);
@@ -249,12 +257,14 @@ public class NodoListener {
 			Nodo nodo = nodoService.obtenerNodoPorId(request.getIdGrupo());
 			validarNodoParaEliminar(nodo, emailAdministrador);
 			nodoService.vaciarNodo(request.getIdGrupo());
-			
+
 			return Response.ok().build();
 		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError("Error de parseo en JSON")).build();
 		} catch (EstadoPedidoIncorrectoException e) {
-			return Response.status(500).entity(new ChasquiError("No se puede eliminar el grupo debido a que algunos pedidos estan confirmados o abiertos")).build();
+			return Response.status(500).entity(
+					new ChasquiError("No se puede eliminar el grupo debido a que algunos pedidos estan confirmados o abiertos"))
+					.build();
 		} catch (NodoInexistenteException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioNoPerteneceAlGrupoDeCompras e) {
@@ -265,14 +275,14 @@ public class NodoListener {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+
 	@GET
 	@Path("/pedidos/{idVendedor : \\d+ }")
 	@Produces("application/json")
 	public Response obtenerPedidosEnNodo(@PathParam("idVendedor") final Integer idVendedor) {
 
 		String email = obtenerEmailDeContextoDeSeguridad();
-		
+
 		Map<Integer, Pedido> pedidos;
 
 		try {
@@ -281,12 +291,10 @@ public class NodoListener {
 
 			pedidos = nodoService.obtenerPedidosEnNodos(nodos, email);
 
-			return Response.ok(this.toResponse(pedidos, null), MediaType.APPLICATION_JSON)
-						.build();
+			return Response.ok(this.toResponse(pedidos, null), MediaType.APPLICATION_JSON).build();
 
 		} catch (ClienteNoPerteneceAGCCException e) {
-			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage()))
-					.build();
+			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (GrupoCCInexistenteException e) {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (VendedorInexistenteException e1) {
@@ -294,52 +302,52 @@ public class NodoListener {
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
-		
 
 	}
 
-	
-	private void validarNodoParaEliminar(Nodo nodo, String emailAdministrador) throws UsuarioNoPerteneceAlGrupoDeCompras, NodoInexistenteException {
-		if(nodo == null) {
+	private void validarNodoParaEliminar(Nodo nodo, String emailAdministrador)
+			throws UsuarioNoPerteneceAlGrupoDeCompras, NodoInexistenteException {
+		if (nodo == null) {
 			throw new NodoInexistenteException("El nodo no existe");
 		}
-		if(!nodo.getAdministrador().getEmail().equals(emailAdministrador)) {
+		if (!nodo.getAdministrador().getEmail().equals(emailAdministrador)) {
 			throw new UsuarioNoPerteneceAlGrupoDeCompras("No tiene permisos para eliminar el nodo");
 		}
 	}
-	
+
 	@GET
 	@Path("/solicitudesDeCreacion/{idVendedor : \\d+ }")
 	@Produces("application/json")
 	public Response obtenerSolicitudes(@PathParam("idVendedor") final Integer idVendedor) {
 
 		String email = obtenerEmailDeContextoDeSeguridad();
-		
-			try {
-				this.validarSiUsaEstrategiaNodo(idVendedor);
-				return Response.ok(toResponseSolicitudes(nodoService.obtenerSolicitudesDeCreacionDe(email,idVendedor)),
-						MediaType.APPLICATION_JSON).build();
-			} catch (UsuarioInexistenteException e) {
-				e.printStackTrace();
-				return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
-			} catch (ConfiguracionDeVendedorException e) {
-				return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-			} catch (VendedorInexistenteException e) {
-				return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-			}
+
+		try {
+			this.validarSiUsaEstrategiaNodo(idVendedor);
+			return Response.ok(toResponseSolicitudes(nodoService.obtenerSolicitudesDeCreacionDe(email, idVendedor)),
+					MediaType.APPLICATION_JSON).build();
+		} catch (UsuarioInexistenteException e) {
+			e.printStackTrace();
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}
 
 	}
-	
+
 	@POST
 	@Path("/editarSolicitudDeCreacion")
 	@Produces("application/json")
-	public Response editarSolicitudDeCreacion(@Multipart(value = "editarSolicitudDeCreacion", type = "application/json") final String editarSolicitudDeCreacion) {
+	public Response editarSolicitudDeCreacion(
+			@Multipart(value = "editarSolicitudDeCreacion", type = "application/json") final String editarSolicitudDeCreacion) {
 		EditarSolicitudCreacionNodoRequest request;
 		try {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toEditNodoCreacionRequest(editarSolicitudDeCreacion);
 			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
-			this.editarSolicitudDeCreacionDeNodo(request,emailAdministrador);
+			this.editarSolicitudDeCreacionDeNodo(request, emailAdministrador);
 			return Response.ok().build();
 		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
@@ -353,20 +361,21 @@ public class NodoListener {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
 		}
 	}
-	
+
 	@POST
 	@Path("/cancelarSolicitudDeCreacion")
 	@Produces("application/json")
-	public Response cancelarSolicitudDeCreacion(@Multipart(value = "cancelarSolicitudDeCreacion", type = "application/json") final String cancelarSolicitudDeCreacion) {
+	public Response cancelarSolicitudDeCreacion(
+			@Multipart(value = "cancelarSolicitudDeCreacion", type = "application/json") final String cancelarSolicitudDeCreacion) {
 		CancelarSolicitudCreacionNodoRequest request;
 		try {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			request = this.toCancelarNodoCreacionRequest(cancelarSolicitudDeCreacion);
-			this.cancelarSolicitudDeCreacionDeNodo(request,emailAdministrador);
+			this.cancelarSolicitudDeCreacionDeNodo(request, emailAdministrador);
 			return Response.ok().build();
 		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
@@ -378,11 +387,12 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
 		}
 	}
-	
+
 	@POST
 	@Path("/enviarSolicitudDePertenencia")
 	@Produces("application/json")
-	public Response crearSolicitudDePertenencia(@Multipart(value = "crearSolicitudDePertenencia", type = "application/json") final String crearSolicitudDePertenencia) {
+	public Response crearSolicitudDePertenencia(
+			@Multipart(value = "crearSolicitudDePertenencia", type = "application/json") final String crearSolicitudDePertenencia) {
 		SolicitudDePertenenciaRequest request;
 		try {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
@@ -390,11 +400,11 @@ public class NodoListener {
 			request = this.toSolicitarPertenencia(crearSolicitudDePertenencia);
 			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
 			SolicitudPertenenciaNodo solicitud = nodoService.obtenerSolicitudDe(request.getIdNodo(), usuario.getId());
-			if(solicitud != null) {
+			if (solicitud != null) {
 				validarSolicitudDeEnvio(solicitud);
 				this.editarSolicitudDePertentenciaNodo(solicitud);
-			}else {
-				this.crearSolicitudDePertenencia(request,emailAdministrador);
+			} else {
+				this.crearSolicitudDePertenencia(request, emailAdministrador);
 			}
 			return Response.ok().build();
 		} catch (IOException e) {
@@ -405,45 +415,48 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (NodoInexistenteException e) {
 			return Response.status(500).entity(new ChasquiError("Nodo inexistente")).build();
-		}catch (ConfiguracionDeVendedorException e) {
+		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(500).entity(new ChasquiError("Error desconocido")).build();
 		}
 	}
-
 
 	private void editarSolicitudDePertentenciaNodo(SolicitudPertenenciaNodo solicitud) {
 		nodoService.reabrirSolicitudDePertenenciaNodo(solicitud);
 	}
 
 	private void validarSolicitudDeEnvio(SolicitudPertenenciaNodo solicitud) throws SolicitudPernenciaNodoException {
-		
-		if(solicitud.getReintentos() > 2) {
-			throw new SolicitudPernenciaNodoException("La solicitud tiene muchos reintentos, solo puede ser invitado por el administrador de nodo");
+
+		if (solicitud.getReintentos() > 2) {
+			throw new SolicitudPernenciaNodoException(
+					"La solicitud tiene muchos reintentos, solo puede ser invitado por el administrador de nodo");
 		}
-		if(!solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO) && !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO) && !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_CANCELADO)){
+		if (!solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_RECHAZADO)
+				&& !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)
+				&& !solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_CANCELADO)) {
 			throw new SolicitudPernenciaNodoException("La solicitud esta en gestión");
 		}
-		if(solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)){
+		if (solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ACEPTADO)) {
 			throw new SolicitudPernenciaNodoException("Ya tiene una solicitud aceptada para ese nodo");
 		}
 
 	}
 
-	private void crearSolicitudDePertenencia(SolicitudDePertenenciaRequest request, String email) throws UsuarioInexistenteException, NodoInexistenteException, SolicitudPernenciaNodoException {
+	private void crearSolicitudDePertenencia(SolicitudDePertenenciaRequest request, String email)
+			throws UsuarioInexistenteException, NodoInexistenteException, SolicitudPernenciaNodoException {
 		Usuario usuario = usuarioService.obtenerUsuarioPorEmail(email);
 		Nodo nodo = nodoService.obtenerNodoPorId(request.getIdNodo());
-		if(nodo == null) {
+		if (nodo == null) {
 			throw new NodoInexistenteException();
 		}
-		if(nodo.getTipo().equals(Constantes.NODO_CERRADO)) {
+		if (nodo.getTipo().equals(Constantes.NODO_CERRADO)) {
 			throw new SolicitudPernenciaNodoException("La solicitud no puede ser enviada a un nodo cerrado");
 		}
-		nodoService.crearSolicitudDePertenenciaANodo(nodo, (Cliente)usuario);
+		nodoService.crearSolicitudDePertenenciaANodo(nodo, (Cliente) usuario);
 	}
-	
+
 	@POST
 	@Path("/rechazarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -451,14 +464,14 @@ public class NodoListener {
 		try {
 			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
 			SolicitudPertenenciaNodo solicitudpertenencia = nodoService.obtenerSolicitudDePertenenciaById(idSolicitud);
-			this.validarGestionDeSolicitudPertenencia(emailSolicitante,solicitudpertenencia);
+			this.validarGestionDeSolicitudPertenencia(emailSolicitante, solicitudpertenencia);
 			nodoService.rechazarSolicitudDePertenencia(solicitudpertenencia);
 			return Response.ok().build();
 		} catch (SolicitudPernenciaNodoException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
-		} 
+		}
 	}
-	
+
 	@POST
 	@Path("/aceptarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -466,14 +479,14 @@ public class NodoListener {
 		try {
 			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
 			SolicitudPertenenciaNodo solicitudpertenencia = nodoService.obtenerSolicitudDePertenenciaById(idSolicitud);
-			this.validarGestionDeSolicitudPertenencia(emailSolicitante,solicitudpertenencia);
+			this.validarGestionDeSolicitudPertenencia(emailSolicitante, solicitudpertenencia);
 			nodoService.aceptarSolicitudDePertenencia(solicitudpertenencia);
 			return Response.ok().build();
 		} catch (SolicitudPernenciaNodoException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
-		} 
+		}
 	}
-	
+
 	@GET
 	@Path("/obtenerSolicitudesDePertenenciaDeUsuario/{idVendedor : \\d+ }")
 	@Produces("application/json")
@@ -482,19 +495,21 @@ public class NodoListener {
 			this.validarSiUsaEstrategiaNodo(idVendedor);
 			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
 			Usuario usuario = usuarioService.obtenerUsuarioPorEmail(emailSolicitante);
-			List<SolicitudPertenenciaNodo> solicitudesDepertenencia = nodoService.obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(usuario.getId(), idVendedor);
-			return Response.ok(toListSolicitudPertenenciaResponse(solicitudesDepertenencia),MediaType.APPLICATION_JSON).build();
+			List<SolicitudPertenenciaNodo> solicitudesDepertenencia = nodoService
+					.obtenerSolicitudesDePertenenciaDeUsuarioDeVendededor(usuario.getId(), idVendedor);
+			return Response.ok(toListSolicitudPertenenciaResponse(solicitudesDepertenencia), MediaType.APPLICATION_JSON)
+					.build();
 		} catch (UsuarioInexistenteException e) {
 			e.printStackTrace();
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-		}catch (VendedorInexistenteException e) {
+		} catch (VendedorInexistenteException e) {
 			e.printStackTrace();
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
-		} 
+		}
 	}
-	
+
 	@GET
 	@Path("/obtenerSolicitudesDePertenenciaANodo/{idNodo : \\d+ }")
 	@Produces("application/json")
@@ -503,45 +518,48 @@ public class NodoListener {
 			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
 			Nodo nodo = nodoService.obtenerNodoPorId(idNodo);
 			this.validarSiUsaEstrategiaNodo(nodo.getVendedor().getId());
-			this.validarAdministrador(emailSolicitante,nodo.getAdministrador().getEmail());
+			this.validarAdministrador(emailSolicitante, nodo.getAdministrador().getEmail());
 			List<SolicitudPertenenciaNodo> solicitudesDepertenencia = nodoService.obtenerSolicitudesDePertenencia(idNodo);
-			return Response.ok(toListSolicitudPertenenciaResponse(solicitudesDepertenencia),MediaType.APPLICATION_JSON).build();
-		}catch (ConfiguracionDeVendedorException e) {
+			return Response.ok(toListSolicitudPertenenciaResponse(solicitudesDepertenencia), MediaType.APPLICATION_JSON)
+					.build();
+		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (RequestIncorrectoException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (VendedorInexistenteException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-		} 
+		}
 	}
-	
-	private List<SolicitudDePertenenciaResponse> toListSolicitudPertenenciaResponse(List<SolicitudPertenenciaNodo> solicitudesDepertenencia) {
+
+	private List<SolicitudDePertenenciaResponse> toListSolicitudPertenenciaResponse(
+			List<SolicitudPertenenciaNodo> solicitudesDepertenencia) {
 		List<SolicitudDePertenenciaResponse> resultado = new ArrayList<SolicitudDePertenenciaResponse>();
-		for(SolicitudPertenenciaNodo solicitud : solicitudesDepertenencia){
+		for (SolicitudPertenenciaNodo solicitud : solicitudesDepertenencia) {
 			resultado.add(new SolicitudDePertenenciaResponse(solicitud));
 		}
 		return resultado;
 	}
 
 	private void validarAdministrador(String emailSolicitante, String email) throws RequestIncorrectoException {
-		if(!email.equals(emailSolicitante)){
+		if (!email.equals(emailSolicitante)) {
 			throw new RequestIncorrectoException("no tiene permisos");
 		}
-		
+
 	}
 
-	private void validarGestionDeSolicitudPertenencia(String emailSolicitante, SolicitudPertenenciaNodo solicitudpertenencia) throws SolicitudPernenciaNodoException {
-		if(solicitudpertenencia == null) {
+	private void validarGestionDeSolicitudPertenencia(String emailSolicitante,
+			SolicitudPertenenciaNodo solicitudpertenencia) throws SolicitudPernenciaNodoException {
+		if (solicitudpertenencia == null) {
 			throw new SolicitudPernenciaNodoException("La solicitud no existe");
 		}
-		if(!solicitudpertenencia.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ENVIADO)) {
+		if (!solicitudpertenencia.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ENVIADO)) {
 			throw new SolicitudPernenciaNodoException("La solicitud ya fue gestionada");
 		}
-		if(!solicitudpertenencia.getNodo().getEmailAdministradorNodo().equals(emailSolicitante)) {
+		if (!solicitudpertenencia.getNodo().getEmailAdministradorNodo().equals(emailSolicitante)) {
 			throw new SolicitudPernenciaNodoException("No tiene permisos para gestionar la solicitud");
 		}
 	}
-	
+
 	@POST
 	@Path("/cancelarSolicitudDePertenencia/{idSolicitud : \\d+ }")
 	@Produces("application/json")
@@ -550,26 +568,27 @@ public class NodoListener {
 			String emailSolicitante = obtenerEmailDeContextoDeSeguridad();
 			SolicitudPertenenciaNodo solicitudpertenencia = nodoService.obtenerSolicitudDePertenenciaById(idSolicitud);
 			this.validarSiUsaEstrategiaNodo(solicitudpertenencia.getNodo().getVendedor().getId());
-			this.validarCancelarSolicitud(emailSolicitante,solicitudpertenencia);
+			this.validarCancelarSolicitud(emailSolicitante, solicitudpertenencia);
 			nodoService.cancelarSolicitudDePertenencia(solicitudpertenencia);
 			return Response.ok().build();
-		}catch (ConfiguracionDeVendedorException e) {
+		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (SolicitudPernenciaNodoException e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		} catch (VendedorInexistenteException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-		} 
+		}
 	}
 
-	private void validarCancelarSolicitud(String emailSolicitante, SolicitudPertenenciaNodo solicitud) throws SolicitudPernenciaNodoException {
-		if(solicitud == null) {
+	private void validarCancelarSolicitud(String emailSolicitante, SolicitudPertenenciaNodo solicitud)
+			throws SolicitudPernenciaNodoException {
+		if (solicitud == null) {
 			throw new SolicitudPernenciaNodoException("La solicitud no existe");
 		}
-		if(!solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ENVIADO)) {
+		if (!solicitud.getEstado().equals(Constantes.SOLICITUD_PERTENENCIA_NODO_ENVIADO)) {
 			throw new SolicitudPernenciaNodoException("La solicitud no se puede cancelar, ya fue gestionada");
 		}
-		if(!solicitud.getUsuarioSolicitante().getEmail().equals(emailSolicitante)) {
+		if (!solicitud.getUsuarioSolicitante().getEmail().equals(emailSolicitante)) {
 			throw new SolicitudPernenciaNodoException("La solicitud no pertence a quien la envío");
 		}
 
@@ -586,16 +605,16 @@ public class NodoListener {
 		try {
 			request = this.toEditarNodo(editarNodoRequest);
 			this.validarSiUsaEstrategiaNodo(request.getIdNodo());
-			nodoService.editarNodo(request.getIdNodo(), email, request.getNombreNodo(), request.getDescripcion(), request.getIdDireccion(),
-					request.getTipoNodo(), request.getBarrio());
-			
+			nodoService.editarNodo(request.getIdNodo(), email, request.getNombreNodo(), request.getDescripcion(),
+					request.getIdDireccion(), request.getTipoNodo(), request.getBarrio());
+
 		} catch (JsonParseException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (JsonMappingException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
-		}catch (IOException e) {
+		} catch (IOException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (RequestIncorrectoException e) {
 			e.printStackTrace();
@@ -606,8 +625,9 @@ public class NodoListener {
 
 		return Response.ok().build();
 	}
-	
-	private EditarNodoRequest toEditarNodo(String editarNodoRequest) throws JsonParseException, JsonMappingException, IOException {
+
+	private EditarNodoRequest toEditarNodo(String editarNodoRequest)
+			throws JsonParseException, JsonMappingException, IOException {
 		EditarNodoRequest request = new EditarNodoRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -615,7 +635,7 @@ public class NodoListener {
 		return request;
 
 	}
-	
+
 	@POST
 	@Path("/enviarInvitacion")
 	@Produces("application/json")
@@ -628,7 +648,7 @@ public class NodoListener {
 			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
 			nodoService.invitarANodo(request.getIdGrupo(), request.getEmailInvitado(), emailAdministrador);
 			return Response.ok().build();
-		}catch (IOException e) {
+		} catch (IOException e) {
 			return Response.status(500).entity(new ChasquiError("Error al enviar mail" + e.getMessage())).build();
 		} catch (GrupoCCInexistenteException e) {
 			e.printStackTrace();
@@ -644,20 +664,20 @@ public class NodoListener {
 		} catch (EncrypterException e) {
 			e.printStackTrace();
 			return Response.status(RestConstants.ERROR_INTERNO).entity("Error interno de encriptación").build();
-			
-		}  catch (Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(RestConstants.ERROR_INTERNO).entity("error interno").build();
 		}
 	}
-	
+
 	@POST
 	@Path("/quitarMiembro")
 	@Produces("application/json")
 	public Response quitarMiembroDelGrupo(
 			@Multipart(value = "quitarMiembroRequest", type = "application/json") final String quitarMiembroRequest) {
 		QuitarMiembroRequest request;
-		
+
 		try {
 			request = this.toQuitarMiembroRequest(quitarMiembroRequest);
 			nodoService.quitarMiembroDelNodo(request.getIdGrupo(), request.getEmailCliente());
@@ -669,13 +689,14 @@ public class NodoListener {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+
 	@POST
 	@Path("/aceptarInvitacion")
 	@Produces("application/json")
 	// @Consumes(MediaType.APPLICATION_JSON)
 	public Response confirmarInvitacionGCC(
-			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString) throws ClienteNoPerteneceAGCCException, GrupoCCInexistenteException{
+			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString)
+			throws ClienteNoPerteneceAGCCException, GrupoCCInexistenteException {
 		try {
 			String emailClienteLogueado = obtenerEmailDeContextoDeSeguridad();
 			AceptarRequest aceptarReq = this.toAceptarRequest(aceptarReqString);
@@ -688,17 +709,17 @@ public class NodoListener {
 			return Response.status(RestConstants.IO_EXCEPTION).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
-	private NodoResponse toNodoSimpleResponse(Nodo nodo) throws ClienteNoPerteneceAGCCException{
+
+	private NodoResponse toNodoSimpleResponse(Nodo nodo) throws ClienteNoPerteneceAGCCException {
 		return new NodoResponse(nodo);
 	}
-	
+
 	@POST
 	@Path("/rechazarInvitacion")
 	@Produces("application/json")
 	// @Consumes(MediaType.APPLICATION_JSON)
 	public Response rechazarInvitacionGCC(
-			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString){
+			@Multipart(value = "invitacionRequest", type = "application/json") final String aceptarReqString) {
 		try {
 			String emailClienteLogueado = obtenerEmailDeContextoDeSeguridad();
 			AceptarRequest aceptarReq = this.toAceptarRequest(aceptarReqString);
@@ -711,7 +732,6 @@ public class NodoListener {
 		}
 	}
 
-	
 	@POST
 	@Path("/individual")
 	@Produces("application/json")
@@ -735,13 +755,12 @@ public class NodoListener {
 		} catch (UsuarioInexistenteException e) {
 			return Response.status(RestConstants.CLIENTE_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (ClienteNoPerteneceAGCCException e) {
-			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage()))
-					.build();
+			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError(e.getMessage())).build();
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (PedidoVigenteException e) {
 
-			//Si esto no se informa como un error entonces este método es idempotente
+			// Si esto no se informa como un error entonces este método es idempotente
 			return Response.status(RestConstants.PEDIDO_EXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (PedidoInexistenteException e) {
 			return Response.status(RestConstants.PEDIDO_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
@@ -750,28 +769,30 @@ public class NodoListener {
 		} catch (GrupoCCInexistenteException e) {
 			return Response.status(RestConstants.GRUPOCC_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		} catch (UsuarioNoPerteneceAlGrupoDeCompras e) {
-			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO).entity(new ChasquiError("el usuario no pertenece al nodo")).build();
+			return Response.status(RestConstants.CLIENTE_NO_ESTA_EN_GRUPO)
+					.entity(new ChasquiError("el usuario no pertenece al nodo")).build();
 		} catch (EstadoPedidoIncorrectoException e) {
 			return Response.status(RestConstants.PEDIDO_INEXISTENTE).entity(new ChasquiError(e.getMessage())).build();
 		}
 
-			return Response.ok(toResponse(nuevoPedido),MediaType.APPLICATION_JSON).build();
-		
+		return Response.ok(toResponse(nuevoPedido), MediaType.APPLICATION_JSON).build();
+
 	}
-	
+
 	@POST
 	@Produces("application/json")
 	@Path("/confirmarIndividualEnNodo")
-	public Response confirmarPedidoEnNodo(@Multipart(value="crearRequest", type="application/json") final String  request){
-		try{
+	public Response confirmarPedidoEnNodo(
+			@Multipart(value = "crearRequest", type = "application/json") final String request) {
+		try {
 			String email = obtenerEmailDeContextoDeSeguridad();
-			nodoService.confirmarPedidoIndividualEnNodo(email,toConfirmarPedidoSinDireccionRequest(request));
+			nodoService.confirmarPedidoIndividualEnNodo(email, toConfirmarPedidoSinDireccionRequest(request));
 			return Response.ok().build();
-		}catch(Exception e){
+		} catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
 		}
 	}
-	
+
 	@POST
 	@Path("/confirmar")
 	@Produces("application/json")
@@ -783,7 +804,9 @@ public class NodoListener {
 		try {
 			request = this.toConfirmarPedidoColectivoRequest(confirmarPedidoColectivoRequest);
 
-			grupoService.confirmarPedidoColectivo(request.getIdGrupo(), email,request.getIdDireccion(), request.getIdPuntoDeRetiro(), request.getComentario(), request.getOpcionesSeleccionadas(), request.getIdZona());
+			grupoService.confirmarPedidoColectivo(request.getIdGrupo(), email, request.getIdDireccion(),
+					request.getIdPuntoDeRetiro(), request.getComentario(), request.getOpcionesSeleccionadas(),
+					request.getIdZona());
 
 		} catch (JsonParseException e) {
 			return Response.status(RestConstants.REQ_INCORRECTO).entity(new ChasquiError(e.getMessage())).build();
@@ -815,67 +838,64 @@ public class NodoListener {
 		return request;
 	}
 
-
 	private void cancelarSolicitudDeCreacionDeNodo(CancelarSolicitudCreacionNodoRequest request,
-			String emailAdministrador) throws UsuarioInexistenteException, SolicitudCreacionNodoException, VendedorInexistenteException, ConfiguracionDeVendedorException {
+			String emailAdministrador) throws UsuarioInexistenteException, SolicitudCreacionNodoException,
+			VendedorInexistenteException, ConfiguracionDeVendedorException {
 		Cliente cliente = usuarioService.obtenerClientePorEmail(emailAdministrador);
-		nodoService.cancelarSolicitudDeCreacionNodo(request.getIdSolicitud(), request.getIdVendedor(), cliente.getId());	
+		nodoService.cancelarSolicitudDeCreacionNodo(request.getIdSolicitud(), request.getIdVendedor(), cliente.getId());
 	}
 
-
-	private void editarSolicitudDeCreacionDeNodo(EditarSolicitudCreacionNodoRequest request, String emailAdministrador) throws UsuarioInexistenteException, SolicitudCreacionNodoException, DireccionesInexistentes, NodoYaExistenteException {
+	private void editarSolicitudDeCreacionDeNodo(EditarSolicitudCreacionNodoRequest request, String emailAdministrador)
+			throws UsuarioInexistenteException, SolicitudCreacionNodoException, DireccionesInexistentes,
+			NodoYaExistenteException {
 		Cliente cliente = usuarioService.obtenerClientePorEmail(emailAdministrador);
 		validarDireccion(cliente, request.getIdDomicilio());
-		nodoService.editarSolicitudDeCreacionNodo(request.getIdVendedor(),
-				cliente,
-				request.getIdSolicitud(),
-				request.getNombreNodo(),
-				cliente.obtenerDireccionConId(request.getIdDomicilio()),
-				request.getTipoNodo(),
-				request.getBarrio(),
-				request.getDescripcion());
-		
+		nodoService.editarSolicitudDeCreacionNodo(request.getIdVendedor(), cliente, request.getIdSolicitud(),
+				request.getNombreNodo(), cliente.obtenerDireccionConId(request.getIdDomicilio()), request.getTipoNodo(),
+				request.getBarrio(), request.getDescripcion());
+
 	}
-	
-	
+
 	private void validarDireccion(Cliente cliente, Integer idDomicilio) throws DireccionesInexistentes {
-		if(!cliente.contieneDireccion(idDomicilio)) {
+		if (!cliente.contieneDireccion(idDomicilio)) {
 			throw new DireccionesInexistentes();
-		}		
-		
+		}
+
 	}
 
 	private List<SolicitudCreacionNodoResponse> toResponseSolicitudes(List<SolicitudCreacionNodo> solicitudes) {
 		List<SolicitudCreacionNodoResponse> response = new ArrayList<SolicitudCreacionNodoResponse>();
-		//TODO seguir desde aca la prox. Solucionar Error serializing the response, please check the server logs, response class : ArrayList.
-		for(SolicitudCreacionNodo solicitud : solicitudes){
+		// TODO seguir desde aca la prox. Solucionar Error serializing the response,
+		// please check the server logs, response class : ArrayList.
+		for (SolicitudCreacionNodo solicitud : solicitudes) {
 			response.add(new SolicitudCreacionNodoResponse(solicitud));
 		}
 		return response;
 	}
-	
+
 	private List<NodoResponse> toResponse(List<Nodo> nodos, String email) throws ClienteNoPerteneceAGCCException {
 		List<NodoResponse> response = new ArrayList<NodoResponse>();
-		for(Nodo nodo : nodos){
-			response.add(new NodoResponse(nodo,email));
+		for (Nodo nodo : nodos) {
+			response.add(new NodoResponse(nodo, email));
 		}
 		return response;
 	}
-	
+
 	private List<NodoAbiertoResponse> toResponseNodoAbierto(List<Nodo> nodos) {
 		List<NodoAbiertoResponse> response = new ArrayList<NodoAbiertoResponse>();
-		for(Nodo nodo : nodos){
+		for (Nodo nodo : nodos) {
 			response.add(new NodoAbiertoResponse(nodo));
 		}
 		return response;
 	}
-	
+
 	protected String obtenerEmailDeContextoDeSeguridad() {
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 
 	}
-	
-	private CancelarSolicitudCreacionNodoRequest toCancelarNodoCreacionRequest(String cancelarSolicitudDeCreacion) throws JsonParseException, JsonMappingException, IOException {
+
+	private CancelarSolicitudCreacionNodoRequest toCancelarNodoCreacionRequest(String cancelarSolicitudDeCreacion)
+			throws JsonParseException, JsonMappingException, IOException {
 		CancelarSolicitudCreacionNodoRequest request = new CancelarSolicitudCreacionNodoRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
@@ -883,14 +903,15 @@ public class NodoListener {
 		return request;
 	}
 
-	private EditarSolicitudCreacionNodoRequest toEditNodoCreacionRequest(String editarSolicitudDeCreacion) throws JsonParseException, JsonMappingException, IOException {
+	private EditarSolicitudCreacionNodoRequest toEditNodoCreacionRequest(String editarSolicitudDeCreacion)
+			throws JsonParseException, JsonMappingException, IOException {
 		EditarSolicitudCreacionNodoRequest request = new EditarSolicitudCreacionNodoRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		request = mapper.readValue(editarSolicitudDeCreacion, EditarSolicitudCreacionNodoRequest.class);
 		return request;
 	}
-	
+
 	private NuevoPedidoIndividualRequest tonuevoPedidoIndividualRequest(String nuevoPedidoIndividualRequest)
 			throws JsonParseException, JsonMappingException, IOException {
 		NuevoPedidoIndividualRequest request = new NuevoPedidoIndividualRequest();
@@ -899,11 +920,10 @@ public class NodoListener {
 		request = mapper.readValue(nuevoPedidoIndividualRequest, NuevoPedidoIndividualRequest.class);
 		return request;
 	}
-	
-	private PedidoResponse toResponse(Pedido nuevoPedido){
+
+	private PedidoResponse toResponse(Pedido nuevoPedido) {
 		return new PedidoResponse(nuevoPedido);
 	}
-	
 
 	private QuitarMiembroRequest toQuitarMiembroRequest(String req) throws IOException {
 		QuitarMiembroRequest request = new QuitarMiembroRequest();
@@ -912,7 +932,7 @@ public class NodoListener {
 		request = mapper.readValue(req, QuitarMiembroRequest.class);
 		return request;
 	}
-	
+
 	private CederAdministracionRequest toCederAdministracionRequest(String req) throws IOException {
 		CederAdministracionRequest request = new CederAdministracionRequest();
 		ObjectMapper mapper = new ObjectMapper();
@@ -920,16 +940,16 @@ public class NodoListener {
 		request = mapper.readValue(req, CederAdministracionRequest.class);
 		return request;
 	}
-	
 
-	private EliminarGrupoRequest toEliminarGrupoRequest(String grupoRequest) throws JsonParseException, JsonMappingException, IOException {
+	private EliminarGrupoRequest toEliminarGrupoRequest(String grupoRequest)
+			throws JsonParseException, JsonMappingException, IOException {
 		EliminarGrupoRequest request = new EliminarGrupoRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		request = mapper.readValue(grupoRequest, EliminarGrupoRequest.class);
 		return request;
 	}
-	
+
 	private InvitacionRequest toInvitacionRequest(String req) throws IOException {
 		InvitacionRequest request = new InvitacionRequest();
 		ObjectMapper mapper = new ObjectMapper();
@@ -937,21 +957,22 @@ public class NodoListener {
 		request = mapper.readValue(req, InvitacionRequest.class);
 		return request;
 	}
-	
-	private SolicitudDePertenenciaRequest toSolicitarPertenencia(String crearSolicitudDePertenencia) throws JsonParseException, JsonMappingException, IOException {
+
+	private SolicitudDePertenenciaRequest toSolicitarPertenencia(String crearSolicitudDePertenencia)
+			throws JsonParseException, JsonMappingException, IOException {
 		SolicitudDePertenenciaRequest request = new SolicitudDePertenenciaRequest();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		request = mapper.readValue(crearSolicitudDePertenencia, SolicitudDePertenenciaRequest.class);
 		return request;
 	}
-	
-	private ConfirmarPedidoSinDireccionRequest toConfirmarPedidoSinDireccionRequest(String request) throws JsonParseException, JsonMappingException, IOException {
+
+	private ConfirmarPedidoSinDireccionRequest toConfirmarPedidoSinDireccionRequest(String request)
+			throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		return mapper.readValue(request, ConfirmarPedidoSinDireccionRequest.class);
 	}
-	
 
 	private AceptarRequest toAceptarRequest(String aceptarRequest) throws IOException {
 		AceptarRequest request = new AceptarRequest();
@@ -960,7 +981,7 @@ public class NodoListener {
 		request = mapper.readValue(aceptarRequest, AceptarRequest.class);
 		return request;
 	}
-	
+
 	private List<PedidoResponse> toResponse(Map<Integer, Pedido> pedidos, Pedido pedidoIndividual)
 			throws GrupoCCInexistenteException {
 		List<PedidoResponse> pedidosResponse = new ArrayList<PedidoResponse>();
@@ -968,12 +989,12 @@ public class NodoListener {
 		Iterator<Integer> it = pedidos.keySet().iterator();
 		Integer idNodo;
 		while (it.hasNext()) {
-			//Integer idGrupo = (Integer) pedidos.keySet().iterator().next();
+			// Integer idGrupo = (Integer) pedidos.keySet().iterator().next();
 			idNodo = it.next();
 			String alias = nodoService.obtenerNodoPorId(idNodo).getAlias(); // TODO
-																			// optimizar
+			// optimizar
 			pedidosResponse.add(new PedidoResponse(idNodo, alias, pedidos.get(idNodo)));
-			//it.next();
+			// it.next();
 		}
 		if (pedidoIndividual != null) {
 			pedidosResponse.add(new PedidoResponse(pedidoIndividual));

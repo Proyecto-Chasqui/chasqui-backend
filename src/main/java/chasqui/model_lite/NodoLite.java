@@ -1,9 +1,9 @@
 package chasqui.model_lite;
 
 public class NodoLite extends GrupoCCLite {
-	private String tipo;
-  private String emailAdministradorNodo;
-	private String barrio;
+  private String tipo;
+  private String emailAdministrador;
+  private String barrio;
   private boolean activo;
 
   public NodoLite alias(String alias) {
@@ -21,8 +21,8 @@ public class NodoLite extends GrupoCCLite {
     return this;
   }
 
-  public NodoLite emailAdministradorNodo(String emailAdministradorNodo) {
-    setEmailAdministradorNodo(emailAdministradorNodo);
+  public NodoLite emailAdministrador(String emailAdministrador) {
+    setEmailAdministrador(emailAdministrador);
     return this;
   }
 
@@ -44,12 +44,12 @@ public class NodoLite extends GrupoCCLite {
     this.tipo = tipo;
   }
 
-  public String getEmailAdministradorNodo() {
-    return this.emailAdministradorNodo;
+  public String getEmailAdministrador() {
+    return this.emailAdministrador;
   }
 
-  public void setEmailAdministradorNodo(String emailAdministradorNodo) {
-    this.emailAdministradorNodo = emailAdministradorNodo;
+  public void setEmailAdministrador(String emailAdministrador) {
+    this.emailAdministrador = emailAdministrador;
   }
 
   public String getBarrio() {
@@ -67,6 +67,5 @@ public class NodoLite extends GrupoCCLite {
   public void setActivo(boolean activo) {
     this.activo = activo;
   }
-
 
 }
