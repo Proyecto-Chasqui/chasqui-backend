@@ -81,6 +81,7 @@ public class Constantes {
 	public static final String CONFIRMACION_COMPRA_TEMPLATE_URL = "emailConfirmacionPedido.ftl";
 	public static final String CONFIRMACIÓN_DE_COMPRA_SUBJECT = "Confirmación de Compra";
 	public static final int CANT_MAX_IMAGENES_VARIEDAD = 3;
+	public static final int MAX_SIZE_DESC_CORTA_PRODUCTOR = 300;
 	public static final int MAX_SIZE_DESC_LARGA_PRODUCTOR = 8200;
 	public static final String CONFIRMACION_COMPRA_NOTIFICACION ="Tu pedido se ha confirmado con éxito, recibirás un correo con los detalles de tu compra.";
 	public static final String CONFIRMACION_COMPRA_NOTIFICACION_OTROMIEMBRO = "El usuario <usuario> ha confirmado su pedido en tu grupo de compras <grupo>.";

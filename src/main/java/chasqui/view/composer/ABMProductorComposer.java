@@ -183,9 +183,9 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 	
 	public void onCalcularTotalCaracteresCorta() {
 		Integer total = Jsoup.parse(descCorta.getValue()).text().length();
-		if(total > 300){
-			String error = "La Descripción larga no debe superar los "+300+" carácteres (actualmente tiene "+total+" carácteres)";
-			Clients.showNotification(error, "error", descLarga, "middle_center", 20000, true);
+		if(total > Constantes.MAX_SIZE_DESC_CORTA_PRODUCTOR){
+			String error = "La Descripción corta no debe superar los "+Constantes.MAX_SIZE_DESC_CORTA_PRODUCTOR+" carácteres (actualmente tiene "+total+" carácteres)";
+			Clients.showNotification(error, "error", null, "top_center", 20000, true);
 		}
 	}
 	
@@ -193,13 +193,13 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 		Integer total = Jsoup.parse(descLarga.getValue()).text().length();
 		if(total > Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR){
 			String error = "La Descripción larga no debe superar los "+Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR+" carácteres (actualmente tiene "+total+" carácteres)";
-			Clients.showNotification(error, "error", descLarga, "middle_center", 20000, true);
+			Clients.showNotification(error, "error", null, "top_center", 20000, true);
 		}
 	}
 	
 	public void onChanging$descCorta(InputEvent evt) {
 		Integer total = Jsoup.parse(evt.getValue()).wholeText().length();
-		mensajedesccorta.setValue("Cant. carácteres: "+total+"/300");
+		mensajedesccorta.setValue("Cant. carácteres: "+total+"/"+Constantes.MAX_SIZE_DESC_CORTA_PRODUCTOR);
 		cantidadCaracteresCorta.open(descCorta,"after_end");
 	}
 	
@@ -355,16 +355,16 @@ public class ABMProductorComposer extends GenericForwardComposer<Component> impl
 //			throw new WrongValueException(altura,"La altura no debe ser vacía");
 //		}
 
-		if(StringUtils.isEmpty(descLarga)){
+		if(StringUtils.isEmpty(descCorta)){
 			throw new WrongValueException("La descripción breve no debe ser vacía");
+		} else if(descCorta.length() > Constantes.MAX_SIZE_DESC_CORTA_PRODUCTOR){
+			throw new WrongValueException("La Descripción corta no debe superar los "+Constantes.MAX_SIZE_DESC_CORTA_PRODUCTOR+" carácteres (actualmente tiene "+descCorta.length()+" carácteres");
 		}
 		
 		
 		if(StringUtils.isEmpty(descLarga)){
 			throw new WrongValueException("La descripción larga no debe ser vacía");
-		}
-		
-		if(descLarga!=null &&  descLarga.length() > Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR){
+		} else if(descLarga.length() > Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR){
 			throw new WrongValueException("La Descripción larga no debe superar los "+Constantes.MAX_SIZE_DESC_LARGA_PRODUCTOR+" carácteres (actualmente tiene "+descLarga.length()+" carácteres");
 		}
 		
