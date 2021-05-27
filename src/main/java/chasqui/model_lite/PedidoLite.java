@@ -1,5 +1,7 @@
 package chasqui.model_lite;
 
+import java.util.List;
+
 import org.joda.time.DateTime;
 
 public class PedidoLite {
@@ -18,6 +20,7 @@ public class PedidoLite {
 	private Boolean perteneceAPedidoGrupal;
 	private String comentario;
 	private String tipoDeAjuste;
+	private List<ProductoPedidoLite> productosPedidos;
 
 	public Integer getId() {
 		return this.id;
@@ -129,6 +132,14 @@ public class PedidoLite {
 
 	public void setTipoDeAjuste(String tipoDeAjuste) {
 		this.tipoDeAjuste = tipoDeAjuste;
+	}
+
+	public List<ProductoPedidoLite> getProductosPedidos() {
+		return this.productosPedidos;
+	}
+
+	public void setProductosPedidos(List<ProductoPedidoLite> productosPedidos) {
+		this.productosPedidos = productosPedidos;
 	}
 
 }

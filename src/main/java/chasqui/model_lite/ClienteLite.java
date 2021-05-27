@@ -8,6 +8,7 @@ public class ClienteLite {
   private String telefonoMovil;
   private String estado;
   private String imagenPerfil;
+  private String email;
 
   public Integer getId() {
     return this.id;
@@ -64,4 +65,14 @@ public class ClienteLite {
   public void setImagenPerfil(String imagenPerfil) {
     this.imagenPerfil = imagenPerfil;
   }
+
+
+  public String getEmail() {
+    return this.email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
 }

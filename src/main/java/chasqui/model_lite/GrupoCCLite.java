@@ -11,6 +11,7 @@ public class GrupoCCLite {
 	private Boolean esNodo = false;
 	private Boolean pedidosHabilitados;
 	private Integer idVendedor;
+	private ClienteLite administrador;
 
 	public Integer getId() {
 		return this.id;
@@ -66,6 +67,14 @@ public class GrupoCCLite {
 
 	public void setIdVendedor(Integer idVendedor) {
 		this.idVendedor = idVendedor;
+	}
+
+	public ClienteLite getAdministrador() {
+		return this.administrador;
+	}
+
+	public void setAdministrador(ClienteLite administrador) {
+		this.administrador = administrador;
 	}
 
 }

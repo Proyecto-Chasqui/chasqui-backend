@@ -24,6 +24,8 @@ public interface PedidoDAO {
 
 	public List<PedidoLite> obtenerPedidosLite(PedidoQueryDTO query);
 
+	public PedidoLite obtenerPedidoLiteActivo (Integer idColectivo, String emailCliente);
+
 	public Integer obtenerTotalPaginasDePedidosParaVendedor(Integer id);
 
 	public List<Pedido> obtenerPedidos(Integer id, Date desde, Date hasta, String estadoSeleccionado);

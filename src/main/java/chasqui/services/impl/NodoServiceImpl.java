@@ -51,6 +51,7 @@ import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.model_lite.NodoLite;
+import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
@@ -128,6 +129,11 @@ public class NodoServiceImpl implements NodoService {
 	@Override
 	public Nodo obtenerNodoPorId(Integer idNodo) {
 		return nodoDAO.obtenerNodoPorId(idNodo);
+	}
+
+	@Override 
+	public NodoLite obtenerNodoLitePorId(Integer id) {
+		return nodoDAO.obtenerNodoLitePorId(id);
 	}
 
 	@Override
@@ -704,6 +710,12 @@ public class NodoServiceImpl implements NodoService {
 		return nodo.getPedidoActual().buscarPedidoParaCliente(email);
 	}
 
+	@Override
+	public PedidoLite obtenerPedidoLiteIndividualEnNodo(Integer idNodo, String email) {
+		// TODO: aplicar Quien puede ver: solo el admin del nodo, o el vendedora o email puede ver
+		return pedidoService.obtenerPedidoLiteActivo(idNodo, email);
+	}
+	
 	private void validarRequest(Integer idPedido) throws RequestIncorrectoException {
 		if (idPedido == null || idPedido < 0) {
 			throw new RequestIncorrectoException("el id del pedido debe ser mayor a 0");

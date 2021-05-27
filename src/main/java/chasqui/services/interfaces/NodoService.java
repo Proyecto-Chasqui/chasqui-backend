@@ -37,6 +37,7 @@ import chasqui.model.Pedido;
 import chasqui.model.SolicitudCreacionNodo;
 import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model_lite.NodoLite;
+import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import freemarker.template.TemplateException;
 
@@ -54,6 +55,7 @@ public interface NodoService {
 			throws UsuarioInexistenteException, NodoYaExistenteException, VendedorInexistenteException;
 
 	Nodo obtenerNodoPorId(Integer id);
+	NodoLite obtenerNodoLitePorId(Integer id);
 
 	@Transactional
 	void eliminarNodo(Integer id);
@@ -309,6 +311,8 @@ public interface NodoService {
 	 * @return
 	 */
 	public Pedido obtenerPedidoIndividualEnNodo(Integer idNodo, String email);
+
+	public PedidoLite obtenerPedidoLiteIndividualEnNodo(Integer idNodo, String email);
 
 	/**
 	 * 

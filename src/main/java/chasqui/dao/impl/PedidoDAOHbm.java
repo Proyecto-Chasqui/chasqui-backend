@@ -12,6 +12,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -91,19 +92,35 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 	public List<PedidoLite> obtenerPedidosLite(final PedidoQueryDTO query) {
 		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<PedidoLite>>() {
 
+			final String emailCliente = query.getEmailCliente();
+
 			@Override
 			public List<PedidoLite> doInHibernate(Session session) throws HibernateException, SQLException {
-				SQLQuery q = session.createSQLQuery(" SELECT  " + " {pedido.*}, " + " {cliente.*} " + " FROM PEDIDO as pedido  "
-						+ " INNER JOIN CLIENTE as cliente ON cliente.ID = pedido.CLIENTE "
-						+ " LEFT JOIN PEDIDO_COLECTIVO ON PEDIDO_COLECTIVO.ID = pedido.ID_PEDIDO_COLECTIVO  " + " WHERE  "
-						+ "  pedido.PERTENECE_A_GRUPAL = 1 " + " AND PEDIDO_COLECTIVO.ESTADO = :estado "
-						+ " AND PEDIDO_COLECTIVO.COLECTIVO = :idColectivo");
+
+				String queryStr =  " SELECT  " + " {pedido.*}, " + " {cliente.*} "
+												+ " FROM PEDIDO as pedido  "
+												+ " INNER JOIN CLIENTE as cliente ON cliente.ID = pedido.CLIENTE "
+												+ " INNER JOIN USUARIO as usuario ON usuario.ID = cliente.ID "
+												+ " LEFT JOIN PEDIDO_COLECTIVO ON PEDIDO_COLECTIVO.ID = pedido.ID_PEDIDO_COLECTIVO  " 
+												+ " WHERE  "
+												+ "  pedido.PERTENECE_A_GRUPAL = 1 " + " AND PEDIDO_COLECTIVO.ESTADO = :estado "
+												+ " AND PEDIDO_COLECTIVO.COLECTIVO = :idColectivo";
+
+				if (emailCliente != null) {
+					queryStr += " AND usuario.email = :emailCliente ";
+				}
+
+				SQLQuery q = session.createSQLQuery(queryStr);
 
 				q.setString("estado", "ABIERTO");
 				q.setInteger("idColectivo", query.getIdColectivo());
 				q.addEntity("pedido", PedidoLite.class);
 				q.addEntity("cliente", ClienteLite.class);
-				q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+				q.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+
+				if (emailCliente != null) {
+					q.setString("emailCliente", emailCliente);
+				}
 
 				List<PedidoLite> out = new ArrayList<>();
 
@@ -120,6 +137,19 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				return out;
 			}
 		});
+	}
+
+	@Override
+	public PedidoLite obtenerPedidoLiteActivo (Integer idColectivo, String emailCliente) {
+		PedidoQueryDTO query = new PedidoQueryDTO();
+		query.setIdColectivo(idColectivo);
+		query.setEmailCliente(emailCliente);
+		List<PedidoLite> pedidos = this.obtenerPedidosLite(query);
+		if(!pedidos.isEmpty()) {
+			return pedidos.get(0);
+		} else {
+			return null;
+		}
 	}
 
 	@SuppressWarnings("unchecked")

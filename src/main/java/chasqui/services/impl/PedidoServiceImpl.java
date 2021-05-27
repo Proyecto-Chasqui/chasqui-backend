@@ -14,9 +14,11 @@ import com.vividsolutions.jts.geom.Point;
 import chasqui.aspect.Auditada;
 import chasqui.aspect.Dateable;
 import chasqui.dao.PedidoDAO;
+import chasqui.dao.ProductoPedidoDAO;
 import chasqui.dao.ZonaDAO;
 import chasqui.dtos.PaginatedListDTO;
 import chasqui.dtos.queries.PedidoQueryDTO;
+import chasqui.dtos.queries.ProductoPedidoQueryDTO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -58,6 +60,8 @@ public class PedidoServiceImpl implements PedidoService {
 	private UsuarioService usuarioService;
 	@Autowired
 	private ProductoService productoService;
+	@Autowired
+  private ProductoPedidoDAO productoPedidoDAO;
 	@Autowired
 	private ZonaService zonaService;
 	@Autowired
@@ -136,6 +140,18 @@ public class PedidoServiceImpl implements PedidoService {
 		return pedidoDAO.obtenerPedidoPorId(idPedido);
 	}
 
+	@Override
+	public PedidoLite obtenerPedidoLiteActivo (Integer idColectivo, String emailCliente) {
+		PedidoLite pedido = pedidoDAO.obtenerPedidoLiteActivo(idColectivo, emailCliente);
+
+		if(pedido != null) {
+			ProductoPedidoQueryDTO query = new ProductoPedidoQueryDTO();
+			query.setIdPedido(pedido.getId());
+			pedido.setProductosPedidos(productoPedidoDAO.obtenerLite(query));
+		}
+
+		return pedido;
+	}
 
 	
 	@Override

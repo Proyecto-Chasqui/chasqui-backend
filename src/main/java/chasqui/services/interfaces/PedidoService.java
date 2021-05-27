@@ -47,6 +47,8 @@ public interface PedidoService {
 
 	PaginatedListDTO<PedidoLite> obtenerPedidosLite(PedidoQueryDTO query);
 
+	public PedidoLite obtenerPedidoLiteActivo (Integer idColectivo, String emailCliente);
+
 	/*
 	 * Pedidos en estado ABIERTO que han expirado (Es para quartz)
 	 */
@@ -63,9 +65,11 @@ public interface PedidoService {
 	public Pedido obtenerPedidosporId(Integer idPedido);
 
 	// Servicios que estaban en usuario
+	
 	@Transactional
 	public Pedido obtenerPedidoActualDe(String mail, Integer idVendedor)
 			throws PedidoInexistenteException, UsuarioInexistenteException;
+
 
 	@Transactional
 	public void crearPedidoIndividualPara(String mail, Integer idVendedor) throws ConfiguracionDeVendedorException,

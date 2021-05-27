@@ -24,7 +24,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import chasqui.dao.NodoDAO;
 import chasqui.dtos.queries.NodoQueryDTO;
 import chasqui.model.Nodo;
-import chasqui.model_lite.GrupoCCLite;
+import chasqui.model_lite.ClienteLite;
 import chasqui.model_lite.NodoLite;
 import chasqui.view.composer.Constantes;
 
@@ -85,6 +85,20 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 		});
 	}
 
+	public NodoLite obtenerNodoLitePorId(final Integer idNodo) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<NodoLite>() {
+
+			@Override
+			public NodoLite doInHibernate(Session session) throws HibernateException, SQLException {
+				Criteria criteria = session.createCriteria(NodoLite.class);
+				criteria.add(Restrictions.eq("id", idNodo)).add(Restrictions.eq("esNodo", true));
+				return (NodoLite) criteria.uniqueResult();
+			}
+
+		});
+	}
+
+	
 	public void eliminarNodo(Integer idNodo) {
 		this.getHibernateTemplate().delete(this.obtenerNodoPorId(idNodo));
 		this.getHibernateTemplate().flush();
@@ -127,10 +141,24 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 
 			@Override
 			public List<NodoLite> doInHibernate(Session session) throws HibernateException, SQLException {
-				SQLQuery q = session.createSQLQuery(" SELECT " + "  grupo.*, " + "  nodo.* " + " FROM GRUPOCC as grupo"
+				SQLQuery q = session.createSQLQuery(
+						" SELECT " 
+						+ "  grupo.*, "
+						+ "  nodo.*, "
+						+ "  admin.ID as admin_id, "
+						+ "  admin.NOMBRE as admin_nombre, "
+						+ "  admin.APELLIDO as admin_apellido, "
+						+ "  admin.TELEFONO_FIJO as admin_telefono_fijo, "
+						+ "  admin.TELEFONO_MOVIL as admin_telefono_movil, "
+						+ "  admin.ESTADO as admin_estado, "
+						+ "  adminUser.EMAIL as admin_email "
+						+ " FROM GRUPOCC as grupo"
 						+ " RIGHT JOIN NODO as nodo ON nodo.ID = grupo.ID "
 						+ " RIGHT JOIN MIEMBRO_DE_GCC ON MIEMBRO_DE_GCC.ID_GRUPO = grupo.ID"
-						+ " RIGHT JOIN USUARIO ON USUARIO.ID = MIEMBRO_DE_GCC.ID_CLIENTE" + " WHERE "
+						+ " RIGHT JOIN USUARIO ON USUARIO.ID = MIEMBRO_DE_GCC.ID_CLIENTE"
+						+ " RIGHT JOIN CLIENTE as admin ON admin.ID = grupo.ID_ADMINISTRADOR "
+						+ " RIGHT JOIN USUARIO as adminUser ON adminUser.ID = admin.ID "
+						+ " WHERE "
 						+ "     USUARIO.EMAIL = :email" + " AND MIEMBRO_DE_GCC.ESTADO_INVITACION = :estadoInvitacion "
 						+ " AND grupo.ID_VENDEDOR = :idVendedor " + " AND grupo.ES_NODO = true ");
 
@@ -143,7 +171,17 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 
 				List<HashMap<String, Object>> list = q.list();
 				for (HashMap<String, Object> row : list) {
+					ClienteLite admin = new ClienteLite();
+					admin.setId((Integer) row.get("admin_id"));
+					admin.setNombre((String) row.get("admin_nombre"));
+					admin.setApellido((String) row.get("admin_apellido"));
+					admin.setTelefonoFijo((String) row.get("admin_telefono_fijo"));
+					admin.setTelefonoMovil((String) row.get("admin_telefono_movil"));
+					admin.setEstado((String) row.get("admin_estado"));
+					admin.setEmail((String) row.get("admin_email"));
+
 					NodoLite nodo = new NodoLite();
+					nodo.setAdministrador(admin);
 					nodo.setId((Integer) row.get("ID"));
 					nodo.setAlias((String) row.get("ALIAS"));
 					nodo.setDescripcion((String) row.get("DESCRIPCION"));

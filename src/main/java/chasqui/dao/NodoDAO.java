@@ -26,6 +26,8 @@ public interface NodoDAO {
 
     public Nodo obtenerNodoPorId(final Integer idNodo);
 
+    public NodoLite obtenerNodoLitePorId(final Integer idNodo);
+
     public void eliminarNodo(Integer idNodo);
 
     public void aprobarNodo(Integer id);

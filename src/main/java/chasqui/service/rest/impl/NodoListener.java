@@ -157,13 +157,27 @@ public class NodoListener {
 	@GET
 	@Path("/lite/{idNodo : \\d+ }/pedidos")
 	@Produces("application/json")
-
 	public Response obtenerPedidosLitesDeNodo(@PathParam("idNodo") final Integer idNodo) {
 		PaginatedListDTO<PedidoLite> out = null;
 		try {
+			// TODO: aplicar seguridad de privacidad
+			// solo puede devolver si es admin del nodo o al menos restringir el resultado
 			PedidoQueryDTO query = new PedidoQueryDTO();
 			query.setIdColectivo(idNodo);
 			out = pedidoService.obtenerPedidosLite(query);
+			return Response.ok(out, MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+
+	@GET
+	@Path("/lite/{idNodo : \\d+ }/pedidoActivo")
+	@Produces("application/json")
+	public Response obtenerPedidoLiteActivoDeNodo(@PathParam("idNodo") final Integer idNodo) {
+		try {
+			String emailUserlogged = obtenerEmailDeContextoDeSeguridad();
+			PedidoLite out = nodoService.obtenerPedidoLiteIndividualEnNodo(idNodo, emailUserlogged);
 			return Response.ok(out, MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
