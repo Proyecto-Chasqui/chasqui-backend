@@ -85,6 +85,7 @@ import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.NotificacionService;
+import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.services.interfaces.VendedorService;
@@ -99,6 +100,8 @@ public class NodoListener {
 	NodoService nodoService;
 	@Autowired
 	PedidoService pedidoService;
+	@Autowired
+	PedidoColectivoService pedidoColectivoService;
 	@Autowired
 	VendedorService vendedorService;
 	@Autowired
@@ -165,6 +168,34 @@ public class NodoListener {
 			PedidoQueryDTO query = new PedidoQueryDTO();
 			query.setIdColectivo(idNodo);
 			out = pedidoService.obtenerPedidosLite(query);
+			return Response.ok(out, MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+
+	@GET
+	@Path("/lite/{idNodo : \\d+ }/pedidosStats")
+	@Produces("application/json")
+	public Response calcularStatsPedidosActivosDeNodo(@PathParam("idNodo") final Integer idNodo) {
+		try {
+			// TODO: aplicar seguridad de privacidad
+			// solo puede devolver si es admin del nodo o al menos restringir el resultado
+			Object out = pedidoColectivoService.calcularStatsPedidoColectivoActivo(idNodo);
+			return Response.ok(out, MediaType.APPLICATION_JSON).build();
+		} catch (Exception e) {
+			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
+		}
+	}
+
+	@GET
+	@Path("/lite/{idNodo : \\d+ }/resumenProductosPedidosConfirmados")
+	@Produces("application/json")
+	public Response resumenProductosPedidosConfirmados(@PathParam("idNodo") final Integer idNodo) {
+		try {
+			// TODO: aplicar seguridad de privacidad
+			// solo puede devolver si es admin del nodo o al menos restringir el resultado
+			Object out = pedidoColectivoService.productosPedidoColectivoActivo(idNodo);
 			return Response.ok(out, MediaType.APPLICATION_JSON).build();
 		} catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
