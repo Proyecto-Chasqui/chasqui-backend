@@ -21,6 +21,8 @@ public class PedidoLite {
 	private String comentario;
 	private String tipoDeAjuste;
 	private List<ProductoPedidoLite> productosPedidos;
+	private PedidoStatsLite stats;
+
 
 	public Integer getId() {
 		return this.id;
@@ -141,5 +143,17 @@ public class PedidoLite {
 	public void setProductosPedidos(List<ProductoPedidoLite> productosPedidos) {
 		this.productosPedidos = productosPedidos;
 	}
+
+	public PedidoStatsLite getStats() {
+		return this.stats;
+	}
+
+	public void setStats(PedidoStatsLite stats) {
+		this.stats = stats;
+		if(stats != null) {
+			this.montoActual = stats.getMontoActual();
+		}
+	}
+
 
 }

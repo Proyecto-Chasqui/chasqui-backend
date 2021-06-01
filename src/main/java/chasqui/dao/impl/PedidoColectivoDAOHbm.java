@@ -28,6 +28,7 @@ import chasqui.model.GrupoCC;
 import chasqui.model.PedidoColectivo;
 import chasqui.model_lite.PedidoColectivoStats;
 import chasqui.model_lite.PedidoColectivoStatsByEstado;
+import chasqui.model_lite.PedidoStatsLite;
 import chasqui.model_lite.ProductoPedidoLiteAgrupados;
 import chasqui.view.composer.Constantes;
 
@@ -134,6 +135,65 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 		stats.setEstadoPedido(estado);
 		stats.setSnapshotDate(new Date());
 		return stats;
+	}
+
+	@Override
+	public List<PedidoStatsLite> calcularPedidosStatsLite(final Integer grupoId) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<PedidoStatsLite>>() {
+
+			@Override
+			public List<PedidoStatsLite> doInHibernate(Session session) throws HibernateException, SQLException {
+
+				 String queryStr = 
+							 " SELECT  "
+							+ "  PEDIDO.ID,"
+							+ "  PEDIDO.ESTADO,"
+							+ "  count(distinct pp.ID_VARIANTE) as cantProductos,"
+							+ "  sum(distinct pp.CANTIDAD) as cantItems,"
+							+ "  sum(pp.CANTIDAD*(pp.precio+pp.INCENTIVO)) as montoActual,"
+							+ "  sum(pp.CANTIDAD*pp.precio) as montoActualSinIncentivo,"
+							+ "  sum(pp.CANTIDAD*pp.INCENTIVO) as incentivoActual,"
+							+ "  sum(pp.CANTIDAD*VARIANTE.PESO_GRAMOS) as pesoGramosActual"
+							+ " FROM PRODUCTO_PEDIDO as pp"
+							+ " RIGHT JOIN VARIANTE on VARIANTE.ID = pp.ID_VARIANTE"
+							+ " RIGHT JOIN PEDIDO on PEDIDO.ID = pp.ID_PEDIDO"
+							+ " RIGHT JOIN PEDIDO_COLECTIVO ON PEDIDO_COLECTIVO.ID = PEDIDO.ID_PEDIDO_COLECTIVO"
+							+ " WHERE  "
+							+ "   PEDIDO_COLECTIVO.ESTADO = :estadoPedidoColectivo "
+							+ " AND PEDIDO_COLECTIVO.COLECTIVO = :idColectivo "
+							+ " GROUP BY PEDIDO.ID";
+ 
+				SQLQuery q = session.createSQLQuery(queryStr);
+
+				q.setString("estadoPedidoColectivo", "ABIERTO");
+				q.setInteger("idColectivo", grupoId);
+				q.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+
+				Date now = new Date();
+				
+				List<PedidoStatsLite> out = new ArrayList<>();
+
+				List<HashMap<String, Object>> list = q.list();
+				for (HashMap<String, Object> row : list) {
+						Integer id = (Integer) row.get("ID");
+						if(id != null) {
+							PedidoStatsLite stats = new PedidoStatsLite();
+							stats.setId(id);
+							stats.setEstado((String) row.get("ESTADO"));
+							stats.setMontoActual((Double) row.get("montoActual"));
+							stats.setIncentivoActual((Double) row.get("incentivoActual"));
+							stats.setMontoActualSinIncetivo((Double) row.get("montoActualSinIncentivo"));
+							stats.setPesoGramosActual(((BigDecimal) row.get("pesoGramosActual")).intValue());
+							stats.setCantidadProductos(((BigInteger) row.get("cantProductos")).intValue());
+							stats.setCantidadItems(((BigDecimal)row.get("cantItems")).intValue());
+							stats.setSnapshotDate(now);
+							out.add(stats);
+						}
+				}
+				return out;
+			}
+		});
+	
 	}
 
 	@Override

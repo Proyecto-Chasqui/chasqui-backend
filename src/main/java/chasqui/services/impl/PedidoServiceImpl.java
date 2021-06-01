@@ -13,6 +13,7 @@ import com.vividsolutions.jts.geom.Point;
 
 import chasqui.aspect.Auditada;
 import chasqui.aspect.Dateable;
+import chasqui.dao.PedidoColectivoDAO;
 import chasqui.dao.PedidoDAO;
 import chasqui.dao.ProductoPedidoDAO;
 import chasqui.dao.ZonaDAO;
@@ -37,6 +38,7 @@ import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
 import chasqui.model_lite.PedidoLite;
+import chasqui.model_lite.PedidoStatsLite;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
@@ -62,6 +64,8 @@ public class PedidoServiceImpl implements PedidoService {
 	private ProductoService productoService;
 	@Autowired
   private ProductoPedidoDAO productoPedidoDAO;
+	@Autowired
+  private PedidoColectivoDAO pedidoColectivoDAO;
 	@Autowired
 	private ZonaService zonaService;
 	@Autowired
@@ -93,7 +97,29 @@ public class PedidoServiceImpl implements PedidoService {
 		List<PedidoLite> list = pedidoDAO.obtenerPedidosLite(query);
 		result.setList(list);
 		result.setTotal(list.size());
+
+		Integer idColectivo = query.getIdColectivo();
+		if(idColectivo != null) {
+			List<PedidoStatsLite> stats = pedidoColectivoDAO.calcularPedidosStatsLite(idColectivo);
+			result.setList(this.mergePedidoStats(list, stats));
+		}
 		return result;
+	}
+
+	private List<PedidoLite> mergePedidoStats(List<PedidoLite> pedidos, List<PedidoStatsLite> stats) {
+		Map<Integer, PedidoStatsLite> map = new HashMap<>();
+		for (PedidoStatsLite pedidoStatsLite : stats) {
+			map.put(pedidoStatsLite.getId(), pedidoStatsLite);
+		}
+
+		for (PedidoLite pedido : pedidos) {
+			Integer id = pedido.getId();
+			if(map.containsKey(id)) {
+				pedido.setStats(map.get(id));
+			}
+		}
+	
+		return pedidos;
 	}
 
 	@Override

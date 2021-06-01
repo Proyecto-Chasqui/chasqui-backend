@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import chasqui.model.PedidoColectivo;
 import chasqui.model_lite.PedidoColectivoStatsByEstado;
+import chasqui.model_lite.PedidoStatsLite;
 import chasqui.model_lite.ProductoPedidoLiteAgrupados;
 
 public interface PedidoColectivoService {
@@ -24,6 +25,8 @@ public interface PedidoColectivoService {
 	PedidoColectivo obtenerPedidoColectivoPorID(Integer id);
 
 	PedidoColectivoStatsByEstado calcularStatsPedidoColectivoActivo(Integer grupoId);
+
+	List<PedidoStatsLite> calcularPedidosStatsLite(Integer grupoId);
 
 	List<ProductoPedidoLiteAgrupados> productosPedidoColectivoActivo(Integer grupoId);
 
