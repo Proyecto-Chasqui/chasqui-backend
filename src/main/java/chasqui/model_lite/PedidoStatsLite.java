@@ -12,7 +12,6 @@ public class PedidoStatsLite {
   private String estado;
 	private Double montoActual;
   private Double incentivoActual;
-  private Double montoActualSinIncetivo; // (deberia dar =montoActual-incentivoActual)
   private Integer pesoGramosActual;
   private Integer cantidadProductos;
   private Integer cantidadItems;
@@ -46,16 +45,12 @@ public class PedidoStatsLite {
     return this.incentivoActual;
   }
 
+  public Double getMontoTotal() {
+    return this.montoActual + this.incentivoActual;
+  }
+
   public void setIncentivoActual(Double incentivoActual) {
     this.incentivoActual = incentivoActual;
-  }
-
-  public Double getMontoActualSinIncetivo() {
-    return this.montoActualSinIncetivo;
-  }
-
-  public void setMontoActualSinIncetivo(Double montoActualSinIncetivo) {
-    this.montoActualSinIncetivo = montoActualSinIncetivo;
   }
 
   public Integer getPesoGramosActual() {

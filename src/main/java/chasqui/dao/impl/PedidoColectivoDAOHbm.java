@@ -66,11 +66,11 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 
 				 String queryStr = 
 									  " SELECT   "
-									+ "  count(DISTINCT PEDIDO.ID) as cant_pedidos, "
-									+ "  sum(pp.CANTIDAD*pp.PRECIO) as monto_actual, "
-									+ "  sum(pp.CANTIDAD*pp.INCENTIVO) as incentivo_actual, "
-									+ "  sum(pp.CANTIDAD*VARIANTE.PESO_GRAMOS) as peso_gramos_actual, "
-									+ "  PEDIDO.ESTADO as estado_pedido "
+									+ "  count(DISTINCT PEDIDO.ID) as cantPedidos, "
+									+ "  sum(pp.CANTIDAD*pp.PRECIO) as montoActual, "
+									+ "  sum(pp.CANTIDAD*pp.INCENTIVO) as incentivoActual, "
+									+ "  sum(pp.CANTIDAD*VARIANTE.PESO_GRAMOS) as pesoGramosActual, "
+									+ "  PEDIDO.ESTADO as estadoPedido "
 									+ " FROM PRODUCTO_PEDIDO as pp "
 									+ " RIGHT JOIN VARIANTE on VARIANTE.ID = pp.ID_VARIANTE "
 									+ " RIGHT JOIN PEDIDO on PEDIDO.ID = pp.ID_PEDIDO "
@@ -82,7 +82,7 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 
 				SQLQuery q = session.createSQLQuery(queryStr);
 
-				q.setString("estadoPedido", "ABIERTO");
+				q.setString("estadoPedido", Constantes.ESTADO_PEDIDO_ABIERTO);
 				q.setInteger("idColectivo", grupoId);
 				q.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
 
@@ -95,15 +95,15 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 
 				List<HashMap<String, Object>> list = q.list();
 				for (HashMap<String, Object> row : list) {
-						String estadoPedido = (String) row.get("estado_pedido");
+						String estadoPedido = (String) row.get("estadoPedido");
 						if(estadoPedido != null) {
 							hasAbiertos = hasAbiertos || estadoPedido.equals(Constantes.ESTADO_PEDIDO_ABIERTO);
 							hasConfirmados = hasConfirmados || estadoPedido.equals(Constantes.ESTADO_PEDIDO_CONFIRMADO);
 							PedidoColectivoStats stats = new PedidoColectivoStats();
-							stats.setCantPedidos(((BigInteger) row.get("cant_pedidos")).intValue());
-							stats.setMontoActual((Double) row.get("monto_actual"));
-							stats.setIncentivoActual((Double) row.get("incentivo_actual"));
-							stats.setPesoGramosActual(((BigDecimal) row.get("peso_gramos_actual")).intValue());
+							stats.setCantPedidos(((BigInteger) row.get("cantPedidos")).intValue());
+							stats.setMontoActual((Double) row.get("montoActual"));
+							stats.setIncentivoActual((Double) row.get("incentivoActual"));
+							stats.setPesoGramosActual(((BigDecimal) row.get("pesoGramosActual")).intValue());
 							stats.setEstadoPedido(estadoPedido);
 							stats.setSnapshotDate(now);
 							map.put(estadoPedido, stats);
@@ -146,12 +146,11 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 
 				 String queryStr = 
 							 " SELECT  "
-							+ "  PEDIDO.ID,"
-							+ "  PEDIDO.ESTADO,"
+							+ "  PEDIDO.ID as id,"
+							+ "  PEDIDO.ESTADO as estado,"
 							+ "  count(distinct pp.ID_VARIANTE) as cantProductos,"
 							+ "  sum(distinct pp.CANTIDAD) as cantItems,"
-							+ "  sum(pp.CANTIDAD*(pp.precio+pp.INCENTIVO)) as montoActual,"
-							+ "  sum(pp.CANTIDAD*pp.precio) as montoActualSinIncentivo,"
+							+ "  sum(pp.CANTIDAD*pp.precio) as montoActual,"
 							+ "  sum(pp.CANTIDAD*pp.INCENTIVO) as incentivoActual,"
 							+ "  sum(pp.CANTIDAD*VARIANTE.PESO_GRAMOS) as pesoGramosActual"
 							+ " FROM PRODUCTO_PEDIDO as pp"
@@ -165,7 +164,7 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
  
 				SQLQuery q = session.createSQLQuery(queryStr);
 
-				q.setString("estadoPedidoColectivo", "ABIERTO");
+				q.setString("estadoPedidoColectivo", Constantes.ESTADO_PEDIDO_ABIERTO);
 				q.setInteger("idColectivo", grupoId);
 				q.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
 
@@ -175,14 +174,13 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 
 				List<HashMap<String, Object>> list = q.list();
 				for (HashMap<String, Object> row : list) {
-						Integer id = (Integer) row.get("ID");
+						Integer id = (Integer) row.get("id");
 						if(id != null) {
 							PedidoStatsLite stats = new PedidoStatsLite();
 							stats.setId(id);
-							stats.setEstado((String) row.get("ESTADO"));
+							stats.setEstado((String) row.get("estado"));
 							stats.setMontoActual((Double) row.get("montoActual"));
 							stats.setIncentivoActual((Double) row.get("incentivoActual"));
-							stats.setMontoActualSinIncetivo((Double) row.get("montoActualSinIncentivo"));
 							stats.setPesoGramosActual(((BigDecimal) row.get("pesoGramosActual")).intValue());
 							stats.setCantidadProductos(((BigInteger) row.get("cantProductos")).intValue());
 							stats.setCantidadItems(((BigDecimal)row.get("cantItems")).intValue());
