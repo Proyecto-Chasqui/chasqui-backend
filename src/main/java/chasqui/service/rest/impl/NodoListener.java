@@ -649,7 +649,7 @@ public class NodoListener {
 		EditarNodoRequest request;
 		try {
 			request = this.toEditarNodo(editarNodoRequest);
-			this.validarSiUsaEstrategiaNodo(request.getIdNodo());
+			this.validarSiUsaEstrategiaNodo(request.getIdVendedor());
 			nodoService.editarNodo(request.getIdNodo(), email, request.getNombreNodo(), request.getDescripcion(),
 					request.getIdDireccion(), request.getTipoNodo(), request.getBarrio());
 
