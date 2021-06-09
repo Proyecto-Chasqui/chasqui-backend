@@ -82,6 +82,7 @@
 				<value>classpath*:mappings/TagTipoProducto.hbm.xml</value>
 				<value>classpath*:mappings/TagZonaDeCobertura.hbm.xml</value>
 				
+				<value>classpath*:mappings_lite/UsuarioLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/ClienteLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/GrupoCCLite.hbm.xml</value>
 				<value>classpath*:mappings_lite/MiembroGCCLite.hbm.xml</value>

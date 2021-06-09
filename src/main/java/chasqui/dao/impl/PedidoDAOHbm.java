@@ -28,6 +28,7 @@ import chasqui.model.ProductoPedido;
 import chasqui.model.Zona;
 import chasqui.model_lite.ClienteLite;
 import chasqui.model_lite.PedidoLite;
+import chasqui.model_lite.UsuarioLite;
 import chasqui.view.composer.Constantes;
 
 public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
@@ -97,7 +98,10 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 			@Override
 			public List<PedidoLite> doInHibernate(Session session) throws HibernateException, SQLException {
 
-				String queryStr =  " SELECT  " + " {pedido.*}, " + " {cliente.*} "
+				String queryStr =  " SELECT  " 
+												+ "    {pedido.*}, "
+												+ "    {cliente.*}, "
+												+ "    {usuario.*} "
 												+ " FROM PEDIDO as pedido  "
 												+ " INNER JOIN CLIENTE as cliente ON cliente.ID = pedido.CLIENTE "
 												+ " INNER JOIN USUARIO as usuario ON usuario.ID = cliente.ID "
@@ -116,6 +120,7 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				q.setInteger("idColectivo", query.getIdColectivo());
 				q.addEntity("pedido", PedidoLite.class);
 				q.addEntity("cliente", ClienteLite.class);
+				q.addEntity("usuario", UsuarioLite.class);
 				q.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
 
 				if (emailCliente != null) {
@@ -128,7 +133,10 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				for (HashMap<String, Object> row : list) {
 					PedidoLite pedido = (PedidoLite) row.get("pedido");
 					ClienteLite c = (ClienteLite) row.get("cliente");
+					UsuarioLite u = (UsuarioLite) row.get("usuario");
 					if (pedido != null) {
+						c.setEmail(u.getEmail());
+						c.setImagenPerfil(u.getImagenPerfil());
 						pedido.setCliente(c);
 						out.add(pedido);
 					}
