@@ -26,6 +26,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Pedido;
+import chasqui.model_lite.MiembroGCCLite;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.service.rest.request.DireccionRequest;
@@ -104,6 +105,8 @@ public interface GrupoService {
 	@Transactional
 	public List<MiembroDeGCC> obtenerOtrosMiembrosDelGCC(String mail, Integer idGrupo)
 			throws GrupoCCInexistenteException;
+
+	public List<MiembroGCCLite> obtenerMiembrosDelGCC(Integer idGrupo) throws GrupoCCInexistenteException;
 
 	@Transactional
 	public GrupoCC obtenerGrupoPorIdPedidoColectivo(Integer idPedidoColectivo, int idVendedor)

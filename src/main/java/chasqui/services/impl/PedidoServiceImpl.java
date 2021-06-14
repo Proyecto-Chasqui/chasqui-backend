@@ -13,8 +13,13 @@ import com.vividsolutions.jts.geom.Point;
 
 import chasqui.aspect.Auditada;
 import chasqui.aspect.Dateable;
+import chasqui.dao.PedidoColectivoDAO;
 import chasqui.dao.PedidoDAO;
+import chasqui.dao.ProductoPedidoDAO;
 import chasqui.dao.ZonaDAO;
+import chasqui.dtos.PaginatedListDTO;
+import chasqui.dtos.queries.PedidoQueryDTO;
+import chasqui.dtos.queries.ProductoPedidoQueryDTO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -32,6 +37,8 @@ import chasqui.model.ProductoPedido;
 import chasqui.model.Variante;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.model_lite.PedidoLite;
+import chasqui.model_lite.PedidoStatsLite;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
@@ -55,6 +62,10 @@ public class PedidoServiceImpl implements PedidoService {
 	private UsuarioService usuarioService;
 	@Autowired
 	private ProductoService productoService;
+	@Autowired
+  private ProductoPedidoDAO productoPedidoDAO;
+	@Autowired
+  private PedidoColectivoDAO pedidoColectivoDAO;
 	@Autowired
 	private ZonaService zonaService;
 	@Autowired
@@ -81,9 +92,41 @@ public class PedidoServiceImpl implements PedidoService {
 	}
 
 	@Override
+	public PaginatedListDTO<PedidoLite> obtenerPedidosLite(PedidoQueryDTO query) {
+		PaginatedListDTO<PedidoLite> result = new PaginatedListDTO<>();
+		List<PedidoLite> list = pedidoDAO.obtenerPedidosLite(query);
+		result.setList(list);
+		result.setTotal(list.size());
+
+		Integer idColectivo = query.getIdColectivo();
+		if(idColectivo != null) {
+			List<PedidoStatsLite> stats = pedidoColectivoDAO.calcularPedidosStatsLite(idColectivo);
+			result.setList(this.mergePedidoStats(list, stats));
+		}
+		return result;
+	}
+
+	private List<PedidoLite> mergePedidoStats(List<PedidoLite> pedidos, List<PedidoStatsLite> stats) {
+		Map<Integer, PedidoStatsLite> map = new HashMap<>();
+		for (PedidoStatsLite pedidoStatsLite : stats) {
+			map.put(pedidoStatsLite.getId(), pedidoStatsLite);
+		}
+
+		for (PedidoLite pedido : pedidos) {
+			Integer id = pedido.getId();
+			if(map.containsKey(id)) {
+				pedido.setStats(map.get(id));
+			}
+		}
+	
+		return pedidos;
+	}
+
+	@Override
 	public List<Pedido> obtenerPedidosDeVendedor(Integer idVendedor) {
 		return pedidoDAO.obtenerPedidos(idVendedor);
 	}
+
 	@Override
 	public List<Pedido> obtenerPedidosIndividuales(Integer idVendedor){
 		return pedidoDAO.obtenerPedidosIndividuales(idVendedor);
@@ -123,6 +166,18 @@ public class PedidoServiceImpl implements PedidoService {
 		return pedidoDAO.obtenerPedidoPorId(idPedido);
 	}
 
+	@Override
+	public PedidoLite obtenerPedidoLiteActivo (Integer idColectivo, String emailCliente) {
+		PedidoLite pedido = pedidoDAO.obtenerPedidoLiteActivo(idColectivo, emailCliente);
+
+		if(pedido != null) {
+			ProductoPedidoQueryDTO query = new ProductoPedidoQueryDTO();
+			query.setIdPedido(pedido.getId());
+			pedido.setProductosPedidos(productoPedidoDAO.obtenerLite(query));
+		}
+
+		return pedido;
+	}
 
 	
 	@Override

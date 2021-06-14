@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+	<class name="chasqui.model_lite.MiembroGCCLite" table="MIEMBRO_DE_GCC" mutable="false">
+		<id name="id" type="java.lang.Integer">
+			<column name="ID" />
+			<generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+				<param name="sequence_name">INVITACIONES_SEQUENCE</param>
+				<param name="optimizer">none</param>
+				<param name="increment_size">1</param>
+			</generator>
+		</id>
+
+		<property name="avatar" column="AVATAR" type="java.lang.String" />
+
+		<property name="email" column="EMAIL" type="java.lang.String" />
+
+		<property name="nickname" type="java.lang.String" column="NICKNAME" />
+
+		<property name="estadoInvitacion" type="java.lang.String"
+			column="ESTADO_INVITACION" />
+
+		<property name="estadoPedido" type="java.lang.String" column="ESTADO_PEDIDO" />
+
+		<property name="idGrupo" type="java.lang.Integer" column="ID_GRUPO" />
+
+		<many-to-one name="cliente" class="chasqui.model_lite.ClienteLite" cascade="none" update="false" insert="false">
+			<column name="ID_CLIENTE" />
+		</many-to-one>
+
+	</class>
+</hibernate-mapping>

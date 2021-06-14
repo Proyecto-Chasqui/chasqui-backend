@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <joined-subclass name="chasqui.model_lite.NodoLite" extends="chasqui.model_lite.GrupoCCLite" table="NODO" lazy="false">
+        <key>
+            <column name="ID" />
+        </key>
+
+        <property name="tipo" type="java.lang.String" column="TIPO" />
+
+        <property name="emailAdministrador" type="java.lang.String" column="EMAILADMIN" />
+
+        <property name="barrio" type="java.lang.String" column="BARRIO" />
+
+        <property name="activo" type="java.lang.Boolean">
+            <column name="ACTIVO" not-null="true" default="true" />
+        </property>
+
+    </joined-subclass>
+</hibernate-mapping>

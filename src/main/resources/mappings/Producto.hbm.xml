@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="chasqui.model.Producto" table="PRODUCTO">
         <id name="id" type="java.lang.Integer">
             <column name="ID" />
-            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator"> 
-	            <param name="sequence_name">PRODUCTO_SEQUENCE</param>
-	            <param name="optimizer">none</param>
-	            <param name="increment_size">1</param> 
-         	</generator>
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">PRODUCTO_SEQUENCE</param>
+                <param name="optimizer">none</param>
+                <param name="increment_size">1</param>
+            </generator>
         </id>
         <property name="nombre" type="java.lang.String">
             <column name="NOMBRE" />
@@ -18,12 +17,12 @@
         <many-to-one name="categoria" class="chasqui.model.Categoria" fetch="join">
             <column name="ID_CATEGORIA" />
         </many-to-one>
-        
+
         <bag name="caracteristicas" inverse="false" table="PRODUCTO_CARACTERISTICA" lazy="false">
             <key>
-                <column name="ID_PRODUCTO"/>
-            </key>            
-<!--             <list-index column="ORDEN_CARACTERISTICA"/> -->
+                <column name="ID_PRODUCTO" />
+            </key>
+            <!--             <list-index column="ORDEN_CARACTERISTICA"/> -->
             <many-to-many entity-name="chasqui.model.Caracteristica" column="ID_PRODUCTO_CARACTERISTICA" />
         </bag>
         <many-to-one name="fabricante" class="chasqui.model.Fabricante" fetch="join">
@@ -33,9 +32,12 @@
             <key>
                 <column name="ID_PRODUCTO" />
             </key>
-<!--             <list-index column="ORDEN"/> -->
+            <!--             <list-index column="ORDEN"/> -->
             <one-to-many class="chasqui.model.Variante" />
         </bag>
-		<property name="ocultado" type="java.lang.Boolean" column="OCULTADO"/>
+        <property name="ocultado" type="java.lang.Boolean" column="OCULTADO" />
+        <property name="destacado" type="java.lang.Boolean">
+            <column name="DESTACADO" not-null="false" default="false"></column>
+        </property>
     </class>
 </hibernate-mapping>

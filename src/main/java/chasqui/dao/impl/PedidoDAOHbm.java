@@ -1,13 +1,18 @@
 package chasqui.dao.impl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -17,12 +22,17 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.PedidoDAO;
+import chasqui.dtos.queries.PedidoQueryDTO;
 import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
 import chasqui.model.Zona;
+import chasqui.model_lite.ClienteLite;
+import chasqui.model_lite.PedidoLite;
+import chasqui.model_lite.UsuarioLite;
 import chasqui.view.composer.Constantes;
 
 public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
+	public static final Logger logger = Logger.getLogger(PedidoDAOHbm.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -51,10 +61,9 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 			@Override
 			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
-				Criteria criteria = session.createCriteria(Pedido.class, "pedido")
-						.createAlias("pedido.direccionEntrega", "direccionEntrega");
-				criteria.add(Restrictions.eq("pedido.alterable", true))
-						.add(Restrictions.eq("pedido.idVendedor", idVendedor))
+				Criteria criteria = session.createCriteria(Pedido.class, "pedido").createAlias("pedido.direccionEntrega",
+						"direccionEntrega");
+				criteria.add(Restrictions.eq("pedido.alterable", true)).add(Restrictions.eq("pedido.idVendedor", idVendedor))
 						.add(Restrictions.eq("pedido.fechaDeVencimiento", fechaCierrePedido))
 						.add(Restrictions.eq("pedido.estado", Constantes.ESTADO_PEDIDO_ABIERTO))
 						.add(Restrictions.eq("pedido.perteneceAPedidoGrupal", false))
@@ -72,14 +81,85 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 			@Override
 			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
-				Criteria c = session.createCriteria(Pedido.class)
-						.add(Restrictions.eq("idVendedor", idVendedor))
+				Criteria c = session.createCriteria(Pedido.class).add(Restrictions.eq("idVendedor", idVendedor))
 						.addOrder(Order.desc("id"));
 				return (List<Pedido>) c.list();
 			}
 		});
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PedidoLite> obtenerPedidosLite(final PedidoQueryDTO query) {
+		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<PedidoLite>>() {
+
+			final String emailCliente = query.getEmailCliente();
+
+			@Override
+			public List<PedidoLite> doInHibernate(Session session) throws HibernateException, SQLException {
+
+				String queryStr =  " SELECT  " 
+												+ "    {pedido.*}, "
+												+ "    {cliente.*}, "
+												+ "    {usuario.*} "
+												+ " FROM PEDIDO as pedido  "
+												+ " INNER JOIN CLIENTE as cliente ON cliente.ID = pedido.CLIENTE "
+												+ " INNER JOIN USUARIO as usuario ON usuario.ID = cliente.ID "
+												+ " LEFT JOIN PEDIDO_COLECTIVO ON PEDIDO_COLECTIVO.ID = pedido.ID_PEDIDO_COLECTIVO  " 
+												+ " WHERE  "
+												+ "  pedido.PERTENECE_A_GRUPAL = 1 " + " AND PEDIDO_COLECTIVO.ESTADO = :estado "
+												+ " AND PEDIDO_COLECTIVO.COLECTIVO = :idColectivo";
+
+				if (emailCliente != null) {
+					queryStr += " AND usuario.email = :emailCliente ";
+				}
+
+				SQLQuery q = session.createSQLQuery(queryStr);
+
+				q.setString("estado", "ABIERTO");
+				q.setInteger("idColectivo", query.getIdColectivo());
+				q.addEntity("pedido", PedidoLite.class);
+				q.addEntity("cliente", ClienteLite.class);
+				q.addEntity("usuario", UsuarioLite.class);
+				q.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+
+				if (emailCliente != null) {
+					q.setString("emailCliente", emailCliente);
+				}
+
+				List<PedidoLite> out = new ArrayList<>();
+
+				List<HashMap<String, Object>> list = q.list();
+				for (HashMap<String, Object> row : list) {
+					PedidoLite pedido = (PedidoLite) row.get("pedido");
+					ClienteLite c = (ClienteLite) row.get("cliente");
+					UsuarioLite u = (UsuarioLite) row.get("usuario");
+					if (pedido != null) {
+						c.setEmail(u.getEmail());
+						c.setImagenPerfil(u.getImagenPerfil());
+						pedido.setCliente(c);
+						out.add(pedido);
+					}
+				}
+
+				return out;
+			}
+		});
+	}
+
+	@Override
+	public PedidoLite obtenerPedidoLiteActivo (Integer idColectivo, String emailCliente) {
+		PedidoQueryDTO query = new PedidoQueryDTO();
+		query.setIdColectivo(idColectivo);
+		query.setEmailCliente(emailCliente);
+		List<PedidoLite> pedidos = this.obtenerPedidosLite(query);
+		if(!pedidos.isEmpty()) {
+			return pedidos.get(0);
+		} else {
+			return null;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pedido> obtenerPedidosIndividuales(final Integer idVendedor) {
@@ -87,10 +167,9 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 			@Override
 			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
-				Criteria c = session.createCriteria(Pedido.class,"pedido")
+				Criteria c = session.createCriteria(Pedido.class, "pedido")
 						.add(Restrictions.eq("pedido.idVendedor", idVendedor))
-						.add(Restrictions.eq("pedido.perteneceAPedidoGrupal", false))
-						.addOrder(Order.desc("id"));
+						.add(Restrictions.eq("pedido.perteneceAPedidoGrupal", false)).addOrder(Order.desc("id"));
 				return (List<Pedido>) c.list();
 			}
 		});
@@ -104,10 +183,9 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 			@Override
 			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria c = session.createCriteria(Pedido.class, "pedido")
-						.createAlias("pedido.direccionEntrega", "direccionEntrega")
-						.add(Restrictions.eq("idVendedor", idVendedor))
-						.add(SpatialRestrictions.within("direccionEntrega.geoUbicacion", zona.getGeoArea()))
-						.setMaxResults(100).addOrder(Order.desc("id"));
+						.createAlias("pedido.direccionEntrega", "direccionEntrega").add(Restrictions.eq("idVendedor", idVendedor))
+						.add(SpatialRestrictions.within("direccionEntrega.geoUbicacion", zona.getGeoArea())).setMaxResults(100)
+						.addOrder(Order.desc("id"));
 				return (List<Pedido>) c.list();
 			}
 		});
@@ -181,8 +259,7 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 				Criteria c = session.createCriteria(Pedido.class, "pedido")
 						.createAlias("pedido.direccionEntrega", "direccionEntrega")
-						.add(Restrictions.eq("pedido.idVendedor", idVendedor)).setMaxResults(100)
-						.addOrder(Order.desc("pedido.id"))
+						.add(Restrictions.eq("pedido.idVendedor", idVendedor)).setMaxResults(100).addOrder(Order.desc("pedido.id"))
 						.add(SpatialRestrictions.within("direccionEntrega.geoUbicacion", zona.getGeoArea()));
 				if (!StringUtils.isEmpty(estadoSeleccionado)) {
 					c.add(Restrictions.eq("pedido.estado", estadoSeleccionado));
@@ -208,9 +285,8 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 				Criteria criteria = session.createCriteria(Pedido.class);
 				criteria.add(Restrictions.eq("alterable", true))
 						.add(Restrictions.eq("estado", Constantes.ESTADO_PEDIDO_ABIERTO))
-						//.add(Restrictions.eq("perteneceAPedidoGrupal", false))// TODO sacar
-						.add(Restrictions.eq("idVendedor", idVendedor))
-						.add(Restrictions.lt("fechaDeVencimiento", new DateTime()));
+						// .add(Restrictions.eq("perteneceAPedidoGrupal", false))// TODO sacar
+						.add(Restrictions.eq("idVendedor", idVendedor)).add(Restrictions.lt("fechaDeVencimiento", new DateTime()));
 				return (List<Pedido>) criteria.list();
 			}
 		});
@@ -234,16 +310,16 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Pedido> obtenerPedidosDeConEstado(final Integer idUsuario,final Integer idVendedor, final List<String> estados) {
+	public List<Pedido> obtenerPedidosDeConEstado(final Integer idUsuario, final Integer idVendedor,
+			final List<String> estados) {
 		return this.getHibernateTemplate().execute(new HibernateCallback<List<Pedido>>() {
 
 			@Override
 			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria criteria = session.createCriteria(Pedido.class, "pedido");
-				
+
 				criteria.add(Restrictions.eq("pedido.cliente.id", idUsuario))
-						.add(Restrictions.eq("pedido.idVendedor", idVendedor))
-						.add(Restrictions.in("estado", estados));
+						.add(Restrictions.eq("pedido.idVendedor", idVendedor)).add(Restrictions.in("estado", estados));
 				return (List<Pedido>) criteria.list();
 			}
 		});
@@ -251,23 +327,20 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 	@Override
 	public List<Pedido> obtenerPedidosIndividualesDeVendedor(final Integer idVendedor) {
-		
+
 		return this.getHibernateTemplate().execute(new HibernateCallback<List<Pedido>>() {
 
 			@Override
-			public
-			List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
+			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
 				Criteria criteria = session.createCriteria(Pedido.class);
-				criteria.add(Restrictions.eq("perteneceAPedidoGrupal", false))
-						.add(Restrictions.eq("idVendedor", idVendedor))
+				criteria.add(Restrictions.eq("perteneceAPedidoGrupal", false)).add(Restrictions.eq("idVendedor", idVendedor))
 						.addOrder(Order.desc("id"));
 				return (List<Pedido>) criteria.list();
 			}
 		});
 
-	
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pedido> obtenerPedidosIndividualesDeVendedor(final Integer idVendedor, final Date desde, final Date hasta,
@@ -276,16 +349,15 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 			@Override
 			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
-				Criteria c = session.createCriteria(Pedido.class,"pedido")
-				.add(Restrictions.eq("pedido.idVendedor", idVendedor))
-				.add(Restrictions.eq("pedido.perteneceAPedidoGrupal", false))
-				.addOrder(Order.desc("pedido.id"));
-				
-				if(zonaId!=null){
+				Criteria c = session.createCriteria(Pedido.class, "pedido")
+						.add(Restrictions.eq("pedido.idVendedor", idVendedor))
+						.add(Restrictions.eq("pedido.perteneceAPedidoGrupal", false)).addOrder(Order.desc("pedido.id"));
+
+				if (zonaId != null) {
 					c.createAlias("pedido.zona", "zona");
 					c.add(Restrictions.eq("zona.id", zonaId));
 				}
-				
+
 				if (!StringUtils.isEmpty(estadoSeleccionado)) {
 					c.add(Restrictions.eq("pedido.estado", estadoSeleccionado));
 				}
@@ -293,51 +365,50 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 					DateTime d = new DateTime(desde.getTime());
 					DateTime h = new DateTime(hasta.getTime());
 					c.add(Restrictions.between("pedido.fechaCreacion", d.withHourOfDay(0), h.plusDays(1).withHourOfDay(0)));
-				}else{
-					if(desde!=null){
+				} else {
+					if (desde != null) {
 						DateTime d = new DateTime(desde.getTime());
 						c.add(Restrictions.ge("pedido.fechaCreacion", d.withHourOfDay(0)));
-					}else{
-						if(hasta!=null){
+					} else {
+						if (hasta != null) {
 							DateTime h = new DateTime(hasta.getTime());
 							c.add(Restrictions.le("pedido.fechaCreacion", h.plusDays(1).withHourOfDay(0)));
 						}
 					}
 				}
-				
-				if(idPuntoRetiro!=null) {
-					c.add(Restrictions.eq("puntoDeRetiro.id",idPuntoRetiro));
+
+				if (idPuntoRetiro != null) {
+					c.add(Restrictions.eq("puntoDeRetiro.id", idPuntoRetiro));
 				}
-				
-				if(email!=null) {
+
+				if (email != null) {
 					c.createAlias("pedido.cliente", "cliente");
-					c.add(Restrictions.like("cliente.email", "%"+email+"%"));
+					c.add(Restrictions.like("cliente.email", "%" + email + "%"));
 				}
-				
 
 				return (List<Pedido>) c.list();
 			}
 		});
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Pedido> obtenerPedidosIndividualesDeVendedorPRPorNombre(final Integer idVendedor, final Date desde, final Date hasta,
-			final String estadoSeleccionado, final Integer zonaId, final String nombrePuntoRetiro, final String email) {
+	public List<Pedido> obtenerPedidosIndividualesDeVendedorPRPorNombre(final Integer idVendedor, final Date desde,
+			final Date hasta, final String estadoSeleccionado, final Integer zonaId, final String nombrePuntoRetiro,
+			final String email) {
 		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<Pedido>>() {
 
 			@Override
 			public List<Pedido> doInHibernate(Session session) throws HibernateException, SQLException {
-				Criteria c = session.createCriteria(Pedido.class,"pedido")
-				.add(Restrictions.eq("pedido.idVendedor", idVendedor))
-				.add(Restrictions.eq("pedido.perteneceAPedidoGrupal", false))
-				.addOrder(Order.desc("pedido.id"));
-				
-				if(zonaId!=null){
+				Criteria c = session.createCriteria(Pedido.class, "pedido")
+						.add(Restrictions.eq("pedido.idVendedor", idVendedor))
+						.add(Restrictions.eq("pedido.perteneceAPedidoGrupal", false)).addOrder(Order.desc("pedido.id"));
+
+				if (zonaId != null) {
 					c.createAlias("pedido.zona", "zona");
 					c.add(Restrictions.eq("zona.id", zonaId));
 				}
-				
+
 				if (!StringUtils.isEmpty(estadoSeleccionado)) {
 					c.add(Restrictions.eq("pedido.estado", estadoSeleccionado));
 				}
@@ -345,28 +416,27 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 					DateTime d = new DateTime(desde.getTime());
 					DateTime h = new DateTime(hasta.getTime());
 					c.add(Restrictions.between("pedido.fechaModificacion", d.withHourOfDay(0), h.plusDays(1).withHourOfDay(0)));
-				}else{
-					if(desde!=null){
+				} else {
+					if (desde != null) {
 						DateTime d = new DateTime(desde.getTime());
 						c.add(Restrictions.ge("pedido.fechaModificacion", d.withHourOfDay(0)));
-					}else{
-						if(hasta!=null){
+					} else {
+						if (hasta != null) {
 							DateTime h = new DateTime(hasta.getTime());
 							c.add(Restrictions.le("pedido.fechaModificacion", h.plusDays(1).withHourOfDay(0)));
 						}
 					}
 				}
-				
-				if(nombrePuntoRetiro!=null && !nombrePuntoRetiro.equals("")) {
+
+				if (nombrePuntoRetiro != null && !nombrePuntoRetiro.equals("")) {
 					c.createAlias("pedido.puntoDeRetiro", "puntoDeRetiro");
-					c.add(Restrictions.eq("puntoDeRetiro.nombre",nombrePuntoRetiro));
+					c.add(Restrictions.eq("puntoDeRetiro.nombre", nombrePuntoRetiro));
 				}
-				
-				if(email!=null && !email.equals("")) {
+
+				if (email != null && !email.equals("")) {
 					c.createAlias("pedido.cliente", "cliente");
-					c.add(Restrictions.like("cliente.email", "%"+email+"%"));
+					c.add(Restrictions.like("cliente.email", "%" + email + "%"));
 				}
-				
 
 				return (List<Pedido>) c.list();
 			}
@@ -378,16 +448,13 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 		this.getHibernateTemplate().delete(p);
 		this.getHibernateTemplate().flush();
 	}
-	
 
 	@Override
-	public void eliminarProductosPedidos(List <ProductoPedido> productoPedido) {
-			for(ProductoPedido pp: productoPedido) {
-				this.getHibernateTemplate().delete(pp);
-			}		
-			this.getHibernateTemplate().flush();
+	public void eliminarProductosPedidos(List<ProductoPedido> productoPedido) {
+		for (ProductoPedido pp : productoPedido) {
+			this.getHibernateTemplate().delete(pp);
+		}
+		this.getHibernateTemplate().flush();
 	}
-
-
 
 }
