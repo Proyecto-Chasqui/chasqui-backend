@@ -26,6 +26,8 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 	public void render(Listitem item, Vendedor u, int arg2) throws Exception {
 		
 		Listcell c1 = new Listcell(u.getUsername());
+		Listcell cellNombreCorto = new Listcell(u.getNombreCorto());
+		Listcell cellNombre = new Listcell(u.getNombre());
 		Listcell c2 = new Listcell();
 		Hbox hbox = new Hbox();
 		Vendedor usuarioLogueado = (Vendedor) Executions.getCurrent().getSession().getAttribute(Constantes.SESSION_USERNAME);
@@ -103,6 +105,8 @@ public class UsuarioRenderer implements ListitemRenderer<Vendedor>{
 			exportar.setParent(hbox);
 			cargarStartUp.setParent(hbox);
 		}
+		cellNombreCorto.setParent(item);
+		cellNombre.setParent(item);
 		hbox.setParent(c2);
 		c2.setParent(item);
 		
