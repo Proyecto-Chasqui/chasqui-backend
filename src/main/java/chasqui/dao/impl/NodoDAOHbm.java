@@ -23,7 +23,9 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import chasqui.dao.NodoDAO;
 import chasqui.dtos.queries.NodoQueryDTO;
+import chasqui.model.Direccion;
 import chasqui.model.Nodo;
+import chasqui.model.Zona;
 import chasqui.model_lite.ClienteLite;
 import chasqui.model_lite.NodoLite;
 import chasqui.view.composer.Constantes;
@@ -151,13 +153,21 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 						+ "  admin.TELEFONO_FIJO as admin_telefono_fijo, "
 						+ "  admin.TELEFONO_MOVIL as admin_telefono_movil, "
 						+ "  admin.ESTADO as admin_estado, "
-						+ "  adminUser.EMAIL as admin_email "
+						+ "  adminUser.EMAIL as admin_email, "
+						+ "  direccion.*, "
+						+ "  direccion.alias as direccion_alias, "
+						+ "  zona.ID as zona_id, "
+						+ "  zona.NOMBRE as zona_nombre, "
+						+ "  zona.FECHA_CIERRE_PEDIDOS as zona_fecha_cierre, "
+						+ "  zona.DESCRIPCION as zona_descripcion "
 						+ " FROM GRUPOCC as grupo"
 						+ " RIGHT JOIN NODO as nodo ON nodo.ID = grupo.ID "
 						+ " RIGHT JOIN MIEMBRO_DE_GCC ON MIEMBRO_DE_GCC.ID_GRUPO = grupo.ID"
 						+ " RIGHT JOIN USUARIO ON USUARIO.ID = MIEMBRO_DE_GCC.ID_CLIENTE"
 						+ " RIGHT JOIN CLIENTE as admin ON admin.ID = grupo.ID_ADMINISTRADOR "
 						+ " RIGHT JOIN USUARIO as adminUser ON adminUser.ID = admin.ID "
+						+ " LEFT JOIN DIRECCION as direccion ON direccion.ID = nodo.ID_DIRECCION "
+						+ " LEFT JOIN ZONA as zona ON zona.ID = nodo.ID_ZONA "
 						+ " WHERE "
 						+ "     USUARIO.EMAIL = :email" + " AND MIEMBRO_DE_GCC.ESTADO_INVITACION = :estadoInvitacion "
 						+ " AND grupo.ID_VENDEDOR = :idVendedor " + " AND grupo.ES_NODO = true ");
@@ -180,8 +190,35 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 					admin.setEstado((String) row.get("admin_estado"));
 					admin.setEmail((String) row.get("admin_email"));
 
+					Direccion direccion = new Direccion();
+					direccion.setId((Integer)row.get("ID_DIRECCION"));
+					direccion.setAlias((String) row.get("direccion_alias"));
+					direccion.setCalle((String)row.get("CALLE"));
+					direccion.setAltura((Integer) row.get("ALTURA"));
+					direccion.setCalleAdyacente1((String) row.get("CALLEADYACENTE1"));
+					direccion.setCalleAdyacente2((String) row.get("CALLEADYACENTE2"));
+					direccion.setCodigoPostal((String) row.get("CODIGO_POSTAL"));
+					direccion.setCodigoPostal((String) row.get("CODIGO_POSTAL"));
+					direccion.setComentario((String) row.get("COMENTARIO"));
+					direccion.setDepartamento((String) row.get("DEPARTAMENTO"));
+					direccion.setLatitud((String) row.get("LATITUD"));
+					direccion.setLongitud((String) row.get("LONGITUD"));
+					direccion.setLocalidad((String) row.get("LOCALIDAD"));
+					//geoUbicacion: null
+					direccion.setPais((String) row.get("PAIS"));
+					direccion.setProvincia((String) row.get("PROVINCIA"));
+					direccion.setPredeterminada((Boolean) row.get("PREDETERMINADA"));
+
+					Zona zona = new Zona();
+					zona.setId((Integer) row.get("zona_id"));
+					zona.setNombre((String) row.get("zona_nombre"));
+					zona.setDescripcion((String) row.get("zona_descripcion"));
+					zona.setFechaCierrePedidos(new DateTime(row.get("zona_fecha_cierre")));
+
 					NodoLite nodo = new NodoLite();
 					nodo.setAdministrador(admin);
+					nodo.setDireccion(direccion);
+					nodo.setZona(zona);
 					nodo.setId((Integer) row.get("ID"));
 					nodo.setAlias((String) row.get("ALIAS"));
 					nodo.setDescripcion((String) row.get("DESCRIPCION"));

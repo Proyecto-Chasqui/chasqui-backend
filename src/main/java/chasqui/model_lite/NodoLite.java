@@ -1,10 +1,15 @@
 package chasqui.model_lite;
 
+import chasqui.model.Direccion;
+import chasqui.model.Zona;
+
 public class NodoLite extends GrupoCCLite {
   private String tipo;
   private String emailAdministrador;
   private String barrio;
   private boolean activo;
+  private Direccion direccion;
+  private Zona zona;
 
   public NodoLite alias(String alias) {
     setAlias(alias);
@@ -68,4 +73,19 @@ public class NodoLite extends GrupoCCLite {
     this.activo = activo;
   }
 
+  public Direccion getDireccion() {
+    return this.direccion;
+  }
+
+  public void setDireccion(Direccion direccion) {
+    this.direccion = direccion;
+  }
+
+  public Zona getZona() {
+    return this.zona;
+  }
+
+  public void setZona(Zona zona) {
+    this.zona = zona;
+  }
 }
