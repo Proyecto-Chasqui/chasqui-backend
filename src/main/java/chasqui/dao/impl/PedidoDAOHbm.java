@@ -27,6 +27,7 @@ import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
 import chasqui.model.Zona;
 import chasqui.model_lite.ClienteLite;
+import chasqui.model_lite.GrupoCCLite;
 import chasqui.model_lite.PedidoLite;
 import chasqui.model_lite.UsuarioLite;
 import chasqui.view.composer.Constantes;
@@ -94,52 +95,139 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 		return this.getHibernateTemplate().executeFind(new HibernateCallback<List<PedidoLite>>() {
 
 			final String emailCliente = query.getEmailCliente();
+			final Integer idColectivo = query.getIdColectivo();
+			final Integer idVendedor = query.getIdVendedor();
 
 			@Override
 			public List<PedidoLite> doInHibernate(Session session) throws HibernateException, SQLException {
 
 				String queryStr =  " SELECT  " 
-												+ "    {pedido.*}, "
-												+ "    {cliente.*}, "
-												+ "    {usuario.*} "
-												+ " FROM PEDIDO as pedido  "
-												+ " INNER JOIN CLIENTE as cliente ON cliente.ID = pedido.CLIENTE "
-												+ " INNER JOIN USUARIO as usuario ON usuario.ID = cliente.ID "
-												+ " LEFT JOIN PEDIDO_COLECTIVO ON PEDIDO_COLECTIVO.ID = pedido.ID_PEDIDO_COLECTIVO  " 
+													+" pedido.ID as pedido_id, "
+													+" pedido.ID_VENDEDOR as ID_VENDEDOR, "
+													+" pedido.CLIENTE as pedido_cliente, "
+													+" pedido.ALTERABLE as pedido_alterable, "
+													+" pedido.ESTADO as pedido_estado, "
+													+" pedido.FECHA_CREACION as pedido_fecha_creacion, "
+													+" pedido.FECHA_MODIFICACION as pedido_fecha_modificacion, "
+													+" pedido.FECHA_VENCIMIENTO as pedido_fecha_vencimiento, "
+													+" pedido.MONTO_MINIMO as pedido_monto_minimo, "
+													+" pedido.MONTO_ACTUAL as pedido_monto_actual, "
+													+" pedido.NOMBRE_VENDEDOR as pedido_nombre_vendedor, "
+													+" pedido.PERTENECE_A_GRUPAL as pedido_pertenece_a_grupal, "
+													+" pedido.COMENTARIO as pedido_comentario, "
+													+" pedido.TIPO_AJUSTE as pedido_tipo_de_ajuste, "
+													+" cliente.ID as cliente_id, "
+													+" cliente.NOMBRE as cliente_nombre, "
+													+" cliente.APELLIDO as cliente_apellido, "
+													+" cliente.TELEFONO_FIJO as cliente_telefono_fijo, "
+													+" cliente.TELEFONO_MOVIL as cliente_telefono_movil, "
+													+" cliente.ESTADO as cliente_estado, "
+													+" usuario.ID as usuario_id, "
+													+" usuario.USERNAME as usuario_username, "
+													+" usuario.IMAGEN_DE_PERFIL as usuario_imagen_de_perfil, "
+													+" usuario.EMAIL as usuario_email, "
+													+" usuario.ENABLED as usuario_enabled, "
+													+" usuario.ROOT as usuario_root, "
+													+" grupo.ID as grupo_id, "
+													+" grupo.ALIAS as grupo_alias, "
+													+" grupo.DESCRIPCION as grupo_descripcion, "
+													+" grupo.PEDIDOS_HABILITADOS as usuario_pedidos_habilitados, "
+													+" grupo.FECHA_DE_CREACION as usuario_fechade_creacion, "
+													+" grupo.ES_NODO as usuario_es_nodo "
+												+ " FROM PEDIDO pedido "
+												+ " INNER JOIN CLIENTE cliente ON cliente.ID = pedido.CLIENTE "
+												+ " INNER JOIN USUARIO usuario ON usuario.ID = cliente.ID "
+												+ " INNER JOIN PEDIDO_COLECTIVO colectivo ON colectivo.ID = pedido.ID_PEDIDO_COLECTIVO  " 
+												+ " INNER JOIN GRUPOCC grupo ON grupo.ID = colectivo.COLECTIVO  " 
 												+ " WHERE  "
-												+ "  pedido.PERTENECE_A_GRUPAL = 1 " + " AND PEDIDO_COLECTIVO.ESTADO = :estado "
-												+ " AND PEDIDO_COLECTIVO.COLECTIVO = :idColectivo";
+												+ "   pedido.PERTENECE_A_GRUPAL = 1 " 
+												+ " AND colectivo.ESTADO = :estadoPedidoColectivo ";
+												
 
 				if (emailCliente != null) {
 					queryStr += " AND usuario.email = :emailCliente ";
 				}
+				
+				if (idColectivo != null) {
+					queryStr += " AND colectivo.COLECTIVO = :idColectivo ";
+				}
+
+				if (idVendedor != null) {
+					queryStr += " AND pedido.ID_VENDEDOR = :idVendedor ";
+				}
 
 				SQLQuery q = session.createSQLQuery(queryStr);
 
-				q.setString("estado", "ABIERTO");
-				q.setInteger("idColectivo", query.getIdColectivo());
-				q.addEntity("pedido", PedidoLite.class);
-				q.addEntity("cliente", ClienteLite.class);
-				q.addEntity("usuario", UsuarioLite.class);
+				q.setString("estadoPedidoColectivo", "ABIERTO");
+				
 				q.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
 
 				if (emailCliente != null) {
 					q.setString("emailCliente", emailCliente);
 				}
 
-				List<PedidoLite> out = new ArrayList<>();
+				if(idColectivo != null) {
+					q.setInteger("idColectivo", idColectivo);
+				}
 
+				if(idVendedor != null) {
+					q.setInteger("idVendedor", idVendedor);
+				}
+
+				List<PedidoLite> out = new ArrayList<>();
+				
 				List<HashMap<String, Object>> list = q.list();
 				for (HashMap<String, Object> row : list) {
-					PedidoLite pedido = (PedidoLite) row.get("pedido");
-					ClienteLite c = (ClienteLite) row.get("cliente");
-					UsuarioLite u = (UsuarioLite) row.get("usuario");
-					if (pedido != null) {
-						c.setEmail(u.getEmail());
-						c.setImagenPerfil(u.getImagenPerfil());
-						pedido.setCliente(c);
-						out.add(pedido);
-					}
+					logger.info(row);
+
+					Integer idVendedor = (Integer) row.get("ID_VENDEDOR");
+
+					UsuarioLite usuario = new UsuarioLite();
+					usuario.setId((Integer) row.get("usuario_id"));
+					usuario.setUsername((String) row.get("usuario_username"));
+					usuario.setImagenPerfil((String) row.get("usuario_imagen_de_perfil"));
+					usuario.setEmail((String) row.get("usuario_email"));
+					usuario.setEnabled((Boolean) row.get("usuario_enabled"));
+					usuario.setRoot((Boolean) row.get("usuario_root"));
+					
+					ClienteLite cliente = new ClienteLite();
+					cliente.setId((Integer) row.get("cliente_id"));
+					cliente.setNombre((String) row.get("cliente_nombre"));
+					cliente.setApellido((String) row.get("cliente_apellido"));
+					cliente.setTelefonoFijo((String) row.get("cliente_telefono_fijo"));
+					cliente.setTelefonoMovil((String) row.get("cliente_telefono_movil"));
+					cliente.setEstado((String) row.get("cliente_estado"));
+					cliente.setEmail((String) row.get("cliente_email"));
+					cliente.setEmail(usuario.getEmail());
+					cliente.setImagenPerfil(usuario.getImagenPerfil());
+
+					GrupoCCLite grupo = new GrupoCCLite();
+					grupo.setId((Integer) row.get("grupo_id"));
+					grupo.setAlias((String) row.get("grupo_alias"));
+					grupo.setDescripcion((String) row.get("grupo_descripcion"));
+					grupo.setPedidosHabilitados((Boolean) row.get("usuario_pedidos_habilitados"));
+					grupo.setFechaCreacion( new DateTime(row.get("usuario_fecha_de_creacion")));
+					grupo.setEsNodo((Boolean) row.get("usuario_es_nodo"));
+					grupo.setIdVendedor(idVendedor);
+
+					PedidoLite pedido = new PedidoLite();
+					pedido.setId((Integer) row.get("pedido_id"));
+					pedido.setIdVendedor(idVendedor);
+					pedido.setAlterable((boolean) row.get("pedido_alterable"));
+					pedido.setEstado((String) row.get("pedido_estado"));
+					pedido.setFechaCreacion(new DateTime(row.get("pedido_fecha_creacion")));
+					pedido.setFechaModificacion( new DateTime(row.get("pedido_fecha_modificacion")));
+					pedido.setFechaDeVencimiento( new DateTime(row.get("pedido_fecha_vencimiento")));
+					pedido.setMontoMinimo((Double) row.get("pedido_monto_minimo"));
+					pedido.setMontoActual((Double) row.get("pedido_monto_actual"));
+					pedido.setNombreVendedor((String) row.get("pedido_nombre_vendedor"));
+					pedido.setPerteneceAPedidoGrupal((Boolean) row.get("pedido_pertenece_a_grupal"));
+					pedido.setComentario((String) row.get("pedido_comentario"));
+					pedido.setTipoDeAjuste((String) row.get("pedido_tipo_de_ajuste"));
+					pedido.setCliente(cliente);
+					pedido.setGrupo(grupo);
+
+					out.add(pedido);
 				}
 
 				return out;

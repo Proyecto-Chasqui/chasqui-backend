@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Point;
 
+import chasqui.dao.PedidoDAO;
+import chasqui.dao.ProductoPedidoDAO;
 import chasqui.dao.SolicitudCreacionNodoDAO;
 import chasqui.dao.SolicitudPertenenciaNodoDAO;
 import chasqui.dao.impl.NodoDAOHbm;
@@ -21,6 +23,8 @@ import chasqui.dao.impl.SolicitudCreacionNodoDAOHbm;
 import chasqui.dao.impl.SolicitudPertenenciaNodoDAOHbm;
 import chasqui.dtos.PaginatedListDTO;
 import chasqui.dtos.queries.NodoQueryDTO;
+import chasqui.dtos.queries.PedidoQueryDTO;
+import chasqui.dtos.queries.ProductoPedidoQueryDTO;
 import chasqui.exceptions.ClienteNoPerteneceAGCCException;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DireccionesInexistentes;
@@ -53,6 +57,8 @@ import chasqui.model.Zona;
 import chasqui.model_lite.NodoLite;
 import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
+import chasqui.service.rest.response.NodoResponse;
+import chasqui.service.rest.response.PedidoResponse;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
 import chasqui.services.interfaces.NotificacionService;
@@ -79,6 +85,10 @@ public class NodoServiceImpl implements NodoService {
 	private NotificacionService notificacionService;
 	@Autowired
 	private PedidoService pedidoService;
+	@Autowired
+	private PedidoDAO pedidoDAO;
+	@Autowired
+	private ProductoPedidoDAO productoPedidoDAO;
 	@Autowired
 	private InvitacionService invitacionService;
 	@Autowired
@@ -121,9 +131,78 @@ public class NodoServiceImpl implements NodoService {
 		return nodoDAO.obtenerNodosDelCliente(idVendedor, email);
 	}
 
+
 	@Override
-	public List<NodoLite> obtenerNodosLiteDelCliente(Integer idVendedor, String email) {
-		return nodoDAO.obtenerNodosLiteDelCliente(idVendedor, email);
+	public List<NodoResponse> obtenerMisNodos(Integer idVendedor, String emailUserLogged) {
+		List<NodoLite> nodos = nodoDAO.obtenerNodosLiteDelCliente(idVendedor, emailUserLogged);
+
+		List<NodoResponse> nodosResponse = new ArrayList<>();
+		for (NodoLite nodo : nodos) {
+			nodosResponse.add(new NodoResponse(nodo, emailUserLogged));
+		}
+		
+		nodosResponse = this.injectarPedidoPersonal(nodosResponse, idVendedor, emailUserLogged);
+
+		return nodosResponse;
+	}
+
+	/**
+	 * Este metodo es transitorio y no ideal de performance. 
+	 * Sirve para compatibilizar los datos que espera el changuito del frontend.
+	 * Es un balance de costo de refactor y mejora de uso de recursos.
+	 */
+	private List<NodoResponse> injectarPedidoPersonal(List<NodoResponse> list, Integer idVendedor, String emailUserLogged) {
+		if(list == null || list.isEmpty()){
+			return list;
+		}
+    
+		// CREA MAPA de NODO POR ID
+		Map<Integer, NodoResponse> map = new HashMap<>();
+		for (NodoResponse node : list) {
+			map.put(node.getId(), node);
+		}
+		
+		// BUSCA PEDIDOS ACTIVOS
+		PedidoQueryDTO queryPedido = new PedidoQueryDTO();
+		queryPedido.setIdVendedor(idVendedor);
+		queryPedido.setEmailCliente(emailUserLogged);
+		List<PedidoLite> pedidos = pedidoDAO.obtenerPedidosLite(queryPedido);
+
+		// INJECTA el id del pedido del la persona logueada
+		for (PedidoLite pedido : pedidos) {
+			Integer idGrupo = pedido.getGrupo().getId();
+			if(map.containsKey(idGrupo)) {
+				NodoResponse nodo = map.get(idGrupo);
+				nodo.setIdPedidoIndividual(pedido.getId());
+			}
+		}
+
+		return list;
+	}
+
+	@Override 
+	public List<PedidoResponse> obtenerMisMedidosActivos(Integer idVendedor, String emailUserLogged) throws VendedorInexistenteException {
+		// Obtener pedidos colectivo
+		PedidoQueryDTO queryPedido = new PedidoQueryDTO();
+		queryPedido.setIdVendedor(idVendedor);
+		queryPedido.setEmailCliente(emailUserLogged);
+		List<PedidoLite> pedidos = pedidoDAO.obtenerPedidosLite(queryPedido);
+
+		if (pedidos != null) {
+			for (PedidoLite pedido : pedidos) {
+				ProductoPedidoQueryDTO query = new ProductoPedidoQueryDTO();
+				query.setIdPedido(pedido.getId());
+				pedido.setProductosPedidos(productoPedidoDAO.obtenerLite(query));
+			}
+		}
+
+		// transformar
+		List<PedidoResponse> listResponse = new ArrayList<>();
+		for (PedidoLite pedido : pedidos) {
+			listResponse.add(new PedidoResponse(pedido));
+		}
+
+		return listResponse;
 	}
 
 	@Override

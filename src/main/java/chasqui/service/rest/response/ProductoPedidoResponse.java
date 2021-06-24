@@ -3,6 +3,7 @@ package chasqui.service.rest.response;
 import java.io.Serializable;
 
 import chasqui.model.ProductoPedido;
+import chasqui.model_lite.ProductoPedidoLite;
 
 public class ProductoPedidoResponse implements Serializable{
 
@@ -72,6 +73,14 @@ public class ProductoPedidoResponse implements Serializable{
 		cantidad = p.getCantidad();
 		precio = p.getPrecio();
 		nombre = p.getNombreProducto() +" "+ p.getNombreVariante();
+		idVariante = p.getIdVariante();
+		incentivo = p.getIncentivo();
+	}
+	public ProductoPedidoResponse(ProductoPedidoLite p){
+		imagen = p.getImagen();
+		cantidad = p.getCantidad();
+		precio = p.getPrecio();
+		nombre = p.getNombre();
 		idVariante = p.getIdVariante();
 		incentivo = p.getIncentivo();
 	}

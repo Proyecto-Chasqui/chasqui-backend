@@ -95,7 +95,6 @@ import freemarker.template.TemplateException;
 @Service
 @Path("/nodo")
 public class NodoListener {
-
 	@Autowired
 	NodoService nodoService;
 	@Autowired
@@ -122,6 +121,7 @@ public class NodoListener {
 	@GET
 	@Path("/all/{idVendedor : \\d+ }")
 	@Produces("application/json")
+	@Deprecated // usar /misNodos/{idVendedor : \\d+ }
 	public Response obtenerNodosDelVendedor(@PathParam("idVendedor") final Integer idVendedor) {
 		try {
 			this.validarSiUsaEstrategiaNodo(idVendedor);
@@ -140,17 +140,17 @@ public class NodoListener {
 	}
 
 	@GET
-	@Path("/lite/all/{idVendedor : \\d+ }")
+	@Path("/misNodos/{idVendedor : \\d+ }")
 	@Produces("application/json")
-	public Response obtenerNodosLiteDelVendedor(@PathParam("idVendedor") final Integer idVendedor) {
+	public Response obtenerMisNodosDelVendedor(@PathParam("idVendedor") final Integer idVendedor) {
 		try {
 			this.validarSiUsaEstrategiaNodo(idVendedor);
-			String emailUserlogged = obtenerEmailDeContextoDeSeguridad();
-			List<NodoLite> out = nodoService.obtenerNodosLiteDelCliente(idVendedor, emailUserlogged);
-			// Object out = nodoService.obtenerNodosLite(new NodoQueryDTO());
-
-			return Response.ok(out, MediaType.APPLICATION_JSON).build();
+			String emailAdministrador = obtenerEmailDeContextoDeSeguridad();
+			return Response.ok(nodoService.obtenerMisNodos(idVendedor, emailAdministrador),MediaType.APPLICATION_JSON).build();
+		
 		} catch (VendedorInexistenteException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		} catch (Exception e) {
 			return Response.status(500).entity(new ChasquiError(e.getMessage())).build();
@@ -324,8 +324,8 @@ public class NodoListener {
 	@GET
 	@Path("/pedidos/{idVendedor : \\d+ }")
 	@Produces("application/json")
+	@Deprecated //("usar /lite/misPedidosActivos/{idVendedor : \\d+ }")
 	public Response obtenerPedidosEnNodo(@PathParam("idVendedor") final Integer idVendedor) {
-
 		String email = obtenerEmailDeContextoDeSeguridad();
 
 		Map<Integer, Pedido> pedidos;
@@ -347,7 +347,26 @@ public class NodoListener {
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
 		}
+	}
 
+	@GET
+	@Path("/lite/misPedidosActivos/{idVendedor : \\d+ }")
+	@Produces("application/json")
+	public Response obtenerMisPedidosActivosEnNodo(@PathParam("idVendedor") final Integer idVendedor) {
+
+		String email = obtenerEmailDeContextoDeSeguridad();
+
+		try {
+			this.validarSiUsaEstrategiaNodo(idVendedor);
+			List<PedidoResponse> pedidos = nodoService.obtenerMisMedidosActivos(idVendedor, email);
+
+			return Response.ok(pedidos, MediaType.APPLICATION_JSON).build();
+
+		} catch (VendedorInexistenteException e1) {
+			return Response.status(RestConstants.VENDEDOR_INEXISTENTE).entity(new ChasquiError(e1.getMessage())).build();
+		} catch (ConfiguracionDeVendedorException e) {
+			return Response.status(406).entity(new ChasquiError(e.getMessage())).build();
+		}
 	}
 
 	private void validarNodoParaEliminar(Nodo nodo, String emailAdministrador)

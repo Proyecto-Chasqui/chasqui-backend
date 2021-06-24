@@ -8,7 +8,7 @@ public class NodoLite extends GrupoCCLite {
   private String emailAdministrador;
   private String barrio;
   private boolean activo;
-  private Direccion direccion;
+  private Direccion direccionDelNodo;
   private Zona zona;
 
   public NodoLite alias(String alias) {
@@ -73,12 +73,12 @@ public class NodoLite extends GrupoCCLite {
     this.activo = activo;
   }
 
-  public Direccion getDireccion() {
-    return this.direccion;
+  public Direccion getDireccionDelNodo() {
+    return this.direccionDelNodo;
   }
 
-  public void setDireccion(Direccion direccion) {
-    this.direccion = direccion;
+  public void setDireccionDelNodo(Direccion direccionDelNodo) {
+    this.direccionDelNodo = direccionDelNodo;
   }
 
   public Zona getZona() {

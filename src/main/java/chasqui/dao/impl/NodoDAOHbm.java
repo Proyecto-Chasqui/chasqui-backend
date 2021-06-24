@@ -33,13 +33,8 @@ import chasqui.view.composer.Constantes;
 public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 	public static final Logger logger = Logger.getLogger(NodoDAOHbm.class);
 
-	// public void altaSolicitudNodo(String alias) {
-	// // TODO Auto-generated method stub
-	//
-	// }
 	@Override
 	public void aprobarNodo(Integer id) {
-		// TODO Auto-generated method stub
 		Nodo nodo = this.obtenerNodoPorId(id);
 		this.getHibernateTemplate().saveOrUpdate(nodo);
 		this.getHibernateTemplate().flush();
@@ -198,7 +193,6 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 					direccion.setCalleAdyacente1((String) row.get("CALLEADYACENTE1"));
 					direccion.setCalleAdyacente2((String) row.get("CALLEADYACENTE2"));
 					direccion.setCodigoPostal((String) row.get("CODIGO_POSTAL"));
-					direccion.setCodigoPostal((String) row.get("CODIGO_POSTAL"));
 					direccion.setComentario((String) row.get("COMENTARIO"));
 					direccion.setDepartamento((String) row.get("DEPARTAMENTO"));
 					direccion.setLatitud((String) row.get("LATITUD"));
@@ -217,7 +211,7 @@ public class NodoDAOHbm extends HibernateDaoSupport implements NodoDAO {
 
 					NodoLite nodo = new NodoLite();
 					nodo.setAdministrador(admin);
-					nodo.setDireccion(direccion);
+					nodo.setDireccionDelNodo(direccion);
 					nodo.setZona(zona);
 					nodo.setId((Integer) row.get("ID"));
 					nodo.setAlias((String) row.get("ALIAS"));

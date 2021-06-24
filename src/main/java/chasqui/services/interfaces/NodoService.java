@@ -39,7 +39,10 @@ import chasqui.model.SolicitudPertenenciaNodo;
 import chasqui.model_lite.NodoLite;
 import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
+import chasqui.service.rest.response.PedidoResponse;
 import freemarker.template.TemplateException;
+
+import chasqui.service.rest.response.NodoResponse;
 
 public interface NodoService {
 
@@ -177,7 +180,9 @@ public interface NodoService {
 	 */
 	List<Nodo> obtenerNodosDelCliente(Integer idVendedor, String email) throws VendedorInexistenteException;
 
-	List<NodoLite> obtenerNodosLiteDelCliente(Integer idVendedor, String email) throws VendedorInexistenteException;
+	List<NodoResponse> obtenerMisNodos(Integer idVendedor, String emailUserLogged) throws VendedorInexistenteException;
+
+	List<PedidoResponse> obtenerMisMedidosActivos(Integer idVendedor, String email) throws VendedorInexistenteException;
 
 	/**
 	 * Permite eliminar el nodo, vaciando sus pedidos e integrantes, solo se puede

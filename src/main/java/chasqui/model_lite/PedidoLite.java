@@ -22,6 +22,7 @@ public class PedidoLite {
 	private String tipoDeAjuste;
 	private List<ProductoPedidoLite> productosPedidos;
 	private PedidoStatsLite stats;
+	private GrupoCCLite grupo;
 
 
 	public Integer getId() {
@@ -155,5 +156,11 @@ public class PedidoLite {
 		}
 	}
 
+	public GrupoCCLite getGrupo() {
+		return this.grupo;
+	}
 
+	public void setGrupo(GrupoCCLite grupo) {
+		this.grupo = grupo;
+	}
 }
