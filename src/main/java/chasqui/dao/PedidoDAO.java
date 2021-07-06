@@ -41,6 +41,7 @@ public interface PedidoDAO {
 			Zona zona);
 
 	Pedido obtenerPedidoPorId(Integer idPedido);
+	PedidoLite obtenerPedidoLitePorId(Integer idPedido);
 
 	List<Pedido> obtenerPedidosVencidos();
 

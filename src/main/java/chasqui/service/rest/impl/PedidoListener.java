@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,7 +30,6 @@ import chasqui.dtos.queries.ProductoPedidoQueryDTO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
-import chasqui.exceptions.EstrategiaInvalidaException;
 import chasqui.exceptions.PedidoInexistenteException;
 import chasqui.exceptions.PedidoVigenteException;
 import chasqui.exceptions.ProductoInexistenteException;
@@ -39,6 +40,7 @@ import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
+import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
@@ -60,6 +62,8 @@ import chasqui.services.interfaces.VendedorService;
 @Service
 @Path("/pedido")
 public class PedidoListener {
+	private static final Logger logger = Logger.getLogger(PedidoListener.class);
+	
 
 	@Autowired
 	UsuarioService usuarioService;
@@ -285,11 +289,11 @@ public class PedidoListener {
 			validarCompra(request.getIdPedido());
 			String email = obtenerEmailDeContextoDeSeguridad();
 			pedidoService.agregarProductosAPedido(request, email);
-			return Response.ok(toVencimientoEstimadoResponse(pedidoService.obtenerPedidosporId(request.getIdPedido())),
+			return Response.ok(toVencimientoEstimadoResponse(pedidoService.obtenerPedidoLiteporId(request.getIdPedido())),
 					MediaType.APPLICATION_JSON).build();
 		} catch (IOException | RequestIncorrectoException e) {
 			return Response.status(406).entity(new ChasquiError("Parametros Incorrectos")).build();
-		} catch (PedidoVigenteException | ProductoInexistenteException e) {
+		} catch (PedidoVigenteException | ProductoInexistenteException | PedidoInexistenteException e) {
 			return Response.status(404).entity(new ChasquiError(e.getMessage())).build();
 		} catch (ConfiguracionDeVendedorException e) {
 			return Response.status(404).entity(new ChasquiError(e.getMessage())).build();
@@ -298,8 +302,8 @@ public class PedidoListener {
 		}
 	}
 
-	private void validarCompra(Integer idPedido) throws VendedorInexistenteException, ConfiguracionDeVendedorException {
-		Pedido pedido = pedidoService.obtenerPedidosporId(idPedido);
+	private void validarCompra(Integer idPedido) throws PedidoInexistenteException, VendedorInexistenteException, ConfiguracionDeVendedorException {
+		PedidoLite pedido = pedidoService.obtenerPedidoLiteporId(idPedido);
 		if (pedido != null) {
 			this.validarEstrategiasVendedor(pedido.getIdVendedor());
 		}
@@ -417,7 +421,7 @@ public class PedidoListener {
 		return SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 
-	private VencimientoEstimadoResponse toVencimientoEstimadoResponse(Pedido pedido) {
+	private VencimientoEstimadoResponse toVencimientoEstimadoResponse(PedidoLite pedido) {
 		return new VencimientoEstimadoResponse(pedido);
 	}
 

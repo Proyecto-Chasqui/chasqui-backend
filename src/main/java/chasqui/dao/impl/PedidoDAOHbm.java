@@ -96,7 +96,8 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 
 			final String emailCliente = query.getEmailCliente();
 			final Integer idColectivo = query.getIdColectivo();
-			final Integer idVendedor = query.getIdVendedor();
+			final Integer idVendedorQuery = query.getIdVendedor();
+			final Integer idPedidoQuery = query.getIdPedido();
 
 			@Override
 			public List<PedidoLite> doInHibernate(Session session) throws HibernateException, SQLException {
@@ -137,12 +138,18 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 												+ " FROM PEDIDO pedido "
 												+ " INNER JOIN CLIENTE cliente ON cliente.ID = pedido.CLIENTE "
 												+ " INNER JOIN USUARIO usuario ON usuario.ID = cliente.ID "
-												+ " INNER JOIN PEDIDO_COLECTIVO colectivo ON colectivo.ID = pedido.ID_PEDIDO_COLECTIVO  " 
-												+ " INNER JOIN GRUPOCC grupo ON grupo.ID = colectivo.COLECTIVO  " 
+												+ " LEFT JOIN PEDIDO_COLECTIVO colectivo ON colectivo.ID = pedido.ID_PEDIDO_COLECTIVO  " 
+												+ " LEFT JOIN GRUPOCC grupo ON grupo.ID = colectivo.COLECTIVO  " 
 												+ " WHERE  "
-												+ "   pedido.PERTENECE_A_GRUPAL = 1 " 
-												+ " AND colectivo.ESTADO = :estadoPedidoColectivo ";
-												
+												+ "   1 = 1 "; // CONDICION DUMMY PARA FACILITAR CODIGO ABAJO
+				
+				if (idPedidoQuery != null) {
+					queryStr += " AND pedido.ID = :idPedido ";
+				} else {
+					queryStr += " AND pedido.PERTENECE_A_GRUPAL = 1 ";
+					queryStr += " AND colectivo.ESTADO = :estadoPedidoColectivo ";
+				}
+
 
 				if (emailCliente != null) {
 					queryStr += " AND usuario.email = :emailCliente ";
@@ -152,15 +159,20 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 					queryStr += " AND colectivo.COLECTIVO = :idColectivo ";
 				}
 
-				if (idVendedor != null) {
+				if (idVendedorQuery != null) {
 					queryStr += " AND pedido.ID_VENDEDOR = :idVendedor ";
 				}
 
 				SQLQuery q = session.createSQLQuery(queryStr);
 
-				q.setString("estadoPedidoColectivo", "ABIERTO");
 				
 				q.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+
+				if (idPedidoQuery != null) {
+					q.setInteger("idPedido", idPedidoQuery);
+				} else {
+					q.setString("estadoPedidoColectivo", "ABIERTO");
+				}
 
 				if (emailCliente != null) {
 					q.setString("emailCliente", emailCliente);
@@ -170,8 +182,8 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 					q.setInteger("idColectivo", idColectivo);
 				}
 
-				if(idVendedor != null) {
-					q.setInteger("idVendedor", idVendedor);
+				if(idVendedorQuery != null) {
+					q.setInteger("idVendedor", idVendedorQuery);
 				}
 
 				List<PedidoLite> out = new ArrayList<>();
@@ -201,14 +213,18 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 					cliente.setEmail(usuario.getEmail());
 					cliente.setImagenPerfil(usuario.getImagenPerfil());
 
-					GrupoCCLite grupo = new GrupoCCLite();
-					grupo.setId((Integer) row.get("grupo_id"));
-					grupo.setAlias((String) row.get("grupo_alias"));
-					grupo.setDescripcion((String) row.get("grupo_descripcion"));
-					grupo.setPedidosHabilitados((Boolean) row.get("usuario_pedidos_habilitados"));
-					grupo.setFechaCreacion( new DateTime(row.get("usuario_fecha_de_creacion")));
-					grupo.setEsNodo((Boolean) row.get("usuario_es_nodo"));
-					grupo.setIdVendedor(idVendedor);
+					GrupoCCLite grupo = null;
+					Integer idGrupo = (Integer) row.get("grupo_id");
+					if(idGrupo != null) {
+						grupo =  new GrupoCCLite();
+						grupo.setId(idGrupo);
+						grupo.setAlias((String) row.get("grupo_alias"));
+						grupo.setDescripcion((String) row.get("grupo_descripcion"));
+						grupo.setPedidosHabilitados((Boolean) row.get("usuario_pedidos_habilitados"));
+						grupo.setFechaCreacion( new DateTime(row.get("usuario_fecha_de_creacion")));
+						grupo.setEsNodo((Boolean) row.get("usuario_es_nodo"));
+						grupo.setIdVendedor(idVendedor);
+					}
 
 					PedidoLite pedido = new PedidoLite();
 					pedido.setId((Integer) row.get("pedido_id"));
@@ -240,6 +256,18 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 		PedidoQueryDTO query = new PedidoQueryDTO();
 		query.setIdColectivo(idColectivo);
 		query.setEmailCliente(emailCliente);
+		List<PedidoLite> pedidos = this.obtenerPedidosLite(query);
+		if(!pedidos.isEmpty()) {
+			return pedidos.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public PedidoLite obtenerPedidoLitePorId(Integer idPedido) {
+		PedidoQueryDTO query = new PedidoQueryDTO();
+		query.setIdPedido(idPedido);
 		List<PedidoLite> pedidos = this.obtenerPedidosLite(query);
 		if(!pedidos.isEmpty()) {
 			return pedidos.get(0);

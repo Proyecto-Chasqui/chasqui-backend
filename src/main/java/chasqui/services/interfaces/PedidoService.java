@@ -63,6 +63,7 @@ public interface PedidoService {
 	List<Pedido> obtenerPedidosDeVendedorEnZona(Integer idVendedor, Integer idZona);
 
 	public Pedido obtenerPedidosporId(Integer idPedido);
+	public PedidoLite obtenerPedidoLiteporId(Integer idPedido) throws PedidoInexistenteException;
 
 	// Servicios que estaban en usuario
 	

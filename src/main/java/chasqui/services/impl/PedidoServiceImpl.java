@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,6 @@ import chasqui.model_lite.PedidoStatsLite;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
-import chasqui.services.interfaces.GeoService;
 import chasqui.services.interfaces.NotificacionService;
 import chasqui.services.interfaces.PedidoService;
 import chasqui.services.interfaces.ProductoService;
@@ -52,6 +52,7 @@ import chasqui.view.composer.Constantes;
 
 @Auditada
 public class PedidoServiceImpl implements PedidoService {
+	public static final Logger logger = Logger.getLogger(PedidoServiceImpl.class);
 
 
 	@Autowired
@@ -164,6 +165,15 @@ public class PedidoServiceImpl implements PedidoService {
 	@Override
 	public Pedido obtenerPedidosporId(Integer idPedido) {
 		return pedidoDAO.obtenerPedidoPorId(idPedido);
+	}
+
+	@Override
+	public PedidoLite obtenerPedidoLiteporId(Integer idPedido) throws PedidoInexistenteException {
+		PedidoLite pedido = pedidoDAO.obtenerPedidoLitePorId(idPedido);
+		if (pedido == null) {
+			throw new PedidoInexistenteException("No se encontró pedido " + idPedido);
+		}
+		return pedido;
 	}
 
 	@Override
@@ -285,7 +295,7 @@ public class PedidoServiceImpl implements PedidoService {
 		Variante variante = productoService.obtenerVariantePor(request.getIdVariante());
 		Integer tiempoVencimiento = usuarioService.obtenerVendedorPorID(p.getIdVendedor()).getTiempoVencimientoPedidos();
 		validar(variante, null, request, p);
-		
+
 		ProductoPedido pp = new ProductoPedido(variante, request.getCantidad(),variante.getProducto().getFabricante().getNombre());
 		if(v.getEstrategiasUtilizadas().isUtilizaIncentivos()) {
 			pp.setIncentivo(variante.getIncentivo());

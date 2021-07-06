@@ -6,6 +6,7 @@ public class PedidoQueryDTO extends PaginatedQuery {
   private Integer idColectivo;
   private String emailCliente;
   private Integer idVendedor;
+  private Integer idPedido;
 
 
   public String getKeyQuery() {
@@ -43,5 +44,12 @@ public class PedidoQueryDTO extends PaginatedQuery {
   }
 
 
+  public Integer getIdPedido() {
+    return this.idPedido;
+  }
+
+  public void setIdPedido(Integer idPedido) {
+    this.idPedido = idPedido;
+  }
 
 }
