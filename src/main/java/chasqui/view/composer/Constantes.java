@@ -92,6 +92,9 @@ public class Constantes {
 	public static final String TEMPLATE_NUEVO_ADMINISTRADOR = "emailNuevoAdministrador.ftl";
 	public static final String PEDIDO_PREPARADO_TEMPLATE = "emailPedidoPreparado.ftl";
 	public static final String PEDIDOS_PREPARADOS_TEMPLATE = "emailPedidosPreparados.ftl";
+
+	public static final String TEMPLATE_SOLICITUD_ARREPENTIMIENTO = "emailSolicitudArrepentimiento.ftl";
+	public static final String TEMPLATE_SOLICITUD_ARREPENTIMIENTO_ASUNTO = "Solicitud de arrepentimiento de compra";
 	
 	public static final String TXT_INVITACION_GCC = "El usuario <usuario> te ha invitado al <colectivo> de compras colectivas <alias> para el catálogo de <vendedor>";
 	public static final String TXT_INVITACION_GCC_ACEPTADA = "El usuario <usuario> ha aceptado tu invitacion al <colectivo> de compras colectivas <alias> para el catálogo de <vendedor>.";

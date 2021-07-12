@@ -37,6 +37,7 @@ import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.security.Encrypter;
 import chasqui.security.PasswordGenerator;
+import chasqui.service.rest.request.ArrepentimientoRequest;
 import chasqui.services.interfaces.GrupoService;
 import chasqui.services.interfaces.InvitacionService;
 import chasqui.services.interfaces.NodoService;
@@ -548,6 +549,18 @@ public class MailService {
 		
 		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_NUEVO_ADMINISTRADOR, nuevoAdministrador.getEmail(), Constantes.NUEVO_ADMINISTRADOR_SUBJECT, params);
 	}
+
+	public void enviarEmailSolictudArrepentimiento(String emailTo, ArrepentimientoRequest solicitud) {
+		Map<String,Object> params = new HashMap<>();
+
+		params.put("nombreVendedor", solicitud.getNombreVendedor());
+		params.put("nombre", solicitud.getNombre());
+		params.put("email", solicitud.getEmail());
+		params.put("telefono", solicitud.getTelefono());
+		params.put("comentario", solicitud.getComentario());
+
+		this.enviarMailEnThreadAparte(Constantes.TEMPLATE_SOLICITUD_ARREPENTIMIENTO, emailTo, Constantes.TEMPLATE_SOLICITUD_ARREPENTIMIENTO_ASUNTO, params);
+	}
 	
 /*
  * ***********************************************
@@ -988,8 +1001,10 @@ public class MailService {
 		String mensaje = "</br> El Administrador <strong>"+ nombreUsuario +"</strong> del nodo <strong>"+ nombreNodo +"</strong> cambio la visibilidad de <strong>"+ tipoNodoAnterior + "</strong> a <strong>" + tipoNodo + "</strong>.";
 		String subject = "Aviso de cambio de visiblidad en nodo "+nodo.getAlias()+".";
 		enviarEmailNotificacionChasqui("", nodo.getVendedor().getNombre(), nodo.getVendedor().getEmail() ,mensaje , subject);
-		
+
 	}
+
+	
 	
 	
 
