@@ -431,7 +431,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 					switch (edata){
 					case "YES":
 						try {
-						export.fullexport(pedidosSeleccionados);
+						export.fullexport(pedidosSeleccionados, usuarioLogueado);
 						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 						} catch (Exception e) {
 							Clients.showNotification(e.getMessage(), "error", window, "middle_center", 20000,true);
@@ -476,7 +476,7 @@ public class PedidosComposer  extends GenericForwardComposer<Component>{
 					try {
 						List<Pedido> resumen = generarPaginaResumen(pedidos);
 						resumen.addAll(pedidos);
-						export.fullexport(resumen);
+						export.fullexport(resumen, usuarioLogueado);
 						Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
 					} catch (Exception e) {
 						Clients.showNotification(e.getMessage(), "error", window, "middle_center", 20000,true);

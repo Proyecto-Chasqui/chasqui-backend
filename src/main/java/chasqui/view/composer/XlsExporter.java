@@ -5,9 +5,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.SimpleDateFormat;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -27,6 +29,7 @@ import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Filedownload;
+import org.apache.log4j.Logger;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.model.Cliente;
@@ -36,9 +39,9 @@ import chasqui.model.ProductoPedido;
 import chasqui.model.Vendedor;
 import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.ProductoService;
-import chasqui.utils.PesoRender;
 
 public class XlsExporter {
+	private static final Logger logger = Logger.getLogger(XlsExporter.class);
 
 	private ProductoService productoservice = (ProductoService) SpringUtil.getBean("productoService");
 	private Workbook wb = new HSSFWorkbook();
@@ -53,7 +56,7 @@ public class XlsExporter {
 	private static final String[] contactaddress = { "Calle","Altura","Localidad","Codigo Postal", "Departamento", "Zona", "Comentario" };
 	private static final String[] campospuntoderetiro = {"Nombre","Calle","Altura","Localidad","Codigo Postal","Departamento"};
 	
-	public void fullexport(List<Pedido> pedidos) throws Exception {
+	public void fullexport(List<Pedido> pedidos, Vendedor vendedor) throws Exception {
 		Pedido pActual = null;
 		try {
 			for (Pedido p : pedidos) {
@@ -65,7 +68,9 @@ public class XlsExporter {
 				}
 				doDetails();
 			}
-			showDownload();
+			String nombreCorto = vendedor.getNombreCorto();
+			String fileName = "exportar-pedidos-"+nombreCorto+ "-"+this.todayString()+ ".xls";
+			showDownload(fileName);
 			clean();
 		}catch (Exception e){
 			throw new Exception("Hay una inconsistencia en el pedido con ID: " + pActual.getId() +", y no se puede exportar. Intente excluirlo del filtro o comuniquese con el administrador del sistema");
@@ -115,7 +120,7 @@ public class XlsExporter {
 		clean();
 	}
 	
-	public void exportColectivos(List<Pedido> pedidos) throws Exception{
+	public void exportColectivos(List<Pedido> pedidos, PedidoColectivo pedidoColectivo) throws Exception{
 		for (Pedido p : pedidos) {
 			if(page<1){
 				doHeader(p,"Resumen Colectivo de ");
@@ -135,7 +140,13 @@ public class XlsExporter {
 			}
 			doDetails();
 		}
-		showDownload();
+		if(pedidoColectivo != null) {
+			String nombreColectivo = pedidoColectivo.getColectivo().getAlias();
+			Integer id = pedidoColectivo.getId();
+			showDownload("exportar-"+ id + "-" + nombreColectivo + ".xls");
+		} else {
+			showDownload();
+		}
 		clean();
 	}
 	
@@ -223,13 +234,37 @@ public class XlsExporter {
 	}
 
 	private void showDownload() throws IOException {
+		this.showDownload(null);
+	}
+
+	private void showDownload(String fileName) throws IOException {
 		File tempFile = File.createTempFile("exportar", "pedido");
 		String outputFile = tempFile.getAbsolutePath();
+		
+		if(fileName != null) {
+			fileName = fileName.replaceAll("\\s+","_");
+			fileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+			String copyFilePath = tempFile.getParent() + File.separatorChar + fileName;
+			File copyFile = new File(copyFilePath);
+	
+			if(tempFile.renameTo(copyFile)){
+				outputFile = copyFile.getAbsolutePath();
+				tempFile = copyFile;
+			} else {
+				logger.warn("Exportador > no se pudo renombrar archivo");
+			}
+		}
+
 		FileOutputStream out = new FileOutputStream(outputFile);
 		wb.write(out);
 		Filedownload.save(tempFile, "xls");
 		tempFile.deleteOnExit();
 		out.close();
+	}
+
+	private String todayString() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+		return format.format(new Date());
 	}
 
 	private void doDetails() {
@@ -570,7 +605,7 @@ public class XlsExporter {
 					List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc,vendedorLogueado);
 					pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
 					pedidomerge = obtenerSoloConfirmados(pedidomerge);
-					this.exportColectivos(pedidomerge);
+					this.exportColectivos(pedidomerge, pedidoc);
 				//}
 				Clients.clearBusy(component);
 				Clients.showNotification("Archivo generado correctamente", "info", component, "middle_center", 3000);
