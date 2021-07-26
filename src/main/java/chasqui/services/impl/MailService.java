@@ -66,6 +66,9 @@ public class MailService {
 	private GrupoService grupoService;
 	@Autowired
 	private NodoService nodoService;
+
+	private String subjectPrefix = null;
+	private String bodyTopBanner = null; 
 	
 	public static final Logger logger = Logger.getLogger(MailService.class);
 	DecimalFormat df = new DecimalFormat("#.##");
@@ -78,6 +81,30 @@ public class MailService {
 		String trim = df.format(d); 
 		Double value = Double.parseDouble(trim.replace(",","."));
 		return value;
+	}
+
+	public String getSubjectPrefix() {
+		if(this.subjectPrefix == null || this.subjectPrefix.isEmpty()) {
+			return this.subjectPrefix;
+		} else {
+			return this.subjectPrefix + " " ;
+		}
+	}
+
+	public void setSubjectPrefix(String value) {
+		this.subjectPrefix = value;
+	}
+
+	public String getBodyTopBanner() {
+		if(this.bodyTopBanner == null || this.bodyTopBanner.isEmpty()) {
+			return null;
+		} else {
+			return this.bodyTopBanner;
+		}
+	}
+
+	public void setBodyTopBanner(String value) {
+		this.bodyTopBanner = value;
 	}
 	
 	public void enviarEmailBienvenidaVendedor(String destino,String usuario,String password) throws IOException, MessagingException, TemplateException{
@@ -582,6 +609,12 @@ public class MailService {
 				m.setSubject(MimeUtility.encodeText(asunto,"UTF-8","B"));
 				MimeMessageHelper helper = new MimeMessageHelper(m,true,"UTF-8");
 				StringWriter writer = new StringWriter();
+
+				String bodyBanner = getBodyTopBanner();
+				if(bodyBanner != null) {
+					writer.write("<div style='background-color:#d61919;color: white;font-weight:bold;padding: 0.5rem; text-align: center; width: 100%'>" + bodyBanner + "</DIV>");
+				}
+
 				ClassPathResource resource = new ClassPathResource("templates/imagenes/logo.png");
 				helper.setFrom("administrator-chasqui-noreply@chasqui.org");
 				helper.setTo(destino);
@@ -674,7 +707,10 @@ public class MailService {
 
 			public void run(){
 				try {
-					this.enviar(template, subject, emailClienteDestino, params);
+
+					String subjectFinal = getSubjectPrefix() + subject;
+
+					this.enviar(template, subjectFinal, emailClienteDestino, params);
 				} catch (TemplateException | MessagingException | IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
