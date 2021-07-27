@@ -72,7 +72,7 @@ Bienvenido a Chasqui
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #777777; text-align: justify; height: 40px;">&nbsp;</td>
 </tr>
 <tr style="height: 20px;">
-<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 20px;">&iquest;Queres saber mas de chaqui? Ingresá a:</td>
+<td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #777777; text-align: center; height: 20px;">&iquest;Queres saber más de Chasqui? Ingresá a:</td>
 </tr>
 <tr style="height: 40px;">
 <td style="margin: 0px; padding: 0px; border: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 32px; color: #777777; text-align: center; font-weight: bold; height: 40px;"><a href="http://observatorioess.org.ar/chasqui">OBSERVATORIO DE LA ECONOMÍA SOCIAL Y SOLIDARIA</a></td>

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.joda.time.DateTime;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
@@ -17,6 +19,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
+import org.zkoss.zk.ui.event.SortEvent;
+import org.zkoss.zul.event.PagingEvent;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
@@ -27,12 +31,17 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.Paging;
 import org.zkoss.zul.Messagebox.ClickEvent;
 
+import chasqui.dtos.PaginatedListDTO;
+import chasqui.dtos.queries.NodoQueryDTO;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.Cliente;
@@ -63,11 +72,15 @@ import chasqui.view.renders.SolicitudRenderer;
 public class NodosComposer extends GenericForwardComposer<Component> {
 	public static final Logger logger = Logger.getLogger(NodosComposer.class);
 
+	private String ASCENDING = "ascending";
+	private String DESCENDING = "descending";
+
 	private Datebox desde;
 	private Datebox hasta;
 	private Listbox listboxPedidosNodo;
 	private Listbox listboxSolicitudesCreacionNodos;
 	private Listbox listboxNodos;
+	private Paging pagListboxNodos;
 	private Button confirmarEntregabtn;
 	public AnnotateDataBinder binder;
 	private List<Zona> zonas;
@@ -112,6 +125,8 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 	private Textbox buscadorPorNombreNodo;
 	private Zona zonaSeleccionadaNodo;
 	private Combobox zonasNodosCombobox;
+	private NodoQueryDTO nodosQuery;
+	private Integer totalResultNodos = 0;
 
 	// data menu nodos
 	private List<String> estadosNodosList;
@@ -145,6 +160,8 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 			component = c;
 			Executions.getCurrent().getSession().setAttribute("nodosComposer", this);
 			tienePuntosDeRetiro = vendedorLogueado.getEstrategiasUtilizadas().isPuntoDeEntrega();
+
+			nodosQuery = new NodoQueryDTO();
 
 			nodoService = (NodoService) SpringUtil.getBean("nodoService");
 			mailService = (MailService) SpringUtil.getBean("mailService");
@@ -210,6 +227,46 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 		return pedidosColectivos;
 	}
 
+	public void onSort$nodosHeaderNombreNodo(SortEvent evt) {
+		nodosQuery.setOrderBy("alias").setOrderAsc(evt.isAscending());
+		onBuscarNodos();
+	}
+
+	public void onSort$nodosHeaderFechaCreacion(SortEvent evt) {
+		nodosQuery.setOrderBy("fechaCreacion").setOrderAsc(evt.isAscending());
+		onBuscarNodos();
+	}
+
+	public void onSort$nodosHeaderTipo(SortEvent evt) {
+		nodosQuery.setOrderBy("tipo").setOrderAsc(evt.isAscending());
+		onBuscarNodos();
+	}
+
+	public void onSort$nodosHeaderCoordinador(SortEvent evt) {
+		nodosQuery.setOrderBy("administrador.nombre").setOrderAsc(evt.isAscending());
+		onBuscarNodos();
+	}
+
+	public void onSort$nodosHeaderEmail(SortEvent evt) {
+		nodosQuery.setOrderBy("emailAdministradorNodo").setOrderAsc(evt.isAscending());
+		onBuscarNodos();
+	}
+
+	public void onSort$nodosHeaderDireccion(SortEvent evt) {
+		nodosQuery.setOrderBy("direccionDelNodo.calle").setOrderAsc(evt.isAscending());
+		onBuscarNodos();
+	}
+
+	public void onSort$nodosHeaderBarrio(SortEvent evt) {
+		nodosQuery.setOrderBy("barrio").setOrderAsc(evt.isAscending());
+		onBuscarNodos();
+	}
+
+	public void onSort$nodosHeaderZona(SortEvent evt) {
+		nodosQuery.setOrderBy("zona.nonbre").setOrderAsc(evt.isAscending());
+		onBuscarNodos();
+	}
+
 	public void onActualizarSolicitudes() {
 		onBuscarSolicitudes();
 		Clients.showNotification("Lista de solicitudes actualizada", "info", component, "middle_center", 2000, true);
@@ -263,17 +320,20 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 		zonaSeleccionadaNodo = null;
 		tipoNodoSeleccionado = "TODOS LOS TIPOS";
 		estadoNodoSeleccionado = "TODOS LOS ESTADOS";
-		nodos.clear();
-		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(), null, null, null, null, null, null,
-				null, null));
+		
+		onBuscarNodos();;
 		Clients.showNotification("Filtros restablecidos", "info", component, "middle_center", 2000, true);
 		this.binder.loadAll();
 	}
 
 	public void onBuscarNodos() {
+		onBuscarNodos(true);
+	}
+
+	public void onBuscarNodos(Boolean goToFirstPage) {
 		Date d = desde_nodo.getValue();
 		Date h = hasta_nodo.getValue();
-		String nombreNodo = buscadorPorNombreNodo.getValue();
+		String nombreOrIdNodo = StringUtils.trim(buscadorPorNombreNodo.getValue());
 		String emailcoordinador = buscadorPorUsuarioCoordinador.getValue();
 		String barrio = buscadorBarrio.getValue();
 		String estado = this.evaluarEstadoNodo();
@@ -288,10 +348,45 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 						Messagebox.EXCLAMATION);
 			}
 		}
+		
+
+		NodoQueryDTO query = nodosQuery;
+		query.setIdVendedor(vendedorLogueado.getId());
+		query.setDesde(d);
+		query.setHasta(h);
+		if(!StringUtils.isEmpty(nombreOrIdNodo) && StringUtils.isNumeric(nombreOrIdNodo)) {
+			query.setIdNodo(Integer.parseInt(nombreOrIdNodo));
+			query.setNombre(null);
+		} else {
+			query.setIdNodo(null);
+			query.setNombre(nombreOrIdNodo);
+		}
+		query.setEmailCoordinador(emailcoordinador);
+		query.setBarrio(barrio);
+		query.setEstado(estado);
+		query.setTipo(tipo);
+		query.setIdZona(idZona);
+
+		if(goToFirstPage) {
+			query.setSkip(0);
+			pagListboxNodos.setActivePage(0);
+		}
+		
+		PaginatedListDTO<Nodo> result = nodoService.obtenerNodos(query);
+
+		// nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(), d, h, estado, nombreNodo,
+		// 		emailcoordinador, barrio, tipo, idZona));
+
 		nodos.clear();
-		nodos.addAll(nodoService.obtenerNodosDelVendedorCon(vendedorLogueado.getId(), d, h, estado, nombreNodo,
-				emailcoordinador, barrio, tipo, idZona));
+		nodos.addAll(result.getList());
+		totalResultNodos = result.getTotal();
+
+		pagListboxNodos.setTotalSize(result.getTotal());
 		this.binder.loadAll();
+	}
+
+	public Integer getTotalResultNodos() {
+		return totalResultNodos;
 	}
 
 	private String evaluarTipo() {
@@ -437,6 +532,14 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 						estadoSeleccionado, zonaId, prSeleccionado, email)));
 
 		this.binder.loadAll();
+	}
+
+	public void onPaging$pagListboxNodos(PagingEvent event) {
+		int pgno = event.getPageable().getActivePage();
+		int skip = pgno * event.getPageable().getPageSize();
+
+		nodosQuery.setSkip(skip);
+		onBuscarNodos(false);
 	}
 
 	private List<PedidoColectivo> eliminarPedidosConNDEnFechaModificacion(List<PedidoColectivo> pedidosNodos) {
@@ -632,6 +735,7 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 		ppc.setNombreVariante(pp.getNombreVariante());
 		ppc.setPrecio(pp.getPrecio());
 		ppc.setIncentivo(pp.getIncentivo());
+		ppc.setVariante((pp.getVariante()));
 		return ppc;
 	}
 

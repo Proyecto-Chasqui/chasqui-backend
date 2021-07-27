@@ -7,6 +7,8 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 
+import chasqui.dtos.PaginatedListDTO;
+import chasqui.dtos.queries.PedidoQueryDTO;
 import chasqui.exceptions.ConfiguracionDeVendedorException;
 import chasqui.exceptions.DomicilioInexistenteException;
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
@@ -19,6 +21,7 @@ import chasqui.exceptions.VendedorInexistenteException;
 import chasqui.model.GrupoCC;
 import chasqui.model.Pedido;
 import chasqui.model.ProductoPedido;
+import chasqui.model_lite.PedidoLite;
 import chasqui.service.rest.request.AgregarQuitarProductoAPedidoRequest;
 import chasqui.service.rest.request.ConfirmarPedidoRequest;
 
@@ -42,6 +45,10 @@ public interface PedidoService {
 	 */
 	public List<Pedido> obtenerPedidosVencidos();
 
+	PaginatedListDTO<PedidoLite> obtenerPedidosLite(PedidoQueryDTO query);
+
+	public PedidoLite obtenerPedidoLiteActivo (Integer idColectivo, String emailCliente);
+
 	/*
 	 * Pedidos en estado ABIERTO que han expirado (Es para quartz)
 	 */
@@ -56,11 +63,14 @@ public interface PedidoService {
 	List<Pedido> obtenerPedidosDeVendedorEnZona(Integer idVendedor, Integer idZona);
 
 	public Pedido obtenerPedidosporId(Integer idPedido);
+	public PedidoLite obtenerPedidoLiteporId(Integer idPedido) throws PedidoInexistenteException;
 
 	// Servicios que estaban en usuario
+	
 	@Transactional
 	public Pedido obtenerPedidoActualDe(String mail, Integer idVendedor)
 			throws PedidoInexistenteException, UsuarioInexistenteException;
+
 
 	@Transactional
 	public void crearPedidoIndividualPara(String mail, Integer idVendedor) throws ConfiguracionDeVendedorException,

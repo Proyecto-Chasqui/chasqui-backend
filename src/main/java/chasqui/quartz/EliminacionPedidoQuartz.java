@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import javax.servlet.ServletContext;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -33,6 +34,7 @@ import chasqui.services.interfaces.VendedorService;
 import chasqui.view.composer.Constantes;
 
 public class EliminacionPedidoQuartz {
+	public static final Logger logger = Logger.getLogger(EliminacionPedidoQuartz.class);
 
 	@Autowired
 	PedidoService pedidoService;
@@ -42,30 +44,34 @@ public class EliminacionPedidoQuartz {
 	UsuarioService usuarioService;
 	@Autowired
 	VendedorService vendedorService;
-//	@Autowired
-//	WebSocketManager webSocketManager;
+	// @Autowired
+	// WebSocketManager webSocketManager;
 	ObjectMapper mapper = new ObjectMapper();
 
 	public void execute() throws PedidoVigenteException, RequestIncorrectoException, UsuarioInexistenteException,
 			VendedorInexistenteException {
-		if (obtenerHostname().equals(nombreServidor)) {
-			List<Pedido> pedidosVencidos = new ArrayList<Pedido>();
-			for (Vendedor v : vendedorService.obtenerVendedores()) {
-				if (v.getTiempoVencimientoPedidos() > 0) {
-					List<Pedido> ps = pedidoService.obtenerPedidosExpirados(v.getId());
-					for (Pedido p : ps) {
-						try {
-							pedidoService.vencerPedido(p);
-						} catch (EstadoPedidoIncorrectoException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						pedidosVencidos.add(p);
+		List<Pedido> pedidosVencidos = new ArrayList<Pedido>();
+		for (Vendedor v : vendedorService.obtenerVendedores()) {
+			if (v.getTiempoVencimientoPedidos() > 0) {
+				List<Pedido> ps = pedidoService.obtenerPedidosExpirados(v.getId());
+				if (!ps.isEmpty()) {
+					logger.info("Cant de pedidos expirados de  " + v.getNombre() + ": " + ps.size());
+				}
+				for (Pedido p : ps) {
+					try {
+						pedidoService.vencerPedido(p);
+					} catch (EstadoPedidoIncorrectoException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+					pedidosVencidos.add(p);
 				}
 			}
-			enviarNotificaciones(pedidosVencidos);
 		}
+		if (!pedidosVencidos.isEmpty()) {
+			logger.info("Cant de Pedidos vencidos: " + pedidosVencidos.size());
+		}
+		// enviarNotificaciones(pedidosVencidos);
 	}
 
 	// String r = mapper.writeValueAsString(crearMensaje(p));
@@ -78,7 +84,7 @@ public class EliminacionPedidoQuartz {
 		try {
 			String r = mapper.writeValueAsString(m);
 			sendMessage(r);
-			//webSocketManager.sendAll(r);
+			// webSocketManager.sendAll(r);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,7 +95,7 @@ public class EliminacionPedidoQuartz {
 
 		try {
 
-			URL url = new URL("http://"+InetAddress.getLocalHost().getHostAddress() + ":8998/message");
+			URL url = new URL("http://" + InetAddress.getLocalHost().getHostAddress() + ":8998/message");
 			System.out.println(url);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);

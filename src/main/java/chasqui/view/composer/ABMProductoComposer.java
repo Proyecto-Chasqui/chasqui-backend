@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Auxheader;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Fileupload;
@@ -62,11 +64,15 @@ import chasqui.services.interfaces.CaracteristicaService;
 import chasqui.services.interfaces.UsuarioService;
 import chasqui.view.genericEvents.RefreshListener;
 import chasqui.view.genericEvents.Refresher;
+import chasqui.view.genericEvents.CreatedListener;
+import chasqui.view.genericEvents.ICreatedCallback;
 import chasqui.view.renders.ImagenesRender;
 import chasqui.view.renders.VarianteItemRenderer;
 
 @SuppressWarnings({"serial","deprecation"})
-public class ABMProductoComposer extends GenericForwardComposer<Component> implements Refresher{
+public class ABMProductoComposer extends GenericForwardComposer<Component> implements Refresher, ICreatedCallback {
+
+	private Integer MAX_LENGHT_DESCRIPTION = 8200;
 
 	public AnnotateDataBinder binder;
 	private Textbox nombreProducto;
@@ -113,6 +119,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	private List<Imagen> imagenes;	
 	private Doublebox doubleboxPrecio; 
 	private Intbox intboxStock;
+	private Intbox intboxPesoGramos;
+	private Intbox intboxReserva;
 	private Textbox textboxCodigo; 
 	private Textbox ckEditor; 
 	private Fileupload uploadImagen; 
@@ -134,6 +142,7 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		productodao = (ProductoDAO)  SpringUtil.getBean("productoDAO");
 		caracteristicasProducto = caracteristicaService.buscarCaracteristicasProducto();
 		comp.addEventListener(Events.ON_RENDER, new RefreshListener<ABMProductoComposer>(this));
+		comp.addEventListener(CreatedListener.ON_CREATED, new CreatedListener<ABMProductoComposer>(this));
 		comp.addEventListener(Events.ON_CLICK, new BorrarImagenEventListener(this));
 		comp.addEventListener(Events.ON_USER, new DescargarImagenEventListener(this));
 		imagenes = new ArrayList<Imagen>();
@@ -166,6 +175,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	}
 
 	public void inicializarModoEdicion(){
+		ordenarListasVendedor();
+
 		modoEdicion= true;
 		imgRender.setLectura(true);
 		listImagenes.setDisabled(false);
@@ -173,6 +184,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		incentivo.setValue(0.0);
 		doubleboxPrecio.setValue(0.0);
 		totalPrecio.setReadonly(true);
+		intboxReserva.setValue(0);
+		intboxPesoGramos.setValue(0);
 		if(model.getCategoria() != null && model.getFabricante() != null){
 			categoriaSeleccionada = model.getCategoria();
 			productorSeleccionado = model.getFabricante();
@@ -182,6 +195,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		}
 		if(!model.getVariantes().isEmpty()){
 			modelv = productodao.obtenervariantePor(model.getVariantes().get(0).getId());
+			intboxPesoGramos.setValue(modelv.getPesoGramos());
+			intboxReserva.setValue(modelv.getCantidadReservada());
 			doubleboxPrecio.setValue(modelv.getPrecio());
 			incentivo.setValue(modelv.getIncentivo());			
 			totalPrecio.setValue(modelv.getIncentivo() + modelv.getPrecio());
@@ -200,6 +215,22 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		varianteRollback = new ArrayList<Variante>( model.getVariantes());
 	}
 	
+
+	public void ordenarListasVendedor() {
+		usuario.getCategorias().sort(new Comparator<Categoria>() {
+			@Override
+			public int compare(Categoria o1, Categoria o2) {
+				return o1.getNombre().toLowerCase().compareTo(o2.getNombre().toLowerCase());
+			}
+		});
+		usuario.getFabricantes().sort(new Comparator<Fabricante>() {
+			@Override
+			public int compare(Fabricante o1, Fabricante o2) {
+				return o1.getNombre().toLowerCase().compareTo(o2.getNombre().toLowerCase());
+			}
+		});
+	}
+
 	public void onSelect$comboCaracteristicas(SelectEvent evt) {
 		this.onClick$botonAgregarCaracteristica();
 	}	
@@ -217,6 +248,25 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	public void onClick$botonAgregarCategoria(){
 		Window w = (Window) Executions.createComponents("/abmCategoria.zul", this.self, null);
 		w.doModal();		
+	}
+
+	@Override
+	public void onCreatedCallback (String objectType, Object newObject) {
+		if(objectType == "categoria") {
+			useNewCategoria((Categoria) newObject);
+		} else if (objectType == "productor") {
+			useNewProductor((Fabricante) newObject);
+		}
+	}
+
+	private void useNewCategoria(Categoria categoria) {
+		ordenarListasVendedor();
+		categoriaSeleccionada = categoria;
+	}
+
+	private void useNewProductor(Fabricante productor) {
+		ordenarListasVendedor();
+		productorSeleccionado = productor;
 	}
 	
 	public void onClick$botonGuardar() throws IOException{
@@ -244,6 +294,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		modelv.setDescripcion(ckEditor.getValue());
 		modelv.setImagenes(imagenes);
 		modelv.setStock(intboxStock.getValue());
+		modelv.setPesoGramos(intboxPesoGramos.getValue());
+		modelv.setCantidadReservada(intboxReserva.getValue());
 		modelv.setPrecio(doubleboxPrecio.getValue());
 		if(usuario.getEstrategiasUtilizadas().isUtilizaIncentivos()) {
 			modelv.setIncentivo(incentivo.getValue());
@@ -519,12 +571,15 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		nombreProducto.setValue(model.getNombre());
 		textboxCodigo.setValue(modelv.getCodigo());
 		imagenes.addAll(modelv.getImagenes());
+		intboxPesoGramos.setValue(modelv.getPesoGramos());
+		intboxReserva.setValue(modelv.getCantidadReservada());
 		doubleboxPrecio.setValue(modelv.getPrecio());
 		if(modelv.getStock() < 0) {
 			intboxStock.setValue(0);
 		}else {
 			intboxStock.setValue(modelv.getStock());
 		}	
+
 		categoriaSeleccionada = model.getCategoria();
 		productorSeleccionado = model.getFabricante();
 		comboFabricantes.setValue(productorSeleccionado.toString());
@@ -552,6 +607,8 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		comboCategorias.setDisabled(true);
 		imgRender.setLectura(false);
 		listImagenes.setDisabled(true);
+		intboxPesoGramos.setDisabled(true);
+		intboxReserva.setDisabled(true);
 		doubleboxPrecio.setDisabled(true);
 		intboxStock.setDisabled(true);
 		uploadImagen.setDisabled(true);
@@ -659,13 +716,13 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 	
 	public void onChanging$ckEditor(InputEvent evt) {
 		Integer total = Jsoup.parse(evt.getValue()).wholeText().length();
-		mensaje.setValue("Cant. carácteres: "+total+"/355");
+		mensaje.setValue("Cant. carácteres: "+total+"/"+MAX_LENGHT_DESCRIPTION);
 		cantidadCaracteres.open(ckEditor,"after_end");
 	}
 	
 	public void onCalcularTotalCaracteres() {
 		Integer total = Jsoup.parse(ckEditor.getValue()).wholeText().length();
-		mensaje.setValue("Cant. carácteres: "+total+"/355");
+		mensaje.setValue("Cant. carácteres: "+total+"/"+MAX_LENGHT_DESCRIPTION);
 		cantidadCaracteres.open(ckEditor,"after_end");
 	}
 	public void onCalcularTotal() {
@@ -702,9 +759,12 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 
 	
 	private void ejecutarValidaciones() throws IOException{
+		Integer precioGramos = intboxStock.getValue();
 		Double precio = doubleboxPrecio.getValue();
 		Double vincentivo = incentivo.getValue();
 		Integer stock = intboxStock.getValue();
+		Integer pesoGramos = intboxPesoGramos.getValue();
+		Integer reserva = intboxReserva.getValue();
 		String descripcion = Jsoup.parse(ckEditor.getValue()).text();
 
 		if(precio == null || precio < 0){
@@ -722,11 +782,20 @@ public class ABMProductoComposer extends GenericForwardComposer<Component> imple
 		if(stock == null || stock < 0){
 			throw new WrongValueException(tabdetalles,"El Stock debe ser mayor a 0");
 		}
+
+		if(pesoGramos == null || pesoGramos < 0){
+			throw new WrongValueException(tabdetalles,"El Peso debe ser mayor o igual 0");
+		}
+
+		if(reserva == null || reserva < 0){
+			throw new WrongValueException(tabdetalles,"La Reserva debe ser mayor o igual 0");
+		}
+
 		if(StringUtils.isEmpty(descripcion)){
 			throw new WrongValueException(tabdescsellos,"La descripción no debe ser vacia");
 		}
 		
-		if(descripcion.length() > 355){
+		if(descripcion.length() > MAX_LENGHT_DESCRIPTION){
 			throw new WrongValueException(tabdescsellos,"La descripción es demasiado larga");
 		}
 		int previews = 0;

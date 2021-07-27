@@ -12,6 +12,8 @@ import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
 import chasqui.model.ProductoPedido;
 import chasqui.model.Usuario;
+import chasqui.model_lite.PedidoLite;
+import chasqui.model_lite.ProductoPedidoLite;
 import chasqui.services.interfaces.GrupoService;
 
 public class PedidoResponse implements Serializable {
@@ -42,6 +44,34 @@ public class PedidoResponse implements Serializable {
 	private DireccionResponse direccion;
 	private PuntoDeRetiroResponse puntoDeRetiro;
 	private List<ProductoPedidoResponse> productosResponse;	
+
+	public PedidoResponse(PedidoLite pedido) {
+		DateFormat f = this.makeDateFormatter();
+		
+		this.id = pedido.getId();
+		this.idVendedor = pedido.getIdVendedor();
+		//this.cliente = null;
+		this.estado = pedido.getEstado();
+		this.idGrupo = pedido.getGrupo().getId(); 
+		this.aliasGrupo = pedido.getGrupo().getAlias();
+		this.fechaCreacion = f.format(pedido.getFechaCreacion().toDate());
+		this.fechaVencimiento = f.format(pedido.getFechaDeVencimiento().toDate());
+		this.montoMinimo = pedido.getMontoMinimo();
+		this.montoActual = 0d;
+		this.incentivoActual = 0d;
+		this.nombreVendedor = pedido.getNombreVendedor();
+		// this.zona = null;
+		// this.direccion = null;
+		// this.puntoDeRetiro = null;
+		productosResponse = new ArrayList<ProductoPedidoResponse>();
+		if (pedido.getProductosPedidos() != null) {
+			for(ProductoPedidoLite pp : pedido.getProductosPedidos()){
+				this.montoActual += pp.getCantidad() * pp.getPrecio();
+				this.incentivoActual += pp.getCantidad() * pp.getIncentivo();
+				productosResponse.add(new ProductoPedidoResponse(pp));
+			}
+		}
+	}
 	
 	
 	public Integer getId() {
@@ -144,7 +174,7 @@ public class PedidoResponse implements Serializable {
 		idVendedor = p.getIdVendedor();
 		estado = p.getEstado();
 		nombreVendedor=p.getNombreVendedor();
-		DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat f = this.makeDateFormatter();
 		fechaCreacion = f.format(p.getFechaCreacion().toDate());
 		if(p.getFechaDeVencimiento()!=null){
 			fechaVencimiento = f.format(p.getFechaDeVencimiento().toDate());
@@ -214,7 +244,7 @@ public class PedidoResponse implements Serializable {
 		estado = p.getEstado();
 		nombreVendedor=p.getNombreVendedor();
 		setCliente(new ClienteResponse(p.getCliente()));
-		DateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+		DateFormat f = this.makeDateFormatter();
 		fechaCreacion = f.format(p.getFechaCreacion().toDate());
 		fechaVencimiento = (p.getFechaDeVencimiento()!=null)?f.format(p.getFechaDeVencimiento().toDate()):null;
 		montoMinimo = p.getMontoMinimo();
@@ -230,6 +260,10 @@ public class PedidoResponse implements Serializable {
 		if(p.getPedidoColectivo() != null) {
 			cargarDireccionYZonaSeleccionadaDePedidoColectivo(p.getPedidoColectivo());
 		}
+	}
+
+	private DateFormat makeDateFormatter() {
+		return new SimpleDateFormat("dd/MM/yyyy");
 	}
 
 

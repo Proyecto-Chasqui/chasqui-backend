@@ -10,7 +10,9 @@ import chasqui.model.GrupoCC;
 import chasqui.model.MiembroDeGCC;
 import chasqui.model.Nodo;
 import chasqui.model.Pedido;
-
+import chasqui.model.Zona;
+import chasqui.model_lite.ClienteLite;
+import chasqui.model_lite.NodoLite;
 public class NodoResponse implements Serializable {
 
 	
@@ -33,6 +35,8 @@ public class NodoResponse implements Serializable {
 	private Direccion direccionDelNodo;
 	private String barrio;
 	private ZonaResponse zona;
+
+	private ClienteLite administrador = null;
 	
 
 	public String getDescripcion() {
@@ -80,6 +84,26 @@ public class NodoResponse implements Serializable {
 	
 	public NodoResponse(Nodo nodo) {
 		this.setId(nodo.getId());
+	}
+
+	public NodoResponse(NodoLite nodo, String emailUserLogged) {
+		this.id = nodo.getId();
+		this.alias = nodo.getAlias();
+		this.emailAdministrador = nodo.getEmailAdministrador();
+		this.esAdministrador = this.emailAdministrador.equals(emailUserLogged);
+		this.administrador = nodo.getAdministrador();
+		this.idPedidoIndividual = 0;
+		this.descripcion = nodo.getDescripcion();
+		this.tipo = nodo.getTipo();
+		this.direccionDelNodo = nodo.getDireccionDelNodo();
+		this.barrio = nodo.getBarrio();
+		Zona zona = nodo.getZona();
+		if(zona != null) {
+			this.zona = new ZonaResponse(zona);
+		}
+		
+				
+		nodo.getZona();
 	}
 
 	public NodoResponse(Nodo nodo,String email) throws ClienteNoPerteneceAGCCException {
@@ -159,6 +183,16 @@ public class NodoResponse implements Serializable {
 	public void setZona(ZonaResponse zona) {
 		this.zona = zona;
 	}
+
+
+	public ClienteLite getAdministrador() {
+		return this.administrador;
+	}
+
+	public void setAdministrador(ClienteLite administrador) {
+		this.administrador = administrador;
+	}
+
 
 	
 

@@ -7,8 +7,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import chasqui.dao.PedidoColectivoDAO;
-import chasqui.model.Pedido;
 import chasqui.model.PedidoColectivo;
+import chasqui.model_lite.PedidoColectivoStatsByEstado;
+import chasqui.model_lite.PedidoStatsLite;
+import chasqui.model_lite.ProductoPedidoLiteAgrupados;
 import chasqui.services.interfaces.PedidoColectivoService;
 
 
@@ -25,6 +27,21 @@ public class PedidoColectivoServiceImpl implements PedidoColectivoService{
 	@Override
 	public PedidoColectivo obtenerPedidoColectivoPorID(Integer id){
 		return this.pedidoColectivoDao.obtenerPedidoColectivoPorID(id);
+	}
+
+	@Override
+	public PedidoColectivoStatsByEstado calcularStatsPedidoColectivoActivo(Integer grupoId) {
+		return this.pedidoColectivoDao.calcularStatsPedidoColectivoActivo(grupoId);
+	}
+
+	@Override
+	public List<PedidoStatsLite> calcularPedidosStatsLite(Integer grupoId) {
+		return this.pedidoColectivoDao.calcularPedidosStatsLite(grupoId);
+	}
+	
+	@Override
+	public List<ProductoPedidoLiteAgrupados> productosPedidoColectivoActivo(Integer grupoId) {
+		return this.pedidoColectivoDao.productosPedidoColectivoActivo(grupoId);
 	}
 	
 	@Override

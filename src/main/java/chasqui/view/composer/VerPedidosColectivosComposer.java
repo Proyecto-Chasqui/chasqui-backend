@@ -264,7 +264,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 				List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc);
 				pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
 				pedidomerge = obtenerSoloConfirmados(pedidomerge);
-				export.exportColectivos(pedidomerge);
+				export.exportColectivos(pedidomerge, pedidoc);
 			//}
 			Clients.clearBusy(window);
 			Clients.showNotification("Archivo generado correctamente", "info", window, "middle_center", 3000);
@@ -384,6 +384,7 @@ public class VerPedidosColectivosComposer  extends GenericForwardComposer<Compon
 		ppc.setNombreVariante(pp.getNombreVariante());
 		ppc.setPrecio(pp.getPrecio());
 		ppc.setIncentivo(pp.getIncentivo());
+		ppc.setVariante((pp.getVariante()));
 		return ppc;
 	}
 

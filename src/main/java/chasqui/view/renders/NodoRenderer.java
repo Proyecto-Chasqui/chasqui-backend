@@ -34,13 +34,11 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		String fechaCreacion;
 		String barrio;
 		String nombreNodo;
-		String direccion;
 		String nombreZona;
 		Cliente datacliente = ((Cliente) nodo.getAdministrador()); 
 		estado = this.parsearEstado(nodo);
 		tipo = this.renderizarTipo(nodo.getTipo());
 		nombreNodo = nodo.getAlias();
-		direccion = nodo.getDireccionDelNodo().toString();
 		cliente = datacliente.getNombre() + " " + datacliente.getApellido();
 		mail = datacliente.getEmail();
 		fechaCreacion = this.parsearFechaDeModificacion(nodo.getFechaCreacion());
@@ -59,6 +57,7 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		c.setImage("/imagenes/info.png");
 		c.setLabel("Mas información");
 		c.addForward(Events.ON_CLICK, nodoWindow, Events.ON_NOTIFY, params1);
+		Listcell idCell = new Listcell(nodo.getId().toString()); 
 		Listcell c0 = new Listcell(String.valueOf(estado));
 		this.aplicarEstiloAEstado(estado, c0);
 		Listcell c1 = new Listcell(String.valueOf(nombreNodo));
@@ -67,23 +66,23 @@ public class NodoRenderer implements ListitemRenderer<Nodo>{
 		this.aplicarEstiloATipo(nodo.getTipo(),c3);
 		Listcell c4 = new Listcell(String.valueOf(cliente));
 		Listcell c5 = new Listcell(String.valueOf(mail));
-		Listcell c6 = new Listcell(String.valueOf(direccion));
 		Listcell c7 = new Listcell(String.valueOf(barrio));
 		Listcell c8 = new Listcell(String.valueOf(nombreZona));
 		aplicarEstiloAZona(nombreZona, c8);
+
+
 		Listcell c100 = new Listcell(); //Se usa como padre de las demas
-	
-		
+
 		Hlayout hbox = new Hlayout();
 		c.setParent(hbox);
 		hbox.setParent(c100);
+		idCell.setParent(item);
 		c0.setParent(item);
 		c1.setParent(item);
 		c2.setParent(item);
 		c3.setParent(item);
 		c4.setParent(item);
 		c5.setParent(item);
-		c6.setParent(item);
 		c7.setParent(item);
 		c8.setParent(item);
 		c100.setParent(item); //Padre de las demas

@@ -139,6 +139,14 @@ public class Pedido implements IPedido {
 		}
 		return trim2decimals(monto);
 	}
+
+	public Integer getPesoGramosTotal() {
+		Integer total = 0; 
+		for (ProductoPedido p : productosEnPedido) {
+			total= total + p.getPesoGramosTotal();
+		}
+		return total;
+	}
 	
 	private Double trim2decimals(Double d) {
 		String trim = df.format(d); 

@@ -4,18 +4,24 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="pedidosWindow"  apply="chasqui.view.composer.PedidosComposer" 
-sizable="false"
-style="overflow:auto;position:absolute; left:0; width:100%;">
+<window id="pedidosWindow" class="pedidosWindow" width="100%"  apply="chasqui.view.composer.PedidosComposer" sizable="false" closable ="false">
 <style>
 	.selectorpedidos{
 		width: 100px;
-	    border-radius: 10px;
+		border-radius: 10px;
 		background:rgba(0,0,0,0);
 		border-top : none;
 		border-bottom: none;
 		padding: 0px;
 		position:relative;
+	}
+
+	.pedidosWindow {
+		overflow: auto;
+	}
+
+	.pedidosWindow .z-window-content {
+		padding: 0;
 	}
 
 .z-notification-pointer ~ .z-notification-content

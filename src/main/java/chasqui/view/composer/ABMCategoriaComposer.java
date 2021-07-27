@@ -13,6 +13,8 @@ import org.zkoss.zul.Toolbarbutton;
 
 import chasqui.model.Categoria;
 import chasqui.model.Vendedor;
+import chasqui.view.genericEvents.CreatedListener;
+import chasqui.view.genericEvents.ICreatedCallback;
 import chasqui.services.interfaces.UsuarioService;
 
 @SuppressWarnings({"serial","deprecation"})
@@ -25,7 +27,7 @@ public class ABMCategoriaComposer extends GenericForwardComposer<Component> {
 	private Vendedor usuario;
 	private UsuarioService usuarioService;
 	private Boolean esEdicion;
-	
+		
 	public void doAfterCompose(Component comp) throws Exception{
 		super.doAfterCompose(comp);
 		binder = new AnnotateDataBinder(comp);
@@ -43,6 +45,11 @@ public class ABMCategoriaComposer extends GenericForwardComposer<Component> {
 	
 	private void iniciarModoEdicion(){
 		textboxNombreCategoria.setValue(model.getNombre());
+	}
+
+	private void notifyCreated (Categoria newCategoria) {
+		Object data = CreatedListener.createData("categoria", newCategoria);
+		Events.sendEvent(CreatedListener.ON_CREATED ,this.self.getParent(), data);
 	}
 	
 	
@@ -66,6 +73,7 @@ public class ABMCategoriaComposer extends GenericForwardComposer<Component> {
 			usuario.agregarCategoria(model);
 //			model.setProductos(null);
 			usuarioService.guardarUsuario(usuario);
+			notifyCreated(model);
 			Events.sendEvent(Events.ON_RENDER,this.self.getParent(),null);
 		}
 		// GUARDAR EN DB

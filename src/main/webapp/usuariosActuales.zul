@@ -4,27 +4,38 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?link rel="icon" type="image/x-icon" href="/imagenes/ico_chasqui16.ico"?>
 <zk>
-<window id="usuariosActualesWindow" title="${c:l('zk.window.usuariosActuales.title')}" width="100%" border="nomal"
+<window id="usuariosActualesWindow" width="100%" border="none"
 apply="chasqui.view.composer.UsuariosActualesComposer">
-		<style>
+	<style>
+		.titleadmin {
+			padding-left: 5px;
+		}
+		.usuariosActuales-toolbar {
+			margin-top: 0.5rem;
+			margin-bottom: 0.5rem;
+		}
+	</style>				
+	<separator spacing="5px"/>
+	<div class="usuariosActuales-toolbar">
+		<button label="Nuevo Usuario" id="buttonGuardarNuevoUsuario" image="/imagenes/newuser.png"/>
+	</div>
+	<separator spacing="5px"/>
 
-    </style>
-    				<!-- Detalles -->
-				<div id="titulo" align="center" class="titleadmin" >
-					<label style="color: white; font-weight: bold;" id="labelVenededor">Usuarios Actuales</label>
-					<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; margin-right: 0.5em" popup="ayudausuarios"  src="/imagenes/question.png" />
-        		</div>	
+	<div id="titulo" class="titleadmin" >
+			<label style="color: white; font-weight: bold;" id="labelVenededor">Usuarios Actuales</label>
+			<image align="right" style="cursor:pointer; z-index: 1; position:relative; bottom: -1.5em; margin-top: -20px; margin-right: 0.5em" popup="ayudausuarios"  src="/imagenes/question.png" />
+	</div>	
 	<listbox id="listboxUsuarios" model="@{usuariosActualesWindow$composer.usuarios}">
 <!-- 	selectedItem="@{usuariosActualesWindow$composer.usuarioSeleccionado}"> -->
 		<listhead>
-			<listheader label="${c:l('zk.listheader.label.altaUsuario.username')}"/>
+			<listheader width="150px" label="${c:l('zk.listheader.label.altaUsuario.username')}"/>
+			<listheader width="150px" label="Nombre Corto"/>
+			<listheader label="Nombre"/>
 			<listheader label="${c:l('zk.listheader.label.administracion.acciones')}"/>
 		</listhead>
 	</listbox>
-	<separator spacing="5px"/>
-	<div align="center">
-		<toolbarbutton label="Nuevo Usuario" style="font-weight:bold; color:black" id="buttonGuardarNuevoUsuario" image="/imagenes/newuser.png"/>
-	</div>
+	
+	
    <popup id="ayudausuarios" width="500px">
        <html><![CDATA[ 
              En esta sección se configuran los usuarios vendedores, desde la misma puede:<br /><br />

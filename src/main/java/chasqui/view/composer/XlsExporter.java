@@ -5,9 +5,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.SimpleDateFormat;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -27,6 +29,7 @@ import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Filedownload;
+import org.apache.log4j.Logger;
 
 import chasqui.exceptions.EstadoPedidoIncorrectoException;
 import chasqui.model.Cliente;
@@ -38,6 +41,7 @@ import chasqui.services.interfaces.PedidoColectivoService;
 import chasqui.services.interfaces.ProductoService;
 
 public class XlsExporter {
+	private static final Logger logger = Logger.getLogger(XlsExporter.class);
 
 	private ProductoService productoservice = (ProductoService) SpringUtil.getBean("productoService");
 	private Workbook wb = new HSSFWorkbook();
@@ -46,13 +50,13 @@ public class XlsExporter {
 
 	private Sheet sheet;
 
-	private static final String[] titles = { "PRODUCTOS","Productor", "Precio", "Cantidad", "SubTotal", "Código" };
+	private static final String[] titles = { "PRODUCTOS","Productor", "Precio", "Cantidad", "SubTotal", "Peso (kg)", "Código" };
 	private static final String[] checkers = { "Baja", "Armado", "Revisado", "Carga", "Entrega" };
 	private static final String[] contactinfo = { "Nombre", "Apellido","E-mail", "Telefono", "2do Telefono" };
 	private static final String[] contactaddress = { "Calle","Altura","Localidad","Codigo Postal", "Departamento", "Zona", "Comentario" };
 	private static final String[] campospuntoderetiro = {"Nombre","Calle","Altura","Localidad","Codigo Postal","Departamento"};
 	
-	public void fullexport(List<Pedido> pedidos) throws Exception {
+	public void fullexport(List<Pedido> pedidos, Vendedor vendedor) throws Exception {
 		Pedido pActual = null;
 		try {
 			for (Pedido p : pedidos) {
@@ -64,7 +68,9 @@ public class XlsExporter {
 				}
 				doDetails();
 			}
-			showDownload();
+			String nombreCorto = vendedor.getNombreCorto();
+			String fileName = "exportar-pedidos-"+nombreCorto+ "-"+this.todayString()+ ".xls";
+			showDownload(fileName);
 			clean();
 		}catch (Exception e){
 			throw new Exception("Hay una inconsistencia en el pedido con ID: " + pActual.getId() +", y no se puede exportar. Intente excluirlo del filtro o comuniquese con el administrador del sistema");
@@ -114,7 +120,7 @@ public class XlsExporter {
 		clean();
 	}
 	
-	public void exportColectivos(List<Pedido> pedidos) throws Exception{
+	public void exportColectivos(List<Pedido> pedidos, PedidoColectivo pedidoColectivo) throws Exception{
 		for (Pedido p : pedidos) {
 			if(page<1){
 				doHeader(p,"Resumen Colectivo de ");
@@ -134,7 +140,13 @@ public class XlsExporter {
 			}
 			doDetails();
 		}
-		showDownload();
+		if(pedidoColectivo != null) {
+			String nombreColectivo = pedidoColectivo.getColectivo().getAlias();
+			Integer id = pedidoColectivo.getId();
+			showDownload("exportar-"+ id + "-" + nombreColectivo + ".xls");
+		} else {
+			showDownload();
+		}
 		clean();
 	}
 	
@@ -222,8 +234,27 @@ public class XlsExporter {
 	}
 
 	private void showDownload() throws IOException {
+		this.showDownload(null);
+	}
+
+	private void showDownload(String fileName) throws IOException {
 		File tempFile = File.createTempFile("exportar", "pedido");
 		String outputFile = tempFile.getAbsolutePath();
+		
+		if(fileName != null) {
+			fileName = fileName.replaceAll("\\s+","_");
+			fileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+			String copyFilePath = tempFile.getParent() + File.separatorChar + fileName;
+			File copyFile = new File(copyFilePath);
+	
+			if(tempFile.renameTo(copyFile)){
+				outputFile = copyFile.getAbsolutePath();
+				tempFile = copyFile;
+			} else {
+				logger.warn("Exportador > no se pudo renombrar archivo");
+			}
+		}
+
 		FileOutputStream out = new FileOutputStream(outputFile);
 		wb.write(out);
 		Filedownload.save(tempFile, "xls");
@@ -231,17 +262,22 @@ public class XlsExporter {
 		out.close();
 	}
 
+	private String todayString() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+		return format.format(new Date());
+	}
+
 	private void doDetails() {
 		// Se ajustan los anchos de las celdas, el ancho esta medido en unidades de 1/256
 		// del ancho de un caracter
 		sheet.setColumnWidth(0, 30 * 256); // 30 caracteres de ancho
 		sheet.setColumnWidth(1, 30 * 256);
-		for (int i = 3; i < 5; i++) {
+		for (int i = 3; i < 6; i++) {
 			sheet.setColumnWidth(i, 11 * 256); // 11 caracteres de ancho
 		}
-		sheet.setColumnWidth(6, 12 * 256); // 12 caracteres de ancho
-		sheet.setColumnWidth(7, 24*256);
-		sheet.setColumnWidth(8, 30*256);
+		sheet.setColumnWidth(7, 12 * 256); // 12 caracteres de ancho
+		sheet.setColumnWidth(8, 24*256);
+		sheet.setColumnWidth(9, 30*256);
 
 	}
 
@@ -267,7 +303,8 @@ public class XlsExporter {
 				row.getCell(2).setCellValue(p.getPrecio());
 				row.getCell(3).setCellValue(p.getCantidad());
 				row.getCell(4).setCellValue(p.getCantidad() * p.getPrecio());
-				row.getCell(5).setCellValue(productoservice.obtenerVariantePor(p.getIdVariante()).getCodigo().toString());
+				row.getCell(5).setCellValue(p.getPesoGramosTotal()/1000d);
+				row.getCell(6).setCellValue(productoservice.obtenerVariantePor(p.getIdVariante()).getCodigo().toString());
 			}
 		}
 	}
@@ -279,6 +316,7 @@ public class XlsExporter {
 			titulo = pedido.getCliente().getNombre() + " " + pedido.getCliente().getApellido();
 			titulo = msj + titulo;
 		}
+		titulo = titulo.replaceAll("[^a-zA-Z0-9 ]", "");
 		sheet = wb.createSheet(page.toString() + "_" + titulo);
 		PrintSetup printSetup = sheet.getPrintSetup();
 		printSetup.setLandscape(true);
@@ -323,7 +361,7 @@ public class XlsExporter {
 		cell.setCellStyle(styles.get("formula"));
 		// Marca el campo para el sum.
 		Integer endsum = size + 2;
-		for (int j = 3; j < 5; j++) {
+		for (int j = 3; j < 6; j++) {
 			cell = sumRow.createCell(j);
 			String ref = (char) ('A' + j) + "3:" + (char) ('A' + j) + endsum.toString();
 			cell.setCellFormula("SUM(" + ref + ")");
@@ -347,18 +385,19 @@ public class XlsExporter {
 	
 	private void doContactArea(Pedido p){
 		Cell datacell;
+		Integer startColumn = titles.length;
 		Integer totalNrows = sheet.getLastRowNum();
 		Integer startRow = 2;
 		Row aRow = sheet.getRow(startRow -1);
 		//titulo
-		buildTitle(aRow,"Información de Contacto",6,7,"$G$2:$H$2");	
+		buildTitle(aRow,"Información de Contacto",startColumn,startColumn+1,"$H$2:$I$2");	
 		//primera seccion
 		for(int i= 0; i<contactinfo.length;i++){
 			aRow = sheet.getRow(startRow);
-			datacell = aRow.createCell(6);
+			datacell = aRow.createCell(startColumn);
 			datacell.setCellValue(contactinfo[i]);
 			datacell.setCellStyle(styles.get("cell"));
-			datacell = aRow.createCell(7);
+			datacell = aRow.createCell(startColumn+1);
 			datacell.setCellStyle(styles.get("cell"));
 			startRow++;
 		}
@@ -373,17 +412,17 @@ public class XlsExporter {
 			startRow = 8;
 			aRow = sheet.getRow(startRow -1);
 			//titulo
-			buildTitle(aRow,"Detalles de la Dirección",6,7,"$G$8:$H$8");
+			buildTitle(aRow,"Detalles de la Dirección",startColumn,startColumn+1,"$H$8:$I$8");
 			for(int i=0; i<contactaddress.length;i++){
 				aRow = sheet.getRow(startRow);
 				if(aRow == null){
 					sheet.createRow(startRow);
 					aRow = sheet.getRow(startRow);
 				}
-				datacell = aRow.createCell(6);
+				datacell = aRow.createCell(startColumn);
 				datacell.setCellValue(contactaddress[i]);
 				datacell.setCellStyle(styles.get("cell"));
-				datacell = aRow.createCell(7);
+				datacell = aRow.createCell(startColumn+1);
 				datacell.setCellStyle(styles.get("cell"));
 				startRow++;
 			}
@@ -391,17 +430,17 @@ public class XlsExporter {
 		if(p.getPuntoDeRetiro() != null){
 			startRow = 8;
 			aRow = sheet.getRow(startRow -1);
-			buildTitle(aRow,"Punto de Retiro",6,7,"$G$8:$H$8");
+			buildTitle(aRow,"Punto de Retiro",startColumn,startColumn+1,"$H$8:$I$8");
 			for(int i=0; i<campospuntoderetiro.length;i++){
 				aRow = sheet.getRow(startRow);
 				if(aRow == null){
 					sheet.createRow(startRow);
 					aRow = sheet.getRow(startRow);
 				}
-				datacell = aRow.createCell(6);
+				datacell = aRow.createCell(startColumn);
 				datacell.setCellValue(campospuntoderetiro[i]);
 				datacell.setCellStyle(styles.get("cell"));
-				datacell = aRow.createCell(7);
+				datacell = aRow.createCell(startColumn+1);
 				datacell.setCellStyle(styles.get("cell"));
 				startRow++;
 			}
@@ -413,6 +452,7 @@ public class XlsExporter {
 		Integer size = respuestas.size();
 		claves.addAll(respuestas.keySet()); 
 		Cell datacell = null;
+		Integer startColumn = titles.length;
 		//fila de inicio
 		Integer startRow = 16;
 		if(p.getDireccionEntrega() == null && p.getPuntoDeRetiro() == null){
@@ -424,7 +464,7 @@ public class XlsExporter {
 			aRow = sheet.getRow(startRow - 1);
 		}
 		//titulo
-		buildTitle(aRow,"Respuestas del cuestionario",6,7,"$G$"+startRow+":$H$"+startRow);
+		buildTitle(aRow,"Respuestas del cuestionario",startColumn,startColumn+1,"$H$"+startRow+":$I$"+startRow);
 		//primera seccion
 		for(int i= 0; i<size;i++){
 			if(sheet.getRow(startRow) == null){
@@ -436,11 +476,12 @@ public class XlsExporter {
 	}
 	
 	private void createCellInRow(Row aRow, Integer startRow, Cell datacell, String value){
+		Integer startColumn = titles.length;
 		aRow = sheet.getRow(startRow);
-		datacell = aRow.createCell(6);
+		datacell = aRow.createCell(startColumn);
 		datacell.setCellValue(value);
 		datacell.setCellStyle(styles.get("cell"));
-		datacell = aRow.createCell(7);
+		datacell = aRow.createCell(startColumn+1);
 		datacell.setCellStyle(styles.get("cell"));
 	}
 
@@ -564,7 +605,7 @@ public class XlsExporter {
 					List<Pedido> pedidomerge = this.pedidoColectivoMerge(pedidosDentroDeColectivo,pedidoc,vendedorLogueado);
 					pedidomerge.addAll(pedidoColectivoService.obtenerPedidoColectivoPorID(idPedidoColectivo).getPedidosIndividuales().values());
 					pedidomerge = obtenerSoloConfirmados(pedidomerge);
-					this.exportColectivos(pedidomerge);
+					this.exportColectivos(pedidomerge, pedidoc);
 				//}
 				Clients.clearBusy(component);
 				Clients.showNotification("Archivo generado correctamente", "info", component, "middle_center", 3000);
@@ -628,6 +669,7 @@ public class XlsExporter {
 		ppc.setNombreVariante(pp.getNombreVariante());
 		ppc.setPrecio(pp.getPrecio());
 		ppc.setIncentivo(pp.getIncentivo());
+		ppc.setVariante((pp.getVariante()));
 		return ppc;
 	}
 }

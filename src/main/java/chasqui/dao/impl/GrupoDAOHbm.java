@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 import org.hibernatespatial.criterion.SpatialRestrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -16,6 +17,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import chasqui.dao.GrupoDAO;
 import chasqui.model.GrupoCC;
+import chasqui.model_lite.MiembroGCCLite;
 import chasqui.view.composer.Constantes;
 
 public class GrupoDAOHbm extends HibernateDaoSupport implements GrupoDAO {
@@ -138,6 +140,21 @@ public class GrupoDAOHbm extends HibernateDaoSupport implements GrupoDAO {
 			}
 
 		});
+	}
+
+	@Override 
+	public List<MiembroGCCLite> obtenerMiembrosDeGrupo(final Integer idGrupo) {
+		return this.getHibernateTemplate().execute(new HibernateCallback<List<MiembroGCCLite>>() {
+
+			@Override
+			public List<MiembroGCCLite> doInHibernate(Session session) throws HibernateException, SQLException {
+			 Criteria criteria = session.createCriteria(MiembroGCCLite.class, "miembro")
+			 			.createAlias("miembro.cliente", "cliente", CriteriaSpecification.LEFT_JOIN)
+					 .add(Restrictions.eq("idGrupo", idGrupo));
+		 
+			 return criteria.list(); 
+			}
+		 });
 	}
 	
 

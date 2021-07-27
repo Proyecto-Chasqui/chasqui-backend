@@ -44,6 +44,7 @@ import chasqui.model.PuntoDeRetiro;
 import chasqui.model.Usuario;
 import chasqui.model.Vendedor;
 import chasqui.model.Zona;
+import chasqui.model_lite.MiembroGCCLite;
 import chasqui.service.rest.impl.OpcionSeleccionadaRequest;
 import chasqui.service.rest.request.ConfirmarPedidoSinDireccionRequest;
 import chasqui.service.rest.request.DireccionRequest;
@@ -575,7 +576,12 @@ public class GrupoServiceImpl implements GrupoService {
 			}
 		}
 		return nuevaLista;
-				
+	
+	}
+
+	@Override
+	public List<MiembroGCCLite> obtenerMiembrosDelGCC(Integer idGrupo) throws GrupoCCInexistenteException {
+		return grupoDao.obtenerMiembrosDeGrupo(idGrupo);
 	}
 
 	@Override
