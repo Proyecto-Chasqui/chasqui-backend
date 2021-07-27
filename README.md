@@ -1,3 +1,6 @@
+[![Build with Maven](https://github.com/Proyecto-Chasqui/chasqui-backend/actions/workflows/maven.yml/badge.svg?branch=staging)](https://github.com/Proyecto-Chasqui/chasqui-backend/actions/workflows/maven.yml)
+
+
 ![](http://proyectochasqui.org/images/logo_chasqui_400.png)
 
 1. [¿Qué es Chasqui?](#qué-es-chasqui)
