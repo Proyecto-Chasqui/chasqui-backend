@@ -4,10 +4,16 @@
 name: Build with Maven
 
 on:
-  push:
-    branches: [ disabled ]
-  pull_request:
-    branches: [ disabled ]
+  workflow_dispatch:
+    inputs:
+        version:
+          required: true
+          description: 'Version' 
+
+  # push:
+  #   branches: [ disabled ]
+  # pull_request:
+  #   branches: [ disabled ]
 
 jobs:
   build:
