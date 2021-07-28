@@ -11,10 +11,10 @@ on:
           required: true
           description: 'Version' 
 
-  # push:
-  #   branches: [ disabled ]
+  push:
+    branches: [ staging ]
   # pull_request:
-  #   branches: [ disabled ]
+  #   branches: [ staging ]
 
 jobs:
   build:
