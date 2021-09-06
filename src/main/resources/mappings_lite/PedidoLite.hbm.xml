@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 06/03/2016 19:11:00 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping default-cascade="save-update">
+	<class name="chasqui.model_lite.PedidoLite" table="PEDIDO" mutable="false">
+		<id name="id" type="java.lang.Integer">
+			<column name="ID" />
+			<generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+				<param name="sequence_name">PEDIDO_SEQUENCE</param>
+				<param name="optimizer">none</param>
+				<param name="increment_size">1</param>
+			</generator>
+		</id>
+		
+		<property name="idVendedor" type="java.lang.Integer">
+			<column name="ID_VENDEDOR" />
+		</property>
+
+		<many-to-one name="cliente" class="chasqui.model_lite.ClienteLite" cascade="none" update="false" insert="false">
+			<column name="CLIENTE" />
+		</many-to-one>
+
+	
+		<property name="alterable" column="ALTERABLE" type="java.lang.Boolean" />
+		
+		<property name="estado" type="java.lang.String">
+			<column name="ESTADO" />
+		</property>
+		
+		<property name="fechaCreacion"
+			type="org.joda.time.contrib.hibernate.PersistentDateTime">
+			<column name="FECHA_CREACION" />
+		</property>
+		
+		<property name="fechaModificacion"
+			type="org.joda.time.contrib.hibernate.PersistentDateTime" column="FECHA_MODIFICACION" />
+		
+		<property name="fechaDeVencimiento"
+			type="org.joda.time.contrib.hibernate.PersistentDateTime" column="FECHA_VENCIMIENTO" />
+		
+	
+		<property name="montoMinimo" type="java.lang.Double">
+			<column name="MONTO_MINIMO" />
+		</property>
+		
+		<property name="montoActual" type="java.lang.Double">
+			<column name="MONTO_ACTUAL" />
+		</property>
+		
+		<property name="nombreVendedor" type="java.lang.String"
+			column="NOMBRE_VENDEDOR" />
+		
+		<property name="perteneceAPedidoGrupal" column="PERTENECE_A_GRUPAL"
+			type="java.lang.Boolean" />
+		
+		<property name="comentario" type="java.lang.String">
+			<column name="COMENTARIO" />
+		</property>
+		
+		<property name="tipoDeAjuste" type="java.lang.String">
+			<column name="TIPO_AJUSTE" />
+		</property>		
+	
+	</class>
+</hibernate-mapping>

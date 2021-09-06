@@ -14,7 +14,10 @@
 
 
 	<!-- Servicios -->
-	<bean id="mailService" name="mailService" class="chasqui.services.impl.MailService" />
+	<bean id="mailService" name="mailService" class="chasqui.services.impl.MailService">
+		<property name="subjectPrefix" value="${email.flagEnvironment.subjectPrefix:}" />
+		<property name="bodyTopBanner" value="${email.flagEnvironment.bodyTopBanner:}" />
+	</bean>
 
 	<bean id="fileSaver" name="fileSaver" class="chasqui.services.impl.FileSaver" />
 
@@ -150,7 +153,7 @@
 			<props>
 				<prop key="mail.transport.protocol">smtp</prop>
 				<prop key="mail.smtp.auth">true</prop>
-				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtp.starttls.enable">${mail.smtp.starttls.enable:true}</prop>
 				<prop key="mail.debug">true</prop>
 			</props>
 		</property>

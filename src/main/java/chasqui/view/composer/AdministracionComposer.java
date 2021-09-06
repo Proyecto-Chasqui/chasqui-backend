@@ -1092,12 +1092,14 @@ public class AdministracionComposer extends GenericForwardComposer<Component> im
 		Variante v = p.getVariantes().get(0);
 		if(v.getDestacado()){
 			v.setDestacado(!v.getDestacado());
+			p.setDestacado(v.getDestacado());
 			destacar(v);
 			usuarioService.guardarUsuario(usuarioLogueado);
 		}else{
 			if(!v.getDestacado() && numeroDestacados < numeroMaxDestacados){
 				v.setDestacado(!v.getDestacado());
 				destacar(v);
+				p.setDestacado(v.getDestacado());
 				usuarioService.guardarUsuario(usuarioLogueado);
 			}else{
 				Messagebox.show("Solo se pueden tener hasta 6 destacados",
