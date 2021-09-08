@@ -496,17 +496,17 @@ public class NodosComposer extends GenericForwardComposer<Component> {
 
 	public void onClick$limpiarCamposbtn() {
 		menuItemReiniciarFiltrosPedidosNodos.setVisible(false);
-		estadoSeleccionado = "";
+		estadoSeleccionado = Constantes.ESTADO_PEDIDO_CONFIRMADO;
 		zonaSeleccionada = null;
 		desde.setValue(null);
 		hasta.setValue(null);
-		estadosListbox.setValue("");
+		estadosListbox.setValue(estadoSeleccionado);
 		zonasListbox.setValue(null);
 		buscadorPorUsuario.setValue("");
 		prSeleccionado = null;
 		prCombobox.setValue("");
 		pedidosNodos = pedidoColectivoService.obtenerPedidosColectivosDeNodosDeVendedorConPRConNombre(
-				vendedorLogueado.getId(), null, null, null, null, null, null);
+				vendedorLogueado.getId(), null, null, estadoSeleccionado, null, null, null);
 		Clients.showNotification("Filtros restablecidos", "info", component, "middle_center", 2000, true);
 		this.binder.loadAll();
 	}
