@@ -281,31 +281,33 @@ public class Pedido implements IPedido {
 	}
 
 	private void agregarProductoPedidoApedido(ProductoPedido pp) {
-		if (existeProductoEnPedido(pp)) {
-			if(existeProductoEnPedidoConMismoPrecio(pp)) {
-				sumarCantidadAProductoExistente(pp);
-			}else{
-				productosEnPedido.add(pp);
-			}
-		} else {
+		ProductoPedido existente = encontrarProductoEnPedidoConMismoPrecio(pp);
+		if(existente != null) {
+			existente.sumarCantidad(pp.getCantidad());
+		}else{
 			productosEnPedido.add(pp);
 		}
-		
-	}
-
-	private boolean existeProductoEnPedidoConMismoPrecio(ProductoPedido pp) {
-		ProductoPedido p = encontrarProductoEnPedido(pp);
-		return p.getPrecio().equals(pp.getPrecio());
 	}
 
 	private void sumarCantidadAProductoExistente(ProductoPedido pp) {
 		ProductoPedido p = encontrarProductoEnPedido(pp);
-		p.sumarCantidad(pp.getCantidad());
+		if(p != null) {
+			p.sumarCantidad(pp.getCantidad());
+		}
 	}
 
 	private ProductoPedido encontrarProductoEnPedido(ProductoPedido pp) {
 		for (ProductoPedido p : productosEnPedido) {
 			if (p.getIdVariante().equals(pp.getIdVariante())) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	private ProductoPedido encontrarProductoEnPedidoConMismoPrecio(ProductoPedido pp) {
+		for (ProductoPedido p : productosEnPedido) {
+			if (p.getIdVariante().equals(pp.getIdVariante()) && p.getPrecio().equals(pp.getPrecio())) {
 				return p;
 			}
 		}
