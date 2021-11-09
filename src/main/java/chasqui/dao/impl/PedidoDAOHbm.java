@@ -163,6 +163,8 @@ public class PedidoDAOHbm extends HibernateDaoSupport implements PedidoDAO {
 					queryStr += " AND pedido.ID_VENDEDOR = :idVendedor ";
 				}
 
+				queryStr += "ORDER BY pedido_id desc ";
+
 				SQLQuery q = session.createSQLQuery(queryStr);
 
 				

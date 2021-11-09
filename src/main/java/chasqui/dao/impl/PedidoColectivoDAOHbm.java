@@ -76,9 +76,12 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 									+ " RIGHT JOIN PEDIDO on PEDIDO.ID = pp.ID_PEDIDO "
 									+ " RIGHT JOIN PEDIDO_COLECTIVO ON PEDIDO_COLECTIVO.ID = PEDIDO.ID_PEDIDO_COLECTIVO "
 									+ " WHERE   "
-									+ "      PEDIDO_COLECTIVO.ESTADO = :estadoPedido "
+									+ "      pp.ID is not null"
+									+ "  AND PEDIDO_COLECTIVO.ESTADO = :estadoPedido "
 									+ "  AND PEDIDO_COLECTIVO.COLECTIVO = :idColectivo "
-									+ " GROUP BY PEDIDO.ESTADO ";
+								+ " GROUP BY PEDIDO.ESTADO ";
+									
+									
 
 				SQLQuery q = session.createSQLQuery(queryStr);
 
@@ -158,7 +161,8 @@ public class PedidoColectivoDAOHbm extends HibernateDaoSupport implements Pedido
 							+ " RIGHT JOIN PEDIDO on PEDIDO.ID = pp.ID_PEDIDO"
 							+ " RIGHT JOIN PEDIDO_COLECTIVO ON PEDIDO_COLECTIVO.ID = PEDIDO.ID_PEDIDO_COLECTIVO"
 							+ " WHERE  "
-							+ "   PEDIDO_COLECTIVO.ESTADO = :estadoPedidoColectivo "
+							+ "     pp.ID is not null"
+							+ " AND PEDIDO_COLECTIVO.ESTADO = :estadoPedidoColectivo "
 							+ " AND PEDIDO_COLECTIVO.COLECTIVO = :idColectivo "
 							+ " GROUP BY PEDIDO.ID";
  
